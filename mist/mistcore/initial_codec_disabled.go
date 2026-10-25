@@ -1,1 +1,36 @@
-Ly8gUmFuZG9tQ2lwaGVydGV4dENvZGVjIGlzIFJFVElSRUQgKFBoYXNlIDAgY29tcGxldGUpLgovLwovLyBUaGUgdHlwZSBpcyBrZXB0IHNvIG9sZCByZWZlcmVuY2VzIGNvbXBpbGUsIGJ1dCBldmVyeSBtZXRob2QgZmFpbHM6Ci8vIHJhbmRvbS1jaXBoZXJ0ZXh0IEluaXRpYWwgcGFja2V0cyBhcmUgbm8gbG9uZ2VyIGVtaXR0ZWQgb3IgcGFyc2VkLgovLyBVc2UgUVVJQ0luaXRpYWxDb2RlYyAocmVhbCBRVUlDIEluaXRpYWwsIFJGQyA5MDAwLzkwMDEpIGluc3RlYWQuCnBhY2thZ2UgbWlzdGNvcmUKCmltcG9ydCAiZXJyb3JzIgoKLy8gZXJyQ29kZWNEaXNhYmxlZCBpcyByZXR1cm5lZCBieSBldmVyeSBSYW5kb21DaXBoZXJ0ZXh0Q29kZWMgbWV0aG9kIGluCi8vIGJ1aWxkcyB3aXRob3V0IHRoZSBtaXN0X3Vuc2FmZV9pbml0aWFsIHRhZy4KdmFyIGVyckNvZGVjRGlzYWJsZWQgPSBlcnJvcnMuTmV3KCJtaXN0OiBSYW5kb21DaXBoZXJ0ZXh0Q29kZWMg5bey5bqf5byD77yIUGhhc2UgMCDlrozmiJDvvInvvIzor7fnlKggUVVJQ0luaXRpYWxDb2RlYyIpCgovLyBSYW5kb21DaXBoZXJ0ZXh0Q29kZWMgaXMgdGhlIFBoYXNlIDEgc2ltcGxpZmllZCBJbml0aWFsIGNvZGVjLgovLyBJbiB0aGlzIGJ1aWxkIGl0IGlzIGFuIGluZXJ0IHN0dWI6IGFsbCBtZXRob2RzIHJldHVybiBlcnJDb2RlY0Rpc2FibGVkLgp0eXBlIFJhbmRvbUNpcGhlcnRleHRDb2RlYyBzdHJ1Y3R7fQoKLy8gU2VhbEluaXRpYWwgaXMgZGlzYWJsZWQgaW4gYnVpbGRzIHdpdGhvdXQgbWlzdF91bnNhZmVfaW5pdGlhbC4KZnVuYyAoYyAqUmFuZG9tQ2lwaGVydGV4dENvZGVjKSBTZWFsSW5pdGlhbChhdXRoUGF5bG9hZCBbXWJ5dGUsIGRjaWQgWzhdYnl0ZSwgc2NpZCBbOF1ieXRlLCBwYWNrZXROdW0gdWludDMyKSAoW11ieXRlLCBlcnJvcikgewoJcmV0dXJuIG5pbCwgZXJyQ29kZWNEaXNhYmxlZAp9CgovLyBPcGVuSW5pdGlhbCBpcyBkaXNhYmxlZCBpbiBidWlsZHMgd2l0aG91dCBtaXN0X3Vuc2FmZV9pbml0aWFsLgpmdW5jIChjICpSYW5kb21DaXBoZXJ0ZXh0Q29kZWMpIE9wZW5Jbml0aWFsKHBhY2tldCBbXWJ5dGUpIChbXWJ5dGUsIFs4XWJ5dGUsIFs4XWJ5dGUsIHVpbnQzMiwgZXJyb3IpIHsKCXJldHVybiBuaWwsIFs4XWJ5dGV7fSwgWzhdYnl0ZXt9LCAwLCBlcnJDb2RlY0Rpc2FibGVkCn0KCi8vIFNlYWxJbml0aWFsUmVzcG9uc2UgaXMgZGlzYWJsZWQgaW4gYnVpbGRzIHdpdGhvdXQgbWlzdF91bnNhZmVfaW5pdGlhbC4KZnVuYyAoYyAqUmFuZG9tQ2lwaGVydGV4dENvZGVjKSBTZWFsSW5pdGlhbFJlc3BvbnNlKGF1dGhPS1BheWxvYWQgW11ieXRlLCBkY2lkIFs4XWJ5dGUsIHNjaWQgWzhdYnl0ZSwgcGFja2V0TnVtIHVpbnQzMikgKFtdYnl0ZSwgZXJyb3IpIHsKCXJldHVybiBuaWwsIGVyckNvZGVjRGlzYWJsZWQKfQoKLy8gT3BlbkluaXRpYWxSZXNwb25zZSBpcyBkaXNhYmxlZCBpbiBidWlsZHMgd2l0aG91dCBtaXN0X3Vuc2FmZV9pbml0aWFsLgpmdW5jIChjICpSYW5kb21DaXBoZXJ0ZXh0Q29kZWMpIE9wZW5Jbml0aWFsUmVzcG9uc2UocGFja2V0IFtdYnl0ZSkgKFtdYnl0ZSwgWzhdYnl0ZSwgWzhdYnl0ZSwgdWludDMyLCBlcnJvcikgewoJcmV0dXJuIG5pbCwgWzhdYnl0ZXt9LCBbOF1ieXRle30sIDAsIGVyckNvZGVjRGlzYWJsZWQKfQo=
+// RandomCiphertextCodec is RETIRED (Phase 0 complete).
+//
+// The type is kept so old references compile, but every method fails:
+// random-ciphertext Initial packets are no longer emitted or parsed.
+// Use QUICInitialCodec (real QUIC Initial, RFC 9000/9001) instead.
+package mistcore
+
+import "errors"
+
+// errCodecDisabled is returned by every RandomCiphertextCodec method in
+// builds without the mist_unsafe_initial tag.
+var errCodecDisabled = errors.New("mist: RandomCiphertextCodec 已废弃（Phase 0 完成），请用 QUICInitialCodec")
+
+// RandomCiphertextCodec is the Phase 1 simplified Initial codec.
+// In this build it is an inert stub: all methods return errCodecDisabled.
+type RandomCiphertextCodec struct{}
+
+// SealInitial is disabled in builds without mist_unsafe_initial.
+func (c *RandomCiphertextCodec) SealInitial(authPayload []byte, dcid [8]byte, scid [8]byte, packetNum uint32) ([]byte, error) {
+	return nil, errCodecDisabled
+}
+
+// OpenInitial is disabled in builds without mist_unsafe_initial.
+func (c *RandomCiphertextCodec) OpenInitial(packet []byte) ([]byte, [8]byte, [8]byte, uint32, error) {
+	return nil, [8]byte{}, [8]byte{}, 0, errCodecDisabled
+}
+
+// SealInitialResponse is disabled in builds without mist_unsafe_initial.
+func (c *RandomCiphertextCodec) SealInitialResponse(authOKPayload []byte, dcid [8]byte, scid [8]byte, packetNum uint32) ([]byte, error) {
+	return nil, errCodecDisabled
+}
+
+// OpenInitialResponse is disabled in builds without mist_unsafe_initial.
+func (c *RandomCiphertextCodec) OpenInitialResponse(packet []byte) ([]byte, [8]byte, [8]byte, uint32, error) {
+	return nil, [8]byte{}, [8]byte{}, 0, errCodecDisabled
+}

@@ -1,1 +1,77 @@
-cGFja2FnZSBtaXN0Y29yZQoKaW1wb3J0ICgKCSJzdHJpbmdzIgoJInRlc3RpbmciCikKCi8vIHNhZmVUZXN0Q29kZWMgcHJldGVuZHMgdG8gYmUgdGhlIGZ1dHVyZSBQaGFzZSAwIFFVSUNJbml0aWFsQ29kZWM6Ci8vIHByb2R1Y3Rpb24tc2FmZSwgYWxsb3dlZCBvbiBhbnkgYWRkcmVzcy4KdHlwZSBzYWZlVGVzdENvZGVjIHN0cnVjdHsgUmFuZG9tQ2lwaGVydGV4dENvZGVjIH0KCmZ1bmMgKGMgKnNhZmVUZXN0Q29kZWMpIFByb2R1Y3Rpb25TYWZlKCkgYm9vbCB7IHJldHVybiB0cnVlIH0KCmZ1bmMgVGVzdENoZWNrSW5pdGlhbENvZGVjU2FmZUZvckFkZHIodCAqdGVzdGluZy5UKSB7Cgl1bnNhZmUgOj0gJlJhbmRvbUNpcGhlcnRleHRDb2RlY3t9CglzYWZlIDo9ICZzYWZlVGVzdENvZGVje30KCgljYXNlcyA6PSBbXXN0cnVjdCB7CgkJbmFtZSAgICBzdHJpbmcKCQljb2RlYyAgIEluaXRpYWxDb2RlYwoJCWFkZHIgICAgc3RyaW5nCgkJd2FudEVyciBib29sCgl9ewoJCS8vIFVuc2FmZSBjb2RlYyBvbiBwcml2YXRlL2xvb3BiYWNrOiBhbGxvd2VkLgoJCXsibG9vcGJhY2s0IiwgdW5zYWZlLCAiMTI3LjAuMC4xOjE0NDMiLCBmYWxzZX0sCgkJeyJsb29wYmFjazYiLCB1bnNhZmUsICJbOjoxXToxNDQzIiwgZmFsc2V9LAoJCXsibG9jYWxob3N0IiwgdW5zYWZlLCAibG9jYWxob3N0OjE0NDMiLCBmYWxzZX0sCgkJeyJyZmMxOTE4XzEwIiwgdW5zYWZlLCAiMTAuMC4wLjU6MTQ0MyIsIGZhbHNlfSwKCQl7InJmYzE5MThfMTcyIiwgdW5zYWZlLCAiMTcyLjE2LjMuOToxNDQzIiwgZmFsc2V9LAoJCXsicmZjMTkxOF8xOTIiLCB1bnNhZmUsICIxOTIuMTY4LjEuNToxNDQzIiwgZmFsc2V9LAoJCXsiYmFyZV9sb29wYmFjayIsIHVuc2FmZSwgIjEyNy4wLjAuMSIsIGZhbHNlfSwKCQkvLyBVbnNhZmUgY29kZWMgb24gcHVibGljL3Vuc3BlY2lmaWVkOiByZWplY3RlZC4KCQl7InB1YmxpY192NCIsIHVuc2FmZSwgIjE0OC4xMzUuMTAuMTk6MTQ0MyIsIHRydWV9LAoJCXsicHVibGljX3Y2IiwgdW5zYWZlLCAiWzI2MDc6ZjEzMDowOjExMzo6MzFdOjE0NDMiLCB0cnVlfSwKCQl7InB1YmxpY19iYXJlIiwgdW5zYWZlLCAiOC44LjguOCIsIHRydWV9LAoJCXsidW5zcGVjaWZpZWRfdjQiLCB1bnNhZmUsICIwLjAuMC4wOjE0NDMiLCB0cnVlfSwKCQl7InVuc3BlY2lmaWVkX3Y2IiwgdW5zYWZlLCAiWzo6XToxNDQzIiwgdHJ1ZX0sCgkJeyJlbXB0eSIsIHVuc2FmZSwgIiIsIHRydWV9LAoJCS8vIFNhZmUgY29kZWM6IGFsbG93ZWQgZXZlcnl3aGVyZS4KCQl7InNhZmVfcHVibGljIiwgc2FmZSwgIjE0OC4xMzUuMTAuMTk6MTQ0MyIsIGZhbHNlfSwKCQl7InNhZmVfdW5zcGVjaWZpZWQiLCBzYWZlLCAiMC4wLjAuMDoxNDQzIiwgZmFsc2V9LAoJfQoKCWZvciBfLCB0YyA6PSByYW5nZSBjYXNlcyB7CgkJdC5SdW4odGMubmFtZSwgZnVuYyh0ICp0ZXN0aW5nLlQpIHsKCQkJZXJyIDo9IENoZWNrSW5pdGlhbENvZGVjU2FmZUZvckFkZHIodGMuY29kZWMsIHRjLmFkZHIpCgkJCWlmIHRjLndhbnRFcnIgJiYgZXJyID09IG5pbCB7CgkJCQl0LkZhdGFsZigiZXhwZWN0ZWQgZXJyb3IgZm9yIGFkZHIgJXEsIGdvdCBuaWwiLCB0Yy5hZGRyKQoJCQl9CgkJCWlmICF0Yy53YW50RXJyICYmIGVyciAhPSBuaWwgewoJCQkJdC5GYXRhbGYoInVuZXhwZWN0ZWQgZXJyb3IgZm9yIGFkZHIgJXE6ICV2IiwgdGMuYWRkciwgZXJyKQoJCQl9CgkJCWlmIHRjLndhbnRFcnIgJiYgIXN0cmluZ3MuQ29udGFpbnMoZXJyLkVycm9yKCksICLpmo/mnLrlr4bmlocgSW5pdGlhbCDkuI3og73nlKjkuo7nnJ/lrp7nvZHnu5wiKSB7CgkJCQl0LkZhdGFsZigiZXJyb3IgbXVzdCBzdGF0ZSB0aGUgcmVhc29uIGluIENoaW5lc2UsIGdvdDogJXYiLCBlcnIpCgkJCX0KCQl9KQoJfQp9CgpmdW5jIFRlc3RDb2RlY1Byb2R1Y3Rpb25TYWZlRmFpbENsb3NlZCh0ICp0ZXN0aW5nLlQpIHsKCS8vIFJhbmRvbUNpcGhlcnRleHRDb2RlYzogdW5zYWZlLgoJaWYgQ29kZWNQcm9kdWN0aW9uU2FmZSgmUmFuZG9tQ2lwaGVydGV4dENvZGVje30pIHsKCQl0LkZhdGFsKCJSYW5kb21DaXBoZXJ0ZXh0Q29kZWMgbXVzdCBub3QgYmUgcHJvZHVjdGlvbi1zYWZlIikKCX0KCS8vIFVua25vd24gaW1wbGVtZW50YXRpb24gKG5vIFByb2R1Y3Rpb25TYWZlIG1ldGhvZCk6IHVuc2FmZSBieSBkZWZhdWx0LgoJaWYgQ29kZWNQcm9kdWN0aW9uU2FmZSgmb3BhcXVlVGVzdENvZGVje30pIHsKCQl0LkZhdGFsKCJ1bmtub3duIGNvZGVjIGltcGxlbWVudGF0aW9ucyBtdXN0IGJlIHVuc2FmZSBieSBkZWZhdWx0IikKCX0KCS8vIE1hcmtlciBpbXBsZW1lbnRlZDogaG9ub3JlZC4KCWlmICFDb2RlY1Byb2R1Y3Rpb25TYWZlKCZzYWZlVGVzdENvZGVje30pIHsKCQl0LkZhdGFsKCJQcm9kdWN0aW9uU2FmZSgpID09IHRydWUgbXVzdCBiZSBob25vcmVkIikKCX0KfQoKLy8gb3BhcXVlVGVzdENvZGVjIGltcGxlbWVudHMgSW5pdGlhbENvZGVjIHdpdGhvdXQgdGhlIFByb2R1Y3Rpb25TYWZlIG1hcmtlcgovLyAoZW1iZWRzIHRoZSBpbnRlcmZhY2UsIHNvIG5vIFByb2R1Y3Rpb25TYWZlIG1ldGhvZCBpcyBwcm9tb3RlZCkuCnR5cGUgb3BhcXVlVGVzdENvZGVjIHN0cnVjdHsgSW5pdGlhbENvZGVjIH0K
+package mistcore
+
+import (
+	"strings"
+	"testing"
+)
+
+// safeTestCodec pretends to be the future Phase 0 QUICInitialCodec:
+// production-safe, allowed on any address.
+type safeTestCodec struct{ RandomCiphertextCodec }
+
+func (c *safeTestCodec) ProductionSafe() bool { return true }
+
+func TestCheckInitialCodecSafeForAddr(t *testing.T) {
+	unsafe := &RandomCiphertextCodec{}
+	safe := &safeTestCodec{}
+
+	cases := []struct {
+		name    string
+		codec   InitialCodec
+		addr    string
+		wantErr bool
+	}{
+		// Unsafe codec on private/loopback: allowed.
+		{"loopback4", unsafe, "127.0.0.1:1443", false},
+		{"loopback6", unsafe, "[::1]:1443", false},
+		{"localhost", unsafe, "localhost:1443", false},
+		{"rfc1918_10", unsafe, "10.0.0.5:1443", false},
+		{"rfc1918_172", unsafe, "172.16.3.9:1443", false},
+		{"rfc1918_192", unsafe, "192.168.1.5:1443", false},
+		{"bare_loopback", unsafe, "127.0.0.1", false},
+		// Unsafe codec on public/unspecified: rejected.
+		{"public_v4", unsafe, "148.135.10.19:1443", true},
+		{"public_v6", unsafe, "[2607:f130:0:113::31]:1443", true},
+		{"public_bare", unsafe, "8.8.8.8", true},
+		{"unspecified_v4", unsafe, "0.0.0.0:1443", true},
+		{"unspecified_v6", unsafe, "[::]:1443", true},
+		{"empty", unsafe, "", true},
+		// Safe codec: allowed everywhere.
+		{"safe_public", safe, "148.135.10.19:1443", false},
+		{"safe_unspecified", safe, "0.0.0.0:1443", false},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			err := CheckInitialCodecSafeForAddr(tc.codec, tc.addr)
+			if tc.wantErr && err == nil {
+				t.Fatalf("expected error for addr %q, got nil", tc.addr)
+			}
+			if !tc.wantErr && err != nil {
+				t.Fatalf("unexpected error for addr %q: %v", tc.addr, err)
+			}
+			if tc.wantErr && !strings.Contains(err.Error(), "随机密文 Initial 不能用于真实网络") {
+				t.Fatalf("error must state the reason in Chinese, got: %v", err)
+			}
+		})
+	}
+}
+
+func TestCodecProductionSafeFailClosed(t *testing.T) {
+	// RandomCiphertextCodec: unsafe.
+	if CodecProductionSafe(&RandomCiphertextCodec{}) {
+		t.Fatal("RandomCiphertextCodec must not be production-safe")
+	}
+	// Unknown implementation (no ProductionSafe method): unsafe by default.
+	if CodecProductionSafe(&opaqueTestCodec{}) {
+		t.Fatal("unknown codec implementations must be unsafe by default")
+	}
+	// Marker implemented: honored.
+	if !CodecProductionSafe(&safeTestCodec{}) {
+		t.Fatal("ProductionSafe() == true must be honored")
+	}
+}
+
+// opaqueTestCodec implements InitialCodec without the ProductionSafe marker
+// (embeds the interface, so no ProductionSafe method is promoted).
+type opaqueTestCodec struct{ InitialCodec }

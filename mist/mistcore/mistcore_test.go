@@ -1,1 +1,158 @@
-cGFja2FnZSBtaXN0Y29yZQoKaW1wb3J0ICgKCSJieXRlcyIKCSJ0ZXN0aW5nIgoJInRpbWUiCikKCmZ1bmMgVGVzdEZyYW1lUm91bmR0cmlwKHQgKnRlc3RpbmcuVCkgewoJdmFyIGtleSBbMzJdYnl0ZQoJY29weShrZXlbOl0sIFJhbmRvbUJ5dGVzKDMyKSkKCXB0IDo9IFtdYnl0ZSgiaGVsbG8gbWlzdCB3b3JsZCwgdGhpcyBpcyBhIHRlc3QgcGF5bG9hZCIpCglmb3IgXywgcGFkIDo9IHJhbmdlIFtdaW50ezAsIDY0LCAyMDAsIDI1NX0gewoJCXdpcmUsIGVyciA6PSBFbmNvZGVGcmFtZSgweDAzLCBwdCwgcGFkLCAma2V5LCAwLCBEaXJDMlMsIDcpCgkJaWYgZXJyICE9IG5pbCB7CgkJCXQuRmF0YWwoZXJyKQoJCX0KCQlpZiBnb3QgOj0gRnJhbWVXaXJlTGVuKHdpcmVbOjJdKTsgZ290ICE9IGxlbih3aXJlKSB7CgkJCXQuRmF0YWxmKCJ3aXJlIGxlbiBtaXNtYXRjaDogJWQgdnMgJWQiLCBnb3QsIGxlbih3aXJlKSkKCQl9CgkJZGVjLCBlcnIgOj0gRGVjb2RlRnJhbWUod2lyZSwgJmtleSwgMCwgRGlyQzJTLCA3KQoJCWlmIGVyciAhPSBuaWwgewoJCQl0LkZhdGFsKGVycikKCQl9CgkJaWYgZGVjLlNpZEZsYWdzICE9IDB4MDMgfHwgIWJ5dGVzLkVxdWFsKGRlYy5QYXlsb2FkLCBwdCkgewoJCQl0LkZhdGFsKCJwYXlsb2FkIG1pc21hdGNoIikKCQl9CgkJLy8gV3JvbmcgY291bnRlciBtdXN0IGZhaWwgKEFFQUQpLgoJCWlmIF8sIGVyciA6PSBEZWNvZGVGcmFtZSh3aXJlLCAma2V5LCAwLCBEaXJDMlMsIDgpOyBlcnIgPT0gbmlsIHsKCQkJdC5GYXRhbCgiZXhwZWN0ZWQgZmFpbHVyZSB3aXRoIHdyb25nIGN0ciIpCgkJfQoJCS8vIFdyb25nIGRpcmVjdGlvbiBtdXN0IGZhaWwuCgkJaWYgXywgZXJyIDo9IERlY29kZUZyYW1lKHdpcmUsICZrZXksIDAsIERpclMyQywgNyk7IGVyciA9PSBuaWwgewoJCQl0LkZhdGFsKCJleHBlY3RlZCBmYWlsdXJlIHdpdGggd3JvbmcgZGlyIikKCQl9Cgl9Cn0KCmZ1bmMgVGVzdEhhbmRzaGFrZVJvdW5kdHJpcCh0ICp0ZXN0aW5nLlQpIHsKCXZhciBjaWQgWzE2XWJ5dGUKCWNvcHkoY2lkWzpdLCBSYW5kb21CeXRlcygxNikpCgl2YXIga0F1dGggWzMyXWJ5dGUKCWNvcHkoa0F1dGhbOl0sIFJhbmRvbUJ5dGVzKDMyKSkKCWxvb2t1cCA6PSBmdW5jKGMgWzE2XWJ5dGUpICgqWzMyXWJ5dGUsIGJvb2wpIHsKCQlpZiBjID09IGNpZCB7CgkJCXJldHVybiAma0F1dGgsIHRydWUKCQl9CgkJcmV0dXJuIG5pbCwgZmFsc2UKCX0KCWNhY2hlIDo9IE5ld05vbmNlQ2FjaGUoMTIwICogdGltZS5TZWNvbmQpCglub3cgOj0gdGltZS5Ob3coKQoKCXdpcmUsIGNsaVB1YiwgY2xpUHJpdiwgZXJyIDo9IEJ1aWxkQVVUSChjaWQsICZrQXV0aCwgMHgwMSwgbm93KQoJaWYgZXJyICE9IG5pbCB7CgkJdC5GYXRhbChlcnIpCgl9CglpZiBsZW4od2lyZSkgIT0gQXV0aFdpcmVMZW4gewoJCXQuRmF0YWxmKCJBVVRIIGxlbiAlZCIsIGxlbih3aXJlKSkKCX0KCWFyLCBlcnIgOj0gUGFyc2VBVVRIKHdpcmUsIGxvb2t1cCwgbm93LCBEZWZhdWx0QXV0aFdpbmRvd1NlYywgY2FjaGUpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsKGVycikKCX0KCWlmIGFyLkVwaFB1YiAhPSBjbGlQdWIgfHwgYXIuRmVhdCAhPSAweDAxIHsKCQl0LkZhdGFsKCJhdXRoIHJlc3VsdCBtaXNtYXRjaCIpCgl9CgkvLyBSZXBsYXkgbXVzdCBmYWlsLgoJaWYgXywgZXJyIDo9IFBhcnNlQVVUSCh3aXJlLCBsb29rdXAsIG5vdywgRGVmYXVsdEF1dGhXaW5kb3dTZWMsIGNhY2hlKTsgZXJyICE9IEVyclJlcGxheWVkIHsKCQl0LkZhdGFsZigiZXhwZWN0ZWQgcmVwbGF5IGVycm9yLCBnb3QgJXYiLCBlcnIpCgl9CgkvLyBUYW1wZXJlZCBjaXBoZXJ0ZXh0IG11c3QgZmFpbC4KCWJhZCA6PSBhcHBlbmQoW11ieXRle30sIHdpcmUuLi4pCgliYWRbODBdIF49IDB4RkYKCWlmIF8sIGVyciA6PSBQYXJzZUFVVEgoYmFkLCBsb29rdXAsIG5vdywgRGVmYXVsdEF1dGhXaW5kb3dTZWMsIGNhY2hlKTsgZXJyID09IG5pbCB7CgkJdC5GYXRhbCgiZXhwZWN0ZWQgZmFpbHVyZSBvbiB0YW1wZXJlZCBjdCIpCgl9CgoJLy8gU2VydmVyIHNpZGUgb2Yga2V5IGV4Y2hhbmdlLgoJc3J2UHJpdiwgc3J2UHViLCBlcnIgOj0gWDI1NTE5S2V5cGFpcigpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsKGVycikKCX0KCXNoYXJlZFMsIGVyciA6PSBYMjU1MTlTaGFyZWQoJnNydlByaXYsICZhci5FcGhQdWIpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsKGVycikKCX0KCXNoYXJlZEMsIGVyciA6PSBYMjU1MTlTaGFyZWQoJmNsaVByaXYsICZzcnZQdWIpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsKGVycikKCX0KCWlmIHNoYXJlZFMgIT0gc2hhcmVkQyB7CgkJdC5GYXRhbCgieDI1NTE5IG1pc21hdGNoIikKCX0KCWtDMlNfcywga1MyQ19zIDo9IERlcml2ZVNlc3Npb25LZXlzKGFyLkVwaFB1Yiwgc3J2UHViLCBzaGFyZWRTKQoJa0MyU19jLCBrUzJDX2MgOj0gRGVyaXZlU2Vzc2lvbktleXMoY2xpUHViLCBzcnZQdWIsIHNoYXJlZEMpCglpZiBrQzJTX3MgIT0ga0MyU19jIHx8IGtTMkNfcyAhPSBrUzJDX2MgewoJCXQuRmF0YWwoImRlcml2ZWQga2V5cyBtaXNtYXRjaCIpCgl9CglpZiBrQzJTX3MgPT0ga1MyQ19zIHsKCQl0LkZhdGFsKCJkaXJlY3Rpb24ga2V5cyBtdXN0IGRpZmZlciIpCgl9CgoJLy8gQVVUSF9PSyByb3VuZHRyaXAuCgl2YXIgY29ubklEIFsxNl1ieXRlCgljb3B5KGNvbm5JRFs6XSwgUmFuZG9tQnl0ZXMoMTYpKQoJdmFyIHRvayBbMzJdYnl0ZQoJY29weSh0b2tbOl0sIFJhbmRvbUJ5dGVzKDMyKSkKCW9rV2lyZSwgZXJyIDo9IEJ1aWxkQXV0aE9LKCZrQXV0aCwgc3J2UHViLCBjb25uSUQsIHRvaywgMTYsIDMwLCBub3cpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsKGVycikKCX0KCWlmIGxlbihva1dpcmUpICE9IEF1dGhPS1dpcmVMZW4gewoJCXQuRmF0YWxmKCJBVVRIX09LIGxlbiAlZCIsIGxlbihva1dpcmUpKQoJfQoJb2tyLCBlcnIgOj0gUGFyc2VBdXRoT0sob2tXaXJlLCAma0F1dGgpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsKGVycikKCX0KCWlmIG9rci5Db25uSUQgIT0gY29ubklEIHx8IG9rci5SZXN1bWVUb2sgIT0gdG9rIHx8IG9rci5IQlNlYyAhPSAzMCB7CgkJdC5GYXRhbCgiYXV0aF9vayBtaXNtYXRjaCIpCgl9Cn0KCmZ1bmMgVGVzdFNoYXBpbmcodCAqdGVzdGluZy5UKSB7CglzIDo9IE5ld1NoYXBlcig0LCA2NCwgMTI4LCA1LCAwKQoJcGFkcyA6PSBtYWtlKFtdaW50LCAwLCA4KQoJZm9yIGkgOj0gMDsgaSA8IDg7IGkrKyB7CgkJcGFkcyA9IGFwcGVuZChwYWRzLCBzLlBhZExlbigpKQoJCXMuRG9uZSgpCgl9Cglmb3IgXywgcCA6PSByYW5nZSBwYWRzWzo0XSB7CgkJaWYgcCA8IDY0IHx8IHAgPiAxMjggewoJCQl0LkZhdGFsZigiaGVhdnkgcGFkIG91dCBvZiByYW5nZTogJWQiLCBwKQoJCX0KCX0KCWZvciBfLCBwIDo9IHJhbmdlIHBhZHNbNDpdIHsKCQlpZiBwICE9IDAgewoJCQl0LkZhdGFsZigibGlnaHQgcGFkIHNob3VsZCBiZSAwLCBnb3QgJWQiLCBwKQoJCX0KCX0KCS8vIEF0IGxlYXN0IG9uZSBoZWF2eSBwYWQgc2hvdWxkIGRpZmZlciAocmFuZG9tbmVzcyBzYW5pdHksIGZsYWt5LXByb29mOiByYW5nZSBjaGVjayBvbmx5KS4KfQoKZnVuYyBUZXN0RGF0YWdyYW0odCAqdGVzdGluZy5UKSB7CglkIDo9IEVuY29kZURhdGFncmFtKEFUeXBEb21haW4sIFtdYnl0ZSgiZG5zLmdvb2dsZSIpLCA1MywgW11ieXRlezEsIDIsIDN9KQoJYXR5cCwgYWRkciwgcG9ydCwgZGF0YSwgZXJyIDo9IERlY29kZURhdGFncmFtKGQpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsKGVycikKCX0KCWlmIGF0eXAgIT0gQVR5cERvbWFpbiB8fCBzdHJpbmcoYWRkcikgIT0gImRucy5nb29nbGUiIHx8IHBvcnQgIT0gNTMgfHwgbGVuKGRhdGEpICE9IDMgewoJCXQuRmF0YWwoImRhdGFncmFtIG1pc21hdGNoIikKCX0KCWMgOj0gRW5jb2RlQ29ubmVjdFJlcShBVHlwSVB2NCwgW11ieXRlezEsIDEsIDEsIDF9LCA0NDMpCglhMiwgYWQyLCBwMiwgZXJyIDo9IERlY29kZUNvbm5lY3RSZXEoYykKCWlmIGVyciAhPSBuaWwgfHwgYTIgIT0gQVR5cElQdjQgfHwgcDIgIT0gNDQzIHx8IGxlbihhZDIpICE9IDQgewoJCXQuRmF0YWwoImNvbm5lY3QgcmVxIG1pc21hdGNoIikKCX0KfQo=
+package mistcore
+
+import (
+	"bytes"
+	"testing"
+	"time"
+)
+
+func TestFrameRoundtrip(t *testing.T) {
+	var key [32]byte
+	copy(key[:], RandomBytes(32))
+	pt := []byte("hello mist world, this is a test payload")
+	for _, pad := range []int{0, 64, 200, 255} {
+		wire, err := EncodeFrame(0x03, pt, pad, &key, 0, DirC2S, 7)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got := FrameWireLen(wire[:2]); got != len(wire) {
+			t.Fatalf("wire len mismatch: %d vs %d", got, len(wire))
+		}
+		dec, err := DecodeFrame(wire, &key, 0, DirC2S, 7)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if dec.SidFlags != 0x03 || !bytes.Equal(dec.Payload, pt) {
+			t.Fatal("payload mismatch")
+		}
+		// Wrong counter must fail (AEAD).
+		if _, err := DecodeFrame(wire, &key, 0, DirC2S, 8); err == nil {
+			t.Fatal("expected failure with wrong ctr")
+		}
+		// Wrong direction must fail.
+		if _, err := DecodeFrame(wire, &key, 0, DirS2C, 7); err == nil {
+			t.Fatal("expected failure with wrong dir")
+		}
+	}
+}
+
+func TestHandshakeRoundtrip(t *testing.T) {
+	var cid [16]byte
+	copy(cid[:], RandomBytes(16))
+	var kAuth [32]byte
+	copy(kAuth[:], RandomBytes(32))
+	lookup := func(c [16]byte) (*[32]byte, bool) {
+		if c == cid {
+			return &kAuth, true
+		}
+		return nil, false
+	}
+	cache := NewNonceCache(120 * time.Second)
+	now := time.Now()
+
+	wire, cliPub, cliPriv, err := BuildAUTH(cid, &kAuth, 0x01, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(wire) != AuthWireLen {
+		t.Fatalf("AUTH len %d", len(wire))
+	}
+	ar, err := ParseAUTH(wire, lookup, now, DefaultAuthWindowSec, cache)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ar.EphPub != cliPub || ar.Feat != 0x01 {
+		t.Fatal("auth result mismatch")
+	}
+	// Replay must fail.
+	if _, err := ParseAUTH(wire, lookup, now, DefaultAuthWindowSec, cache); err != ErrReplayed {
+		t.Fatalf("expected replay error, got %v", err)
+	}
+	// Tampered ciphertext must fail.
+	bad := append([]byte{}, wire...)
+	bad[80] ^= 0xFF
+	if _, err := ParseAUTH(bad, lookup, now, DefaultAuthWindowSec, cache); err == nil {
+		t.Fatal("expected failure on tampered ct")
+	}
+
+	// Server side of key exchange.
+	srvPriv, srvPub, err := X25519Keypair()
+	if err != nil {
+		t.Fatal(err)
+	}
+	sharedS, err := X25519Shared(&srvPriv, &ar.EphPub)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sharedC, err := X25519Shared(&cliPriv, &srvPub)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if sharedS != sharedC {
+		t.Fatal("x25519 mismatch")
+	}
+	kC2S_s, kS2C_s := DeriveSessionKeys(ar.EphPub, srvPub, sharedS)
+	kC2S_c, kS2C_c := DeriveSessionKeys(cliPub, srvPub, sharedC)
+	if kC2S_s != kC2S_c || kS2C_s != kS2C_c {
+		t.Fatal("derived keys mismatch")
+	}
+	if kC2S_s == kS2C_s {
+		t.Fatal("direction keys must differ")
+	}
+
+	// AUTH_OK roundtrip.
+	var connID [16]byte
+	copy(connID[:], RandomBytes(16))
+	var tok [32]byte
+	copy(tok[:], RandomBytes(32))
+	okWire, err := BuildAuthOK(&kAuth, srvPub, connID, tok, 16, 30, now)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(okWire) != AuthOKWireLen {
+		t.Fatalf("AUTH_OK len %d", len(okWire))
+	}
+	okr, err := ParseAuthOK(okWire, &kAuth)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if okr.ConnID != connID || okr.ResumeTok != tok || okr.HBSec != 30 {
+		t.Fatal("auth_ok mismatch")
+	}
+}
+
+func TestShaping(t *testing.T) {
+	s := NewShaper(4, 64, 128, 5, 0)
+	pads := make([]int, 0, 8)
+	for i := 0; i < 8; i++ {
+		pads = append(pads, s.PadLen())
+		s.Done()
+	}
+	for _, p := range pads[:4] {
+		if p < 64 || p > 128 {
+			t.Fatalf("heavy pad out of range: %d", p)
+		}
+	}
+	for _, p := range pads[4:] {
+		if p != 0 {
+			t.Fatalf("light pad should be 0, got %d", p)
+		}
+	}
+	// At least one heavy pad should differ (randomness sanity, flaky-proof: range check only).
+}
+
+func TestDatagram(t *testing.T) {
+	d := EncodeDatagram(ATypDomain, []byte("dns.google"), 53, []byte{1, 2, 3})
+	atyp, addr, port, data, err := DecodeDatagram(d)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if atyp != ATypDomain || string(addr) != "dns.google" || port != 53 || len(data) != 3 {
+		t.Fatal("datagram mismatch")
+	}
+	c := EncodeConnectReq(ATypIPv4, []byte{1, 1, 1, 1}, 443)
+	a2, ad2, p2, err := DecodeConnectReq(c)
+	if err != nil || a2 != ATypIPv4 || p2 != 443 || len(ad2) != 4 {
+		t.Fatal("connect req mismatch")
+	}
+}
