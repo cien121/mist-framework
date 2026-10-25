@@ -10,6 +10,6 @@ require (
 	github.com/klauspost/compress v1.17.4 // indirect
 	github.com/refraction-networking/utls v1.8.2 // indirect
 	golang.org/x/exp v0.0.0-20261014143641-f0251eb4aa3e // indirect
-	golang.org/x/net v0.60.0 // indirect
+	golang.org/x/net v0.61.0 // indirect
 	golang.org/x/sys v0.49.0 // indirect
 )
