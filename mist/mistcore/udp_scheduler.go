@@ -131,8 +131,8 @@ type schedTimer interface {
 // realSchedTimer wraps time.Timer.
 type realSchedTimer struct{ t *time.Timer }
 
-func (r *realSchedTimer) C() <-chan time.Time       { return r.t.C }
-func (r *realSchedTimer) Stop() bool               { return r.t.Stop() }
+func (r *realSchedTimer) C() <-chan time.Time        { return r.t.C }
+func (r *realSchedTimer) Stop() bool                 { return r.t.Stop() }
 func (r *realSchedTimer) Reset(d time.Duration) bool { return r.t.Reset(d) }
 
 // ---------------------------------------------------------------------------
@@ -159,13 +159,13 @@ type UDPSendScheduler struct {
 	dir      uint32
 	sendFunc func([]byte) error
 
-	mu         sync.Mutex
-	notFull    *sync.Cond
-	newQueue   [][][]byte // each entry = frames for one packet (FIFO)
-	rtxQueue   [][][]byte // retransmit frames (higher priority, FIFO)
-	queueLen   int        // total queued packets (new + rtx)
-	closed     bool
-	running    bool
+	mu       sync.Mutex
+	notFull  *sync.Cond
+	newQueue [][][]byte // each entry = frames for one packet (FIFO)
+	rtxQueue [][][]byte // retransmit frames (higher priority, FIFO)
+	queueLen int        // total queued packets (new + rtx)
+	closed   bool
+	running  bool
 
 	// Pacing token bucket (bytes).
 	tokens   float64
@@ -321,6 +321,30 @@ func (s *UDPSendScheduler) WriteRetransmitChunked(frames [][]byte) error {
 	return nil
 }
 
+// TryWrite enqueues frames for sending without blocking: when the queue
+// is full (or the scheduler is closed) it drops the frames and reports
+// false instead of waiting.
+//
+// This is the ONLY enqueue teardown paths may use. Write blocks on a
+// full queue by design (backpressure), but a teardown FIN/RST sent
+// through Write can wedge forever when the send loop is stalled —
+// and stream Close takes writeMu first, so a wedged Close then wedges
+// e.mu in the engine and stalls the whole tunnel (1.0.41 freeze).
+// Dropping a teardown FIN is safe: the local SID is freed regardless,
+// and the peer times the stream out. Never use TryWrite for data:
+// silently dropping payload would corrupt the byte stream.
+func (s *UDPSendScheduler) TryWrite(frames [][]byte) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.closed || s.queueLen >= UDPSchedulerMaxQueue {
+		return false
+	}
+	s.newQueue = append(s.newQueue, frames)
+	s.queueLen++
+	s.signalLocked()
+	return true
+}
+
 // signalLocked wakes the send loop (non-blocking).
 func (s *UDPSendScheduler) signalLocked() {
 	select {
@@ -435,11 +459,15 @@ func (s *UDPSendScheduler) dequeueLocked() [][]byte {
 // Formula: QUICShortHeaderLen (13) + AEAD tag (16) + sum of frame lengths.
 //
 // This MUST equal len(sealPacket(dir, frames)) exactly. The seal path is:
-//   datagram = header(13) + AEAD(plaintext + 16-byte tag)
-//   plaintext = concatenation of frames
+//
+//	datagram = header(13) + AEAD(plaintext + 16-byte tag)
+//	plaintext = concatenation of frames
+//
 // so len(datagram) = 13 + 16 + sum(len(f)). Any divergence breaks the
 // scheduler's cwnd gate, which checks
-//   Rel.BytesInFlight() [actual sealed sizes] + estimatedSize <= cwnd.
+//
+//	Rel.BytesInFlight() [actual sealed sizes] + estimatedSize <= cwnd.
+//
 // If estimatedSize underestimates, the gate admits a packet that pushes
 // actual inflight over cwnd. See TestEstimatedSizeMatchesSeal (property
 // test) which asserts estimatedSize(frames) == len(sealed) for randomized
@@ -606,8 +634,19 @@ func (s *UDPSendScheduler) trySend() bool {
 }
 
 // loop is the send loop: pack, pace, and transmit while allowed.
+// A panic here used to kill the whole app process (Go panics are
+// process-fatal under JNI); recover converts it to a log instead,
+// so the session degrades to a diagnosable stall rather than a
+// crash. Note a recovered loop means the session stops sending —
+// the watchdog/UI liveness layer must surface that, and reconnect
+// recovers from it.
 func (s *UDPSendScheduler) loop() {
 	defer close(s.doneCh)
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("udp: scheduler loop panic (recovered): %v", r)
+		}
+	}()
 	timer := s.newTimer(time.Hour)
 	defer timer.Stop()
 

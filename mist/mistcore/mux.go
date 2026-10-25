@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"io"
+	"log"
 	"net"
 	"sync"
 	"sync/atomic"
@@ -338,14 +339,14 @@ type Session struct {
 	maxStreams byte
 	onAccept   func(*Stream)
 
-	pingMu   sync.Mutex
-	pending  map[[8]byte]time.Time
-	pongCh   chan [8]byte
+	pingMu    sync.Mutex
+	pending   map[[8]byte]time.Time
+	pongCh    chan [8]byte
 	onControl func(typ byte, body []byte)
 
-	closed   chan struct{}
+	closed    chan struct{}
 	closeOnce sync.Once
-	wg       sync.WaitGroup
+	wg        sync.WaitGroup
 }
 
 // NewSession creates a session over an established (TLS) conn.
@@ -531,6 +532,11 @@ func (s *Session) readFrame() (*DecodedFrame, error) {
 
 func (s *Session) readLoop() {
 	defer s.wg.Done()
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("mux: readLoop panic (recovered): %v", r)
+		}
+	}()
 	defer s.Close()
 	for {
 		select {
@@ -720,6 +726,11 @@ func (s *Session) StartHeartbeat(interval time.Duration, onDead func()) {
 	s.wg.Add(1)
 	go func() {
 		defer s.wg.Done()
+		defer func() {
+			if r := recover(); r != nil {
+				log.Printf("mux: heartbeat panic (recovered): %v", r)
+			}
+		}()
 		t := time.NewTicker(interval)
 		defer t.Stop()
 		missed := 0
