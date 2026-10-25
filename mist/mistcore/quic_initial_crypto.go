@@ -1,1 +1,114 @@
-Ly8gcXVpY19pbml0aWFsX2NyeXB0by5nbzogUVVJQyBJbml0aWFsIGtleSBkZXJpdmF0aW9uIHBlciBSRkMgOTAwMS4KLy8KLy8gSW1wbGVtZW50cyBIS0RGLUV4cGFuZC1MYWJlbCAoUkZDIDg0NDYgwqc3LjMpIGFuZCBJbml0aWFsIHNlY3JldCBkZXJpdmF0aW9uCi8vIChSRkMgOTAwMSDCpzUuMikuIFVzZWQgYnkgUVVJQ0luaXRpYWxDb2RlYyAoUGhhc2UgMCkuCnBhY2thZ2UgbWlzdGNvcmUKCmltcG9ydCAoCgkiY3J5cHRvIgoJImNyeXB0by9oa2RmIgoJImNyeXB0by9zaGEyNTYiCgkiZW5jb2RpbmcvYmluYXJ5IgopCgovLyBxdWljVjFJbml0aWFsU2FsdCBpcyB0aGUgUVVJQyB2ZXJzaW9uIDEgaW5pdGlhbCBzYWx0IChSRkMgOTAwMSDCpzUuMikuCnZhciBxdWljVjFJbml0aWFsU2FsdCA9IFtdYnl0ZXsKCTB4MzgsIDB4NzYsIDB4MmMsIDB4ZjcsIDB4ZjUsIDB4NTksIDB4MzQsIDB4YjMsCgkweDRkLCAweDE3LCAweDlhLCAweGU2LCAweGE0LCAweGM4LCAweDBjLCAweGFkLAoJMHhjYywgMHhiYiwgMHg3ZiwgMHgwYSwKfQoKLy8gaGtkZkV4cGFuZExhYmVsIGltcGxlbWVudHMgSEtERi1FeHBhbmQtTGFiZWwgZnJvbSBSRkMgODQ0NiDCpzcuMzoKLy8KLy8JSEtERi1FeHBhbmQtTGFiZWwoU2VjcmV0LCBMYWJlbCwgQ29udGV4dCwgTGVuZ3RoKSA9Ci8vCSAgICBIS0RGLUV4cGFuZChTZWNyZXQsIEhrZGZMYWJlbCwgTGVuZ3RoKQovLwovLwlIa2RmTGFiZWwgPSBMZW5ndGgoMiBieXRlcykgfHwgInRsczEzICIoNiBieXRlcykgfHwgTGFiZWwgfHwgQ29udGV4dAovLwlDb250ZXh0ID0gQ29udGV4dExlbmd0aCgxIGJ5dGUpIHx8IENvbnRleHQKZnVuYyBoa2RmRXhwYW5kTGFiZWwoc2VjcmV0IFtdYnl0ZSwgbGFiZWwgc3RyaW5nLCBjb250ZXh0IFtdYnl0ZSwgbGVuZ3RoIGludCkgKFtdYnl0ZSwgZXJyb3IpIHsKCWhrZGZMYWJlbCA6PSBtYWtlKFtdYnl0ZSwgMCwgMis2K2xlbihsYWJlbCkrMStsZW4oY29udGV4dCkpCgkvLyBMZW5ndGggKDIgYnl0ZXMsIGJpZy1lbmRpYW4pCgl2YXIgbGVuQnVmIFsyXWJ5dGUKCWJpbmFyeS5CaWdFbmRpYW4uUHV0VWludDE2KGxlbkJ1Zls6XSwgdWludDE2KGxlbmd0aCkpCgloa2RmTGFiZWwgPSBhcHBlbmQoaGtkZkxhYmVsLCBsZW5CdWZbOl0uLi4pCgkvLyAidGxzMTMgIiBwcmVmaXgKCWhrZGZMYWJlbCA9IGFwcGVuZChoa2RmTGFiZWwsIFtdYnl0ZSgidGxzMTMgIikuLi4pCgkvLyBMYWJlbAoJaGtkZkxhYmVsID0gYXBwZW5kKGhrZGZMYWJlbCwgW11ieXRlKGxhYmVsKS4uLikKCS8vIENvbnRleHQgbGVuZ3RoICsgY29udGV4dAoJaGtkZkxhYmVsID0gYXBwZW5kKGhrZGZMYWJlbCwgYnl0ZShsZW4oY29udGV4dCkpKQoJaGtkZkxhYmVsID0gYXBwZW5kKGhrZGZMYWJlbCwgY29udGV4dC4uLikKCgkvLyBoa2RmLkV4cGFuZCByZXR1cm5zIChbXWJ5dGUsIGVycm9yKSBpbiB0aGlzIEdvIHZlcnNpb24uCglleHBhbmRlZCwgZXJyIDo9IGhrZGYuRXhwYW5kKHNoYTI1Ni5OZXcsIHNlY3JldCwgc3RyaW5nKGhrZGZMYWJlbCksIGxlbmd0aCkKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIGVycgoJfQoJcmV0dXJuIGV4cGFuZGVkLCBuaWwKfQoKLy8gcXVpY0luaXRpYWxTZWNyZXRzIGhvbGRzIHRoZSBkZXJpdmVkIGtleXMgZm9yIG9uZSBkaXJlY3Rpb24gKGNsaWVudCBvciBzZXJ2ZXIpLgp0eXBlIHF1aWNJbml0aWFsU2VjcmV0cyBzdHJ1Y3QgewoJa2V5ICAgWzE2XWJ5dGUgLy8gQUVTLTEyOC1HQ00ga2V5CglpdiAgICBbMTJdYnl0ZSAvLyBBRUFEIG5vbmNlIGJhc2UKCWhwS2V5IFsxNl1ieXRlIC8vIGhlYWRlciBwcm90ZWN0aW9uIGtleSAoQUVTLUVDQikKfQoKLy8gZGVyaXZlUXVpY0luaXRpYWxTZWNyZXRzIGRlcml2ZXMgY2xpZW50L3NlcnZlciBJbml0aWFsIHNlY3JldHMgZnJvbSB0aGUgRENJRC4KLy8gUGVyIFJGQyA5MDAxIMKnNS4yOgovLwovLwlpbml0aWFsX3NlY3JldCA9IEhLREYtRXh0cmFjdChzYWx0LCBEQ0lEKQovLwljbGllbnRfc2VjcmV0ID0gSEtERi1FeHBhbmQtTGFiZWwoaW5pdGlhbF9zZWNyZXQsICJjbGllbnQgaW4iLCAiIiwgMzIpCi8vCXNlcnZlcl9zZWNyZXQgPSBIS0RGLUV4cGFuZC1MYWJlbChpbml0aWFsX3NlY3JldCwgInNlcnZlciBpbiIsICIiLCAzMikKLy8Ja2V5ID0gSEtERi1FeHBhbmQtTGFiZWwoc2VjcmV0LCAicXVpYyBrZXkiLCAiIiwgMTYpCi8vCWl2ICA9IEhLREYtRXhwYW5kLUxhYmVsKHNlY3JldCwgInF1aWMgaXYiLCAiIiwgMTIpCi8vCWhwICA9IEhLREYtRXhwYW5kLUxhYmVsKHNlY3JldCwgInF1aWMgaHAiLCAiIiwgMTYpCmZ1bmMgZGVyaXZlUXVpY0luaXRpYWxTZWNyZXRzKGRjaWQgW11ieXRlKSAoY2xpZW50LCBzZXJ2ZXIgcXVpY0luaXRpYWxTZWNyZXRzLCBlcnIgZXJyb3IpIHsKCS8vIEhLREYtRXh0cmFjdChzYWx0LCBJS009RENJRCkKCWluaXRpYWxTZWNyZXQsIGVyciA6PSBoa2RmLkV4dHJhY3Qoc2hhMjU2Lk5ldywgZGNpZCwgcXVpY1YxSW5pdGlhbFNhbHQpCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gY2xpZW50LCBzZXJ2ZXIsIGVycgoJfQoKCWRlcml2ZSA6PSBmdW5jKHNlY3JldCBbXWJ5dGUpIChxdWljSW5pdGlhbFNlY3JldHMsIGVycm9yKSB7CgkJdmFyIHMgcXVpY0luaXRpYWxTZWNyZXRzCgkJa2V5LCBlcnIgOj0gaGtkZkV4cGFuZExhYmVsKHNlY3JldCwgInF1aWMga2V5IiwgbmlsLCAxNikKCQlpZiBlcnIgIT0gbmlsIHsKCQkJcmV0dXJuIHMsIGVycgoJCX0KCQljb3B5KHMua2V5WzpdLCBrZXkpCgkJaXYsIGVyciA6PSBoa2RmRXhwYW5kTGFiZWwoc2VjcmV0LCAicXVpYyBpdiIsIG5pbCwgMTIpCgkJaWYgZXJyICE9IG5pbCB7CgkJCXJldHVybiBzLCBlcnIKCQl9CgkJY29weShzLml2WzpdLCBpdikKCQlocCwgZXJyIDo9IGhrZGZFeHBhbmRMYWJlbChzZWNyZXQsICJxdWljIGhwIiwgbmlsLCAxNikKCQlpZiBlcnIgIT0gbmlsIHsKCQkJcmV0dXJuIHMsIGVycgoJCX0KCQljb3B5KHMuaHBLZXlbOl0sIGhwKQoJCXJldHVybiBzLCBuaWwKCX0KCgljbGllbnRTZWNyZXQsIGVyciA6PSBoa2RmRXhwYW5kTGFiZWwoaW5pdGlhbFNlY3JldCwgImNsaWVudCBpbiIsIG5pbCwgMzIpCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gY2xpZW50LCBzZXJ2ZXIsIGVycgoJfQoJY2xpZW50LCBlcnIgPSBkZXJpdmUoY2xpZW50U2VjcmV0KQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIGNsaWVudCwgc2VydmVyLCBlcnIKCX0KCglzZXJ2ZXJTZWNyZXQsIGVyciA6PSBoa2RmRXhwYW5kTGFiZWwoaW5pdGlhbFNlY3JldCwgInNlcnZlciBpbiIsIG5pbCwgMzIpCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gY2xpZW50LCBzZXJ2ZXIsIGVycgoJfQoJc2VydmVyLCBlcnIgPSBkZXJpdmUoc2VydmVyU2VjcmV0KQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIGNsaWVudCwgc2VydmVyLCBlcnIKCX0KCXJldHVybiBjbGllbnQsIHNlcnZlciwgbmlsCn0KCi8vIEVuc3VyZSBjcnlwdG8gaW1wb3J0IGlzIHVzZWQgKGZvciBmdXR1cmUgQUVBRCkuCnZhciBfID0gY3J5cHRvLlNIQTI1Ngo=
+// quic_initial_crypto.go: QUIC Initial key derivation per RFC 9001.
+//
+// Implements HKDF-Expand-Label (RFC 8446 §7.3) and Initial secret derivation
+// (RFC 9001 §5.2). Used by QUICInitialCodec (Phase 0).
+package mistcore
+
+import (
+	"crypto"
+	"crypto/hkdf"
+	"crypto/sha256"
+	"encoding/binary"
+)
+
+// quicV1InitialSalt is the QUIC version 1 initial salt (RFC 9001 §5.2).
+var quicV1InitialSalt = []byte{
+	0x38, 0x76, 0x2c, 0xf7, 0xf5, 0x59, 0x34, 0xb3,
+	0x4d, 0x17, 0x9a, 0xe6, 0xa4, 0xc8, 0x0c, 0xad,
+	0xcc, 0xbb, 0x7f, 0x0a,
+}
+
+// hkdfExpandLabel implements HKDF-Expand-Label from RFC 8446 §7.3:
+//
+//	HKDF-Expand-Label(Secret, Label, Context, Length) =
+//	    HKDF-Expand(Secret, HkdfLabel, Length)
+//
+//	HkdfLabel = Length(2 bytes) || "tls13 "(6 bytes) || Label || Context
+//	Context = ContextLength(1 byte) || Context
+func hkdfExpandLabel(secret []byte, label string, context []byte, length int) ([]byte, error) {
+	hkdfLabel := make([]byte, 0, 2+6+len(label)+1+len(context))
+	// Length (2 bytes, big-endian)
+	var lenBuf [2]byte
+	binary.BigEndian.PutUint16(lenBuf[:], uint16(length))
+	hkdfLabel = append(hkdfLabel, lenBuf[:]...)
+	// "tls13 " prefix
+	hkdfLabel = append(hkdfLabel, []byte("tls13 ")...)
+	// Label
+	hkdfLabel = append(hkdfLabel, []byte(label)...)
+	// Context length + context
+	hkdfLabel = append(hkdfLabel, byte(len(context)))
+	hkdfLabel = append(hkdfLabel, context...)
+
+	// hkdf.Expand returns ([]byte, error) in this Go version.
+	expanded, err := hkdf.Expand(sha256.New, secret, string(hkdfLabel), length)
+	if err != nil {
+		return nil, err
+	}
+	return expanded, nil
+}
+
+// quicInitialSecrets holds the derived keys for one direction (client or server).
+type quicInitialSecrets struct {
+	key   [16]byte // AES-128-GCM key
+	iv    [12]byte // AEAD nonce base
+	hpKey [16]byte // header protection key (AES-ECB)
+}
+
+// deriveQuicInitialSecrets derives client/server Initial secrets from the DCID.
+// Per RFC 9001 §5.2:
+//
+//	initial_secret = HKDF-Extract(salt, DCID)
+//	client_secret = HKDF-Expand-Label(initial_secret, "client in", "", 32)
+//	server_secret = HKDF-Expand-Label(initial_secret, "server in", "", 32)
+//	key = HKDF-Expand-Label(secret, "quic key", "", 16)
+//	iv  = HKDF-Expand-Label(secret, "quic iv", "", 12)
+//	hp  = HKDF-Expand-Label(secret, "quic hp", "", 16)
+func deriveQuicInitialSecrets(dcid []byte) (client, server quicInitialSecrets, err error) {
+	// HKDF-Extract(salt, IKM=DCID)
+	initialSecret, err := hkdf.Extract(sha256.New, dcid, quicV1InitialSalt)
+	if err != nil {
+		return client, server, err
+	}
+
+	derive := func(secret []byte) (quicInitialSecrets, error) {
+		var s quicInitialSecrets
+		key, err := hkdfExpandLabel(secret, "quic key", nil, 16)
+		if err != nil {
+			return s, err
+		}
+		copy(s.key[:], key)
+		iv, err := hkdfExpandLabel(secret, "quic iv", nil, 12)
+		if err != nil {
+			return s, err
+		}
+		copy(s.iv[:], iv)
+		hp, err := hkdfExpandLabel(secret, "quic hp", nil, 16)
+		if err != nil {
+			return s, err
+		}
+		copy(s.hpKey[:], hp)
+		return s, nil
+	}
+
+	clientSecret, err := hkdfExpandLabel(initialSecret, "client in", nil, 32)
+	if err != nil {
+		return client, server, err
+	}
+	client, err = derive(clientSecret)
+	if err != nil {
+		return client, server, err
+	}
+
+	serverSecret, err := hkdfExpandLabel(initialSecret, "server in", nil, 32)
+	if err != nil {
+		return client, server, err
+	}
+	server, err = derive(serverSecret)
+	if err != nil {
+		return client, server, err
+	}
+	return client, server, nil
+}
+
+// Ensure crypto import is used (for future AEAD).
+var _ = crypto.SHA256

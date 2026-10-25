@@ -1,1 +1,105 @@
-Ly8gcXVpY19pbml0aWFsX3BhY2tldF90ZXN0LmdvOiBUZXN0cyBmb3IgUVVJQyBJbml0aWFsIHBhY2tldCBlbmNvZGUvZGVjb2RlLgpwYWNrYWdlIG1pc3Rjb3JlCgppbXBvcnQgKAoJImJ5dGVzIgoJInRlc3RpbmciCikKCmZ1bmMgVGVzdFF1aWNWYXJpbnRSb3VuZHRyaXAodCAqdGVzdGluZy5UKSB7CgljYXNlcyA6PSBbXXVpbnQ2NHswLCAxLCA2MywgNjQsIDE2MzgzLCAxNjM4NCwgMTA3Mzc0MTgyMywgMTA3Mzc0MTgyNCwgNDYxMTY4NjAxODQyNzM4NzkwM30KCWZvciBfLCB2IDo9IHJhbmdlIGNhc2VzIHsKCQllbmMgOj0gZW5jb2RlUXVpY1ZhcmludCh2KQoJCWRlYywgbiwgZXJyIDo9IGRlY29kZVF1aWNWYXJpbnQoZW5jKQoJCWlmIGVyciAhPSBuaWwgewoJCQl0LkZhdGFsZigiZGVjb2RlICVkOiAldiIsIHYsIGVycikKCQl9CgkJaWYgZGVjICE9IHYgewoJCQl0LkZhdGFsZigidmFyaW50ICVkIGRlY29kZWQgYXMgJWQiLCB2LCBkZWMpCgkJfQoJCWlmIG4gIT0gbGVuKGVuYykgewoJCQl0LkZhdGFsZigidmFyaW50ICVkOiBjb25zdW1lZCAlZCwgZW5jb2RlZCAlZCIsIHYsIG4sIGxlbihlbmMpKQoJCX0KCX0KfQoKZnVuYyBUZXN0UXVpY0luaXRpYWxTZWFsT3BlblJvdW5kdHJpcCh0ICp0ZXN0aW5nLlQpIHsKCWRjaWQgOj0gW11ieXRlezB4ODMsIDB4OTQsIDB4YzgsIDB4ZjAsIDB4M2UsIDB4NTEsIDB4NTcsIDB4MDh9CglzY2lkIDo9IFtdYnl0ZXsweDAxLCAweDAyLCAweDAzLCAweDA0LCAweDA1LCAweDA2LCAweDA3LCAweDA4fQoJY2xpZW50U2VjcmV0cywgc2VydmVyU2VjcmV0cywgZXJyIDo9IGRlcml2ZVF1aWNJbml0aWFsU2VjcmV0cyhkY2lkKQoJaWYgZXJyICE9IG5pbCB7CgkJdC5GYXRhbGYoImRlcml2ZTogJXYiLCBlcnIpCgl9CgkvLyBDbGllbnQgc2VhbHMgd2l0aCBjbGllbnQgc2VjcmV0czsgc2VydmVyIG9wZW5zIHdpdGggY2xpZW50IHNlY3JldHMKCS8vIChzZXJ2ZXIgdXNlcyB0aGUgY2xpZW50J3MgSW5pdGlhbCBrZXlzIHRvIGRlY3J5cHQgQzJTIEluaXRpYWwpLgoJcGF5bG9hZCA6PSBlbmNvZGVDcnlwdG9GcmFtZSgwLCBbXWJ5dGUoInRlc3QtYXV0aC1wYXlsb2FkLTEyMzQ1IikpCglwYWNrZXQsIGVyciA6PSBzZWFsUXVpY0luaXRpYWwoZGNpZCwgc2NpZCwgbmlsLCAxLCBjbGllbnRTZWNyZXRzLCBwYXlsb2FkKQoJaWYgZXJyICE9IG5pbCB7CgkJdC5GYXRhbGYoInNlYWw6ICV2IiwgZXJyKQoJfQoJLy8gU2VydmVyIHNpZGU6IGRlcml2ZSBmcm9tIERDSUQsIG9wZW4gd2l0aCBDTElFTlQgc2VjcmV0cyAoQzJTIGRpcmVjdGlvbikuCgljbGllbnRTZWNyZXRzMiwgXywgZXJyIDo9IGRlcml2ZVF1aWNJbml0aWFsU2VjcmV0cyhkY2lkKQoJaWYgZXJyICE9IG5pbCB7CgkJdC5GYXRhbGYoImRlcml2ZTogJXYiLCBlcnIpCgl9CglfID0gc2VydmVyU2VjcmV0cwoJaGRyLCBwbGFpbnRleHQsIGVyciA6PSBvcGVuUXVpY0luaXRpYWwocGFja2V0LCBjbGllbnRTZWNyZXRzMikKCWlmIGVyciAhPSBuaWwgewoJCXQuRmF0YWxmKCJvcGVuOiAldiIsIGVycikKCX0KCWlmICFieXRlcy5FcXVhbChoZHIuZGNpZCwgZGNpZCkgewoJCXQuRmF0YWxmKCJkY2lkIG1pc21hdGNoOiAleCB2cyAleCIsIGhkci5kY2lkLCBkY2lkKQoJfQoJaWYgIWJ5dGVzLkVxdWFsKGhkci5zY2lkLCBzY2lkKSB7CgkJdC5GYXRhbGYoInNjaWQgbWlzbWF0Y2g6ICV4IHZzICV4IiwgaGRyLnNjaWQsIHNjaWQpCgl9CglpZiBoZHIucGFja2V0TnVtICE9IDEgewoJCXQuRmF0YWxmKCJwYWNrZXROdW0gbWlzbWF0Y2g6ICVkIiwgaGRyLnBhY2tldE51bSkKCX0KCWlmICFieXRlcy5FcXVhbChwbGFpbnRleHQsIHBheWxvYWQpIHsKCQl0LkZhdGFsZigicGF5bG9hZCBtaXNtYXRjaDogJXggdnMgJXgiLCBwbGFpbnRleHQsIHBheWxvYWQpCgl9CgkvLyBEZWNvZGUgQ1JZUFRPIGZyYW1lLgoJb2ZmLCBkYXRhLCBfLCBlcnIgOj0gZGVjb2RlQ3J5cHRvRnJhbWUocGxhaW50ZXh0KQoJaWYgZXJyICE9IG5pbCB7CgkJdC5GYXRhbGYoImRlY29kZSBDUllQVE86ICV2IiwgZXJyKQoJfQoJaWYgb2ZmICE9IDAgewoJCXQuRmF0YWxmKCJDUllQVE8gb2Zmc2V0ICVkIiwgb2ZmKQoJfQoJaWYgc3RyaW5nKGRhdGEpICE9ICJ0ZXN0LWF1dGgtcGF5bG9hZC0xMjM0NSIgewoJCXQuRmF0YWxmKCJDUllQVE8gZGF0YSBtaXNtYXRjaDogJXMiLCBkYXRhKQoJfQp9CgpmdW5jIFRlc3RRdWljSW5pdGlhbFRhbXBlckZhaWxzKHQgKnRlc3RpbmcuVCkgewoJZGNpZCA6PSBbXWJ5dGV7MHg4MywgMHg5NCwgMHhjOCwgMHhmMCwgMHgzZSwgMHg1MSwgMHg1NywgMHgwOH0KCXNjaWQgOj0gW11ieXRlezB4MDEsIDB4MDIsIDB4MDMsIDB4MDQsIDB4MDUsIDB4MDYsIDB4MDcsIDB4MDh9CgljbGllbnRTZWNyZXRzLCBfLCBlcnIgOj0gZGVyaXZlUXVpY0luaXRpYWxTZWNyZXRzKGRjaWQpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigiZGVyaXZlOiAldiIsIGVycikKCX0KCXBheWxvYWQgOj0gZW5jb2RlQ3J5cHRvRnJhbWUoMCwgW11ieXRlKCJoZWxsbyIpKQoJcGFja2V0LCBlcnIgOj0gc2VhbFF1aWNJbml0aWFsKGRjaWQsIHNjaWQsIG5pbCwgMSwgY2xpZW50U2VjcmV0cywgcGF5bG9hZCkKCWlmIGVyciAhPSBuaWwgewoJCXQuRmF0YWxmKCJzZWFsOiAldiIsIGVycikKCX0KCS8vIEZsaXAgYSBieXRlIGluIHRoZSBjaXBoZXJ0ZXh0LgoJdGFtcGVyZWQgOj0gbWFrZShbXWJ5dGUsIGxlbihwYWNrZXQpKQoJY29weSh0YW1wZXJlZCwgcGFja2V0KQoJdGFtcGVyZWRbbGVuKHRhbXBlcmVkKS0xXSBePSAweGZmCglfLCBfLCBlcnIgPSBvcGVuUXVpY0luaXRpYWwodGFtcGVyZWQsIGNsaWVudFNlY3JldHMpCglpZiBlcnIgPT0gbmlsIHsKCQl0LkZhdGFsKCJ0YW1wZXJlZCBwYWNrZXQgZGVjcnlwdGVkIHN1Y2Nlc3NmdWxseSAoc2hvdWxkIGZhaWwpIikKCX0KCS8vIFdyb25nIERDSUQgKGRpZmZlcmVudCBrZXlzKSBmYWlscy4KCWRjaWQyIDo9IFtdYnl0ZXsweDAwLCAweDAxLCAweDAyLCAweDAzLCAweDA0LCAweDA1LCAweDA2LCAweDA3fQoJY2xpZW50U2VjcmV0czIsIF8sIGVyciA6PSBkZXJpdmVRdWljSW5pdGlhbFNlY3JldHMoZGNpZDIpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigiZGVyaXZlOiAldiIsIGVycikKCX0KCV8sIF8sIGVyciA9IG9wZW5RdWljSW5pdGlhbChwYWNrZXQsIGNsaWVudFNlY3JldHMyKQoJaWYgZXJyID09IG5pbCB7CgkJdC5GYXRhbCgid3Jvbmcta2V5IHBhY2tldCBkZWNyeXB0ZWQgc3VjY2Vzc2Z1bGx5IChzaG91bGQgZmFpbCkiKQoJfQp9Cg==
+// quic_initial_packet_test.go: Tests for QUIC Initial packet encode/decode.
+package mistcore
+
+import (
+	"bytes"
+	"testing"
+)
+
+func TestQuicVarintRoundtrip(t *testing.T) {
+	cases := []uint64{0, 1, 63, 64, 16383, 16384, 1073741823, 1073741824, 4611686018427387903}
+	for _, v := range cases {
+		enc := encodeQuicVarint(v)
+		dec, n, err := decodeQuicVarint(enc)
+		if err != nil {
+			t.Fatalf("decode %d: %v", v, err)
+		}
+		if dec != v {
+			t.Fatalf("varint %d decoded as %d", v, dec)
+		}
+		if n != len(enc) {
+			t.Fatalf("varint %d: consumed %d, encoded %d", v, n, len(enc))
+		}
+	}
+}
+
+func TestQuicInitialSealOpenRoundtrip(t *testing.T) {
+	dcid := []byte{0x83, 0x94, 0xc8, 0xf0, 0x3e, 0x51, 0x57, 0x08}
+	scid := []byte{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08}
+	clientSecrets, serverSecrets, err := deriveQuicInitialSecrets(dcid)
+	if err != nil {
+		t.Fatalf("derive: %v", err)
+	}
+	// Client seals with client secrets; server opens with client secrets
+	// (server uses the client's Initial keys to decrypt C2S Initial).
+	payload := encodeCryptoFrame(0, []byte("test-auth-payload-12345"))
+	packet, err := sealQuicInitial(dcid, scid, nil, 1, clientSecrets, payload)
+	if err != nil {
+		t.Fatalf("seal: %v", err)
+	}
+	// Server side: derive from DCID, open with CLIENT secrets (C2S direction).
+	clientSecrets2, _, err := deriveQuicInitialSecrets(dcid)
+	if err != nil {
+		t.Fatalf("derive: %v", err)
+	}
+	_ = serverSecrets
+	hdr, plaintext, err := openQuicInitial(packet, clientSecrets2)
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	if !bytes.Equal(hdr.dcid, dcid) {
+		t.Fatalf("dcid mismatch: %x vs %x", hdr.dcid, dcid)
+	}
+	if !bytes.Equal(hdr.scid, scid) {
+		t.Fatalf("scid mismatch: %x vs %x", hdr.scid, scid)
+	}
+	if hdr.packetNum != 1 {
+		t.Fatalf("packetNum mismatch: %d", hdr.packetNum)
+	}
+	if !bytes.Equal(plaintext, payload) {
+		t.Fatalf("payload mismatch: %x vs %x", plaintext, payload)
+	}
+	// Decode CRYPTO frame.
+	off, data, _, err := decodeCryptoFrame(plaintext)
+	if err != nil {
+		t.Fatalf("decode CRYPTO: %v", err)
+	}
+	if off != 0 {
+		t.Fatalf("CRYPTO offset %d", off)
+	}
+	if string(data) != "test-auth-payload-12345" {
+		t.Fatalf("CRYPTO data mismatch: %s", data)
+	}
+}
+
+func TestQuicInitialTamperFails(t *testing.T) {
+	dcid := []byte{0x83, 0x94, 0xc8, 0xf0, 0x3e, 0x51, 0x57, 0x08}
+	scid := []byte{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08}
+	clientSecrets, _, err := deriveQuicInitialSecrets(dcid)
+	if err != nil {
+		t.Fatalf("derive: %v", err)
+	}
+	payload := encodeCryptoFrame(0, []byte("hello"))
+	packet, err := sealQuicInitial(dcid, scid, nil, 1, clientSecrets, payload)
+	if err != nil {
+		t.Fatalf("seal: %v", err)
+	}
+	// Flip a byte in the ciphertext.
+	tampered := make([]byte, len(packet))
+	copy(tampered, packet)
+	tampered[len(tampered)-1] ^= 0xff
+	_, _, err = openQuicInitial(tampered, clientSecrets)
+	if err == nil {
+		t.Fatal("tampered packet decrypted successfully (should fail)")
+	}
+	// Wrong DCID (different keys) fails.
+	dcid2 := []byte{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07}
+	clientSecrets2, _, err := deriveQuicInitialSecrets(dcid2)
+	if err != nil {
+		t.Fatalf("derive: %v", err)
+	}
+	_, _, err = openQuicInitial(packet, clientSecrets2)
+	if err == nil {
+		t.Fatal("wrong-key packet decrypted successfully (should fail)")
+	}
+}

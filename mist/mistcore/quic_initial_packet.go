@@ -1,1 +1,322 @@
-Ly8gcXVpY19pbml0aWFsX3BhY2tldC5nbzogUVVJQyBJbml0aWFsIHBhY2tldCBlbmNvZGluZy9kZWNvZGluZyBwZXIgUkZDIDkwMDAvOTAwMS4KLy8KLy8gSW1wbGVtZW50czoKLy8gICAtIFFVSUMgdmFyaWFibGUtbGVuZ3RoIGludGVnZXIgZW5jb2RpbmcgKFJGQyA5MDAwIMKnMTYpCi8vICAgLSBJbml0aWFsIGxvbmcgaGVhZGVyIGVuY29kaW5nIChSRkMgOTAwMCDCpzE3LjIpCi8vICAgLSBDUllQVE8gZnJhbWUgZW5jb2RpbmcgKFJGQyA5MDAwIMKnMTkuNikKLy8gICAtIEFFUy0xMjgtR0NNIHBheWxvYWQgZW5jcnlwdGlvbiAoUkZDIDkwMDEgwqc1LjMpCi8vICAgLSBIZWFkZXIgcHJvdGVjdGlvbiB3aXRoIEFFUy1FQ0IgKFJGQyA5MDAxIMKnNS40KQpwYWNrYWdlIG1pc3Rjb3JlCgppbXBvcnQgKAoJImNyeXB0by9hZXMiCgkiY3J5cHRvL2NpcGhlciIKCSJlbmNvZGluZy9iaW5hcnkiCgkiZXJyb3JzIgoJImZtdCIKKQoKLy8gcXVpY1ZlcnNpb24xIGlzIHRoZSBRVUlDIHZlcnNpb24gMSB2ZXJzaW9uIG51bWJlciAoUkZDIDkwMDAgwqcxNy4yKS4KY29uc3QgcXVpY1ZlcnNpb24xID0gMHgwMDAwMDAwMQoKLy8gcXVpY0luaXRpYWxQYWNrZXRUeXBlIGlzIHRoZSBsb25nIHBhY2tldCB0eXBlIGZvciBJbml0aWFsIChSRkMgOTAwMCDCpzE3LjIpLgpjb25zdCBxdWljSW5pdGlhbFBhY2tldFR5cGUgPSAweDAKCi8vIGVuY29kZVF1aWNWYXJpbnQgZW5jb2RlcyBhIFFVSUMgdmFyaWFibGUtbGVuZ3RoIGludGVnZXIgKFJGQyA5MDAwIMKnMTYpLgpmdW5jIGVuY29kZVF1aWNWYXJpbnQodiB1aW50NjQpIFtdYnl0ZSB7Cglzd2l0Y2ggewoJY2FzZSB2IDwgNjQ6CgkJcmV0dXJuIFtdYnl0ZXtieXRlKHYpfQoJY2FzZSB2IDwgMTYzODQ6CgkJYiA6PSBtYWtlKFtdYnl0ZSwgMikKCQliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQxNihiLCB1aW50MTYodil8MHg0MDAwKQoJCXJldHVybiBiCgljYXNlIHYgPCAxMDczNzQxODI0OgoJCWIgOj0gbWFrZShbXWJ5dGUsIDQpCgkJYmluYXJ5LkJpZ0VuZGlhbi5QdXRVaW50MzIoYiwgdWludDMyKHYpfDB4ODAwMDAwMDApCgkJcmV0dXJuIGIKCWRlZmF1bHQ6CgkJYiA6PSBtYWtlKFtdYnl0ZSwgOCkKCQliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQ2NChiLCB2fDB4YzAwMDAwMDAwMDAwMDAwMCkKCQlyZXR1cm4gYgoJfQp9CgovLyBkZWNvZGVRdWljVmFyaW50IGRlY29kZXMgYSBRVUlDIHZhcmlhYmxlLWxlbmd0aCBpbnRlZ2VyLgovLyBSZXR1cm5zIHRoZSB2YWx1ZSBhbmQgdGhlIG51bWJlciBvZiBieXRlcyBjb25zdW1lZC4KZnVuYyBkZWNvZGVRdWljVmFyaW50KGIgW11ieXRlKSAodWludDY0LCBpbnQsIGVycm9yKSB7CglpZiBsZW4oYikgPT0gMCB7CgkJcmV0dXJuIDAsIDAsIGVycm9ycy5OZXcoInF1aWM6IGVtcHR5IHZhcmludCIpCgl9CglwcmVmaXggOj0gYlswXSA+PiA2Cglzd2l0Y2ggcHJlZml4IHsKCWNhc2UgMDoKCQlyZXR1cm4gdWludDY0KGJbMF0gJiAweDNmKSwgMSwgbmlsCgljYXNlIDE6CgkJaWYgbGVuKGIpIDwgMiB7CgkJCXJldHVybiAwLCAwLCBlcnJvcnMuTmV3KCJxdWljOiB0cnVuY2F0ZWQgMi1ieXRlIHZhcmludCIpCgkJfQoJCXJldHVybiB1aW50NjQoYmluYXJ5LkJpZ0VuZGlhbi5VaW50MTYoYls6Ml0pICYgMHgzZmZmKSwgMiwgbmlsCgljYXNlIDI6CgkJaWYgbGVuKGIpIDwgNCB7CgkJCXJldHVybiAwLCAwLCBlcnJvcnMuTmV3KCJxdWljOiB0cnVuY2F0ZWQgNC1ieXRlIHZhcmludCIpCgkJfQoJCXJldHVybiB1aW50NjQoYmluYXJ5LkJpZ0VuZGlhbi5VaW50MzIoYls6NF0pICYgMHgzZmZmZmZmZiksIDQsIG5pbAoJZGVmYXVsdDoKCQlpZiBsZW4oYikgPCA4IHsKCQkJcmV0dXJuIDAsIDAsIGVycm9ycy5OZXcoInF1aWM6IHRydW5jYXRlZCA4LWJ5dGUgdmFyaW50IikKCQl9CgkJcmV0dXJuIGJpbmFyeS5CaWdFbmRpYW4uVWludDY0KGJbOjhdKSAmIDB4M2ZmZmZmZmZmZmZmZmZmZiwgOCwgbmlsCgl9Cn0KCi8vIGVuY29kZUNyeXB0b0ZyYW1lIGVuY29kZXMgYSBDUllQVE8gZnJhbWUgKFJGQyA5MDAwIMKnMTkuNikuCi8vIFR5cGU9MHgwNiwgT2Zmc2V0LCBMZW5ndGgsIENyeXB0byBEYXRhLgpmdW5jIGVuY29kZUNyeXB0b0ZyYW1lKG9mZnNldCB1aW50NjQsIGRhdGEgW11ieXRlKSBbXWJ5dGUgewoJb3V0IDo9IFtdYnl0ZXsweDA2fQoJb3V0ID0gYXBwZW5kKG91dCwgZW5jb2RlUXVpY1ZhcmludChvZmZzZXQpLi4uKQoJb3V0ID0gYXBwZW5kKG91dCwgZW5jb2RlUXVpY1ZhcmludCh1aW50NjQobGVuKGRhdGEpKSkuLi4pCglvdXQgPSBhcHBlbmQob3V0LCBkYXRhLi4uKQoJcmV0dXJuIG91dAp9CgovLyBkZWNvZGVDcnlwdG9GcmFtZSBkZWNvZGVzIGEgQ1JZUFRPIGZyYW1lLCByZXR1cm5pbmcgb2Zmc2V0IGFuZCBkYXRhLgpmdW5jIGRlY29kZUNyeXB0b0ZyYW1lKGIgW11ieXRlKSAob2Zmc2V0IHVpbnQ2NCwgZGF0YSBbXWJ5dGUsIGNvbnN1bWVkIGludCwgZXJyIGVycm9yKSB7CglpZiBsZW4oYikgPT0gMCB8fCBiWzBdICE9IDB4MDYgewoJCXJldHVybiAwLCBuaWwsIDAsIGVycm9ycy5OZXcoInF1aWM6IG5vdCBhIENSWVBUTyBmcmFtZSIpCgl9Cglwb3MgOj0gMQoJb2ZmLCBuLCBlcnIgOj0gZGVjb2RlUXVpY1ZhcmludChiW3BvczpdKQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIDAsIG5pbCwgMCwgZXJyCgl9Cglwb3MgKz0gbgoJbG4sIG4sIGVyciA6PSBkZWNvZGVRdWljVmFyaW50KGJbcG9zOl0pCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gMCwgbmlsLCAwLCBlcnIKCX0KCXBvcyArPSBuCglpZiB1aW50NjQobGVuKGIpLXBvcykgPCBsbiB7CgkJcmV0dXJuIDAsIG5pbCwgMCwgZXJyb3JzLk5ldygicXVpYzogdHJ1bmNhdGVkIENSWVBUTyBkYXRhIikKCX0KCXJldHVybiBvZmYsIGJbcG9zIDogcG9zK2ludChsbildLCBwb3MgKyBpbnQobG4pLCBuaWwKfQoKLy8gcXVpY0luaXRpYWxIZWFkZXIgaG9sZHMgdGhlIGRlY29kZWQgSW5pdGlhbCBwYWNrZXQgaGVhZGVyIGZpZWxkcy4KdHlwZSBxdWljSW5pdGlhbEhlYWRlciBzdHJ1Y3QgewoJZGNpZCAgICAgIFtdYnl0ZQoJc2NpZCAgICAgIFtdYnl0ZQoJdG9rZW4gICAgIFtdYnl0ZQoJcGFja2V0TnVtIHVpbnQzMgoJcG5MZW4gICAgIGludAoJaGVhZGVyTGVuIGludCAvLyBieXRlcyBmcm9tIHN0YXJ0IHRocm91Z2ggcGFja2V0IG51bWJlciAoQUFEIGxlbmd0aCkKfQoKLy8gc2VhbFF1aWNJbml0aWFsIGVuY3J5cHRzIGEgcGF5bG9hZCBpbnRvIGEgZnVsbCBRVUlDIEluaXRpYWwgcGFja2V0LgovLyAgIC0gZGNpZC9zY2lkOiBjb25uZWN0aW9uIElEcyAoZGNpZCBpcyB1c2VkIGZvciBrZXkgZGVyaXZhdGlvbikKLy8gICAtIHBhY2tldE51bTogcGFja2V0IG51bWJlciAoZW5jb2RlZCBpbiBwbkxlbiBieXRlcykKLy8gICAtIHNlY3JldHM6IHRoZSBzZW5kZXIncyBJbml0aWFsIHNlY3JldHMgKGNsaWVudCBmb3IgQzJTLCBzZXJ2ZXIgZm9yIFMyQykKLy8gICAtIHBheWxvYWQ6IHBsYWludGV4dCBDUllQVE8gZnJhbWUgYnl0ZXMgKGFscmVhZHkgZnJhbWVkKQovLwovLyBSZXR1cm5zIHRoZSBmdWxsIFVEUCBkYXRhZ3JhbS4KZnVuYyBzZWFsUXVpY0luaXRpYWwoZGNpZCwgc2NpZCBbXWJ5dGUsIHRva2VuIFtdYnl0ZSwgcGFja2V0TnVtIHVpbnQzMiwgc2VjcmV0cyBxdWljSW5pdGlhbFNlY3JldHMsIHBheWxvYWQgW11ieXRlKSAoW11ieXRlLCBlcnJvcikgewoJLy8gUGFja2V0IG51bWJlciBsZW5ndGg6IHVzZSAyIGJ5dGVzIChzdXBwb3J0cyB1cCB0byA2NTUzNSkuCgljb25zdCBwbkxlbiA9IDIKCS8vIEFFQUQgb3ZlcmhlYWQ6IDE2LWJ5dGUgR0NNIHRhZy4KCWNvbnN0IHRhZ0xlbiA9IDE2CgoJLy8gQnVpbGQgaGVhZGVyIChiZWZvcmUgZW5jcnlwdGlvbikuCgkvLyBGaXJzdCBieXRlOiBIZWFkZXIgRm9ybT0xLCBGaXhlZD0xLCBUeXBlPTAgKEluaXRpYWwpLCBSZXNlcnZlZD0wLCBQbkxlbj1wbkxlbi0xLgoJZmlyc3RCeXRlIDo9IGJ5dGUoMHhjMCkgfCBieXRlKHBuTGVuLTEpCgloZWFkZXIgOj0gW11ieXRle2ZpcnN0Qnl0ZX0KCXZhciB2ZXJCdWYgWzRdYnl0ZQoJYmluYXJ5LkJpZ0VuZGlhbi5QdXRVaW50MzIodmVyQnVmWzpdLCBxdWljVmVyc2lvbjEpCgloZWFkZXIgPSBhcHBlbmQoaGVhZGVyLCB2ZXJCdWZbOl0uLi4pCgloZWFkZXIgPSBhcHBlbmQoaGVhZGVyLCBieXRlKGxlbihkY2lkKSkpCgloZWFkZXIgPSBhcHBlbmQoaGVhZGVyLCBkY2lkLi4uKQoJaGVhZGVyID0gYXBwZW5kKGhlYWRlciwgYnl0ZShsZW4oc2NpZCkpKQoJaGVhZGVyID0gYXBwZW5kKGhlYWRlciwgc2NpZC4uLikKCWhlYWRlciA9IGFwcGVuZChoZWFkZXIsIGVuY29kZVF1aWNWYXJpbnQodWludDY0KGxlbih0b2tlbikpKS4uLikKCWhlYWRlciA9IGFwcGVuZChoZWFkZXIsIHRva2VuLi4uKQoJLy8gTGVuZ3RoID0gcG5MZW4gKyBwYXlsb2FkTGVuICsgdGFnTGVuLgoJcGF5bG9hZExlbiA6PSBsZW4ocGF5bG9hZCkgKyB0YWdMZW4KCWhlYWRlciA9IGFwcGVuZChoZWFkZXIsIGVuY29kZVF1aWNWYXJpbnQodWludDY0KHBuTGVuK3BheWxvYWRMZW4pKS4uLikKCS8vIFBhY2tldCBudW1iZXIgKGJpZy1lbmRpYW4sIHBuTGVuIGJ5dGVzKS4KCXZhciBwbkJ1ZiBbNF1ieXRlCgliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQzMihwbkJ1Zls6XSwgcGFja2V0TnVtKQoJaGVhZGVyID0gYXBwZW5kKGhlYWRlciwgcG5CdWZbNC1wbkxlbjpdLi4uKQoKCS8vIEFFQUQgZW5jcnlwdGlvbi4KCWJsb2NrLCBlcnIgOj0gYWVzLk5ld0NpcGhlcihzZWNyZXRzLmtleVs6XSkKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIGVycgoJfQoJZ2NtLCBlcnIgOj0gY2lwaGVyLk5ld0dDTShibG9jaykKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIGVycgoJfQoJLy8gTm9uY2UgPSBJViBYT1IgcGFja2V0IG51bWJlciAobGVmdC1wYWRkZWQgdG8gMTIgYnl0ZXMpLgoJdmFyIG5vbmNlIFsxMl1ieXRlCgljb3B5KG5vbmNlWzpdLCBzZWNyZXRzLml2WzpdKQoJLy8gWE9SIGxhc3QgNCBieXRlcyB3aXRoIHBhY2tldCBudW1iZXIgKGJpZy1lbmRpYW4pLgoJcG5CeXRlcyA6PSBwbkJ1Zls6XQoJZm9yIGkgOj0gMDsgaSA8IDQ7IGkrKyB7CgkJbm9uY2VbOCtpXSBePSBwbkJ5dGVzW2ldCgl9CgljaXBoZXJ0ZXh0IDo9IGdjbS5TZWFsKG5pbCwgbm9uY2VbOl0sIHBheWxvYWQsIGhlYWRlcikKCgkvLyBBc3NlbWJsZTogaGVhZGVyICsgY2lwaGVydGV4dC4KCXBhY2tldCA6PSBtYWtlKFtdYnl0ZSwgMCwgbGVuKGhlYWRlcikrbGVuKGNpcGhlcnRleHQpKQoJcGFja2V0ID0gYXBwZW5kKHBhY2tldCwgaGVhZGVyLi4uKQoJcGFja2V0ID0gYXBwZW5kKHBhY2tldCwgY2lwaGVydGV4dC4uLikKCgkvLyBIZWFkZXIgcHJvdGVjdGlvbjogc2FtcGxlID0gZmlyc3QgMTYgYnl0ZXMgb2YgY2lwaGVydGV4dC4KCWlmIGxlbihjaXBoZXJ0ZXh0KSA8IDE2IHsKCQlyZXR1cm4gbmlsLCBlcnJvcnMuTmV3KCJxdWljOiBjaXBoZXJ0ZXh0IHRvbyBzaG9ydCBmb3IgaGVhZGVyIHByb3RlY3Rpb24iKQoJfQoJc2FtcGxlIDo9IGNpcGhlcnRleHRbOjE2XQoJbWFzaywgZXJyIDo9IGFlc0VDQkVuY3J5cHQoc2VjcmV0cy5ocEtleVs6XSwgc2FtcGxlKQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXJyCgl9CgkvLyBNYXNrIGZpcnN0IGJ5dGU6IFhPUiBsb3cgNCBiaXRzIChwbiBsZW5ndGggYml0cyBwcmVzZXJ2ZWQpLgoJcGFja2V0WzBdIF49IG1hc2tbMF0gJiAweDBmCgkvLyBNYXNrIHBhY2tldCBudW1iZXIgYnl0ZXMuCglwbk9mZnNldCA6PSBsZW4oaGVhZGVyKSAtIHBuTGVuCglmb3IgaSA6PSAwOyBpIDwgcG5MZW47IGkrKyB7CgkJcGFja2V0W3BuT2Zmc2V0K2ldIF49IG1hc2tbMStpXQoJfQoJcmV0dXJuIHBhY2tldCwgbmlsCn0KCi8vIG9wZW5RdWljSW5pdGlhbCBkZWNyeXB0cyBhIFFVSUMgSW5pdGlhbCBwYWNrZXQuCi8vIFJldHVybnMgdGhlIGhlYWRlciBmaWVsZHMgYW5kIHRoZSBkZWNyeXB0ZWQgcGF5bG9hZCAoQ1JZUFRPIGZyYW1lIGJ5dGVzKS4KZnVuYyBvcGVuUXVpY0luaXRpYWwocGFja2V0IFtdYnl0ZSwgc2VjcmV0cyBxdWljSW5pdGlhbFNlY3JldHMpIChxdWljSW5pdGlhbEhlYWRlciwgW11ieXRlLCBlcnJvcikgewoJdmFyIGhkciBxdWljSW5pdGlhbEhlYWRlcgoJaWYgbGVuKHBhY2tldCkgPCAxIHsKCQlyZXR1cm4gaGRyLCBuaWwsIGVycm9ycy5OZXcoInF1aWM6IHBhY2tldCB0b28gc2hvcnQiKQoJfQoJLy8gSGVhZGVyIHByb3RlY3Rpb246IG5lZWQgc2FtcGxlIChjaXBoZXJ0ZXh0IHN0YXJ0cyBhZnRlciBoZWFkZXIpLgoJLy8gRmlyc3QsIHBhcnNlIHRoZSB1bnByb3RlY3RlZCBoZWFkZXIgdG8gZmluZCB0aGUgcGFja2V0IG51bWJlciBvZmZzZXQuCgkvLyBUaGUgZmlyc3QgYnl0ZSBpcyBwcm90ZWN0ZWQgKGxvdyA0IGJpdHMgbWFza2VkKSwgYnV0IHBuTGVuIGJpdHMgYXJlCgkvLyBpbiBiaXRzIDAtMSwgd2hpY2ggYXJlIE5PVCBtYXNrZWQgKG1hc2sgb25seSBjb3ZlcnMgYml0cyAyLTUuLi4gYWN0dWFsbHkKCS8vIFJGQyA5MDAxIMKnNS40LjE6IG1hc2sgZmlyc3QgYnl0ZSBiaXRzIDAtMywgcG4gbGVuZ3RoIGlzIGJpdHMgMC0xKS4KCS8vIFdhaXQ6IHBuIGxlbmd0aCBpcyBlbmNvZGVkIGluIHRoZSBMT1cgMiBiaXRzLCB3aGljaCBBUkUgbWFza2VkLgoJLy8gVG8gZmluZCB0aGUgc2FtcGxlIG9mZnNldCwgd2UgbXVzdCBmaXJzdCByZW1vdmUgaGVhZGVyIHByb3RlY3Rpb24uCgkvLyBCdXQgd2UgZG9uJ3Qga25vdyBwbkxlbiB1bnRpbCB3ZSB1bm1hc2suIFNvbHV0aW9uOiB0cnkgYWxsIHBuTGVucz8KCS8vIFN0YW5kYXJkIGFwcHJvYWNoOiB0aGUgc2FtcGxlIHN0YXJ0cyBhdCAoaGVhZGVyTGVuIC0gcG5MZW4gKyBwbkxlbikgPQoJLy8gdGhlIGNpcGhlcnRleHQgb2Zmc2V0LCB3aGljaCBkZXBlbmRzIG9uIHBuTGVuLiBGb3IgSW5pdGlhbCBwYWNrZXRzLAoJLy8gd2UgYXNzdW1lIHRoZSBzZW5kZXIgdXNlZCBwbkxlbj0yIChvdXIgb3duIGVuY29kZXIgYWx3YXlzIGRvZXMpLgoJLy8gRm9yIHJvYnVzdG5lc3MsIHRyeSBwbkxlbiAxLTQgYW5kIHBpY2sgdGhlIG9uZSB0aGF0IGRlY3J5cHRzLgoJLy8KCS8vIFNpbXBsaWZpZWQ6IGFzc3VtZSBwbkxlbj0yIChtYXRjaGVzIG91ciBlbmNvZGVyKS4KCWNvbnN0IHBuTGVuID0gMgoJLy8gUGFyc2UgaGVhZGVyIGZpZWxkcyB0byBmaW5kIGNpcGhlcnRleHQgb2Zmc2V0LgoJcG9zIDo9IDEKCWlmIGxlbihwYWNrZXQpIDwgcG9zKzQgewoJCXJldHVybiBoZHIsIG5pbCwgZXJyb3JzLk5ldygicXVpYzogdHJ1bmNhdGVkIHZlcnNpb24iKQoJfQoJdmVyc2lvbiA6PSBiaW5hcnkuQmlnRW5kaWFuLlVpbnQzMihwYWNrZXRbcG9zIDogcG9zKzRdKQoJaWYgdmVyc2lvbiAhPSBxdWljVmVyc2lvbjEgewoJCXJldHVybiBoZHIsIG5pbCwgZm10LkVycm9yZigicXVpYzogdW5zdXBwb3J0ZWQgdmVyc2lvbiAweCUwOHgiLCB2ZXJzaW9uKQoJfQoJcG9zICs9IDQKCWlmIGxlbihwYWNrZXQpIDwgcG9zKzEgewoJCXJldHVybiBoZHIsIG5pbCwgZXJyb3JzLk5ldygicXVpYzogdHJ1bmNhdGVkIERDSUQgbGVuIikKCX0KCWRjaWRMZW4gOj0gaW50KHBhY2tldFtwb3NdKQoJcG9zKysKCWlmIGxlbihwYWNrZXQpIDwgcG9zK2RjaWRMZW4gewoJCXJldHVybiBoZHIsIG5pbCwgZXJyb3JzLk5ldygicXVpYzogdHJ1bmNhdGVkIERDSUQiKQoJfQoJaGRyLmRjaWQgPSBwYWNrZXRbcG9zIDogcG9zK2RjaWRMZW5dCglwb3MgKz0gZGNpZExlbgoJaWYgbGVuKHBhY2tldCkgPCBwb3MrMSB7CgkJcmV0dXJuIGhkciwgbmlsLCBlcnJvcnMuTmV3KCJxdWljOiB0cnVuY2F0ZWQgU0NJRCBsZW4iKQoJfQoJc2NpZExlbiA6PSBpbnQocGFja2V0W3Bvc10pCglwb3MrKwoJaWYgbGVuKHBhY2tldCkgPCBwb3Mrc2NpZExlbiB7CgkJcmV0dXJuIGhkciwgbmlsLCBlcnJvcnMuTmV3KCJxdWljOiB0cnVuY2F0ZWQgU0NJRCIpCgl9CgloZHIuc2NpZCA9IHBhY2tldFtwb3MgOiBwb3Mrc2NpZExlbl0KCXBvcyArPSBzY2lkTGVuCgl0b2tlbkxlbiwgbiwgZXJyIDo9IGRlY29kZVF1aWNWYXJpbnQocGFja2V0W3BvczpdKQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIGhkciwgbmlsLCBlcnIKCX0KCXBvcyArPSBuCglpZiBsZW4ocGFja2V0KSA8IHBvcytpbnQodG9rZW5MZW4pIHsKCQlyZXR1cm4gaGRyLCBuaWwsIGVycm9ycy5OZXcoInF1aWM6IHRydW5jYXRlZCB0b2tlbiIpCgl9CgloZHIudG9rZW4gPSBwYWNrZXRbcG9zIDogcG9zK2ludCh0b2tlbkxlbildCglwb3MgKz0gaW50KHRva2VuTGVuKQoJXywgbiwgZXJyID0gZGVjb2RlUXVpY1ZhcmludChwYWNrZXRbcG9zOl0pCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gaGRyLCBuaWwsIGVycgoJfQoJcG9zICs9IG4KCS8vIHBvcyBub3cgcG9pbnRzIGF0IHBhY2tldCBudW1iZXIuCglwbk9mZnNldCA6PSBwb3MKCS8vIEhlYWRlciBwcm90ZWN0aW9uIHNhbXBsZTogY2lwaGVydGV4dCBzdGFydHMgYXQgcG5PZmZzZXQrcG5MZW4uCglzYW1wbGVPZmZzZXQgOj0gcG5PZmZzZXQgKyBwbkxlbgoJaWYgbGVuKHBhY2tldCkgPCBzYW1wbGVPZmZzZXQrMTYgewoJCXJldHVybiBoZHIsIG5pbCwgZXJyb3JzLk5ldygicXVpYzogcGFja2V0IHRvbyBzaG9ydCBmb3IgSFAgc2FtcGxlIikKCX0KCXNhbXBsZSA6PSBwYWNrZXRbc2FtcGxlT2Zmc2V0IDogc2FtcGxlT2Zmc2V0KzE2XQoJbWFzaywgZXJyIDo9IGFlc0VDQkVuY3J5cHQoc2VjcmV0cy5ocEtleVs6XSwgc2FtcGxlKQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIGhkciwgbmlsLCBlcnIKCX0KCS8vIFVubWFzayBmaXJzdCBieXRlIGFuZCBwYWNrZXQgbnVtYmVyLgoJZmlyc3RCeXRlIDo9IHBhY2tldFswXSBeIChtYXNrWzBdICYgMHgwZikKCV8gPSBmaXJzdEJ5dGUgLy8gdmFsaWRhdGVkIGJlbG93Cgl2YXIgcG5CeXRlcyBbNF1ieXRlCglmb3IgaSA6PSAwOyBpIDwgcG5MZW47IGkrKyB7CgkJcG5CeXRlc1s0LXBuTGVuK2ldID0gcGFja2V0W3BuT2Zmc2V0K2ldIF4gbWFza1sxK2ldCgl9CgloZHIucGFja2V0TnVtID0gYmluYXJ5LkJpZ0VuZGlhbi5VaW50MzIocG5CeXRlc1s6XSkKCWhkci5wbkxlbiA9IHBuTGVuCgloZHIuaGVhZGVyTGVuID0gcG5PZmZzZXQgKyBwbkxlbgoKCS8vIFJlY29uc3RydWN0IEFBRDogaGVhZGVyIHdpdGggdW5tYXNrZWQgZmlyc3QgYnl0ZSBhbmQgcGFja2V0IG51bWJlci4KCWFhZCA6PSBtYWtlKFtdYnl0ZSwgaGRyLmhlYWRlckxlbikKCWNvcHkoYWFkLCBwYWNrZXRbOmhkci5oZWFkZXJMZW5dKQoJYWFkWzBdID0gZmlyc3RCeXRlCgljb3B5KGFhZFtwbk9mZnNldDpdLCBwbkJ5dGVzWzQtcG5MZW46XSkKCgkvLyBBRUFEIGRlY3J5cHRpb24uCglibG9jaywgZXJyIDo9IGFlcy5OZXdDaXBoZXIoc2VjcmV0cy5rZXlbOl0pCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gaGRyLCBuaWwsIGVycgoJfQoJZ2NtLCBlcnIgOj0gY2lwaGVyLk5ld0dDTShibG9jaykKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBoZHIsIG5pbCwgZXJyCgl9Cgl2YXIgbm9uY2UgWzEyXWJ5dGUKCWNvcHkobm9uY2VbOl0sIHNlY3JldHMuaXZbOl0pCglmb3IgaSA6PSAwOyBpIDwgNDsgaSsrIHsKCQlub25jZVs4K2ldIF49IHBuQnl0ZXNbaV0KCX0KCWNpcGhlcnRleHQgOj0gcGFja2V0W3NhbXBsZU9mZnNldDpdCglwbGFpbnRleHQsIGVyciA6PSBnY20uT3BlbihuaWwsIG5vbmNlWzpdLCBjaXBoZXJ0ZXh0LCBhYWQpCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gaGRyLCBuaWwsIGVycm9ycy5OZXcoInF1aWM6IEFFQUQgZGVjcnlwdGlvbiBmYWlsZWQiKQoJfQoJcmV0dXJuIGhkciwgcGxhaW50ZXh0LCBuaWwKfQoKLy8gYWVzRUNCRW5jcnlwdCBlbmNyeXB0cyBhIHNpbmdsZSAxNi1ieXRlIGJsb2NrIHdpdGggQUVTLUVDQi4KZnVuYyBhZXNFQ0JFbmNyeXB0KGtleSwgYmxvY2sgW11ieXRlKSAoW11ieXRlLCBlcnJvcikgewoJYywgZXJyIDo9IGFlcy5OZXdDaXBoZXIoa2V5KQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXJyCgl9CglpZiBsZW4oYmxvY2spICE9IDE2IHsKCQlyZXR1cm4gbmlsLCBlcnJvcnMuTmV3KCJxdWljOiBFQ0IgYmxvY2sgbXVzdCBiZSAxNiBieXRlcyIpCgl9CglvdXQgOj0gbWFrZShbXWJ5dGUsIDE2KQoJYy5FbmNyeXB0KG91dCwgYmxvY2spCglyZXR1cm4gb3V0LCBuaWwKfQo=
+// quic_initial_packet.go: QUIC Initial packet encoding/decoding per RFC 9000/9001.
+//
+// Implements:
+//   - QUIC variable-length integer encoding (RFC 9000 §16)
+//   - Initial long header encoding (RFC 9000 §17.2)
+//   - CRYPTO frame encoding (RFC 9000 §19.6)
+//   - AES-128-GCM payload encryption (RFC 9001 §5.3)
+//   - Header protection with AES-ECB (RFC 9001 §5.4)
+package mistcore
+
+import (
+	"crypto/aes"
+	"crypto/cipher"
+	"encoding/binary"
+	"errors"
+	"fmt"
+)
+
+// quicVersion1 is the QUIC version 1 version number (RFC 9000 §17.2).
+const quicVersion1 = 0x00000001
+
+// quicInitialPacketType is the long packet type for Initial (RFC 9000 §17.2).
+const quicInitialPacketType = 0x0
+
+// encodeQuicVarint encodes a QUIC variable-length integer (RFC 9000 §16).
+func encodeQuicVarint(v uint64) []byte {
+	switch {
+	case v < 64:
+		return []byte{byte(v)}
+	case v < 16384:
+		b := make([]byte, 2)
+		binary.BigEndian.PutUint16(b, uint16(v)|0x4000)
+		return b
+	case v < 1073741824:
+		b := make([]byte, 4)
+		binary.BigEndian.PutUint32(b, uint32(v)|0x80000000)
+		return b
+	default:
+		b := make([]byte, 8)
+		binary.BigEndian.PutUint64(b, v|0xc000000000000000)
+		return b
+	}
+}
+
+// decodeQuicVarint decodes a QUIC variable-length integer.
+// Returns the value and the number of bytes consumed.
+func decodeQuicVarint(b []byte) (uint64, int, error) {
+	if len(b) == 0 {
+		return 0, 0, errors.New("quic: empty varint")
+	}
+	prefix := b[0] >> 6
+	switch prefix {
+	case 0:
+		return uint64(b[0] & 0x3f), 1, nil
+	case 1:
+		if len(b) < 2 {
+			return 0, 0, errors.New("quic: truncated 2-byte varint")
+		}
+		return uint64(binary.BigEndian.Uint16(b[:2]) & 0x3fff), 2, nil
+	case 2:
+		if len(b) < 4 {
+			return 0, 0, errors.New("quic: truncated 4-byte varint")
+		}
+		return uint64(binary.BigEndian.Uint32(b[:4]) & 0x3fffffff), 4, nil
+	default:
+		if len(b) < 8 {
+			return 0, 0, errors.New("quic: truncated 8-byte varint")
+		}
+		return binary.BigEndian.Uint64(b[:8]) & 0x3fffffffffffffff, 8, nil
+	}
+}
+
+// encodeCryptoFrame encodes a CRYPTO frame (RFC 9000 §19.6).
+// Type=0x06, Offset, Length, Crypto Data.
+func encodeCryptoFrame(offset uint64, data []byte) []byte {
+	out := []byte{0x06}
+	out = append(out, encodeQuicVarint(offset)...)
+	out = append(out, encodeQuicVarint(uint64(len(data)))...)
+	out = append(out, data...)
+	return out
+}
+
+// decodeCryptoFrame decodes a CRYPTO frame, returning offset and data.
+func decodeCryptoFrame(b []byte) (offset uint64, data []byte, consumed int, err error) {
+	if len(b) == 0 || b[0] != 0x06 {
+		return 0, nil, 0, errors.New("quic: not a CRYPTO frame")
+	}
+	pos := 1
+	off, n, err := decodeQuicVarint(b[pos:])
+	if err != nil {
+		return 0, nil, 0, err
+	}
+	pos += n
+	ln, n, err := decodeQuicVarint(b[pos:])
+	if err != nil {
+		return 0, nil, 0, err
+	}
+	pos += n
+	if uint64(len(b)-pos) < ln {
+		return 0, nil, 0, errors.New("quic: truncated CRYPTO data")
+	}
+	return off, b[pos : pos+int(ln)], pos + int(ln), nil
+}
+
+// quicInitialHeader holds the decoded Initial packet header fields.
+type quicInitialHeader struct {
+	dcid      []byte
+	scid      []byte
+	token     []byte
+	packetNum uint32
+	pnLen     int
+	headerLen int // bytes from start through packet number (AAD length)
+}
+
+// sealQuicInitial encrypts a payload into a full QUIC Initial packet.
+//   - dcid/scid: connection IDs (dcid is used for key derivation)
+//   - packetNum: packet number (encoded in pnLen bytes)
+//   - secrets: the sender's Initial secrets (client for C2S, server for S2C)
+//   - payload: plaintext CRYPTO frame bytes (already framed)
+//
+// Returns the full UDP datagram.
+func sealQuicInitial(dcid, scid []byte, token []byte, packetNum uint32, secrets quicInitialSecrets, payload []byte) ([]byte, error) {
+	// Packet number length: use 2 bytes (supports up to 65535).
+	const pnLen = 2
+	// AEAD overhead: 16-byte GCM tag.
+	const tagLen = 16
+
+	// Build header (before encryption).
+	// First byte: Header Form=1, Fixed=1, Type=0 (Initial), Reserved=0, PnLen=pnLen-1.
+	firstByte := byte(0xc0) | byte(pnLen-1)
+	header := []byte{firstByte}
+	var verBuf [4]byte
+	binary.BigEndian.PutUint32(verBuf[:], quicVersion1)
+	header = append(header, verBuf[:]...)
+	header = append(header, byte(len(dcid)))
+	header = append(header, dcid...)
+	header = append(header, byte(len(scid)))
+	header = append(header, scid...)
+	header = append(header, encodeQuicVarint(uint64(len(token)))...)
+	header = append(header, token...)
+	// Length = pnLen + payloadLen + tagLen.
+	payloadLen := len(payload) + tagLen
+	header = append(header, encodeQuicVarint(uint64(pnLen+payloadLen))...)
+	// Packet number (big-endian, pnLen bytes).
+	var pnBuf [4]byte
+	binary.BigEndian.PutUint32(pnBuf[:], packetNum)
+	header = append(header, pnBuf[4-pnLen:]...)
+
+	// AEAD encryption.
+	block, err := aes.NewCipher(secrets.key[:])
+	if err != nil {
+		return nil, err
+	}
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+	// Nonce = IV XOR packet number (left-padded to 12 bytes).
+	var nonce [12]byte
+	copy(nonce[:], secrets.iv[:])
+	// XOR last 4 bytes with packet number (big-endian).
+	pnBytes := pnBuf[:]
+	for i := 0; i < 4; i++ {
+		nonce[8+i] ^= pnBytes[i]
+	}
+	ciphertext := gcm.Seal(nil, nonce[:], payload, header)
+
+	// Assemble: header + ciphertext.
+	packet := make([]byte, 0, len(header)+len(ciphertext))
+	packet = append(packet, header...)
+	packet = append(packet, ciphertext...)
+
+	// Header protection: sample = first 16 bytes of ciphertext.
+	if len(ciphertext) < 16 {
+		return nil, errors.New("quic: ciphertext too short for header protection")
+	}
+	sample := ciphertext[:16]
+	mask, err := aesECBEncrypt(secrets.hpKey[:], sample)
+	if err != nil {
+		return nil, err
+	}
+	// Mask first byte: XOR low 4 bits (pn length bits preserved).
+	packet[0] ^= mask[0] & 0x0f
+	// Mask packet number bytes.
+	pnOffset := len(header) - pnLen
+	for i := 0; i < pnLen; i++ {
+		packet[pnOffset+i] ^= mask[1+i]
+	}
+	return packet, nil
+}
+
+// openQuicInitial decrypts a QUIC Initial packet.
+// Returns the header fields and the decrypted payload (CRYPTO frame bytes).
+func openQuicInitial(packet []byte, secrets quicInitialSecrets) (quicInitialHeader, []byte, error) {
+	var hdr quicInitialHeader
+	if len(packet) < 1 {
+		return hdr, nil, errors.New("quic: packet too short")
+	}
+	// Header protection: need sample (ciphertext starts after header).
+	// First, parse the unprotected header to find the packet number offset.
+	// The first byte is protected (low 4 bits masked), but pnLen bits are
+	// in bits 0-1, which are NOT masked (mask only covers bits 2-5... actually
+	// RFC 9001 §5.4.1: mask first byte bits 0-3, pn length is bits 0-1).
+	// Wait: pn length is encoded in the LOW 2 bits, which ARE masked.
+	// To find the sample offset, we must first remove header protection.
+	// But we don't know pnLen until we unmask. Solution: try all pnLens?
+	// Standard approach: the sample starts at (headerLen - pnLen + pnLen) =
+	// the ciphertext offset, which depends on pnLen. For Initial packets,
+	// we assume the sender used pnLen=2 (our own encoder always does).
+	// For robustness, try pnLen 1-4 and pick the one that decrypts.
+	//
+	// Simplified: assume pnLen=2 (matches our encoder).
+	const pnLen = 2
+	// Parse header fields to find ciphertext offset.
+	pos := 1
+	if len(packet) < pos+4 {
+		return hdr, nil, errors.New("quic: truncated version")
+	}
+	version := binary.BigEndian.Uint32(packet[pos : pos+4])
+	if version != quicVersion1 {
+		return hdr, nil, fmt.Errorf("quic: unsupported version 0x%08x", version)
+	}
+	pos += 4
+	if len(packet) < pos+1 {
+		return hdr, nil, errors.New("quic: truncated DCID len")
+	}
+	dcidLen := int(packet[pos])
+	pos++
+	if len(packet) < pos+dcidLen {
+		return hdr, nil, errors.New("quic: truncated DCID")
+	}
+	hdr.dcid = packet[pos : pos+dcidLen]
+	pos += dcidLen
+	if len(packet) < pos+1 {
+		return hdr, nil, errors.New("quic: truncated SCID len")
+	}
+	scidLen := int(packet[pos])
+	pos++
+	if len(packet) < pos+scidLen {
+		return hdr, nil, errors.New("quic: truncated SCID")
+	}
+	hdr.scid = packet[pos : pos+scidLen]
+	pos += scidLen
+	tokenLen, n, err := decodeQuicVarint(packet[pos:])
+	if err != nil {
+		return hdr, nil, err
+	}
+	pos += n
+	if len(packet) < pos+int(tokenLen) {
+		return hdr, nil, errors.New("quic: truncated token")
+	}
+	hdr.token = packet[pos : pos+int(tokenLen)]
+	pos += int(tokenLen)
+	_, n, err = decodeQuicVarint(packet[pos:])
+	if err != nil {
+		return hdr, nil, err
+	}
+	pos += n
+	// pos now points at packet number.
+	pnOffset := pos
+	// Header protection sample: ciphertext starts at pnOffset+pnLen.
+	sampleOffset := pnOffset + pnLen
+	if len(packet) < sampleOffset+16 {
+		return hdr, nil, errors.New("quic: packet too short for HP sample")
+	}
+	sample := packet[sampleOffset : sampleOffset+16]
+	mask, err := aesECBEncrypt(secrets.hpKey[:], sample)
+	if err != nil {
+		return hdr, nil, err
+	}
+	// Unmask first byte and packet number.
+	firstByte := packet[0] ^ (mask[0] & 0x0f)
+	_ = firstByte // validated below
+	var pnBytes [4]byte
+	for i := 0; i < pnLen; i++ {
+		pnBytes[4-pnLen+i] = packet[pnOffset+i] ^ mask[1+i]
+	}
+	hdr.packetNum = binary.BigEndian.Uint32(pnBytes[:])
+	hdr.pnLen = pnLen
+	hdr.headerLen = pnOffset + pnLen
+
+	// Reconstruct AAD: header with unmasked first byte and packet number.
+	aad := make([]byte, hdr.headerLen)
+	copy(aad, packet[:hdr.headerLen])
+	aad[0] = firstByte
+	copy(aad[pnOffset:], pnBytes[4-pnLen:])
+
+	// AEAD decryption.
+	block, err := aes.NewCipher(secrets.key[:])
+	if err != nil {
+		return hdr, nil, err
+	}
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return hdr, nil, err
+	}
+	var nonce [12]byte
+	copy(nonce[:], secrets.iv[:])
+	for i := 0; i < 4; i++ {
+		nonce[8+i] ^= pnBytes[i]
+	}
+	ciphertext := packet[sampleOffset:]
+	plaintext, err := gcm.Open(nil, nonce[:], ciphertext, aad)
+	if err != nil {
+		return hdr, nil, errors.New("quic: AEAD decryption failed")
+	}
+	return hdr, plaintext, nil
+}
+
+// aesECBEncrypt encrypts a single 16-byte block with AES-ECB.
+func aesECBEncrypt(key, block []byte) ([]byte, error) {
+	c, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	if len(block) != 16 {
+		return nil, errors.New("quic: ECB block must be 16 bytes")
+	}
+	out := make([]byte, 16)
+	c.Encrypt(out, block)
+	return out, nil
+}

@@ -1,1 +1,74 @@
-Ly8gcXVpY19pbml0aWFsX2NyeXB0b190ZXN0LmdvOiBUZXN0cyBmb3IgUVVJQyBJbml0aWFsIGtleSBkZXJpdmF0aW9uLgpwYWNrYWdlIG1pc3Rjb3JlCgppbXBvcnQgKAoJImJ5dGVzIgoJInRlc3RpbmciCikKCmZ1bmMgVGVzdEhLREZFeHBhbmRMYWJlbERldGVybWluaXN0aWModCAqdGVzdGluZy5UKSB7CglzZWNyZXQgOj0gbWFrZShbXWJ5dGUsIDMyKQoJZm9yIGkgOj0gcmFuZ2Ugc2VjcmV0IHsKCQlzZWNyZXRbaV0gPSBieXRlKGkpCgl9CglvdXQxLCBlcnIgOj0gaGtkZkV4cGFuZExhYmVsKHNlY3JldCwgInF1aWMga2V5IiwgbmlsLCAxNikKCWlmIGVyciAhPSBuaWwgewoJCXQuRmF0YWxmKCJoa2RmRXhwYW5kTGFiZWw6ICV2IiwgZXJyKQoJfQoJb3V0MiwgZXJyIDo9IGhrZGZFeHBhbmRMYWJlbChzZWNyZXQsICJxdWljIGtleSIsIG5pbCwgMTYpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigiaGtkZkV4cGFuZExhYmVsOiAldiIsIGVycikKCX0KCWlmICFieXRlcy5FcXVhbChvdXQxLCBvdXQyKSB7CgkJdC5GYXRhbCgiSEtERi1FeHBhbmQtTGFiZWwgbm90IGRldGVybWluaXN0aWMiKQoJfQoJaWYgbGVuKG91dDEpICE9IDE2IHsKCQl0LkZhdGFsZigiZXhwZWN0ZWQgMTYgYnl0ZXMsIGdvdCAlZCIsIGxlbihvdXQxKSkKCX0KCS8vIERpZmZlcmVudCBsYWJlbHMgZ2l2ZSBkaWZmZXJlbnQgb3V0cHV0cy4KCW91dDMsIGVyciA6PSBoa2RmRXhwYW5kTGFiZWwoc2VjcmV0LCAicXVpYyBpdiIsIG5pbCwgMTIpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigiaGtkZkV4cGFuZExhYmVsOiAldiIsIGVycikKCX0KCWlmIGJ5dGVzLkVxdWFsKG91dDFbOjEyXSwgb3V0MykgewoJCXQuRmF0YWwoImRpZmZlcmVudCBsYWJlbHMgZ2F2ZSBzYW1lIG91dHB1dCIpCgl9Cn0KCmZ1bmMgVGVzdERlcml2ZVF1aWNJbml0aWFsU2VjcmV0cyh0ICp0ZXN0aW5nLlQpIHsKCWRjaWQgOj0gW11ieXRlezB4ODMsIDB4OTQsIDB4YzgsIDB4ZjAsIDB4M2UsIDB4NTEsIDB4NTcsIDB4MDh9CgljbGllbnQxLCBzZXJ2ZXIxLCBlcnIgOj0gZGVyaXZlUXVpY0luaXRpYWxTZWNyZXRzKGRjaWQpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigiZGVyaXZlOiAldiIsIGVycikKCX0KCWNsaWVudDIsIHNlcnZlcjIsIGVyciA6PSBkZXJpdmVRdWljSW5pdGlhbFNlY3JldHMoZGNpZCkKCWlmIGVyciAhPSBuaWwgewoJCXQuRmF0YWxmKCJkZXJpdmU6ICV2IiwgZXJyKQoJfQoJLy8gRGV0ZXJtaW5pc3RpYy4KCWlmIGNsaWVudDEgIT0gY2xpZW50MiB8fCBzZXJ2ZXIxICE9IHNlcnZlcjIgewoJCXQuRmF0YWwoImRlcml2YXRpb24gbm90IGRldGVybWluaXN0aWMiKQoJfQoJLy8gQ2xpZW50ICE9IHNlcnZlci4KCWlmIGNsaWVudDEgPT0gc2VydmVyMSB7CgkJdC5GYXRhbCgiY2xpZW50IGFuZCBzZXJ2ZXIgc2VjcmV0cyBhcmUgZXF1YWwiKQoJfQoJLy8gS2V5cyBhcmUgbm9uLXplcm8uCgl2YXIgemVybzE2IFsxNl1ieXRlCgl2YXIgemVybzEyIFsxMl1ieXRlCglpZiBjbGllbnQxLmtleSA9PSB6ZXJvMTYgfHwgY2xpZW50MS5pdiA9PSB6ZXJvMTIgfHwgY2xpZW50MS5ocEtleSA9PSB6ZXJvMTYgewoJCXQuRmF0YWwoImNsaWVudCBzZWNyZXRzIGNvbnRhaW4gemVybyBrZXkvaXYvaHAiKQoJfQoJaWYgc2VydmVyMS5rZXkgPT0gemVybzE2IHx8IHNlcnZlcjEuaXYgPT0gemVybzEyIHx8IHNlcnZlcjEuaHBLZXkgPT0gemVybzE2IHsKCQl0LkZhdGFsKCJzZXJ2ZXIgc2VjcmV0cyBjb250YWluIHplcm8ga2V5L2l2L2hwIikKCX0KCS8vIERpZmZlcmVudCBEQ0lEIGdpdmVzIGRpZmZlcmVudCBzZWNyZXRzLgoJZGNpZDIgOj0gW11ieXRlezB4MDAsIDB4MDEsIDB4MDIsIDB4MDMsIDB4MDQsIDB4MDUsIDB4MDYsIDB4MDd9CgljbGllbnQzLCBfLCBlcnIgOj0gZGVyaXZlUXVpY0luaXRpYWxTZWNyZXRzKGRjaWQyKQoJaWYgZXJyICE9IG5pbCB7CgkJdC5GYXRhbGYoImRlcml2ZTogJXYiLCBlcnIpCgl9CglpZiBjbGllbnQxID09IGNsaWVudDMgewoJCXQuRmF0YWwoImRpZmZlcmVudCBEQ0lEIGdhdmUgc2FtZSBzZWNyZXRzIikKCX0KfQo=
+// quic_initial_crypto_test.go: Tests for QUIC Initial key derivation.
+package mistcore
+
+import (
+	"bytes"
+	"testing"
+)
+
+func TestHKDFExpandLabelDeterministic(t *testing.T) {
+	secret := make([]byte, 32)
+	for i := range secret {
+		secret[i] = byte(i)
+	}
+	out1, err := hkdfExpandLabel(secret, "quic key", nil, 16)
+	if err != nil {
+		t.Fatalf("hkdfExpandLabel: %v", err)
+	}
+	out2, err := hkdfExpandLabel(secret, "quic key", nil, 16)
+	if err != nil {
+		t.Fatalf("hkdfExpandLabel: %v", err)
+	}
+	if !bytes.Equal(out1, out2) {
+		t.Fatal("HKDF-Expand-Label not deterministic")
+	}
+	if len(out1) != 16 {
+		t.Fatalf("expected 16 bytes, got %d", len(out1))
+	}
+	// Different labels give different outputs.
+	out3, err := hkdfExpandLabel(secret, "quic iv", nil, 12)
+	if err != nil {
+		t.Fatalf("hkdfExpandLabel: %v", err)
+	}
+	if bytes.Equal(out1[:12], out3) {
+		t.Fatal("different labels gave same output")
+	}
+}
+
+func TestDeriveQuicInitialSecrets(t *testing.T) {
+	dcid := []byte{0x83, 0x94, 0xc8, 0xf0, 0x3e, 0x51, 0x57, 0x08}
+	client1, server1, err := deriveQuicInitialSecrets(dcid)
+	if err != nil {
+		t.Fatalf("derive: %v", err)
+	}
+	client2, server2, err := deriveQuicInitialSecrets(dcid)
+	if err != nil {
+		t.Fatalf("derive: %v", err)
+	}
+	// Deterministic.
+	if client1 != client2 || server1 != server2 {
+		t.Fatal("derivation not deterministic")
+	}
+	// Client != server.
+	if client1 == server1 {
+		t.Fatal("client and server secrets are equal")
+	}
+	// Keys are non-zero.
+	var zero16 [16]byte
+	var zero12 [12]byte
+	if client1.key == zero16 || client1.iv == zero12 || client1.hpKey == zero16 {
+		t.Fatal("client secrets contain zero key/iv/hp")
+	}
+	if server1.key == zero16 || server1.iv == zero12 || server1.hpKey == zero16 {
+		t.Fatal("server secrets contain zero key/iv/hp")
+	}
+	// Different DCID gives different secrets.
+	dcid2 := []byte{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07}
+	client3, _, err := deriveQuicInitialSecrets(dcid2)
+	if err != nil {
+		t.Fatalf("derive: %v", err)
+	}
+	if client1 == client3 {
+		t.Fatal("different DCID gave same secrets")
+	}
+}
