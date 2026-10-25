@@ -1,1 +1,246 @@
-cGFja2FnZSBtaXN0Y29yZQoKaW1wb3J0ICgKCSJieXRlcyIKCSJ0ZXN0aW5nIgopCgovLyBUZXN0IFVEUCBmcmFtZSBlbmNvZGUvZGVjb2RlIHJvdW5kdHJpcC4KZnVuYyBUZXN0VURQRnJhbWVDb2RlYyh0ICp0ZXN0aW5nLlQpIHsKCXBheWxvYWQgOj0gW11ieXRlKCJoZWxsbyB3b3JsZCIpCgllbmNvZGVkIDo9IEVuY29kZVVEUEZyYW1lKFVEUEZyYW1lU3RyZWFtLCAxLCBwYXlsb2FkKQoKCWZyYW1lcywgZXJyIDo9IERlY29kZVVEUEZyYW1lcyhlbmNvZGVkKQoJaWYgZXJyICE9IG5pbCB7CgkJdC5GYXRhbGYoImRlY29kZSBmYWlsZWQ6ICV2IiwgZXJyKQoJfQoJaWYgbGVuKGZyYW1lcykgIT0gMSB7CgkJdC5GYXRhbGYoImV4cGVjdGVkIDEgZnJhbWUsIGdvdCAlZCIsIGxlbihmcmFtZXMpKQoJfQoJaWYgZnJhbWVzWzBdLlR5cGUgIT0gVURQRnJhbWVTdHJlYW0gewoJCXQuRXJyb3JmKCJ0eXBlIG1pc21hdGNoOiBnb3QgJTAyeCIsIGZyYW1lc1swXS5UeXBlKQoJfQoJaWYgZnJhbWVzWzBdLlNJRCAhPSAxIHsKCQl0LkVycm9yZigic2lkIG1pc21hdGNoOiBnb3QgJWQiLCBmcmFtZXNbMF0uU0lEKQoJfQoJaWYgIWJ5dGVzLkVxdWFsKGZyYW1lc1swXS5QYXlsb2FkLCBwYXlsb2FkKSB7CgkJdC5FcnJvcmYoInBheWxvYWQgbWlzbWF0Y2giKQoJfQp9CgovLyBUZXN0IG11bHRpcGxlIGZyYW1lcyBpbiBvbmUgcGFja2V0LgpmdW5jIFRlc3RVRFBGcmFtZU11bHRpKHQgKnRlc3RpbmcuVCkgewoJZjEgOj0gRW5jb2RlVURQRnJhbWUoVURQRnJhbWVQaW5nLCAwLCBuaWwpCglmMiA6PSBFbmNvZGVTdHJlYW1GcmFtZSgxLCAwLCBbXWJ5dGUoImRhdGEiKSkKCWYzIDo9IEVuY29kZUZpbkZyYW1lKDEsIDQpCgoJY29tYmluZWQgOj0gYXBwZW5kKGFwcGVuZChmMSwgZjIuLi4pLCBmMy4uLikKCWZyYW1lcywgZXJyIDo9IERlY29kZVVEUEZyYW1lcyhjb21iaW5lZCkKCWlmIGVyciAhPSBuaWwgewoJCXQuRmF0YWxmKCJkZWNvZGUgZmFpbGVkOiAldiIsIGVycikKCX0KCWlmIGxlbihmcmFtZXMpICE9IDMgewoJCXQuRmF0YWxmKCJleHBlY3RlZCAzIGZyYW1lcywgZ290ICVkIiwgbGVuKGZyYW1lcykpCgl9CglpZiBmcmFtZXNbMF0uVHlwZSAhPSBVRFBGcmFtZVBpbmcgfHwgZnJhbWVzWzFdLlR5cGUgIT0gVURQRnJhbWVTdHJlYW0gfHwgZnJhbWVzWzJdLlR5cGUgIT0gVURQRnJhbWVGaW4gewoJCXQuRXJyb3JmKCJmcmFtZSB0eXBlIG9yZGVyIHdyb25nIikKCX0KfQoKLy8gVGVzdCBTVFJFQU0gZnJhbWUgd2l0aCBvZmZzZXQuCmZ1bmMgVGVzdFVEUFN0cmVhbU9mZnNldCh0ICp0ZXN0aW5nLlQpIHsKCWRhdGEgOj0gW11ieXRlKCJ0ZXN0IGRhdGEiKQoJZW5jb2RlZCA6PSBFbmNvZGVTdHJlYW1GcmFtZSg1LCAxMjM0NSwgZGF0YSkKCWZyYW1lcywgZXJyIDo9IERlY29kZVVEUEZyYW1lcyhlbmNvZGVkKQoJaWYgZXJyICE9IG5pbCB7CgkJdC5GYXRhbGYoImRlY29kZSBmYWlsZWQ6ICV2IiwgZXJyKQoJfQoJaWYgbGVuKGZyYW1lc1swXS5QYXlsb2FkKSA8IDggewoJCXQuRmF0YWxmKCJzdHJlYW0gcGF5bG9hZCB0b28gc2hvcnQiKQoJfQoJLy8gT0ZGU0VUIGlzIGZpcnN0IDggYnl0ZXMsIGJpZy1lbmRpYW4uCglvZmZzZXQgOj0gdWludDY0KGZyYW1lc1swXS5QYXlsb2FkWzBdKTw8NTYgfCB1aW50NjQoZnJhbWVzWzBdLlBheWxvYWRbMV0pPDw0OCB8CgkJdWludDY0KGZyYW1lc1swXS5QYXlsb2FkWzJdKTw8NDAgfCB1aW50NjQoZnJhbWVzWzBdLlBheWxvYWRbM10pPDwzMiB8CgkJdWludDY0KGZyYW1lc1swXS5QYXlsb2FkWzRdKTw8MjQgfCB1aW50NjQoZnJhbWVzWzBdLlBheWxvYWRbNV0pPDwxNiB8CgkJdWludDY0KGZyYW1lc1swXS5QYXlsb2FkWzZdKTw8OCB8IHVpbnQ2NChmcmFtZXNbMF0uUGF5bG9hZFs3XSkKCWlmIG9mZnNldCAhPSAxMjM0NSB7CgkJdC5FcnJvcmYoIm9mZnNldCBtaXNtYXRjaDogZ290ICVkIiwgb2Zmc2V0KQoJfQoJaWYgIWJ5dGVzLkVxdWFsKGZyYW1lc1swXS5QYXlsb2FkWzg6XSwgZGF0YSkgewoJCXQuRXJyb3JmKCJkYXRhIG1pc21hdGNoIikKCX0KfQoKLy8gVGVzdCBzaG9ydCBoZWFkZXIgYnVpbGQvcGFyc2Ugcm91bmR0cmlwLgpmdW5jIFRlc3RVRFBTaG9ydEhlYWRlcih0ICp0ZXN0aW5nLlQpIHsKCXZhciBkY2lkIFs4XWJ5dGUKCWZvciBpIDo9IHJhbmdlIGRjaWQgewoJCWRjaWRbaV0gPSBieXRlKGkpCgl9CgloZWFkZXIgOj0gQnVpbGRTaG9ydEhlYWRlcihkY2lkLCA0MiwgZmFsc2UpCglpZiBsZW4oaGVhZGVyKSAhPSAxMyB7CgkJdC5GYXRhbGYoImhlYWRlciBsZW4gIT0gMTMiKQoJfQoJcGFyc2VkRENJRCwgcGt0TnVtLCBzcGluLCBlcnIgOj0gUGFyc2VTaG9ydEhlYWRlcihoZWFkZXJbOl0pCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigicGFyc2UgZmFpbGVkOiAldiIsIGVycikKCX0KCWlmIHBhcnNlZERDSUQgIT0gZGNpZCB7CgkJdC5FcnJvcmYoImRjaWQgbWlzbWF0Y2giKQoJfQoJaWYgcGt0TnVtICE9IDQyIHsKCQl0LkVycm9yZigicGFja2V0IG51bSBtaXNtYXRjaDogZ290ICVkIiwgcGt0TnVtKQoJfQoJaWYgc3BpbiB7CgkJdC5FcnJvcmYoInNwaW4gc2hvdWxkIGJlIGZhbHNlIikKCX0KfQoKLy8gVGVzdCBVRFAgbm9uY2UgY29uc3RydWN0aW9uLgpmdW5jIFRlc3RVRFBOb25jZSh0ICp0ZXN0aW5nLlQpIHsKCXZhciBzaWQgWzhdYnl0ZQoJZm9yIGkgOj0gcmFuZ2Ugc2lkIHsKCQlzaWRbaV0gPSBieXRlKGkgKyAxMCkKCX0KCW5vbmNlIDo9IFVEUE5vbmNlKHNpZCwgRGlyQzJTLCAxMjM0NSkKCWlmIGxlbihub25jZSkgIT0gMjQgewoJCXQuRmF0YWxmKCJub25jZSBsZW4gIT0gMjQiKQoJfQoJLy8gQ2hlY2sgc2Vzc2lvbiBJRC4KCWlmICFieXRlcy5FcXVhbChub25jZVswOjhdLCBzaWRbOl0pIHsKCQl0LkVycm9yZigic2Vzc2lvbiBpZCBtaXNtYXRjaCIpCgl9CgkvLyBDaGVjayBkaXIgKGJpZy1lbmRpYW4pLgoJaWYgbm9uY2VbOF0gIT0gMCB8fCBub25jZVs5XSAhPSAwIHx8IG5vbmNlWzEwXSAhPSAwIHx8IG5vbmNlWzExXSAhPSAwIHsKCQl0LkVycm9yZigiZGlyIHNob3VsZCBiZSAwIGZvciBDMlMiKQoJfQoJLy8gQ2hlY2sgcGFja2V0IG51bWJlci4KCXBrdE51bSA6PSB1aW50MzIobm9uY2VbMTJdKTw8MjQgfCB1aW50MzIobm9uY2VbMTNdKTw8MTYgfCB1aW50MzIobm9uY2VbMTRdKTw8OCB8IHVpbnQzMihub25jZVsxNV0pCglpZiBwa3ROdW0gIT0gMTIzNDUgewoJCXQuRXJyb3JmKCJwYWNrZXQgbnVtIG1pc21hdGNoOiBnb3QgJWQiLCBwa3ROdW0pCgl9CgkvLyBSZXNlcnZlZCBzaG91bGQgYmUgemVyby4KCWZvciBpIDo9IDE2OyBpIDwgMjQ7IGkrKyB7CgkJaWYgbm9uY2VbaV0gIT0gMCB7CgkJCXQuRXJyb3JmKCJyZXNlcnZlZCBieXRlICVkIG5vdCB6ZXJvIiwgaSkKCQl9Cgl9Cn0KCi8vIFRlc3QgVURQIEFFQUQgc2VhbC9vcGVuIHJvdW5kdHJpcC4KZnVuYyBUZXN0VURQU2VhbE9wZW4odCAqdGVzdGluZy5UKSB7Cgl2YXIga2V5IFszMl1ieXRlCglmb3IgaSA6PSByYW5nZSBrZXkgewoJCWtleVtpXSA9IGJ5dGUoaSkKCX0KCXZhciBub25jZSBbMjRdYnl0ZQoJZm9yIGkgOj0gcmFuZ2Ugbm9uY2UgewoJCW5vbmNlW2ldID0gYnl0ZShpICogMikKCX0KCXBsYWludGV4dCA6PSBbXWJ5dGUoInNlY3JldCBtZXNzYWdlIikKCWFhZCA6PSBbXWJ5dGUoImhlYWRlciIpCgoJY2lwaGVydGV4dCwgZXJyIDo9IFVEUFNlYWwoJmtleSwgbm9uY2UsIHBsYWludGV4dCwgYWFkKQoJaWYgZXJyICE9IG5pbCB7CgkJdC5GYXRhbGYoInNlYWwgZmFpbGVkOiAldiIsIGVycikKCX0KCWlmIGxlbihjaXBoZXJ0ZXh0KSAhPSBsZW4ocGxhaW50ZXh0KSsxNiB7CgkJdC5FcnJvcmYoImNpcGhlcnRleHQgbGVuIHdyb25nOiBnb3QgJWQiLCBsZW4oY2lwaGVydGV4dCkpCgl9CgoJZGVjcnlwdGVkLCBlcnIgOj0gVURQT3Blbigma2V5LCBub25jZSwgY2lwaGVydGV4dCwgYWFkKQoJaWYgZXJyICE9IG5pbCB7CgkJdC5GYXRhbGYoIm9wZW4gZmFpbGVkOiAldiIsIGVycikKCX0KCWlmICFieXRlcy5FcXVhbChkZWNyeXB0ZWQsIHBsYWludGV4dCkgewoJCXQuRXJyb3JmKCJkZWNyeXB0ZWQgbWlzbWF0Y2giKQoJfQoKCS8vIFdyb25nIEFBRCBzaG91bGQgZmFpbC4KCV8sIGVyciA9IFVEUE9wZW4oJmtleSwgbm9uY2UsIGNpcGhlcnRleHQsIFtdYnl0ZSgid3JvbmciKSkKCWlmIGVyciA9PSBuaWwgewoJCXQuRXJyb3JmKCJvcGVuIHdpdGggd3JvbmcgQUFEIHNob3VsZCBmYWlsIikKCX0KfQoKLy8gVGVzdCBJbml0aWFsQ29kZWMgc2VhbC9vcGVuIHJvdW5kdHJpcCAoUVVJQ0luaXRpYWxDb2RlYywgUGhhc2UgMCkuCmZ1bmMgVGVzdEluaXRpYWxDb2RlYyh0ICp0ZXN0aW5nLlQpIHsKCWNvZGVjIDo9ICZRVUlDSW5pdGlhbENvZGVje30KCXZhciBkY2lkLCBzY2lkIFs4XWJ5dGUKCWZvciBpIDo9IHJhbmdlIGRjaWQgewoJCWRjaWRbaV0gPSBieXRlKGkpCgkJc2NpZFtpXSA9IGJ5dGUoaSArIDEwMCkKCX0KCXBheWxvYWQgOj0gW11ieXRlKCJhdXRoIHBheWxvYWQgZGF0YSIpCgoJcGFja2V0LCBlcnIgOj0gY29kZWMuU2VhbEluaXRpYWwocGF5bG9hZCwgZGNpZCwgc2NpZCwgMCkKCWlmIGVyciAhPSBuaWwgewoJCXQuRmF0YWxmKCJzZWFsIGZhaWxlZDogJXYiLCBlcnIpCgl9CgoJb3BlbmVkLCByZGNpZCwgcnNjaWQsIHBrdE51bSwgZXJyIDo9IGNvZGVjLk9wZW5Jbml0aWFsKHBhY2tldCkKCWlmIGVyciAhPSBuaWwgewoJCXQuRmF0YWxmKCJvcGVuIGZhaWxlZDogJXYiLCBlcnIpCgl9CglpZiAhYnl0ZXMuRXF1YWwob3BlbmVkLCBwYXlsb2FkKSB7CgkJdC5FcnJvcmYoInBheWxvYWQgbWlzbWF0Y2giKQoJfQoJaWYgcmRjaWQgIT0gZGNpZCB7CgkJdC5FcnJvcmYoImRjaWQgbWlzbWF0Y2giKQoJfQoJaWYgcnNjaWQgIT0gc2NpZCB7CgkJdC5FcnJvcmYoInNjaWQgbWlzbWF0Y2giKQoJfQoJaWYgcGt0TnVtICE9IDAgewoJCXQuRXJyb3JmKCJwYWNrZXQgbnVtIG1pc21hdGNoIikKCX0KfQoKLy8gVGVzdCBzZXNzaW9uIHNlYWwvb3BlbiBwYWNrZXQgcm91bmR0cmlwLgpmdW5jIFRlc3RVRFBTZXNzaW9uUGFja2V0KHQgKnRlc3RpbmcuVCkgewoJdmFyIHNpZCBbMTZdYnl0ZQoJZm9yIGkgOj0gcmFuZ2Ugc2lkIHsKCQlzaWRbaV0gPSBieXRlKGkpCgl9Cgl2YXIga0MyUywga1MyQyBbMzJdYnl0ZQoJZm9yIGkgOj0gcmFuZ2Uga0MyUyB7CgkJa0MyU1tpXSA9IGJ5dGUoaSkKCQlrUzJDW2ldID0gYnl0ZSgyNTUgLSBpKQoJfQoJY29kZWMgOj0gJlFVSUNJbml0aWFsQ29kZWN7fQoJc2Vzc2lvbiA6PSBOZXdVRFBTZXNzaW9uKHNpZCwga0MyUywga1MyQywgbmlsLCBjb2RlYykKCgkvLyBDbGllbnQgc2VhbHMgYSBwYWNrZXQgKEMyUykuCglmcmFtZXMgOj0gW11bXWJ5dGV7CgkJRW5jb2RlVURQRnJhbWUoVURQRnJhbWVQaW5nLCAwLCBuaWwpLAoJCUVuY29kZVN0cmVhbUZyYW1lKDEsIDAsIFtdYnl0ZSgiaGVsbG8iKSksCgl9CglkYXRhZ3JhbSwgZXJyIDo9IHNlc3Npb24uc2VhbFBhY2tldFRyYWNrZWQoRGlyQzJTLCBmcmFtZXMpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigic2VhbCBmYWlsZWQ6ICV2IiwgZXJyKQoJfQoKCS8vIFNlcnZlciBvcGVucyBpdCAoZXhwZWN0cyBDMlMpLgoJb3BlbmVkLCBwa3ROdW0sIGVyciA6PSBzZXNzaW9uLk9wZW5QYWNrZXQoRGlyQzJTLCBkYXRhZ3JhbSkKCWlmIGVyciAhPSBuaWwgewoJCXQuRmF0YWxmKCJvcGVuIGZhaWxlZDogJXYiLCBlcnIpCgl9CglpZiBwa3ROdW0gIT0gMCB7CgkJdC5FcnJvcmYoInBhY2tldCBudW0gc2hvdWxkIGJlIDAsIGdvdCAlZCIsIHBrdE51bSkKCX0KCWlmIGxlbihvcGVuZWQpICE9IDIgewoJCXQuRmF0YWxmKCJleHBlY3RlZCAyIGZyYW1lcywgZ290ICVkIiwgbGVuKG9wZW5lZCkpCgl9CglpZiBvcGVuZWRbMF0uVHlwZSAhPSBVRFBGcmFtZVBpbmcgewoJCXQuRXJyb3JmKCJmaXJzdCBmcmFtZSBzaG91bGQgYmUgUElORyIpCgl9CglpZiBvcGVuZWRbMV0uVHlwZSAhPSBVRFBGcmFtZVN0cmVhbSB7CgkJdC5FcnJvcmYoInNlY29uZCBmcmFtZSBzaG91bGQgYmUgU1RSRUFNIikKCX0KCgkvLyBXcm9uZyBkaXJlY3Rpb24gc2hvdWxkIGZhaWwgKGRpZmZlcmVudCBrZXkpLgoJXywgXywgZXJyID0gc2Vzc2lvbi5PcGVuUGFja2V0KERpclMyQywgZGF0YWdyYW0pCglpZiBlcnIgPT0gbmlsIHsKCQl0LkVycm9yZigib3BlbiB3aXRoIHdyb25nIGRpcmVjdGlvbiBrZXkgc2hvdWxkIGZhaWwiKQoJfQp9Cg==
+package mistcore
+
+import (
+	"bytes"
+	"testing"
+)
+
+// Test UDP frame encode/decode roundtrip.
+func TestUDPFrameCodec(t *testing.T) {
+	payload := []byte("hello world")
+	encoded := EncodeUDPFrame(UDPFrameStream, 1, payload)
+
+	frames, err := DecodeUDPFrames(encoded)
+	if err != nil {
+		t.Fatalf("decode failed: %v", err)
+	}
+	if len(frames) != 1 {
+		t.Fatalf("expected 1 frame, got %d", len(frames))
+	}
+	if frames[0].Type != UDPFrameStream {
+		t.Errorf("type mismatch: got %02x", frames[0].Type)
+	}
+	if frames[0].SID != 1 {
+		t.Errorf("sid mismatch: got %d", frames[0].SID)
+	}
+	if !bytes.Equal(frames[0].Payload, payload) {
+		t.Errorf("payload mismatch")
+	}
+}
+
+// Test multiple frames in one packet.
+func TestUDPFrameMulti(t *testing.T) {
+	f1 := EncodeUDPFrame(UDPFramePing, 0, nil)
+	f2 := EncodeStreamFrame(1, 0, []byte("data"))
+	f3 := EncodeFinFrame(1, 4)
+
+	combined := append(append(f1, f2...), f3...)
+	frames, err := DecodeUDPFrames(combined)
+	if err != nil {
+		t.Fatalf("decode failed: %v", err)
+	}
+	if len(frames) != 3 {
+		t.Fatalf("expected 3 frames, got %d", len(frames))
+	}
+	if frames[0].Type != UDPFramePing || frames[1].Type != UDPFrameStream || frames[2].Type != UDPFrameFin {
+		t.Errorf("frame type order wrong")
+	}
+}
+
+// Test STREAM frame with offset.
+func TestUDPStreamOffset(t *testing.T) {
+	data := []byte("test data")
+	encoded := EncodeStreamFrame(5, 12345, data)
+	frames, err := DecodeUDPFrames(encoded)
+	if err != nil {
+		t.Fatalf("decode failed: %v", err)
+	}
+	if len(frames[0].Payload) < 8 {
+		t.Fatalf("stream payload too short")
+	}
+	// OFFSET is first 8 bytes, big-endian.
+	offset := uint64(frames[0].Payload[0])<<56 | uint64(frames[0].Payload[1])<<48 |
+		uint64(frames[0].Payload[2])<<40 | uint64(frames[0].Payload[3])<<32 |
+		uint64(frames[0].Payload[4])<<24 | uint64(frames[0].Payload[5])<<16 |
+		uint64(frames[0].Payload[6])<<8 | uint64(frames[0].Payload[7])
+	if offset != 12345 {
+		t.Errorf("offset mismatch: got %d", offset)
+	}
+	if !bytes.Equal(frames[0].Payload[8:], data) {
+		t.Errorf("data mismatch")
+	}
+}
+
+// Test short header build/parse roundtrip.
+func TestUDPShortHeader(t *testing.T) {
+	var dcid [8]byte
+	for i := range dcid {
+		dcid[i] = byte(i)
+	}
+	header := BuildShortHeader(dcid, 42, false)
+	if len(header) != 13 {
+		t.Fatalf("header len != 13")
+	}
+	parsedDCID, pktNum, spin, err := ParseShortHeader(header[:])
+	if err != nil {
+		t.Fatalf("parse failed: %v", err)
+	}
+	if parsedDCID != dcid {
+		t.Errorf("dcid mismatch")
+	}
+	if pktNum != 42 {
+		t.Errorf("packet num mismatch: got %d", pktNum)
+	}
+	if spin {
+		t.Errorf("spin should be false")
+	}
+}
+
+// Test UDP nonce construction.
+func TestUDPNonce(t *testing.T) {
+	var sid [8]byte
+	for i := range sid {
+		sid[i] = byte(i + 10)
+	}
+	nonce := UDPNonce(sid, DirC2S, 12345)
+	if len(nonce) != 24 {
+		t.Fatalf("nonce len != 24")
+	}
+	// Check session ID.
+	if !bytes.Equal(nonce[0:8], sid[:]) {
+		t.Errorf("session id mismatch")
+	}
+	// Check dir (big-endian).
+	if nonce[8] != 0 || nonce[9] != 0 || nonce[10] != 0 || nonce[11] != 0 {
+		t.Errorf("dir should be 0 for C2S")
+	}
+	// Check packet number.
+	pktNum := uint32(nonce[12])<<24 | uint32(nonce[13])<<16 | uint32(nonce[14])<<8 | uint32(nonce[15])
+	if pktNum != 12345 {
+		t.Errorf("packet num mismatch: got %d", pktNum)
+	}
+	// Reserved should be zero.
+	for i := 16; i < 24; i++ {
+		if nonce[i] != 0 {
+			t.Errorf("reserved byte %d not zero", i)
+		}
+	}
+}
+
+// Test UDP AEAD seal/open roundtrip.
+func TestUDPSealOpen(t *testing.T) {
+	var key [32]byte
+	for i := range key {
+		key[i] = byte(i)
+	}
+	var nonce [24]byte
+	for i := range nonce {
+		nonce[i] = byte(i * 2)
+	}
+	plaintext := []byte("secret message")
+	aad := []byte("header")
+
+	ciphertext, err := UDPSeal(&key, nonce, plaintext, aad)
+	if err != nil {
+		t.Fatalf("seal failed: %v", err)
+	}
+	if len(ciphertext) != len(plaintext)+16 {
+		t.Errorf("ciphertext len wrong: got %d", len(ciphertext))
+	}
+
+	decrypted, err := UDPOpen(&key, nonce, ciphertext, aad)
+	if err != nil {
+		t.Fatalf("open failed: %v", err)
+	}
+	if !bytes.Equal(decrypted, plaintext) {
+		t.Errorf("decrypted mismatch")
+	}
+
+	// Wrong AAD should fail.
+	_, err = UDPOpen(&key, nonce, ciphertext, []byte("wrong"))
+	if err == nil {
+		t.Errorf("open with wrong AAD should fail")
+	}
+}
+
+// Test InitialCodec seal/open roundtrip (QUICInitialCodec, Phase 0).
+func TestInitialCodec(t *testing.T) {
+	codec := &QUICInitialCodec{}
+	var dcid, scid [8]byte
+	for i := range dcid {
+		dcid[i] = byte(i)
+		scid[i] = byte(i + 100)
+	}
+	payload := []byte("auth payload data")
+
+	packet, err := codec.SealInitial(payload, dcid, scid, 0)
+	if err != nil {
+		t.Fatalf("seal failed: %v", err)
+	}
+
+	opened, rdcid, rscid, pktNum, err := codec.OpenInitial(packet)
+	if err != nil {
+		t.Fatalf("open failed: %v", err)
+	}
+	if !bytes.Equal(opened, payload) {
+		t.Errorf("payload mismatch")
+	}
+	if rdcid != dcid {
+		t.Errorf("dcid mismatch")
+	}
+	if rscid != scid {
+		t.Errorf("scid mismatch")
+	}
+	if pktNum != 0 {
+		t.Errorf("packet num mismatch")
+	}
+}
+
+// Test session seal/open packet roundtrip.
+func TestUDPSessionPacket(t *testing.T) {
+	var sid [16]byte
+	for i := range sid {
+		sid[i] = byte(i)
+	}
+	var kC2S, kS2C [32]byte
+	for i := range kC2S {
+		kC2S[i] = byte(i)
+		kS2C[i] = byte(255 - i)
+	}
+	codec := &QUICInitialCodec{}
+	session := NewUDPSession(sid, kC2S, kS2C, nil, codec)
+
+	// Client seals a packet (C2S).
+	frames := [][]byte{
+		EncodeUDPFrame(UDPFramePing, 0, nil),
+		EncodeStreamFrame(1, 0, []byte("hello")),
+	}
+	datagram, err := session.sealPacketTracked(DirC2S, frames)
+	if err != nil {
+		t.Fatalf("seal failed: %v", err)
+	}
+
+	// Server opens it (expects C2S).
+	opened, pktNum, err := session.OpenPacket(DirC2S, datagram)
+	if err != nil {
+		t.Fatalf("open failed: %v", err)
+	}
+	if pktNum != 0 {
+		t.Errorf("packet num should be 0, got %d", pktNum)
+	}
+	if len(opened) != 2 {
+		t.Fatalf("expected 2 frames, got %d", len(opened))
+	}
+	if opened[0].Type != UDPFramePing {
+		t.Errorf("first frame should be PING")
+	}
+	if opened[1].Type != UDPFrameStream {
+		t.Errorf("second frame should be STREAM")
+	}
+
+	// Wrong direction should fail (different key).
+	_, _, err = session.OpenPacket(DirS2C, datagram)
+	if err == nil {
+		t.Errorf("open with wrong direction key should fail")
+	}
+}

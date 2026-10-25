@@ -1,1 +1,437 @@
-Ly8gUGFja2FnZSBtaXN0Y29yZTogTWlzdCBVRFAgc2Vzc2lvbiBtYW5hZ2VtZW50LgovLwovLyBBIFVEUCBzZXNzaW9uIGlzIGVzdGFibGlzaGVkIHZpYSB0aGUgSW5pdGlhbCBoYW5kc2hha2UgKMKnNSk6Ci8vICAgQ2xpZW50IOKGkiBTZXJ2ZXI6IEluaXRpYWwoQVVUSCkgICAgW1FVSUMgbG9uZyBoZWFkZXJdCi8vICAgU2VydmVyIOKGkiBDbGllbnQ6IEluaXRpYWwoQVVUSF9PSykgW1FVSUMgbG9uZyBoZWFkZXJdCi8vIFRoZW4gYm90aCBzaWRlcyB1c2Ugc2hvcnQgaGVhZGVycyBmb3IgZGF0YS4KLy8KLy8gUGhhc2UgMSBzY29wZTogaGFuZHNoYWtlICsgYmFzaWMgcGFja2V0IHNlbmQvcmVjdi4KLy8gUGhhc2UgMiB3aWxsIGFkZDogcmVsaWFiaWxpdHkgKEFDSy9yZXRyYW5zbWl0KSwgQkJSLCBmdWxsIGhlYWRlciBwcm90ZWN0aW9uLgpwYWNrYWdlIG1pc3Rjb3JlCgppbXBvcnQgKAoJImNyeXB0by9yYW5kIgoJImVycm9ycyIKCSJuZXQiCgkic3luYyIKCSJ0aW1lIgopCgovLyBVRFBTZXNzaW9uIHJlcHJlc2VudHMgYSBNaXN0IFVEUCBzZXNzaW9uLgp0eXBlIFVEUFNlc3Npb24gc3RydWN0IHsKCS8vIFNlc3Npb24gSUQgKDE2IGJ5dGVzLCBmcm9tIEFVVEhfT0sgQ09OTl9JRCkuCglTZXNzaW9uSUQgWzE2XWJ5dGUKCgkvLyBLZXlzIChkZXJpdmVkIHZpYSBYMjU1MTkgKyBIS0RGLCDCpzUuMykuCglLZXlDMlMgWzMyXWJ5dGUgLy8gY2xpZW50IOKGkiBzZXJ2ZXIKCUtleVMyQyBbMzJdYnl0ZSAvLyBzZXJ2ZXIg4oaSIGNsaWVudAoKCS8vIEhlYWRlciBwcm90ZWN0aW9uIGtleXMgKHBlciBkaXJlY3Rpb24sIMKnMy4yKS4KCS8vIERlcml2ZWQgYXQgc2Vzc2lvbiBjcmVhdGlvbjsgdXNlZCBmb3IgUVVJQyBzaG9ydCBoZWFkZXIgbWFza2luZy4KCUhQS2V5QzJTIFszMl1ieXRlCglIUEtleVMyQyBbMzJdYnl0ZQoKCS8vIFBhY2tldCBudW1iZXJzIChwZXIgZGlyZWN0aW9uLCBpbmRlcGVuZGVudCkuCgluZXh0UGt0TnVtQzJTIHVpbnQzMgoJbmV4dFBrdE51bVMyQyB1aW50MzIKCgkvLyBSZW1vdGUgYWRkcmVzcyAoZm9yIHNlcnZlcjogY2xpZW50J3MgVURQIGFkZHJlc3MpLgoJUmVtb3RlQWRkciAqbmV0LlVEUEFkZHIKCgkvLyBDb2RlYyBmb3IgSW5pdGlhbCBwYWNrZXRzIChpbnRlcmZhY2UgYWxsb3dzIFBoYXNlIDAgcmVwbGFjZW1lbnQpLgoJQ29kZWMgSW5pdGlhbENvZGVjCgoJLy8gQkJSIGNvbmdlc3Rpb24gY29udHJvbGxlciAoUGhhc2UgMiwgwqc3KS4KCUJCUiAqQkJSQ29udHJvbGxlcgoJLy8gUmVsaWFiaWxpdHkgdHJhY2tlciAoUGhhc2UgMiwgwqc2KTogc2VudCB0cmFja2luZyArIHJlY3Ygd2luZG93ICsgQUNLLgoJUmVsICpVRFBSZWxpYWJpbGl0eQoKCS8vIENyZWF0ZWQgdGltZSAoZm9yIGlkbGUgdGltZW91dCkuCglDcmVhdGVkQXQgdGltZS5UaW1lCglMYXN0QWN0aXZlIHRpbWUuVGltZQoKCW11IHN5bmMuTXV0ZXgKfQoKLy8gTmV3VURQU2Vzc2lvbiBjcmVhdGVzIGEgbmV3IFVEUCBzZXNzaW9uIGFmdGVyIGhhbmRzaGFrZS4KZnVuYyBOZXdVRFBTZXNzaW9uKHNlc3Npb25JRCBbMTZdYnl0ZSwga2V5QzJTLCBrZXlTMkMgWzMyXWJ5dGUsIHJlbW90ZUFkZHIgKm5ldC5VRFBBZGRyLCBjb2RlYyBJbml0aWFsQ29kZWMpICpVRFBTZXNzaW9uIHsKCW5vdyA6PSB0aW1lLk5vdygpCgl2YXIgc2lkOCBbOF1ieXRlCgljb3B5KHNpZDhbOl0sIHNlc3Npb25JRFs6OF0pCgkvLyBIZWFkZXIgcHJvdGVjdGlvbiBrZXlzIChwZXIgZGlyZWN0aW9uLCDCpzMuMikuCglocEMyUyA6PSBVRFBEZXJpdmVIUEtleSgma2V5QzJTLCBzaWQ4LCBEaXJDMlMpCglocFMyQyA6PSBVRFBEZXJpdmVIUEtleSgma2V5UzJDLCBzaWQ4LCBEaXJTMkMpCgkvLyBCQlIgKyByZWxpYWJpbGl0eSAoUGhhc2UgMikuCgliYnJDdGwgOj0gTmV3QkJSQ29udHJvbGxlcigxMzUwKSAvLyDCpzguNCBNVFUKCXJlbCA6PSBOZXdVRFBSZWxpYWJpbGl0eShiYnJDdGwpCglyZXR1cm4gJlVEUFNlc3Npb257CgkJU2Vzc2lvbklEOiAgc2Vzc2lvbklELAoJCUtleUMyUzogICAgIGtleUMyUywKCQlLZXlTMkM6ICAgICBrZXlTMkMsCgkJSFBLZXlDMlM6ICAgaHBDMlMsCgkJSFBLZXlTMkM6ICAgaHBTMkMsCgkJUmVtb3RlQWRkcjogcmVtb3RlQWRkciwKCQlDb2RlYzogICAgICBjb2RlYywKCQlCQlI6ICAgICAgICBiYnJDdGwsCgkJUmVsOiAgICAgICAgcmVsLAoJCUNyZWF0ZWRBdDogIG5vdywKCQlMYXN0QWN0aXZlOiBub3csCgl9Cn0KCi8vIE5leHRQYWNrZXROdW0gcmV0dXJucyB0aGUgbmV4dCBwYWNrZXQgbnVtYmVyIGZvciB0aGUgZ2l2ZW4gZGlyZWN0aW9uCi8vIGFuZCBpbmNyZW1lbnRzIHRoZSBjb3VudGVyLiBUaHJlYWQtc2FmZS4KZnVuYyAocyAqVURQU2Vzc2lvbikgTmV4dFBhY2tldE51bShkaXIgdWludDMyKSB1aW50MzIgewoJcy5tdS5Mb2NrKCkKCWRlZmVyIHMubXUuVW5sb2NrKCkKCWlmIGRpciA9PSBEaXJDMlMgewoJCW4gOj0gcy5uZXh0UGt0TnVtQzJTCgkJcy5uZXh0UGt0TnVtQzJTKysKCQlyZXR1cm4gbgoJfQoJbiA6PSBzLm5leHRQa3ROdW1TMkMKCXMubmV4dFBrdE51bVMyQysrCglyZXR1cm4gbgp9CgovLyBTZXNzaW9uSUQ4IHJldHVybnMgdGhlIGZpcnN0IDggYnl0ZXMgb2YgdGhlIHNlc3Npb24gSUQgKGZvciBEQ0lEIGFuZCBub25jZSkuCmZ1bmMgKHMgKlVEUFNlc3Npb24pIFNlc3Npb25JRDgoKSBbOF1ieXRlIHsKCXZhciBvdXQgWzhdYnl0ZQoJY29weShvdXRbOl0sIHMuU2Vzc2lvbklEWzo4XSkKCXJldHVybiBvdXQKfQoKLy8gVG91Y2ggdXBkYXRlcyB0aGUgbGFzdC1hY3RpdmUgdGltZS4gVGhyZWFkLXNhZmUuCmZ1bmMgKHMgKlVEUFNlc3Npb24pIFRvdWNoKCkgewoJcy5tdS5Mb2NrKCkKCWRlZmVyIHMubXUuVW5sb2NrKCkKCXMuTGFzdEFjdGl2ZSA9IHRpbWUuTm93KCkKfQoKLy8gVGljayBydW5zIHRoZSBzZXNzaW9uJ3MgcGVyaW9kaWMgbWFpbnRlbmFuY2U6IGZsdXNoIHBlbmRpbmcgQUNLcyBhbmQgc2NhbgovLyBmb3IgcmV0cmFuc21pc3Npb24gdGltZW91dHMuIENhbGwgaXQgZXZlcnkgfjEwbXMgZnJvbSB0aGUgc2Vzc2lvbidzIHRpbWVyCi8vIGxvb3AgKGJvdGggZW5kczogY2xpZW50IGFuZCBzZXJ2ZXIpLgovLwovLyBCdW5kbGluZyBGbHVzaEFjayArIENoZWNrUlRPIGhlcmUgbWFrZXMgImZvcmdvdCB0byBjYWxsIG9uZSBvZiB0aGVtIgovLyBzdHJ1Y3R1cmFsbHkgaW1wb3NzaWJsZS4gMjAyNi0xMC0yMyBsYWIgcm9vdCBjYXVzZTogdGhlIHNlcnZlcidzIGxvb3Agb25seQovLyBjYWxsZWQgRmx1c2hBY2ssIHNvIHNlcnZlci0+Y2xpZW50IGxvc3Mgd2FzIG5ldmVyIHJldHJhbnNtaXR0ZWQgYW5kIDEwMEtCCi8vIGVjaG8gc3RhbGxlZCBhdCAxMDEyMDAvMTAyNDAwIHdpdGggbm8gcmVjb3ZlcnkuCmZ1bmMgKHMgKlVEUFNlc3Npb24pIFRpY2soKSB7CglzLlJlbC5GbHVzaEFjaygpCglzLlJlbC5DaGVja1JUTygpCn0KCi8vIFNlYWxQYWNrZXQgZW5jcnlwdHMgZnJhbWVzIGludG8gYSBVRFAgZGF0YWdyYW0uCi8vCi8vIFN0ZXBzOgovLyAgMS4gQ29uY2F0ZW5hdGUgZnJhbWUgcGxhaW50ZXh0cyAodG90YWwg4omkIE1heFVEUFBsYWludGV4dCkuCi8vICAyLiBCdWlsZCBub25jZTogW1NFU1NJT05fSUQoOCldW0RJUig0KV1bUEFDS0VUX05VTSg0KV1bUkVTRVJWRUQoOCldLgovLyAgICAgVXNlcyB0aGUgUkVBTCAocHJlLW1hc2spIHBhY2tldCBudW1iZXIgKMKnNC4yKS4KLy8gIDMuIEFFQUQgZW5jcnlwdCB3aXRoIGRpcmVjdGlvbiBrZXksIEFBRCA9IFFVSUMgc2hvcnQgaGVhZGVyICh1bm1hc2tlZCkuCi8vICA0LiBBcHBseSBoZWFkZXIgcHJvdGVjdGlvbiBtYXNrIHRvIHRoZSBoZWFkZXIgKMKnMy4yLCBQaGFzZSAyKToKLy8gICAgIHNhbXBsZSA9IGZpcnN0IDE2IGJ5dGVzIG9mIGNpcGhlcnRleHQuCi8vICA1LiBQcmVwZW5kIG1hc2tlZCBRVUlDIHNob3J0IGhlYWRlci4KLy8KLy8gUmV0dXJucyB0aGUgZnVsbCBVRFAgZGF0YWdyYW0uCi8vIHNlYWxQYWNrZXRUcmFja2VkIGlzIHRoZSBwYWNrYWdlLXByaXZhdGUgZW50cnkgcG9pbnQgZm9yIHRyYWNrZWQgc2VuZHMuCi8vIE9ubHkgVURQU2VuZFNjaGVkdWxlciBtYXkgY2FsbCBpdDogdGhpcyBtYWtlcyAiYnlwYXNzIHRoZSBjd25kL3BhY2luZwovLyBnYXRlIiBhIGNvbXBpbGUgZXJyb3IgaW5zdGVhZCBvZiBhIGNvZGUtcmV2aWV3IGNhdGNoLgovLwovLyAoVGhlIHB1YmxpYyBTZWFsUGFja2V0IHdyYXBwZXIgd2FzIHJlbW92ZWQ7IHVzZSB0aGUgc2NoZWR1bGVyLikKZnVuYyAocyAqVURQU2Vzc2lvbikgc2VhbFBhY2tldFRyYWNrZWQoZGlyIHVpbnQzMiwgZnJhbWVzIFtdW11ieXRlKSAoW11ieXRlLCBlcnJvcikgewoJcmV0dXJuIHMuc2VhbFBhY2tldChkaXIsIGZyYW1lcywgdHJ1ZSkKfQoKLy8gU2VhbFBhY2tldFVudHJhY2tlZCBlbmNyeXB0cyBmcmFtZXMgaW50byBhIFVEUCBkYXRhZ3JhbSB3aXRob3V0Ci8vIHJlbGlhYmlsaXR5IHRyYWNraW5nIG9yIEJCUiBhY2NvdW50aW5nLgovLwovLyBVc2UgZm9yIEFDSy1vbmx5IHBhY2tldHM6IEFDS3MgYXJlIG5ldmVyIGFja25vd2xlZGdlZCB0aGVtc2VsdmVzLCBzbwovLyB0cmFja2luZyB0aGVtIHdvdWxkIGxlYWsgc2VudFBhY2tldHMgZW50cmllcywgaW5mbGF0ZSBieXRlc0luRmxpZ2h0LAovLyBhbmQgY2F1c2Ugc3B1cmlvdXMgUlRPIHJldHJhbnNtaXNzaW9ucyBvZiBBQ0tzLgpmdW5jIChzICpVRFBTZXNzaW9uKSBTZWFsUGFja2V0VW50cmFja2VkKGRpciB1aW50MzIsIGZyYW1lcyBbXVtdYnl0ZSkgKFtdYnl0ZSwgZXJyb3IpIHsKCXJldHVybiBzLnNlYWxQYWNrZXQoZGlyLCBmcmFtZXMsIGZhbHNlKQp9CgpmdW5jIChzICpVRFBTZXNzaW9uKSBzZWFsUGFja2V0KGRpciB1aW50MzIsIGZyYW1lcyBbXVtdYnl0ZSwgdHJhY2sgYm9vbCkgKFtdYnl0ZSwgZXJyb3IpIHsKCS8vIENvbmNhdGVuYXRlIGZyYW1lcy4KCXZhciBwbGFpbnRleHQgW11ieXRlCglmb3IgXywgZiA6PSByYW5nZSBmcmFtZXMgewoJCXBsYWludGV4dCA9IGFwcGVuZChwbGFpbnRleHQsIGYuLi4pCgl9CglpZiBsZW4ocGxhaW50ZXh0KSA+IE1heFVEUFBsYWludGV4dCB7CgkJcmV0dXJuIG5pbCwgZXJyb3JzLk5ldygidWRwOiBwbGFpbnRleHQgZXhjZWVkcyBtYXgiKQoJfQoKCS8vIEdldCBwYWNrZXQgbnVtYmVyIChyZWFsLCBwcmUtbWFzaykuCglwa3ROdW0gOj0gcy5OZXh0UGFja2V0TnVtKGRpcikKCgkvLyBTZWxlY3Qga2V5IGFuZCBIUCBrZXkuCgl2YXIga2V5ICpbMzJdYnl0ZQoJdmFyIGhwS2V5IFszMl1ieXRlCglpZiBkaXIgPT0gRGlyQzJTIHsKCQlrZXkgPSAmcy5LZXlDMlMKCQlocEtleSA9IHMuSFBLZXlDMlMKCX0gZWxzZSB7CgkJa2V5ID0gJnMuS2V5UzJDCgkJaHBLZXkgPSBzLkhQS2V5UzJDCgl9CgoJLy8gQnVpbGQgUVVJQyBzaG9ydCBoZWFkZXIgKEFBRCB1c2VzIFVOTUFTS0VEIGhlYWRlciwgwqc0LjIpLgoJZGNpZCA6PSBzLlNlc3Npb25JRDgoKQoJaGVhZGVyIDo9IEJ1aWxkU2hvcnRIZWFkZXIoZGNpZCwgcGt0TnVtLCBmYWxzZSkKCgkvLyBCdWlsZCBub25jZSAocHJlLW1hc2sgcmVhbCBwYWNrZXQgbnVtYmVyLCDCpzQuMikuCglub25jZSA6PSBVRFBOb25jZShkY2lkLCBkaXIsIHBrdE51bSkKCgkvLyBFbmNyeXB0LgoJY2lwaGVydGV4dCwgZXJyIDo9IFVEUFNlYWwoa2V5LCBub25jZSwgcGxhaW50ZXh0LCBoZWFkZXJbOl0pCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gbmlsLCBlcnIKCX0KCgkvLyBIZWFkZXIgcHJvdGVjdGlvbjogc2FtcGxlID0gZmlyc3QgMTYgYnl0ZXMgb2YgY2lwaGVydGV4dC4KCWlmIGxlbihjaXBoZXJ0ZXh0KSA8IDE2IHsKCQlyZXR1cm4gbmlsLCBlcnJvcnMuTmV3KCJ1ZHA6IGNpcGhlcnRleHQgdG9vIHNob3J0IGZvciBoZWFkZXIgcHJvdGVjdGlvbiBzYW1wbGUiKQoJfQoJc2FtcGxlIDo9IGNpcGhlcnRleHRbOjE2XQoJaGRyIDo9IGhlYWRlcls6XSAvLyBjb3B5IHRvIG11dGFibGUgc2xpY2UKCWlmIGVyciA6PSBBcHBseUhlYWRlclByb3RlY3Rpb24oaGRyLCBocEtleSwgc2FtcGxlKTsgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXJyCgl9CgoJLy8gQXNzZW1ibGUgZGF0YWdyYW06IG1hc2tlZCBoZWFkZXIgKyBjaXBoZXJ0ZXh0LgoJZGF0YWdyYW0gOj0gbWFrZShbXWJ5dGUsIDAsIGxlbihoZHIpK2xlbihjaXBoZXJ0ZXh0KSkKCWRhdGFncmFtID0gYXBwZW5kKGRhdGFncmFtLCBoZHIuLi4pCglkYXRhZ3JhbSA9IGFwcGVuZChkYXRhZ3JhbSwgY2lwaGVydGV4dC4uLikKCgkvLyBSZWxpYWJpbGl0eSB0cmFja2luZyAoUGhhc2UgMiwgwqc2LjIpLgoJLy8gU2tpcHBlZCBmb3IgdW50cmFja2VkIHBhY2tldHMgKGUuZy4gQUNLcyk6IHRoZXkgYXJlIG5ldmVyIEFDS2VkCgkvLyB0aGVtc2VsdmVzLCBzbyB0cmFja2luZyB3b3VsZCBsZWFrIGFuZCBjYXVzZSBzcHVyaW91cyBSVE9zLgoJaWYgdHJhY2sgewoJCWlmIHMuUmVsICE9IG5pbCB7CgkJCXMuUmVsLlBhY2tldFNlbnQocGt0TnVtLCBmcmFtZXMsIGxlbihkYXRhZ3JhbSkpCgkJfQoJCWlmIHMuQkJSICE9IG5pbCB7CgkJCXMuQkJSLk9uUGFja2V0U2VudChwa3ROdW0sIGxlbihkYXRhZ3JhbSksIHMuUmVsLkJ5dGVzSW5GbGlnaHQoKSkKCQl9Cgl9CgoJcmV0dXJuIGRhdGFncmFtLCBuaWwKfQoKLy8gT3BlblBhY2tldCBkZWNyeXB0cyBhIFVEUCBkYXRhZ3JhbSBhbmQgcmV0dXJucyB0aGUgZnJhbWVzLgovLwovLyBTdGVwczoKLy8gIDEuIEV4dHJhY3QgaGVhZGVyIHByb3RlY3Rpb24gc2FtcGxlIGZyb20gY2lwaGVydGV4dCAoZGF0YWdyYW1bMTM6MjldKS4KLy8gIDIuIFJlbW92ZSBoZWFkZXIgcHJvdGVjdGlvbiBtYXNrIOKGkiByZWFsIGhlYWRlciB3aXRoIHJlYWwgcGFja2V0IG51bWJlci4KLy8gIDMuIFBhcnNlIHJlYWwgaGVhZGVyIChnZXQgRENJRCwgcGFja2V0IG51bWJlcikuCi8vICA0LiBCdWlsZCBub25jZSBmcm9tIFJFQUwgKHVubWFza2VkKSBwYWNrZXQgbnVtYmVyICjCpzQuMikuCi8vICA1LiBBRUFEIGRlY3J5cHQgd2l0aCBkaXJlY3Rpb24ga2V5LCBBQUQgPSB1bm1hc2tlZCBoZWFkZXIuCi8vICA2LiBEZWNvZGUgZnJhbWVzIGZyb20gcGxhaW50ZXh0LgovLyAgNy4gUmVsaWFiaWxpdHk6IG1hcmsgcGFja2V0IHJlY2VpdmVkIChtYXkgdHJpZ2dlciBBQ0spLgpmdW5jIChzICpVRFBTZXNzaW9uKSBPcGVuUGFja2V0KGRpciB1aW50MzIsIGRhdGFncmFtIFtdYnl0ZSkgKFtdVURQRnJhbWUsIHVpbnQzMiwgZXJyb3IpIHsKCWlmIGxlbihkYXRhZ3JhbSkgPCBRVUlDU2hvcnRIZWFkZXJMZW4rMTYgewoJCXJldHVybiBuaWwsIDAsIGVycm9ycy5OZXcoInVkcDogZGF0YWdyYW0gdG9vIHNob3J0IikKCX0KCgkvLyBTZWxlY3QgSFAga2V5LgoJdmFyIGhwS2V5IFszMl1ieXRlCglpZiBkaXIgPT0gRGlyQzJTIHsKCQlocEtleSA9IHMuSFBLZXlDMlMKCX0gZWxzZSB7CgkJaHBLZXkgPSBzLkhQS2V5UzJDCgl9CgoJLy8gRXh0cmFjdCBzYW1wbGUgQkVGT1JFIHVubWFza2luZyAoc2FtcGxlIGlzIGZyb20gY2lwaGVydGV4dCkuCglzYW1wbGUsIGVyciA6PSBIZWFkZXJQcm90ZWN0U2FtcGxlKGRhdGFncmFtKQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgMCwgZXJyCgl9CgoJLy8gQ29weSBoZWFkZXIgYW5kIHJlbW92ZSBwcm90ZWN0aW9uIHRvIGdldCByZWFsIHBhY2tldCBudW1iZXIuCgl2YXIgaGRyQnVmIFtRVUlDU2hvcnRIZWFkZXJMZW5dYnl0ZQoJY29weShoZHJCdWZbOl0sIGRhdGFncmFtWzpRVUlDU2hvcnRIZWFkZXJMZW5dKQoJaWYgZXJyIDo9IFJlbW92ZUhlYWRlclByb3RlY3Rpb24oaGRyQnVmWzpdLCBocEtleSwgc2FtcGxlKTsgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgMCwgZXJyCgl9CgoJLy8gUGFyc2UgdW5tYXNrZWQgaGVhZGVyLgoJZGNpZCwgcGt0TnVtLCBfLCBlcnIgOj0gUGFyc2VTaG9ydEhlYWRlcihoZHJCdWZbOl0pCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gbmlsLCAwLCBlcnIKCX0KCgkvLyBWZXJpZnkgRENJRCBtYXRjaGVzIHNlc3Npb24gKGZpcnN0IDggYnl0ZXMgb2Ygc2Vzc2lvbiBJRCkuCglleHBlY3RlZERDSUQgOj0gcy5TZXNzaW9uSUQ4KCkKCWlmIGRjaWQgIT0gZXhwZWN0ZWREQ0lEIHsKCQlyZXR1cm4gbmlsLCAwLCBlcnJvcnMuTmV3KCJ1ZHA6IERDSUQgbWlzbWF0Y2giKQoJfQoKCS8vIFNlbGVjdCBrZXkuCgl2YXIga2V5ICpbMzJdYnl0ZQoJaWYgZGlyID09IERpckMyUyB7CgkJa2V5ID0gJnMuS2V5QzJTCgl9IGVsc2UgewoJCWtleSA9ICZzLktleVMyQwoJfQoKCS8vIEJ1aWxkIG5vbmNlIHdpdGggUkVBTCAodW5tYXNrZWQpIHBhY2tldCBudW1iZXIuCgkvLyBBQUQgaXMgdGhlIFVOTUFTS0VEIGhlYWRlciAowqc0LjIpLgoJbm9uY2UgOj0gVURQTm9uY2UoZGNpZCwgZGlyLCBwa3ROdW0pCgoJLy8gRGVjcnlwdC4KCWNpcGhlcnRleHQgOj0gZGF0YWdyYW1bUVVJQ1Nob3J0SGVhZGVyTGVuOl0KCXBsYWludGV4dCwgZXJyIDo9IFVEUE9wZW4oa2V5LCBub25jZSwgY2lwaGVydGV4dCwgaGRyQnVmWzpdKQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgMCwgZXJyCgl9CgoJLy8gRGVjb2RlIGZyYW1lcy4KCWZyYW1lcywgZXJyIDo9IERlY29kZVVEUEZyYW1lcyhwbGFpbnRleHQpCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gbmlsLCAwLCBlcnIKCX0KCgkvLyBSZWxpYWJpbGl0eTogbWFyayByZWNlaXZlZCAobWF5IHRyaWdnZXIgQUNLIHZpYSBjYWxsYmFjaykuCglpZiBzLlJlbCAhPSBuaWwgewoJCXMuUmVsLlBhY2tldFJlY2VpdmVkKHBrdE51bSkKCX0KCglzLlRvdWNoKCkKCXJldHVybiBmcmFtZXMsIHBrdE51bSwgbmlsCn0KCi8vIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQovLyBTZXJ2ZXItc2lkZSBoYW5kc2hha2UKLy8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgovLyBVRFBIYW5kc2hha2VSZXN1bHQgY29udGFpbnMgdGhlIHJlc3VsdCBvZiBhIHN1Y2Nlc3NmdWwgc2VydmVyLXNpZGUgaGFuZHNoYWtlLgp0eXBlIFVEUEhhbmRzaGFrZVJlc3VsdCBzdHJ1Y3QgewoJU2Vzc2lvbiAqVURQU2Vzc2lvbgoJLy8gUmVzcG9uc2UgcGFja2V0IHRvIHNlbmQgYmFjayB0byBjbGllbnQgKEluaXRpYWwgQVVUSF9PSykuCglSZXNwb25zZSBbXWJ5dGUKfQoKLy8gVURQU2VydmVySGFuZHNoYWtlIHByb2Nlc3NlcyBhIGNsaWVudCdzIEluaXRpYWwoQVVUSCkgcGFja2V0LgovLyBUaGlzIGlzIHRoZSBzZXJ2ZXIgc2lkZSBvZiB0aGUgwqc1LjEgaGFuZHNoYWtlLgovLwovLyBTdGVwczoKLy8gIDEuIFBhcnNlIEluaXRpYWwgcGFja2V0IChnZXQgQVVUSCBwYXlsb2FkKS4KLy8gIDIuIERlY3J5cHQgQVVUSCAodXNpbmcgS19hdXRoIGxvb2t1cCB2aWEgSEFORFNIQUtFX0NJRCkuCi8vICAzLiBWZXJpZnkgdGltZXN0YW1wLCBhbnRpLXJlcGxheS4KLy8gIDQuIEdlbmVyYXRlIHNlcnZlciBlcGhlbWVyYWwga2V5cGFpciwgZGVyaXZlIHNlc3Npb24ga2V5cy4KLy8gIDUuIENyZWF0ZSBzZXNzaW9uLCBidWlsZCBBVVRIX09LIHJlc3BvbnNlLgpmdW5jIFVEUFNlcnZlckhhbmRzaGFrZSgKCWNvZGVjIEluaXRpYWxDb2RlYywKCXBhY2tldCBbXWJ5dGUsCgljbGllbnRBZGRyICpuZXQuVURQQWRkciwKCWxvb2t1cEF1dGggZnVuYyhoYW5kc2hha2VDSUQgWzE2XWJ5dGUsIG5vbmNlIFsyNF1ieXRlKSAoa0F1dGggKlszMl1ieXRlLCBjaWQgWzE2XWJ5dGUsIG9rIGJvb2wpLAopICgqVURQSGFuZHNoYWtlUmVzdWx0LCBlcnJvcikgewoJLy8gMS4gUGFyc2UgSW5pdGlhbCBwYWNrZXQuCglhdXRoV2lyZSwgXywgc2NpZCwgXywgZXJyIDo9IGNvZGVjLk9wZW5Jbml0aWFsKHBhY2tldCkKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIGVycgoJfQoJLy8gYXV0aFdpcmUgPSBbSEFORFNIQUtFX0NJRCgxNildW05PTkNFKDI0KV1bQ0lQSEVSVEVYVF0KCWlmIGxlbihhdXRoV2lyZSkgPCAxNisyNCsxNiB7CgkJcmV0dXJuIG5pbCwgZXJyb3JzLk5ldygidWRwOiBBVVRIIHdpcmUgdG9vIHNob3J0IikKCX0KCXZhciBoYW5kc2hha2VDSUQgWzE2XWJ5dGUKCWNvcHkoaGFuZHNoYWtlQ0lEWzpdLCBhdXRoV2lyZVs6MTZdKQoJdmFyIG5vbmNlIFsyNF1ieXRlCgljb3B5KG5vbmNlWzpdLCBhdXRoV2lyZVsxNjo0MF0pCgljaXBoZXJ0ZXh0IDo9IGF1dGhXaXJlWzQwOl0KCgkvLyAyLiBMb29rdXAgS19hdXRoIHZpYSBIQU5EU0hBS0VfQ0lELgoJa0F1dGgsIGNpZCwgb2sgOj0gbG9va3VwQXV0aChoYW5kc2hha2VDSUQsIG5vbmNlKQoJaWYgIW9rIHsKCQlyZXR1cm4gbmlsLCBlcnJvcnMuTmV3KCJ1ZHA6IHVua25vd24gaGFuZHNoYWtlIENJRCIpCgl9CgoJLy8gMy4gRGVjcnlwdCBBVVRIIHVzaW5nIEtfYXV0aC4KCWFlYWQsIGVyciA6PSB1ZHBBRUFEKGtBdXRoKQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXJyCgl9CglwbGFpbiwgZXJyIDo9IGFlYWQuT3BlbihuaWwsIG5vbmNlWzpdLCBjaXBoZXJ0ZXh0LCBoYW5kc2hha2VDSURbOl0pCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gbmlsLCBlcnJvcnMuTmV3KCJ1ZHA6IEFVVEggZGVjcnlwdCBmYWlsZWQiKQoJfQoKCS8vIFBhcnNlIEFVVEhfUExBSU46IFtWRVIoMSldW1RTKDgpXVtFUEhfUFVCKDMyKV1bRkVBVCgxKV1bTU9ERSgxKV1bUlNWRCgyKV0KCWlmIGxlbihwbGFpbikgPCA0NSB7CgkJcmV0dXJuIG5pbCwgZXJyb3JzLk5ldygidWRwOiBBVVRIX1BMQUlOIHRvbyBzaG9ydCIpCgl9CglpZiBwbGFpblswXSAhPSAweDAyIHsKCQlyZXR1cm4gbmlsLCBlcnJvcnMuTmV3KCJ1ZHA6IG5vdCBVRFAgdmVyc2lvbiIpCgl9CgkvLyBUT0RPOiB2ZXJpZnkgdGltZXN0YW1wLCBhbnRpLXJlcGxheSAoUGhhc2UgMSBzaW1wbGlmaWVkOiBza2lwIGZvciBub3cpCglfID0gY2lkCgoJdmFyIGNsaWVudEVwaFB1YiBbMzJdYnl0ZQoJY29weShjbGllbnRFcGhQdWJbOl0sIHBsYWluWzk6NDFdKQoKCS8vIDQuIEdlbmVyYXRlIHNlcnZlciBlcGhlbWVyYWwga2V5cGFpci4KCXNlcnZlclByaXYsIHNlcnZlclB1YiwgZXJyIDo9IFgyNTUxOUtleXBhaXIoKQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXJyCgl9CgoJLy8gRGVyaXZlIHNoYXJlZCBzZWNyZXQuCglzaGFyZWQsIGVyciA6PSBYMjU1MTlTaGFyZWQoJnNlcnZlclByaXYsICZjbGllbnRFcGhQdWIpCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gbmlsLCBlcnIKCX0KCgkvLyBEZXJpdmUgc2Vzc2lvbiBrZXlzIChzYW1lIGFzIFRDUCDCpzYuNCkuCglrQzJTLCBrUzJDIDo9IERlcml2ZVNlc3Npb25LZXlzKGNsaWVudEVwaFB1Yiwgc2VydmVyUHViLCBzaGFyZWQpCgoJLy8gNS4gR2VuZXJhdGUgc2Vzc2lvbiBJRCAoQ09OTl9JRCwgMTYgYnl0ZXMgcmFuZG9tKS4KCXZhciBzZXNzaW9uSUQgWzE2XWJ5dGUKCWlmIF8sIGVyciA6PSByYW5kLlJlYWQoc2Vzc2lvbklEWzpdKTsgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXJyCgl9CgoJLy8gQnVpbGQgQVVUSF9PSyBwYXlsb2FkIChzaW1wbGlmaWVkKS4KCS8vIEZvcm1hdDogW1NSVl9FUEhfUFVCKDMyKV1bQ09OTl9JRCgxNildLi4uCgkvLyBGb3IgUGhhc2UgMSwgbWluaW1hbDoganVzdCBlbm91Z2ggZm9yIGNsaWVudCB0byBkZXJpdmUga2V5cy4KCWF1dGhPS1BsYWluIDo9IG1ha2UoW11ieXRlLCA0OCkKCWNvcHkoYXV0aE9LUGxhaW5bMDozMl0sIHNlcnZlclB1Yls6XSkKCWNvcHkoYXV0aE9LUGxhaW5bMzI6NDhdLCBzZXNzaW9uSURbOl0pCgoJLy8gRW5jcnlwdCBBVVRIX09LIHdpdGggS19hdXRoIChzaW1wbGlmaWVkOyByZWFsIHdpbGwgdXNlIHByb3BlciBmb3JtYXQpLgoJdmFyIGF1dGhPS05vbmNlIFsyNF1ieXRlCglpZiBfLCBlcnIgOj0gcmFuZC5SZWFkKGF1dGhPS05vbmNlWzpdKTsgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXJyCgl9CglhdXRoT0tDaXBoZXIsIGVyciA6PSBVRFBTZWFsKGtBdXRoLCBhdXRoT0tOb25jZSwgYXV0aE9LUGxhaW4sIG5pbCkKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIGVycgoJfQoJLy8gV2lyZTogW05PTkNFKDI0KV1bQ0lQSEVSVEVYVF0KCWF1dGhPS1dpcmUgOj0gbWFrZShbXWJ5dGUsIDAsIDI0K2xlbihhdXRoT0tDaXBoZXIpKQoJYXV0aE9LV2lyZSA9IGFwcGVuZChhdXRoT0tXaXJlLCBhdXRoT0tOb25jZVs6XS4uLikKCWF1dGhPS1dpcmUgPSBhcHBlbmQoYXV0aE9LV2lyZSwgYXV0aE9LQ2lwaGVyLi4uKQoKCS8vIEJ1aWxkIEluaXRpYWwgcmVzcG9uc2UgcGFja2V0LgoJLy8gRENJRCA9IGNsaWVudCdzIFNDSUQgKHNvIGNsaWVudCBjYW4gbWF0Y2gpLgoJcmVzcG9uc2UsIGVyciA6PSBjb2RlYy5TZWFsSW5pdGlhbFJlc3BvbnNlKGF1dGhPS1dpcmUsIHNjaWQsIHNlc3Npb25JRDgoc2Vzc2lvbklEKSwgMCkKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIGVycgoJfQoKCS8vIENyZWF0ZSBzZXNzaW9uLgoJc2Vzc2lvbiA6PSBOZXdVRFBTZXNzaW9uKHNlc3Npb25JRCwga0MyUywga1MyQywgY2xpZW50QWRkciwgY29kZWMpCgoJcmV0dXJuICZVRFBIYW5kc2hha2VSZXN1bHR7CgkJU2Vzc2lvbjogIHNlc3Npb24sCgkJUmVzcG9uc2U6IHJlc3BvbnNlLAoJfSwgbmlsCn0KCi8vIHNlc3Npb25JRDggZXh0cmFjdHMgZmlyc3QgOCBieXRlcyBvZiBzZXNzaW9uIElELgpmdW5jIHNlc3Npb25JRDgoc2lkIFsxNl1ieXRlKSBbOF1ieXRlIHsKCXZhciBvdXQgWzhdYnl0ZQoJY29weShvdXRbOl0sIHNpZFs6OF0pCglyZXR1cm4gb3V0Cn0K
+// Package mistcore: Mist UDP session management.
+//
+// A UDP session is established via the Initial handshake (§5):
+//   Client → Server: Initial(AUTH)    [QUIC long header]
+//   Server → Client: Initial(AUTH_OK) [QUIC long header]
+// Then both sides use short headers for data.
+//
+// Phase 1 scope: handshake + basic packet send/recv.
+// Phase 2 will add: reliability (ACK/retransmit), BBR, full header protection.
+package mistcore
+
+import (
+	"crypto/rand"
+	"errors"
+	"net"
+	"sync"
+	"time"
+)
+
+// UDPSession represents a Mist UDP session.
+type UDPSession struct {
+	// Session ID (16 bytes, from AUTH_OK CONN_ID).
+	SessionID [16]byte
+
+	// Keys (derived via X25519 + HKDF, §5.3).
+	KeyC2S [32]byte // client → server
+	KeyS2C [32]byte // server → client
+
+	// Header protection keys (per direction, §3.2).
+	// Derived at session creation; used for QUIC short header masking.
+	HPKeyC2S [32]byte
+	HPKeyS2C [32]byte
+
+	// Packet numbers (per direction, independent).
+	nextPktNumC2S uint32
+	nextPktNumS2C uint32
+
+	// Remote address (for server: client's UDP address).
+	RemoteAddr *net.UDPAddr
+
+	// Codec for Initial packets (interface allows Phase 0 replacement).
+	Codec InitialCodec
+
+	// BBR congestion controller (Phase 2, §7).
+	BBR *BBRController
+	// Reliability tracker (Phase 2, §6): sent tracking + recv window + ACK.
+	Rel *UDPReliability
+
+	// Created time (for idle timeout).
+	CreatedAt time.Time
+	LastActive time.Time
+
+	mu sync.Mutex
+}
+
+// NewUDPSession creates a new UDP session after handshake.
+func NewUDPSession(sessionID [16]byte, keyC2S, keyS2C [32]byte, remoteAddr *net.UDPAddr, codec InitialCodec) *UDPSession {
+	now := time.Now()
+	var sid8 [8]byte
+	copy(sid8[:], sessionID[:8])
+	// Header protection keys (per direction, §3.2).
+	hpC2S := UDPDeriveHPKey(&keyC2S, sid8, DirC2S)
+	hpS2C := UDPDeriveHPKey(&keyS2C, sid8, DirS2C)
+	// BBR + reliability (Phase 2).
+	bbrCtl := NewBBRController(1350) // §8.4 MTU
+	rel := NewUDPReliability(bbrCtl)
+	return &UDPSession{
+		SessionID:  sessionID,
+		KeyC2S:     keyC2S,
+		KeyS2C:     keyS2C,
+		HPKeyC2S:   hpC2S,
+		HPKeyS2C:   hpS2C,
+		RemoteAddr: remoteAddr,
+		Codec:      codec,
+		BBR:        bbrCtl,
+		Rel:        rel,
+		CreatedAt:  now,
+		LastActive: now,
+	}
+}
+
+// NextPacketNum returns the next packet number for the given direction
+// and increments the counter. Thread-safe.
+func (s *UDPSession) NextPacketNum(dir uint32) uint32 {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if dir == DirC2S {
+		n := s.nextPktNumC2S
+		s.nextPktNumC2S++
+		return n
+	}
+	n := s.nextPktNumS2C
+	s.nextPktNumS2C++
+	return n
+}
+
+// SessionID8 returns the first 8 bytes of the session ID (for DCID and nonce).
+func (s *UDPSession) SessionID8() [8]byte {
+	var out [8]byte
+	copy(out[:], s.SessionID[:8])
+	return out
+}
+
+// Touch updates the last-active time. Thread-safe.
+func (s *UDPSession) Touch() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.LastActive = time.Now()
+}
+
+// Tick runs the session's periodic maintenance: flush pending ACKs and scan
+// for retransmission timeouts. Call it every ~10ms from the session's timer
+// loop (both ends: client and server).
+//
+// Bundling FlushAck + CheckRTO here makes "forgot to call one of them"
+// structurally impossible. 2026-10-23 lab root cause: the server's loop only
+// called FlushAck, so server->client loss was never retransmitted and 100KB
+// echo stalled at 101200/102400 with no recovery.
+func (s *UDPSession) Tick() {
+	s.Rel.FlushAck()
+	s.Rel.CheckRTO()
+}
+
+// SealPacket encrypts frames into a UDP datagram.
+//
+// Steps:
+//  1. Concatenate frame plaintexts (total ≤ MaxUDPPlaintext).
+//  2. Build nonce: [SESSION_ID(8)][DIR(4)][PACKET_NUM(4)][RESERVED(8)].
+//     Uses the REAL (pre-mask) packet number (§4.2).
+//  3. AEAD encrypt with direction key, AAD = QUIC short header (unmasked).
+//  4. Apply header protection mask to the header (§3.2, Phase 2):
+//     sample = first 16 bytes of ciphertext.
+//  5. Prepend masked QUIC short header.
+//
+// Returns the full UDP datagram.
+// sealPacketTracked is the package-private entry point for tracked sends.
+// Only UDPSendScheduler may call it: this makes "bypass the cwnd/pacing
+// gate" a compile error instead of a code-review catch.
+//
+// (The public SealPacket wrapper was removed; use the scheduler.)
+func (s *UDPSession) sealPacketTracked(dir uint32, frames [][]byte) ([]byte, error) {
+	return s.sealPacket(dir, frames, true)
+}
+
+// SealPacketUntracked encrypts frames into a UDP datagram without
+// reliability tracking or BBR accounting.
+//
+// Use for ACK-only packets: ACKs are never acknowledged themselves, so
+// tracking them would leak sentPackets entries, inflate bytesInFlight,
+// and cause spurious RTO retransmissions of ACKs.
+func (s *UDPSession) SealPacketUntracked(dir uint32, frames [][]byte) ([]byte, error) {
+	return s.sealPacket(dir, frames, false)
+}
+
+func (s *UDPSession) sealPacket(dir uint32, frames [][]byte, track bool) ([]byte, error) {
+	// Concatenate frames.
+	var plaintext []byte
+	for _, f := range frames {
+		plaintext = append(plaintext, f...)
+	}
+	if len(plaintext) > MaxUDPPlaintext {
+		return nil, errors.New("udp: plaintext exceeds max")
+	}
+
+	// Get packet number (real, pre-mask).
+	pktNum := s.NextPacketNum(dir)
+
+	// Select key and HP key.
+	var key *[32]byte
+	var hpKey [32]byte
+	if dir == DirC2S {
+		key = &s.KeyC2S
+		hpKey = s.HPKeyC2S
+	} else {
+		key = &s.KeyS2C
+		hpKey = s.HPKeyS2C
+	}
+
+	// Build QUIC short header (AAD uses UNMASKED header, §4.2).
+	dcid := s.SessionID8()
+	header := BuildShortHeader(dcid, pktNum, false)
+
+	// Build nonce (pre-mask real packet number, §4.2).
+	nonce := UDPNonce(dcid, dir, pktNum)
+
+	// Encrypt.
+	ciphertext, err := UDPSeal(key, nonce, plaintext, header[:])
+	if err != nil {
+		return nil, err
+	}
+
+	// Header protection: sample = first 16 bytes of ciphertext.
+	if len(ciphertext) < 16 {
+		return nil, errors.New("udp: ciphertext too short for header protection sample")
+	}
+	sample := ciphertext[:16]
+	hdr := header[:] // copy to mutable slice
+	if err := ApplyHeaderProtection(hdr, hpKey, sample); err != nil {
+		return nil, err
+	}
+
+	// Assemble datagram: masked header + ciphertext.
+	datagram := make([]byte, 0, len(hdr)+len(ciphertext))
+	datagram = append(datagram, hdr...)
+	datagram = append(datagram, ciphertext...)
+
+	// Reliability tracking (Phase 2, §6.2).
+	// Skipped for untracked packets (e.g. ACKs): they are never ACKed
+	// themselves, so tracking would leak and cause spurious RTOs.
+	if track {
+		if s.Rel != nil {
+			s.Rel.PacketSent(pktNum, frames, len(datagram))
+		}
+		if s.BBR != nil {
+			s.BBR.OnPacketSent(pktNum, len(datagram), s.Rel.BytesInFlight())
+		}
+	}
+
+	return datagram, nil
+}
+
+// OpenPacket decrypts a UDP datagram and returns the frames.
+//
+// Steps:
+//  1. Extract header protection sample from ciphertext (datagram[13:29]).
+//  2. Remove header protection mask → real header with real packet number.
+//  3. Parse real header (get DCID, packet number).
+//  4. Build nonce from REAL (unmasked) packet number (§4.2).
+//  5. AEAD decrypt with direction key, AAD = unmasked header.
+//  6. Decode frames from plaintext.
+//  7. Reliability: mark packet received (may trigger ACK).
+func (s *UDPSession) OpenPacket(dir uint32, datagram []byte) ([]UDPFrame, uint32, error) {
+	if len(datagram) < QUICShortHeaderLen+16 {
+		return nil, 0, errors.New("udp: datagram too short")
+	}
+
+	// Select HP key.
+	var hpKey [32]byte
+	if dir == DirC2S {
+		hpKey = s.HPKeyC2S
+	} else {
+		hpKey = s.HPKeyS2C
+	}
+
+	// Extract sample BEFORE unmasking (sample is from ciphertext).
+	sample, err := HeaderProtectSample(datagram)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// Copy header and remove protection to get real packet number.
+	var hdrBuf [QUICShortHeaderLen]byte
+	copy(hdrBuf[:], datagram[:QUICShortHeaderLen])
+	if err := RemoveHeaderProtection(hdrBuf[:], hpKey, sample); err != nil {
+		return nil, 0, err
+	}
+
+	// Parse unmasked header.
+	dcid, pktNum, _, err := ParseShortHeader(hdrBuf[:])
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// Verify DCID matches session (first 8 bytes of session ID).
+	expectedDCID := s.SessionID8()
+	if dcid != expectedDCID {
+		return nil, 0, errors.New("udp: DCID mismatch")
+	}
+
+	// Select key.
+	var key *[32]byte
+	if dir == DirC2S {
+		key = &s.KeyC2S
+	} else {
+		key = &s.KeyS2C
+	}
+
+	// Build nonce with REAL (unmasked) packet number.
+	// AAD is the UNMASKED header (§4.2).
+	nonce := UDPNonce(dcid, dir, pktNum)
+
+	// Decrypt.
+	ciphertext := datagram[QUICShortHeaderLen:]
+	plaintext, err := UDPOpen(key, nonce, ciphertext, hdrBuf[:])
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// Decode frames.
+	frames, err := DecodeUDPFrames(plaintext)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// Reliability: mark received (may trigger ACK via callback).
+	if s.Rel != nil {
+		s.Rel.PacketReceived(pktNum)
+	}
+
+	s.Touch()
+	return frames, pktNum, nil
+}
+
+// ---------------------------------------------------------------------------
+// Server-side handshake
+// ---------------------------------------------------------------------------
+
+// UDPHandshakeResult contains the result of a successful server-side handshake.
+type UDPHandshakeResult struct {
+	Session *UDPSession
+	// Response packet to send back to client (Initial AUTH_OK).
+	Response []byte
+}
+
+// UDPServerHandshake processes a client's Initial(AUTH) packet.
+// This is the server side of the §5.1 handshake.
+//
+// Steps:
+//  1. Parse Initial packet (get AUTH payload).
+//  2. Decrypt AUTH (using K_auth lookup via HANDSHAKE_CID).
+//  3. Verify timestamp, anti-replay.
+//  4. Generate server ephemeral keypair, derive session keys.
+//  5. Create session, build AUTH_OK response.
+func UDPServerHandshake(
+	codec InitialCodec,
+	packet []byte,
+	clientAddr *net.UDPAddr,
+	lookupAuth func(handshakeCID [16]byte, nonce [24]byte) (kAuth *[32]byte, cid [16]byte, ok bool),
+) (*UDPHandshakeResult, error) {
+	// 1. Parse Initial packet.
+	authWire, _, scid, _, err := codec.OpenInitial(packet)
+	if err != nil {
+		return nil, err
+	}
+	// authWire = [HANDSHAKE_CID(16)][NONCE(24)][CIPHERTEXT]
+	if len(authWire) < 16+24+16 {
+		return nil, errors.New("udp: AUTH wire too short")
+	}
+	var handshakeCID [16]byte
+	copy(handshakeCID[:], authWire[:16])
+	var nonce [24]byte
+	copy(nonce[:], authWire[16:40])
+	ciphertext := authWire[40:]
+
+	// 2. Lookup K_auth via HANDSHAKE_CID.
+	kAuth, cid, ok := lookupAuth(handshakeCID, nonce)
+	if !ok {
+		return nil, errors.New("udp: unknown handshake CID")
+	}
+
+	// 3. Decrypt AUTH using K_auth.
+	aead, err := udpAEAD(kAuth)
+	if err != nil {
+		return nil, err
+	}
+	plain, err := aead.Open(nil, nonce[:], ciphertext, handshakeCID[:])
+	if err != nil {
+		return nil, errors.New("udp: AUTH decrypt failed")
+	}
+
+	// Parse AUTH_PLAIN: [VER(1)][TS(8)][EPH_PUB(32)][FEAT(1)][MODE(1)][RSVD(2)]
+	if len(plain) < 45 {
+		return nil, errors.New("udp: AUTH_PLAIN too short")
+	}
+	if plain[0] != 0x02 {
+		return nil, errors.New("udp: not UDP version")
+	}
+	// TODO: verify timestamp, anti-replay (Phase 1 simplified: skip for now)
+	_ = cid
+
+	var clientEphPub [32]byte
+	copy(clientEphPub[:], plain[9:41])
+
+	// 4. Generate server ephemeral keypair.
+	serverPriv, serverPub, err := X25519Keypair()
+	if err != nil {
+		return nil, err
+	}
+
+	// Derive shared secret.
+	shared, err := X25519Shared(&serverPriv, &clientEphPub)
+	if err != nil {
+		return nil, err
+	}
+
+	// Derive session keys (same as TCP §6.4).
+	kC2S, kS2C := DeriveSessionKeys(clientEphPub, serverPub, shared)
+
+	// 5. Generate session ID (CONN_ID, 16 bytes random).
+	var sessionID [16]byte
+	if _, err := rand.Read(sessionID[:]); err != nil {
+		return nil, err
+	}
+
+	// Build AUTH_OK payload (simplified).
+	// Format: [SRV_EPH_PUB(32)][CONN_ID(16)]...
+	// For Phase 1, minimal: just enough for client to derive keys.
+	authOKPlain := make([]byte, 48)
+	copy(authOKPlain[0:32], serverPub[:])
+	copy(authOKPlain[32:48], sessionID[:])
+
+	// Encrypt AUTH_OK with K_auth (simplified; real will use proper format).
+	var authOKNonce [24]byte
+	if _, err := rand.Read(authOKNonce[:]); err != nil {
+		return nil, err
+	}
+	authOKCipher, err := UDPSeal(kAuth, authOKNonce, authOKPlain, nil)
+	if err != nil {
+		return nil, err
+	}
+	// Wire: [NONCE(24)][CIPHERTEXT]
+	authOKWire := make([]byte, 0, 24+len(authOKCipher))
+	authOKWire = append(authOKWire, authOKNonce[:]...)
+	authOKWire = append(authOKWire, authOKCipher...)
+
+	// Build Initial response packet.
+	// DCID = client's SCID (so client can match).
+	response, err := codec.SealInitialResponse(authOKWire, scid, sessionID8(sessionID), 0)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create session.
+	session := NewUDPSession(sessionID, kC2S, kS2C, clientAddr, codec)
+
+	return &UDPHandshakeResult{
+		Session:  session,
+		Response: response,
+	}, nil
+}
+
+// sessionID8 extracts first 8 bytes of session ID.
+func sessionID8(sid [16]byte) [8]byte {
+	var out [8]byte
+	copy(out[:], sid[:8])
+	return out
+}
