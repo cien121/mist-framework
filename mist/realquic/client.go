@@ -1,6 +1,7 @@
 package realquic
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
 	"crypto/tls"
@@ -45,6 +46,10 @@ type Client struct {
 	serverID        string
 	activeProfile   Profile
 	profileLoopOnce sync.Once
+	// P1 step B (Q3): the shaper governing this connection's sends.
+	// Its window profile lags pushes (see shaping.go): AUTH advances
+	// the window, a push only queues a pending profile.
+	shaper *Shaper
 }
 
 // codecOrIdentity returns the session codec once AUTH installed it,
@@ -82,6 +87,24 @@ func (c *Client) ActiveProfile() Profile {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	return c.activeProfile
+}
+
+// Shaper returns this connection's Q3 shaper (nil only for clients
+// not built through the Dial constructors, which never happens in
+// this package). EffectiveProfile on it is the window profile: it
+// lags pushes until the next window boundary, unlike ActiveProfile,
+// which is step A's selection and moves on push.
+func (c *Client) Shaper() *Shaper {
+	return c.shaper
+}
+
+// ShapingEvents returns this connection's recorded datagram sends
+// (empty when the client has no shaper).
+func (c *Client) ShapingEvents() []SendEvent {
+	if c.shaper == nil {
+		return nil
+	}
+	return c.shaper.Events()
 }
 
 // ProfileStore returns the store this client records server profiles in
@@ -211,6 +234,13 @@ func (c *Client) handlePushedStream(str *quic.Stream) {
 	if !c.applyProfile(p) {
 		return
 	}
+	// P1 step B: a push never rewrites the window in flight. The
+	// shaper keeps the old profile until the next window boundary;
+	// applyProfile above only moved step A's selection (and the
+	// receipt below names the new version, as step A requires).
+	if c.shaper != nil {
+		c.shaper.QueuePending(p)
+	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	_ = c.SendProfileReceipt(ctx)
@@ -239,17 +269,22 @@ func DialPacketConnWithProfileStore(ctx context.Context, pc net.PacketConn, remo
 		NextProtos:         []string{"h3"},
 		ServerName:         testServerName,
 	}
-	// EnableDatagrams negotiates RFC 9221 datagrams for the UDP relay;
-	// it does not change the H3 behaviour of the connection.
-	qconn, err := quic.Dial(ctx, pc, remoteAddr, tlsConf, &quic.Config{EnableDatagrams: true})
-	if err != nil {
-		return nil, err
-	}
 	if store == nil {
 		store = NewProfileStore()
 	}
 	if serverID == "" {
 		serverID = testServerName
+	}
+	// P1 step B (Q3): every datagram this connection sends passes
+	// the shaping wrapper — window 0 runs on the store's active
+	// profile (bootstrap on first contact, the server profile on
+	// later sessions). The stack is never handed the raw PacketConn.
+	shaped := newSingleShapingConn(pc, "up", store.ActiveFor(serverID))
+	// EnableDatagrams negotiates RFC 9221 datagrams for the UDP relay;
+	// it does not change the H3 behaviour of the connection.
+	qconn, err := quic.Dial(ctx, shaped, remoteAddr, tlsConf, &quic.Config{EnableDatagrams: true})
+	if err != nil {
+		return nil, err
 	}
 	return &Client{
 		key:           key,
@@ -260,6 +295,7 @@ func DialPacketConnWithProfileStore(ctx context.Context, pc net.PacketConn, remo
 		profileStore:  store,
 		serverID:      serverID,
 		activeProfile: store.ActiveFor(serverID),
+		shaper:        shaped.single,
 	}, nil
 }
 
@@ -285,7 +321,18 @@ func (c *Client) freshTokenWithKeys() (string, [32]byte, [32]byte, error) {
 // status, body and round-trip time. token, when non-empty, is sent as the
 // AUTH header value.
 func (c *Client) Request(ctx context.Context, method, path, token string) (int, []byte, time.Duration, error) {
-	req, err := http.NewRequestWithContext(ctx, method, "https://"+testServerName+path, nil)
+	return c.RequestWithBody(ctx, method, path, token, nil)
+}
+
+// RequestWithBody is Request with an explicit request body. Only Auth
+// uses a non-nil body (Q3 length shaping, see Auth); visitor and
+// failure probes keep a nil body so their request shape is unchanged.
+func (c *Client) RequestWithBody(ctx context.Context, method, path, token string, body []byte) (int, []byte, time.Duration, error) {
+	var rdr io.Reader
+	if body != nil {
+		rdr = bytes.NewReader(body)
+	}
+	req, err := http.NewRequestWithContext(ctx, method, "https://"+testServerName+path, rdr)
 	if err != nil {
 		return 0, nil, 0, err
 	}
@@ -298,8 +345,8 @@ func (c *Client) Request(ctx context.Context, method, path, token string) (int, 
 		return 0, nil, time.Since(start), err
 	}
 	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
-	return resp.StatusCode, body, time.Since(start), err
+	respBody, err := io.ReadAll(resp.Body)
+	return resp.StatusCode, respBody, time.Since(start), err
 }
 
 // Auth sends a fresh-token AUTH request and returns status, body, latency.
@@ -313,7 +360,17 @@ func (c *Client) Auth(ctx context.Context) (int, []byte, time.Duration, error) {
 	if err != nil {
 		return 0, nil, 0, err
 	}
-	status, body, latency, err := c.Request(ctx, http.MethodPost, c.authPath, token)
+	// P1 step B (Q3 length): the AUTH request body is padded to a
+	// length sampled from the current window's LenDist (bootstrap
+	// before the first AUTH). This is the length-shaping wire point
+	// quic-go's public API allows: the stack packetises the padded
+	// flight, so the flight's datagrams grow with the sample. The
+	// padding is meaningless zero bytes and carries no credential.
+	var pad []byte
+	if c.shaper != nil {
+		pad = padBytes(c.shaper.SampleLen())
+	}
+	status, body, latency, err := c.RequestWithBody(ctx, http.MethodPost, c.authPath, token, pad)
 	if err != nil || status != http.StatusOK {
 		return status, body, latency, err
 	}
@@ -353,7 +410,14 @@ func (c *Client) Auth(ctx context.Context) (int, []byte, time.Duration, error) {
 	// its previous (bootstrap or stored) profile, and its receipt (if
 	// any) will name a version never issued to this connection.
 	if ok.Profile != nil {
-		c.adoptProfile(*ok.Profile)
+		adopted := *ok.Profile
+		c.adoptProfile(adopted)
+		// P1 step B: AUTH success is a window boundary. The AUTH
+		// request was window 0 (bootstrap); from here on the
+		// server profile governs the shaper's window 1.
+		if c.shaper != nil {
+			c.shaper.BeginWindow(&adopted)
+		}
 	}
 	c.startProfileLoop()
 	_ = c.SendProfileReceipt(ctx)

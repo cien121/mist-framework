@@ -86,6 +86,22 @@ type Server struct {
 	rotatorOnce sync.Once
 	rotatorStop chan struct{}
 	stopOnce    sync.Once
+	// P1 step B (Q3): the shaping wrappers of this server's listeners
+	// (one per listener PacketConn). Guarded by shapingMu; the
+	// wrappers themselves own their per-peer shapers.
+	shapingMu    sync.Mutex
+	shapingConns []*shapingPacketConn
+	// lastAuthContentLength records the Content-Length of the most
+	// recent request to the AUTH path (any outcome): lab
+	// observability for Q3 client-flight length shaping, nothing
+	// more. A value of -1 means the request carried no length.
+	lastAuthContentLength atomic.Int64
+}
+
+// LastAuthContentLength reports the Content-Length of the most recent
+// AUTH-path request seen by this server.
+func (s *Server) LastAuthContentLength() int64 {
+	return s.lastAuthContentLength.Load()
 }
 
 // defaultSite is the static test site content. It intentionally has no
@@ -125,6 +141,11 @@ type authSuccess struct {
 	ProfileNote  string   `json:"profile_note"`
 	SessionID    string   `json:"session_id,omitempty"`
 	ResumeToken  string   `json:"resume_token,omitempty"`
+	// Padding is P1 step B (Q3 length) shaping on the down flight:
+	// meaningless zero bytes sized from the connection's down
+	// shaper LenDist sample, so the AUTH_OK flight's length follows
+	// the profile. It is omitted (not empty) when shaping is absent.
+	Padding string `json:"padding,omitempty"`
 }
 
 // NewServer builds a server; it generates the server ephemeral keypair and
@@ -271,7 +292,51 @@ func (s *Server) PushCurrentProfile(qconn *quic.Conn) (Profile, error) {
 	}
 	// Only a delivered push moves the connection's issued version.
 	st.noteIssued(issued.Version)
+	// P1 step B: the push also queues on the connection's down
+	// shaper as pending — the in-flight window keeps the old
+	// profile; the new one takes effect at the next window
+	// boundary (a re-AUTH on this connection).
+	s.queueDownPending(qconn, issued)
 	return issued, nil
+}
+
+// downShaperIfExists returns the down shaper for the peer address of
+// qconn, if any listener wrapper has already created one for it.
+func (s *Server) downShaperIfExists(addr net.Addr) *Shaper {
+	s.shapingMu.Lock()
+	conns := append([]*shapingPacketConn{}, s.shapingConns...)
+	s.shapingMu.Unlock()
+	for _, sc := range conns {
+		if sh := sc.shaperIfExists(addr); sh != nil {
+			return sh
+		}
+	}
+	return nil
+}
+
+// queueDownPending queues a pushed profile on the down shaper for
+// qconn's peer address (no-op when no shaper exists yet).
+func (s *Server) queueDownPending(qconn *quic.Conn, p Profile) {
+	if qconn == nil {
+		return
+	}
+	if sh := s.downShaperIfExists(qconn.RemoteAddr()); sh != nil {
+		sh.QueuePending(p)
+	}
+}
+
+// DownEvents aggregates the recorded down-direction datagram sends
+// across this server's listener wrappers (the test hook for Q3
+// down-flight shaping).
+func (s *Server) DownEvents() []SendEvent {
+	s.shapingMu.Lock()
+	conns := append([]*shapingPacketConn{}, s.shapingConns...)
+	s.shapingMu.Unlock()
+	var out []SendEvent
+	for _, sc := range conns {
+		out = append(out, sc.allEvents()...)
+	}
+	return out
 }
 
 // ConnProfileState reports one connection's Q6 state for tests and
@@ -295,6 +360,8 @@ func (s *Server) ConnProfileState(qconn *quic.Conn) (issued, receipt uint64, rec
 func (s *Server) handlerFor(st *connState) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == s.authPath {
+			// P1 step B lab observability (see LastAuthContentLength).
+			s.lastAuthContentLength.Store(r.ContentLength)
 			// One code path for every outcome: verify (constant-time
 			// HMAC, window, nonce cache) and, on any failure, fall
 			// through to the site handler. Nothing here logs the
@@ -312,6 +379,11 @@ func (s *Server) handlerFor(st *connState) http.Handler {
 				if derr == nil {
 					c2s, s2c, kerr := deriveDirectionKeys(shared, clientPub, s.ephPub)
 					if kerr == nil {
+						// P1 step B: capture pre-AUTH state before
+						// setSession overwrites it — a re-AUTH on an
+						// already authenticated connection is a down
+						// window boundary (see shaping.go).
+						wasAuthed := st != nil && st.isAuthed()
 						rec, rerr := s.sessions.newRecord(c2s, s2c)
 						if rerr == nil && st != nil {
 							st.setSession(rec.serverCodec())
@@ -324,10 +396,28 @@ func (s *Server) handlerFor(st *connState) http.Handler {
 						if st != nil {
 							st.noteIssued(issued.Version)
 						}
+						// P1 step B: a re-AUTH advances the down
+						// window (activating any queued push); the
+						// first AUTH response stays in window 0.
+						if wasAuthed && st != nil {
+							if sh := s.downShaperIfExists(st.remoteAddr); sh != nil {
+								sh.BeginWindow(nil)
+							}
+						}
 						resp := authSuccess{
 							ServerEphPub: base64.StdEncoding.EncodeToString(s.ephPub[:]),
 							Profile:      &issued,
 							ProfileNote:  "Q6 profile envelope issued (P1 step A); all values provisional, D2 final values pending P2 baseline measurement",
+						}
+						// P1 step B (Q3 length): pad the AUTH_OK body
+						// from the down shaper's LenDist sample, so
+						// the server response flight's length follows
+						// the profile (meaningless zero bytes, capped
+						// by SampleLen; no padding when no shaper).
+						if st != nil {
+							if sh := s.downShaperIfExists(st.remoteAddr); sh != nil {
+								resp.Padding = string(padBytes(sh.SampleLen()))
+							}
 						}
 						if rerr == nil {
 							resp.SessionID = base64.StdEncoding.EncodeToString(rec.id[:])
@@ -363,7 +453,15 @@ func (s *Server) listenPacketConn(pc net.PacketConn) (*quic.Listener, error) {
 		Certificates: []tls.Certificate{cert},
 		NextProtos:   []string{"h3"},
 	}
-	return quic.Listen(pc, tlsConf, &quic.Config{EnableDatagrams: true})
+	// P1 step B (Q3): every datagram this listener sends passes the
+	// shaping wrapper — per peer address, starting from the
+	// currently issued profile. The stack is never handed the raw
+	// PacketConn, so there is no unwrapped (bare) send path.
+	shaped := newPerAddrShapingConn(pc, "down", s.IssuedProfile)
+	s.shapingMu.Lock()
+	s.shapingConns = append(s.shapingConns, shaped)
+	s.shapingMu.Unlock()
+	return quic.Listen(shaped, tlsConf, &quic.Config{EnableDatagrams: true})
 }
 
 func (s *Server) serveListener(ln *quic.Listener) error {
@@ -476,6 +574,9 @@ func (s *Server) DroppedDatagrams() int64 {
 // session keeps relaying datagrams.
 type connState struct {
 	qconn *quic.Conn
+	// remoteAddr is the peer address at accept time, used to find
+	// this connection's down shaper (P1 step B).
+	remoteAddr net.Addr
 
 	mu       sync.Mutex
 	authed   bool
@@ -628,6 +729,7 @@ func (s *Server) serveConn(qconn *quic.Conn) {
 		s.mu.Unlock()
 	}()
 	st := newConnState(qconn)
+	st.remoteAddr = qconn.RemoteAddr()
 	s.mu.Lock()
 	s.connStates[qconn] = st
 	s.mu.Unlock()

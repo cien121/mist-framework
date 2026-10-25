@@ -62,9 +62,27 @@
 // would false-positive); only a version never issued to the connection
 // downgrades, and the downgrade is sticky until a fresh AUTH.
 //
+// P1 step B wires the Q3 shaping parameters into real sends, handshake
+// first flight only, both directions (see shaping.go for the window
+// definition, the tail rule, and the honest API gaps): the client Dial
+// and the server listeners hand the QUIC stack a pacing/counting
+// PacketConn wrapper only — never the raw connection — so quantity
+// (per-direction budgets) and timing (CSPRNG-jittered pacing gaps) are
+// enforced at actual datagram sends, and length is shaped through AUTH
+// request/response body padding (quic-go's public API has no handshake
+// PADDING-frame injection point, and this step does not fork it or use
+// its internals; datagram-tail garbage padding is not used, as it would
+// corrupt QUIC parsing). Budget exhaustion transitions the window to
+// the profile's steady slot (provisional values, P2 baseline pending)
+// instead of ever sending bare. A pushed profile queues on the shaper
+// and takes effect at the next window boundary; AUTH success is the
+// client window boundary and a re-AUTH is the server one. The TCP leg
+// is not shaped by this engine (no PacketConn/datagram layer there),
+// and hopping, stagger, and reuse caps remain carried-not-executed.
+//
 // Scope limits of this step, by design:
 //   - No port hopping (default off), no up/down split (deferred), no
-//     shaping execution, no measurement matrix (M2 timing in step 2 is preliminary
+//     steady-state shaping beyond the tail transition, no measurement matrix (M2 timing in step 2 is preliminary
 //     evidence only; the full M2 matrix — probe types x ports x address
 //     families — is a later step; step 5 proves the shared-handler
 //     coverage that matrix will probe).
