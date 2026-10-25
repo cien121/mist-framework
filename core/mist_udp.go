@@ -612,10 +612,17 @@ type mistStreamConn struct {
 	pending  map[uint64][]byte // out-of-order chunks by offset
 	nextRead uint64            // next offset to deliver
 	writeOff uint64
-	eof      bool
-	closed   bool
-	err      error
-	readDL   time.Time
+	// writeMu serializes Write end to end: offset load, frame send,
+	// offset store. It is deliberately separate from mu: mu guards the
+	// read side (cond waits on it), so holding mu across a blocking
+	// frame send would stall reads and data arrival. Lock order here
+	// is always writeMu -> mu (brief); no path takes them in reverse,
+	// and Read never takes writeMu, so no deadlock.
+	writeMu sync.Mutex
+	eof     bool
+	closed  bool
+	err     error
+	readDL  time.Time
 }
 
 func newMistStreamConn(c *MistUDPClient, sid byte, remote string) *mistStreamConn {
@@ -748,7 +755,16 @@ func (st *mistStreamConn) Read(b []byte) (int, error) {
 }
 
 // Write implements net.Conn.
+//
+// The whole write is serialized by writeMu: two concurrent Writes used
+// to load the same writeOff, emit frames for the same offset range, and
+// store back only one of the advances, permanently misaligning every
+// later byte and corrupting the TLS record layer. Holding writeMu
+// across offset load, frame send, and offset store closes that race;
+// mu itself is still only held briefly, never across a frame send.
 func (st *mistStreamConn) Write(b []byte) (int, error) {
+	st.writeMu.Lock()
+	defer st.writeMu.Unlock()
 	st.mu.Lock()
 	if st.closed || st.err != nil {
 		err := st.err
@@ -791,6 +807,11 @@ func (st *mistStreamConn) Write(b []byte) (int, error) {
 
 // Close implements net.Conn: send FIN, free the SID.
 func (st *mistStreamConn) Close() error {
+	// Serialize against in-flight Writes so the FIN offset covers all
+	// data already handed to Write; otherwise FIN could overtake
+	// pending frames and the peer would discard them.
+	st.writeMu.Lock()
+	defer st.writeMu.Unlock()
 	st.mu.Lock()
 	if st.closed {
 		st.mu.Unlock()
@@ -814,6 +835,8 @@ func (st *mistStreamConn) Close() error {
 
 // CloseWrite sends FIN without closing the read side.
 func (st *mistStreamConn) CloseWrite() error {
+	st.writeMu.Lock()
+	defer st.writeMu.Unlock()
 	st.mu.Lock()
 	off := st.writeOff
 	st.mu.Unlock()

@@ -81,6 +81,27 @@ type tcpConn struct {
 	appFin     bool
 	ourFin     bool
 	created    time.Time
+	// sendQ is the FIFO queue drained by the single tcpWriter goroutine
+	// for this connection. App segments used to be forwarded by one
+	// goroutine per segment with no ordering: concurrent stream Writes
+	// raced on the stream offset (mistStreamConn.Write loaded and
+	// stored writeOff around an unlocked send), scrambling the byte
+	// stream and corrupting TLS records. Queueing here serializes AND
+	// orders writes; sendMu is only ever held briefly (append/signal),
+	// never across a blocking stream Write, and lock order is always
+	// e.mu -> sendMu, so no deadlock with pumpTCP or dropTCP.
+	sendMu     sync.Mutex
+	sendCond   *sync.Cond // guards sendQ/sendClosed, uses sendMu
+	sendQ      []tcpWriteItem
+	sendClosed bool
+}
+
+// tcpWriteItem is one unit of work for tcpWriter: either payload bytes
+// or a half-close (fin) marker, which must be sent after all queued
+// data, never ahead of it.
+type tcpWriteItem struct {
+	payload []byte
+	fin     bool
 }
 
 type udpSession struct {
@@ -154,6 +175,7 @@ func (e *Engine) Close() error {
 	e.mu.Lock()
 	for _, c := range e.tcp {
 		c.stream.Close()
+		stopTCPWriterLocked(c)
 	}
 	e.tcp = make(map[FourTuple]*tcpConn)
 	e.mu.Unlock()
@@ -246,19 +268,19 @@ func (e *Engine) handleTCP(ctx context.Context, p *IPPacket, seg *TCPSegment) {
 	if seg.Flags&TCPAck != 0 && len(seg.Payload) == 0 && seg.Flags&TCPFin == 0 {
 		// Pure ACK (e.g. for our FIN): if our FIN was ACKed, clean up.
 		if conn.ourFin && seg.Ack == conn.ourSeq {
+			stopTCPWriterLocked(conn)
 			delete(e.tcp, tuple)
 		}
 		return
 	}
 	if seg.Flags&TCPFin != 0 {
-		// App half-closes: ACK the FIN, propagate to the stream.
+		// App half-closes: ACK the FIN, queue the FIN marker behind
+		// all queued data so it can never overtake pending writes.
 		if seg.Seq == conn.appSeq {
 			conn.appSeq++ // FIN consumes one sequence number
 			conn.appFin = true
 			e.sendTCPUnlocked(conn, TCPAck, nil)
-			if closer, ok := conn.stream.(interface{ CloseWrite() error }); ok {
-				_ = closer.CloseWrite()
-			}
+			e.enqueueTCPWrite(conn, tcpWriteItem{fin: true})
 		}
 		return
 	}
@@ -271,13 +293,7 @@ func (e *Engine) handleTCP(ctx context.Context, p *IPPacket, seg *TCPSegment) {
 		payload := append([]byte(nil), seg.Payload...)
 		conn.appSeq += uint32(len(payload))
 		e.sendTCPUnlocked(conn, TCPAck, nil)
-		go func() {
-			if _, err := conn.stream.Write(payload); err != nil {
-				e.dropTCP(tuple)
-				return
-			}
-			e.upBytes.Add(uint64(len(payload)))
-		}()
+		e.enqueueTCPWrite(conn, tcpWriteItem{payload: payload})
 	}
 }
 
@@ -308,11 +324,72 @@ func (e *Engine) dialTCP(ctx context.Context, p *IPPacket, tuple FourTuple, syn 
 		isn:     isn,
 		created: time.Now(),
 	}
+	conn.sendCond = sync.NewCond(&conn.sendMu)
 	e.mu.Lock()
 	e.tcp[tuple] = conn
 	e.mu.Unlock()
 	e.sendTCPSYNACK(conn)
 	go e.pumpTCP(conn)
+	go e.tcpWriter(conn)
+}
+
+// enqueueTCPWrite appends an item to the connection's FIFO writer queue.
+// It never blocks on the network: only a brief sendMu hold for the
+// append and signal, so callers may hold e.mu (lock order e.mu ->
+// sendMu). Items for a torn-down connection are dropped: the stream
+// is already closed and the app side is being reset.
+func (e *Engine) enqueueTCPWrite(conn *tcpConn, item tcpWriteItem) {
+	conn.sendMu.Lock()
+	if !conn.sendClosed {
+		conn.sendQ = append(conn.sendQ, item)
+		conn.sendCond.Signal()
+	}
+	conn.sendMu.Unlock()
+}
+
+// tcpWriter is the single writer goroutine per TCP connection. It drains
+// the FIFO queue strictly in order, so stream writes for one connection
+// are never concurrent and never reordered, regardless of how fast the
+// app pipelines segments. It holds sendMu only while dequeuing; the
+// blocking stream Write happens with no lock held, so a slow Mist
+// write stalls only this connection, never the engine Run loop or
+// pumpTCP.
+func (e *Engine) tcpWriter(conn *tcpConn) {
+	for {
+		conn.sendMu.Lock()
+		for len(conn.sendQ) == 0 && !conn.sendClosed {
+			conn.sendCond.Wait()
+		}
+		if len(conn.sendQ) == 0 { // closed and drained: exit
+			conn.sendMu.Unlock()
+			return
+		}
+		item := conn.sendQ[0]
+		conn.sendQ[0] = tcpWriteItem{} // release the payload reference
+		conn.sendQ = conn.sendQ[1:]
+		conn.sendMu.Unlock()
+		if item.fin {
+			if closer, ok := conn.stream.(interface{ CloseWrite() error }); ok {
+				_ = closer.CloseWrite()
+			}
+			continue
+		}
+		if _, err := conn.stream.Write(item.payload); err != nil {
+			e.dropTCP(conn.tuple)
+			return
+		}
+		e.upBytes.Add(uint64(len(item.payload)))
+	}
+}
+
+// stopTCPWriterLocked wakes a connection's writer so it can exit once
+// the queue drains. Caller must hold e.mu (lock order e.mu -> sendMu,
+// consistent with enqueueTCPWrite's callers and dropTCP).
+func stopTCPWriterLocked(c *tcpConn) {
+	c.sendMu.Lock()
+	c.sendClosed = true
+	c.sendCond.Broadcast()
+	c.sendMu.Unlock()
 }
 
 // maxTCPSegmentPayload caps one return segment's payload so the
@@ -358,9 +435,12 @@ func (e *Engine) pumpTCP(conn *tcpConn) {
 		if err != nil {
 			// Stream EOF/error: FIN the app side, then clean up.
 			e.mu.Lock()
-			if c, ok := e.tcp[conn.tuple]; ok && !c.ourFin {
-				c.ourFin = true
-				e.sendTCPUnlocked(c, TCPFin|TCPAck, nil)
+			if c, ok := e.tcp[conn.tuple]; ok {
+				if !c.ourFin {
+					c.ourFin = true
+					e.sendTCPUnlocked(c, TCPFin|TCPAck, nil)
+				}
+				stopTCPWriterLocked(c)
 			}
 			delete(e.tcp, conn.tuple)
 			e.mu.Unlock()
@@ -417,6 +497,7 @@ func (e *Engine) dropTCP(tuple FourTuple) {
 	defer e.mu.Unlock()
 	if c, ok := e.tcp[tuple]; ok {
 		c.stream.Close()
+		stopTCPWriterLocked(c)
 		delete(e.tcp, tuple)
 	}
 }
@@ -596,6 +677,7 @@ func (e *Engine) sweeper(ctx context.Context) {
 			for tuple, c := range e.tcp {
 				if now.Sub(c.created) > 10*time.Minute {
 					c.stream.Close()
+					stopTCPWriterLocked(c)
 					delete(e.tcp, tuple)
 				}
 			}
