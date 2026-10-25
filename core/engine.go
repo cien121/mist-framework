@@ -59,8 +59,15 @@ type Engine struct {
 	// response carries only the original destination, so the
 	// transaction ID is the only way to tell concurrent queries to
 	// the same server apart.
-	udpByDNS  map[string]FourTuple // dstIP:dstPort|txID -> app tuple
-	id        atomic.Uint32        // IP IDs; atomic so TUN writes need not hold e.mu
+	udpByDNS map[string]FourTuple // dstIP:dstPort|txID -> app tuple
+	// udpSem bounds in-flight UDP send goroutines (see handleUDP).
+	// Without it a wedged session piles up one blocked goroutine
+	// per app datagram — thousands of stacks plus scheduler
+	// pressure, which is exactly the kind of CPU/GC load that
+	// starves the phone's UI thread (1.0.41 freeze). UDP is
+	// loss-tolerant, so excess datagrams are dropped, not queued.
+	udpSem    chan struct{}
+	id        atomic.Uint32 // IP IDs; atomic so TUN writes need not hold e.mu
 	upBytes   atomic.Uint64
 	downBytes atomic.Uint64
 	// tunWriteErrs counts failed/short TUN writes (was silently
@@ -153,6 +160,9 @@ type udpSession struct {
 	lastAct time.Time
 }
 
+// maxInFlightUDPSends bounds concurrent UDP send goroutines.
+const maxInFlightUDPSends = 512
+
 // NewEngine builds an engine. If client implements DatagramClient,
 // the UDP path is enabled; otherwise UDP packets are dropped.
 func NewEngine(cfg EngineConfig) *Engine {
@@ -165,6 +175,7 @@ func NewEngine(cfg EngineConfig) *Engine {
 		udp:      make(map[FourTuple]*udpSession),
 		udpByDst: make(map[string][]FourTuple),
 		udpByDNS: make(map[string]FourTuple),
+		udpSem:   make(chan struct{}, maxInFlightUDPSends),
 		done:     make(chan struct{}),
 	}
 	if dg, ok := cfg.Client.(DatagramClient); ok {
@@ -211,16 +222,31 @@ func (e *Engine) Run(ctx context.Context) error {
 }
 
 // Close stops the engine and releases connections.
+//
+// It never blocks on a connection close: the old code held e.mu
+// across every stream.Close, and a stream.Close wedged on a stalled
+// session (blocked writer, full scheduler queue) held e.mu forever,
+// stalling the Run loop and everything behind it. Now the table is
+// snapshotted under e.mu, streams are closed without holding it,
+// and the table is cleared after. New connections cannot slip in
+// between snapshot and clear: dialTCP and the SYN path refuse to
+// insert once closed is set (see the guards there).
 func (e *Engine) Close() error {
 	if !e.closed.CompareAndSwap(false, true) {
 		return nil
 	}
 	close(e.done)
 	e.mu.Lock()
+	conns := make([]*tcpConn, 0, len(e.tcp))
 	for _, c := range e.tcp {
+		conns = append(conns, c)
+	}
+	e.mu.Unlock()
+	for _, c := range conns {
 		c.stream.Close()
 		stopTCPWriterLocked(c)
 	}
+	e.mu.Lock()
 	e.tcp = make(map[FourTuple]*tcpConn)
 	e.mu.Unlock()
 	return e.tun.Close()
@@ -239,6 +265,9 @@ func (e *Engine) Stats() Stats {
 	}
 	if ds, ok := e.client.(DatagramStatser); ok {
 		s.DatagramsSent, s.DatagramsSendErrors, s.DatagramsReceived = ds.DatagramStats()
+	}
+	if hs, ok := e.client.(HealthStatser); ok {
+		s.ReadPumpDeaths, s.StreamPendingResets = hs.HealthStats()
 	}
 	return s
 }
@@ -289,6 +318,9 @@ func (e *Engine) handleTCP(ctx context.Context, p *IPPacket, seg *TCPSegment) {
 
 	// New connection: SYN without ACK.
 	if seg.Flags&TCPSyn != 0 && seg.Flags&TCPAck == 0 {
+		if e.closed.Load() {
+			return // engine closing: refuse new connections
+		}
 		if ok {
 			// Retransmitted SYN: resend SYN-ACK.
 			e.sendTCPSYNACK(conn)
@@ -462,6 +494,11 @@ func (e *Engine) finishConnLocked(c *tcpConn, tuple FourTuple) {
 // dialTCP opens the proxy stream, then answers the app's SYN.
 func (e *Engine) dialTCP(ctx context.Context, p *IPPacket, tuple FourTuple, syn *TCPSegment) {
 	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("mist: dialTCP panic (recovered): %v", r)
+		}
+	}()
+	defer func() {
 		e.mu.Lock()
 		delete(e.pending, tuple)
 		e.mu.Unlock()
@@ -496,6 +533,13 @@ func (e *Engine) dialTCP(ctx context.Context, p *IPPacket, tuple FourTuple, syn 
 	}
 	conn.sendCond = sync.NewCond(&conn.sendMu)
 	e.mu.Lock()
+	if e.closed.Load() {
+		// Engine closed while dialing: do not insert (Close's
+		// snapshot already ran) — just release the stream.
+		e.mu.Unlock()
+		stream.Close()
+		return
+	}
 	e.tcp[tuple] = conn
 	e.mu.Unlock()
 	e.sendTCPSYNACK(conn)
@@ -537,6 +581,11 @@ func (e *Engine) tryEnqueueTCPWrite(conn *tcpConn, item tcpWriteItem) bool {
 // write stalls only this connection, never the engine Run loop or
 // pumpTCP.
 func (e *Engine) tcpWriter(conn *tcpConn) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("mist: tcpWriter panic (recovered): %v", r)
+		}
+	}()
 	for {
 		conn.sendMu.Lock()
 		for len(conn.sendQ) == 0 && !conn.sendClosed {
@@ -590,6 +639,11 @@ const maxTCPSegmentPayload = 1200
 // never holds e.mu across the whole chunk loop (the old code
 // starved handleTCP for the entire 8192-byte write-out).
 func (e *Engine) pumpTCP(conn *tcpConn) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("mist: pumpTCP panic (recovered): %v", r)
+		}
+	}()
 	buf := make([]byte, 8192)
 	for {
 		// Wait for window room, then read at most what fits.
@@ -716,6 +770,11 @@ func (e *Engine) onStreamEOF(conn *tcpConn) {
 // tail, where no later segment exists to generate duplicate ACKs.
 // Exits when the connection leaves the table.
 func (e *Engine) retransmitLoop(conn *tcpConn) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("mist: retransmitLoop panic (recovered): %v", r)
+		}
+	}()
 	t := time.NewTicker(100 * time.Millisecond)
 	defer t.Stop()
 	for range t.C {
@@ -775,14 +834,22 @@ func (e *Engine) sendRST(p *IPPacket, tuple FourTuple, syn *TCPSegment) {
 }
 
 // dropTCP closes the stream and forgets the connection.
+// The stream is closed AFTER releasing e.mu: even though stream
+// Close is now non-blocking, teardown must never hold the engine
+// lock across a close (defense in depth against any future
+// blocking close path wedging the Run loop).
 func (e *Engine) dropTCP(tuple FourTuple) {
 	e.mu.Lock()
-	defer e.mu.Unlock()
-	if c, ok := e.tcp[tuple]; ok {
-		c.stream.Close()
-		stopTCPWriterLocked(c)
+	c, ok := e.tcp[tuple]
+	if ok {
 		delete(e.tcp, tuple)
 	}
+	e.mu.Unlock()
+	if !ok {
+		return
+	}
+	c.stream.Close()
+	stopTCPWriterLocked(c)
 }
 
 // ---------------------------------------------------------------------------
@@ -792,6 +859,20 @@ func (e *Engine) dropTCP(tuple FourTuple) {
 func (e *Engine) handleUDP(p *IPPacket, dg *UDPPacket) {
 	if e.dg == nil {
 		return // client has no datagram support
+	}
+	if e.closed.Load() {
+		return
+	}
+	// Bound in-flight send goroutines: without this a wedged
+	// session piles up one blocked goroutine per app datagram
+	// (chatty UDP apps retry hard), and thousands of stacks plus
+	// scheduler pressure starve the phone's UI thread. UDP is
+	// loss-tolerant, so excess datagrams are dropped here — the
+	// app retransmits — instead of queued forever.
+	select {
+	case e.udpSem <- struct{}{}:
+	default:
+		return
 	}
 	tuple := TupleOf(p, dg.SrcPort, dg.DstPort)
 	e.mu.Lock()
@@ -808,6 +889,12 @@ func (e *Engine) handleUDP(p *IPPacket, dg *UDPPacket) {
 	target := net.JoinHostPort(p.Dst.String(), fmt.Sprint(dg.DstPort))
 	payload := append([]byte(nil), dg.Payload...)
 	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				log.Printf("mist: udp send panic (recovered): %v", r)
+			}
+			<-e.udpSem
+		}()
 		if err := e.dg.SendDatagram(target, payload); err != nil {
 			return
 		}
@@ -949,6 +1036,11 @@ func (e *Engine) writeTUNLocked(tuple FourTuple, segment []byte) {
 
 // sweeper removes idle connections.
 func (e *Engine) sweeper(ctx context.Context) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("mist: sweeper panic (recovered): %v", r)
+		}
+	}()
 	t := time.NewTicker(30 * time.Second)
 	defer t.Stop()
 	for {
@@ -959,14 +1051,14 @@ func (e *Engine) sweeper(ctx context.Context) {
 			return
 		case now := <-t.C:
 			e.mu.Lock()
+			var idle []*tcpConn
 			for tuple, c := range e.tcp {
 				// Idle-based, not age-based: a long-lived but
 				// active connection (persistent app session) must
 				// not be killed at 10 minutes old, while a truly
 				// idle one is reaped on the same timescale.
 				if now.Sub(c.lastAct) > tcpIdleTimeout {
-					c.stream.Close()
-					stopTCPWriterLocked(c)
+					idle = append(idle, c)
 					delete(e.tcp, tuple)
 				}
 			}
@@ -977,6 +1069,11 @@ func (e *Engine) sweeper(ctx context.Context) {
 				}
 			}
 			e.mu.Unlock()
+			// Close outside e.mu (see dropTCP).
+			for _, c := range idle {
+				c.stream.Close()
+				stopTCPWriterLocked(c)
+			}
 		}
 	}
 }
@@ -993,6 +1090,7 @@ func NewEngineForMobile(tun TUNDevice, client *MistUDPClient) *Engine {
 		udp:      make(map[FourTuple]*udpSession),
 		udpByDst: make(map[string][]FourTuple),
 		udpByDNS: make(map[string]FourTuple),
+		udpSem:   make(chan struct{}, maxInFlightUDPSends),
 		done:     make(chan struct{}),
 	}
 	if dg, ok := interface{}(client).(DatagramClient); ok {

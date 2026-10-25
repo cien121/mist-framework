@@ -55,6 +55,8 @@ type Stats struct {
 	DatagramsSent       uint64 // UDP relay datagrams sent successfully
 	DatagramsSendErrors uint64 // UDP relay datagram send failures
 	DatagramsReceived   uint64 // UDP relay datagrams received
+	ReadPumpDeaths      uint64 // readPump exits + watchdog stalls (session-dead signal)
+	StreamPendingResets uint64 // streams reset by the reorder-buffer cap
 	UpdatedAt           time.Time
 }
 
@@ -75,6 +77,14 @@ type AckStatser interface {
 // Stats).
 type DatagramStatser interface {
 	DatagramStats() (sent, sendErrs, received uint64)
+}
+
+// HealthStatser is an optional ProtocolClient extension reporting
+// session-liveness counts (used by the engine to surface them in
+// Stats). A nonzero ReadPumpDeaths with zero traffic is the signal
+// that the session died while the UI still shows "connected".
+type HealthStatser interface {
+	HealthStats() (readPumpDeaths, streamPendingResets uint64)
 }
 
 // DatagramClient is an optional ProtocolClient extension for
