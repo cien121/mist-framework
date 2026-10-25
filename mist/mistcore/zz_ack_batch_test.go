@@ -1,1 +1,66 @@
-Ly8gQUNLIGJhdGNoIHRlc3Q6IHZlcmlmeSBidXJzdCBib3VuZCB1bmRlciBiYXRjaGVkIEFDSyBhcnJpdmFscy4KLy8KLy8gUmVhbCBkZXZpY2VzIChlc3BlY2lhbGx5IG9uIFdpRmkpIHJlY2VpdmUgQUNLcyBpbiBiYXRjaGVzLCBub3QgdW5pZm9ybWx5LgovLyBUaGlzIHRlc3QgdmVyaWZpZXMgdGhlIHRva2VuIGJ1Y2tldCBtZWNoYW5pc206IGVhY2ggcGFja2V0IHNlbnQgbXVzdAovLyBjb25zdW1lIHRva2VucywgYW5kIHRoZSB0b3RhbCBpbiBhbnkgd2luZG93IFQgbXVzdCBub3QgZXhjZWVkIEMgKyBSKlQuCnBhY2thZ2UgbWlzdGNvcmUKCmltcG9ydCAoCgkidGVzdGluZyIKCSJ0aW1lIgopCgovLyBUZXN0QWNrQmF0Y2hCdXJzdEJvdW5kIHZlcmlmaWVzIHRoZSB0b2tlbiBidWNrZXQgYm91bmQgdW5kZXIgYmF0Y2hlZCBBQ0tzLgpmdW5jIFRlc3RBY2tCYXRjaEJ1cnN0Qm91bmQodCAqdGVzdGluZy5UKSB7CgljbG9jayA6PSBuZXdTY2hlZE1hbnVhbENsb2NrKCkKCXZhciBzaWQgWzE2XWJ5dGUKCXZhciBrMSwgazIgWzMyXWJ5dGUKCXNlc3MgOj0gTmV3VURQU2Vzc2lvbihzaWQsIGsxLCBrMiwgbmlsLCBuaWwpCgkvLyBCQlIgbmlsID0+IGZhbGxiYWNrIHBhY2luZyByYXRlOiAxMCAqIDEzNTAgYnl0ZXMvc2VjLgoJLy8gUiA9IDEzNTAwIC8gMTAwMCAvIDEyNDEg4omIIDAuMDEwOSBwYWNrZXRzL21zLgoJc2Vzcy5CQlIgPSBuaWwKCXNlc3MuUmVsID0gbmlsCgoJdmFyIHNlbnRUaW1lcyBbXXRpbWUuVGltZQoJc2NoZWQgOj0gTmV3VURQU2VuZFNjaGVkdWxlcihzZXNzLCBEaXJDMlMsIGZ1bmMocGt0IFtdYnl0ZSkgZXJyb3IgewoJCXNlbnRUaW1lcyA9IGFwcGVuZChzZW50VGltZXMsIGNsb2NrLk5vdygpKQoJCXJldHVybiBuaWwKCX0pCglzY2hlZC5ub3cgPSBjbG9jay5Ob3cKCXNjaGVkLm5ld1RpbWVyID0gY2xvY2suTmV3VGltZXIKCgkvLyBRdWV1ZSAxMDAgcGFja2V0cy4KCWZvciBpIDo9IDA7IGkgPCAxMDA7IGkrKyB7CgkJZnJhbWUgOj0gbWFrZShbXWJ5dGUsIDEyMDApCgkJaWYgZXJyIDo9IHNjaGVkLldyaXRlKFtdW11ieXRle2ZyYW1lfSk7IGVyciAhPSBuaWwgewoJCQl0LkZhdGFsZigid3JpdGUgJWQ6ICV2IiwgaSwgZXJyKQoJCX0KCX0KCgkvLyBTaW11bGF0ZTogZHJhaW4sIGFkdmFuY2UgMTVtcywgcmVwZWF0IChsaWtlIGJhdGNoZWQgQUNLIHdha2V1cHMpLgoJZm9yIGJhdGNoIDo9IDA7IGJhdGNoIDwgMTA7IGJhdGNoKysgewoJCWZvciBzY2hlZC50cnlTZW5kKCkgewoJCX0KCQljbG9jay5BZHZhbmNlKDE1ICogdGltZS5NaWxsaXNlY29uZCkKCX0KCgkvLyBWZXJpZnkgYm91bmQ6IHBhY2tldHMgaW4gYW55IFQgbXMgd2luZG93IDw9IEMgKyBSKlQuCgkvLyBDID0gNCwgUiA9IDAuMDEwOSBwa3QvbXMgKGZhbGxiYWNrIHJhdGUpLgoJY29uc3QgQyA9IGZsb2F0NjQoVURQU2NoZWR1bGVyQnVja2V0UGFja2V0cykKCWNvbnN0IFIgPSAxMzUwMC4wIC8gMTAwMCAvIDEyNDEgLy8gcGFja2V0cyBwZXIgbXMKCglmb3IgXywgd2luZG93TXMgOj0gcmFuZ2UgW11mbG9hdDY0ezEsIDUsIDEwfSB7CgkJYm91bmQgOj0gQyArIFIqd2luZG93TXMKCQlmb3IgaSA6PSAwOyBpIDwgbGVuKHNlbnRUaW1lcyk7IGkrKyB7CgkJCWNvdW50IDo9IDAKCQkJd2luZG93RW5kIDo9IHNlbnRUaW1lc1tpXS5BZGQodGltZS5EdXJhdGlvbih3aW5kb3dNcyAqIGZsb2F0NjQodGltZS5NaWxsaXNlY29uZCkpKQoJCQlmb3IgaiA6PSBpOyBqIDwgbGVuKHNlbnRUaW1lcykgJiYgIXNlbnRUaW1lc1tqXS5BZnRlcih3aW5kb3dFbmQpOyBqKysgewoJCQkJY291bnQrKwoJCQl9CgkJCWlmIGZsb2F0NjQoY291bnQpID4gYm91bmQrMC41IHsgLy8gKzAuNSBmb3IgaW50ZWdlciByb3VuZGluZwoJCQkJdC5GYXRhbGYoIndpbmRvdyAlLjBmbXM6IGdvdCAlZCBwYWNrZXRzLCBib3VuZCAlLjJmIiwgd2luZG93TXMsIGNvdW50LCBib3VuZCkKCQkJfQoJCX0KCX0KCXQuTG9nZigiQUNLIGJhdGNoIHRlc3QgcGFzc2VkIikKfQo=
+// ACK batch test: verify burst bound under batched ACK arrivals.
+//
+// Real devices (especially on WiFi) receive ACKs in batches, not uniformly.
+// This test verifies the token bucket mechanism: each packet sent must
+// consume tokens, and the total in any window T must not exceed C + R*T.
+package mistcore
+
+import (
+	"testing"
+	"time"
+)
+
+// TestAckBatchBurstBound verifies the token bucket bound under batched ACKs.
+func TestAckBatchBurstBound(t *testing.T) {
+	clock := newSchedManualClock()
+	var sid [16]byte
+	var k1, k2 [32]byte
+	sess := NewUDPSession(sid, k1, k2, nil, nil)
+	// BBR nil => fallback pacing rate: 10 * 1350 bytes/sec.
+	// R = 13500 / 1000 / 1241 ≈ 0.0109 packets/ms.
+	sess.BBR = nil
+	sess.Rel = nil
+
+	var sentTimes []time.Time
+	sched := NewUDPSendScheduler(sess, DirC2S, func(pkt []byte) error {
+		sentTimes = append(sentTimes, clock.Now())
+		return nil
+	})
+	sched.now = clock.Now
+	sched.newTimer = clock.NewTimer
+
+	// Queue 100 packets.
+	for i := 0; i < 100; i++ {
+		frame := make([]byte, 1200)
+		if err := sched.Write([][]byte{frame}); err != nil {
+			t.Fatalf("write %d: %v", i, err)
+		}
+	}
+
+	// Simulate: drain, advance 15ms, repeat (like batched ACK wakeups).
+	for batch := 0; batch < 10; batch++ {
+		for sched.trySend() {
+		}
+		clock.Advance(15 * time.Millisecond)
+	}
+
+	// Verify bound: packets in any T ms window <= C + R*T.
+	// C = 4, R = 0.0109 pkt/ms (fallback rate).
+	const C = float64(UDPSchedulerBucketPackets)
+	const R = 13500.0 / 1000 / 1241 // packets per ms
+
+	for _, windowMs := range []float64{1, 5, 10} {
+		bound := C + R*windowMs
+		for i := 0; i < len(sentTimes); i++ {
+			count := 0
+			windowEnd := sentTimes[i].Add(time.Duration(windowMs * float64(time.Millisecond)))
+			for j := i; j < len(sentTimes) && !sentTimes[j].After(windowEnd); j++ {
+				count++
+			}
+			if float64(count) > bound+0.5 { // +0.5 for integer rounding
+				t.Fatalf("window %.0fms: got %d packets, bound %.2f", windowMs, count, bound)
+			}
+		}
+	}
+	t.Logf("ACK batch test passed")
+}

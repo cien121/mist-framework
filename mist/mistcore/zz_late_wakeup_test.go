@@ -1,1 +1,84 @@
-Ly8gTGF0ZSB3YWtldXAgdGVzdDogdmVyaWZ5IGJ1cnN0IHVwcGVyIGJvdW5kIGlzIGd1YXJhbnRlZWQgYnkgY29kZSwKLy8gbm90IGJ5IHRpbWVyIGFjY3VyYWN5LgovLwovLyBJZiB0aGUgc2NoZWR1bGVyJ3MgdGltZXIgd2FrZXMgdXAgbGF0ZSAoY29tbW9uIG9uIHBob25lczogR28gdGltZXJzIGNhbgovLyBiZSBkZWxheWVkIGJ5IG1pbGxpc2Vjb25kcyB1bmRlciBsb2FkKSwgdGhlIHRva2VuIGJ1Y2tldCByZWZpbGwgbXVzdAovLyBzdGlsbCBiZSBjYXBwZWQgYXQgY2FwYWNpdHkuIEEgbGF0ZSB3YWtldXAgbXVzdCBub3QgcmVsZWFzZSBtb3JlIHRoYW4KLy8gVURQU2NoZWR1bGVyQnVja2V0UGFja2V0cyB3b3J0aCBvZiBwYWNrZXRzIGluIGEgYnVyc3QuCi8vCi8vIFRoaXMgaXMgYSBkZXRlcm1pbmlzdGljIHRlc3QgdXNpbmcgdGhlIG1hbnVhbCBjbG9jazogd2UgYWR2YW5jZSB0aW1lIGJ5Ci8vIDVtcy8yMG1zLzEwMG1zIHdpdGhvdXQgZmlyaW5nIHRoZSB0aW1lciwgdGhlbiB2ZXJpZnkgdHJ5U2VuZCgpIHJlbGVhc2VzCi8vIGF0IG1vc3QgYnVja2V0IGNhcGFjaXR5IHBhY2tldHMuCnBhY2thZ2UgbWlzdGNvcmUKCmltcG9ydCAoCgkidGVzdGluZyIKCSJ0aW1lIgopCgovLyBUZXN0TGF0ZVdha2V1cEJ1cnN0Qm91bmQgdmVyaWZpZXMgdGhhdCBhZnRlciBhIGxvbmcgZWxhcHNlZCB0aW1lIChzaW11bGF0aW5nCi8vIGEgbGF0ZSB0aW1lciB3YWtldXApLCB0aGUgc2NoZWR1bGVyIGRvZXMgbm90IHJlbGVhc2UgbW9yZSB0aGFuIGJ1Y2tldAovLyBjYXBhY2l0eSBwYWNrZXRzIGluIGEgYnVyc3QuCmZ1bmMgVGVzdExhdGVXYWtldXBCdXJzdEJvdW5kKHQgKnRlc3RpbmcuVCkgewoJZm9yIF8sIGxhdGVCeSA6PSByYW5nZSBbXXRpbWUuRHVyYXRpb257NSAqIHRpbWUuTWlsbGlzZWNvbmQsIDIwICogdGltZS5NaWxsaXNlY29uZCwgMTAwICogdGltZS5NaWxsaXNlY29uZH0gewoJCXQuUnVuKGxhdGVCeS5TdHJpbmcoKSwgZnVuYyh0ICp0ZXN0aW5nLlQpIHsKCQkJY2xvY2sgOj0gbmV3U2NoZWRNYW51YWxDbG9jaygpCgkJCXZhciBzaWQgWzE2XWJ5dGUKCQkJdmFyIGsxLCBrMiBbMzJdYnl0ZQoJCQlzZXNzIDo9IE5ld1VEUFNlc3Npb24oc2lkLCBrMSwgazIsIG5pbCwgbmlsKQoJCQkvLyBEaXNhYmxlIEJCUi9jd25kIGdhdGUgZm9yIHRoaXMgdGVzdDogZm9jdXMgb24gcGFjaW5nIGJ1Y2tldC4KCQkJc2Vzcy5CQlIgPSBuaWwKCQkJc2Vzcy5SZWwgPSBuaWwKCgkJCXNlbnQgOj0gMAoJCQlzY2hlZCA6PSBOZXdVRFBTZW5kU2NoZWR1bGVyKHNlc3MsIERpckMyUywgZnVuYyhwa3QgW11ieXRlKSBlcnJvciB7CgkJCQlzZW50KysKCQkJCXJldHVybiBuaWwKCQkJfSkKCQkJc2NoZWQubm93ID0gY2xvY2suTm93CgkJCXNjaGVkLm5ld1RpbWVyID0gY2xvY2suTmV3VGltZXIKCgkJCS8vIFF1ZXVlIDEwMCBwYWNrZXRzIChlYWNoIDEyMDAgYnl0ZXMpLgoJCQlmb3IgaSA6PSAwOyBpIDwgMTAwOyBpKysgewoJCQkJZnJhbWUgOj0gbWFrZShbXWJ5dGUsIDEyMDApCgkJCQlpZiBlcnIgOj0gc2NoZWQuV3JpdGUoW11bXWJ5dGV7ZnJhbWV9KTsgZXJyICE9IG5pbCB7CgkJCQkJdC5GYXRhbGYoIndyaXRlICVkOiAldiIsIGksIGVycikKCQkJCX0KCQkJfQoKCQkJLy8gRHJhaW4gaW5pdGlhbCBidXJzdCAoYnVja2V0IHN0YXJ0cyBmdWxsOiA0IHBhY2tldHMpLgoJCQlpbml0aWFsIDo9IDAKCQkJZm9yIHNjaGVkLnRyeVNlbmQoKSB7CgkJCQlpbml0aWFsKysKCQkJfQoJCQlpZiBpbml0aWFsICE9IFVEUFNjaGVkdWxlckJ1Y2tldFBhY2tldHMgewoJCQkJdC5GYXRhbGYoImluaXRpYWwgYnVyc3QgPSAlZCwgd2FudCAlZCIsIGluaXRpYWwsIFVEUFNjaGVkdWxlckJ1Y2tldFBhY2tldHMpCgkJCX0KCgkJCS8vIFNpbXVsYXRlIGxhdGUgd2FrZXVwOiBhZHZhbmNlIGNsb2NrIGJ5IGxhdGVCeSBXSVRIT1VUCgkJCS8vIGZpcmluZyB0aGUgdGltZXIuIFRoZSBuZXh0IHRyeVNlbmQoKSB3aWxsIGNhbGwgcmVmaWxsTG9ja2VkKCkKCQkJLy8gd2l0aCB0aGUgZnVsbCBlbGFwc2VkIHRpbWUuCgkJCWNsb2NrLkFkdmFuY2UobGF0ZUJ5KQoKCQkJLy8gQ291bnQgcGFja2V0cyBpbiB0aGUgcG9zdC13YWtldXAgYnVyc3QuCgkJCWJ1cnN0IDo9IDAKCQkJZm9yIHNjaGVkLnRyeVNlbmQoKSB7CgkJCQlidXJzdCsrCgkJCQkvLyBTYWZldHk6IGRvbid0IGxvb3AgZm9yZXZlciBpZiBzb21ldGhpbmcgaXMgd3JvbmcuCgkJCQlpZiBidXJzdCA+IDEwMCB7CgkJCQkJdC5GYXRhbGYoImJ1cnN0IGV4Y2VlZGVkIDEwMCwgdG9rZW5zIG5vdCBjYXBwZWQ/IikKCQkJCX0KCQkJfQoKCQkJLy8gVGhlIGJ1cnN0IG11c3Qgbm90IGV4Y2VlZCBidWNrZXQgY2FwYWNpdHkuCgkJCS8vIChSZWZpbGwgaXMgY2FwcGVkIGF0IGNhcGFjaXR5LCBzbyBsYXRlIHdha2V1cCBjYW5ub3QKCQkJLy8gYWNjdW11bGF0ZSBtb3JlIHRoYW4gNCBwYWNrZXRzIHdvcnRoIG9mIHRva2Vucy4pCgkJCWlmIGJ1cnN0ID4gVURQU2NoZWR1bGVyQnVja2V0UGFja2V0cyB7CgkJCQl0LkZhdGFsZigibGF0ZSB3YWtldXAgKCV2KTogYnVyc3QgPSAlZCwgd2FudCA8PSAlZCAoYnVja2V0IGNhcGFjaXR5KSIsCgkJCQkJbGF0ZUJ5LCBidXJzdCwgVURQU2NoZWR1bGVyQnVja2V0UGFja2V0cykKCQkJfQoJCQl0LkxvZ2YoImxhdGUgd2FrZXVwICgldik6IGJ1cnN0ID0gJWQgKGNhcGFjaXR5ICVkKSBPSyIsCgkJCQlsYXRlQnksIGJ1cnN0LCBVRFBTY2hlZHVsZXJCdWNrZXRQYWNrZXRzKQoJCX0pCgl9Cn0K
+// Late wakeup test: verify burst upper bound is guaranteed by code,
+// not by timer accuracy.
+//
+// If the scheduler's timer wakes up late (common on phones: Go timers can
+// be delayed by milliseconds under load), the token bucket refill must
+// still be capped at capacity. A late wakeup must not release more than
+// UDPSchedulerBucketPackets worth of packets in a burst.
+//
+// This is a deterministic test using the manual clock: we advance time by
+// 5ms/20ms/100ms without firing the timer, then verify trySend() releases
+// at most bucket capacity packets.
+package mistcore
+
+import (
+	"testing"
+	"time"
+)
+
+// TestLateWakeupBurstBound verifies that after a long elapsed time (simulating
+// a late timer wakeup), the scheduler does not release more than bucket
+// capacity packets in a burst.
+func TestLateWakeupBurstBound(t *testing.T) {
+	for _, lateBy := range []time.Duration{5 * time.Millisecond, 20 * time.Millisecond, 100 * time.Millisecond} {
+		t.Run(lateBy.String(), func(t *testing.T) {
+			clock := newSchedManualClock()
+			var sid [16]byte
+			var k1, k2 [32]byte
+			sess := NewUDPSession(sid, k1, k2, nil, nil)
+			// Disable BBR/cwnd gate for this test: focus on pacing bucket.
+			sess.BBR = nil
+			sess.Rel = nil
+
+			sent := 0
+			sched := NewUDPSendScheduler(sess, DirC2S, func(pkt []byte) error {
+				sent++
+				return nil
+			})
+			sched.now = clock.Now
+			sched.newTimer = clock.NewTimer
+
+			// Queue 100 packets (each 1200 bytes).
+			for i := 0; i < 100; i++ {
+				frame := make([]byte, 1200)
+				if err := sched.Write([][]byte{frame}); err != nil {
+					t.Fatalf("write %d: %v", i, err)
+				}
+			}
+
+			// Drain initial burst (bucket starts full: 4 packets).
+			initial := 0
+			for sched.trySend() {
+				initial++
+			}
+			if initial != UDPSchedulerBucketPackets {
+				t.Fatalf("initial burst = %d, want %d", initial, UDPSchedulerBucketPackets)
+			}
+
+			// Simulate late wakeup: advance clock by lateBy WITHOUT
+			// firing the timer. The next trySend() will call refillLocked()
+			// with the full elapsed time.
+			clock.Advance(lateBy)
+
+			// Count packets in the post-wakeup burst.
+			burst := 0
+			for sched.trySend() {
+				burst++
+				// Safety: don't loop forever if something is wrong.
+				if burst > 100 {
+					t.Fatalf("burst exceeded 100, tokens not capped?")
+				}
+			}
+
+			// The burst must not exceed bucket capacity.
+			// (Refill is capped at capacity, so late wakeup cannot
+			// accumulate more than 4 packets worth of tokens.)
+			if burst > UDPSchedulerBucketPackets {
+				t.Fatalf("late wakeup (%v): burst = %d, want <= %d (bucket capacity)",
+					lateBy, burst, UDPSchedulerBucketPackets)
+			}
+			t.Logf("late wakeup (%v): burst = %d (capacity %d) OK",
+				lateBy, burst, UDPSchedulerBucketPackets)
+		})
+	}
+}

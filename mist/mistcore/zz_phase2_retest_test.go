@@ -1,1 +1,148 @@
-Ly8gUGhhc2UgMiByZS10ZXN0ICgyMDI2LTEwLTIzLCB1c2VyLWRpcmVjdGVkKTogNSUgcmFuZG9tIGxvc3MgKyAyMDBtcyBSVFQKLy8gdGhyb3VnaCB0aGUgc2NoZWR1bGVyK0JCUiwgbWVhc3VyaW5nIGxpbmsgdXRpbGl6YXRpb24gdnMgdGhlIDg1JQovLyBiYXNlbGluZSBtZWFzdXJlZCBiZWZvcmUgdGhlIHNjaGVkdWxlciBleGlzdGVkLgovLwovLyBJZiB1dGlsaXphdGlvbiBkcm9wcyBiZWxvdyA3MCUsIHRoZSBEUkFJTi1zdHVjayBpc3N1ZSBpcyBsaWtlbHkgdGhlCi8vIGNhdXNlIChvcGVuIGlzc3VlLCBub3QgYSBrbm93biBsaW1pdGF0aW9uKS4KcGFja2FnZSBtaXN0Y29yZQoKaW1wb3J0ICgKCSJjb250ZXh0IgoJIm1hdGgiCgkibWF0aC9yYW5kIgoJInN5bmMvYXRvbWljIgoJInRlc3RpbmciCgkidGltZSIKKQoKZnVuYyBUZXN0WlpQaGFzZTJSZXRlc3QodCAqdGVzdGluZy5UKSB7Cgl3aXRoV2F0Y2hkb2codCwgMzAwKnRpbWUuU2Vjb25kLCBmdW5jKGNvbnRleHQuQ29udGV4dCkgewoJCWNvbnN0IGJhc2VSVFQgPSAyMDAgKiB0aW1lLk1pbGxpc2Vjb25kCgkJY29uc3QgYWNrRGVsYXkgPSAxMCAqIHRpbWUuTWlsbGlzZWNvbmQKCQljb25zdCBzdGVwRHVyID0gNSAqIHRpbWUuTWlsbGlzZWNvbmQKCQljb25zdCBsaW5rUmF0ZUJwcyA9IDhlNiAvLyA4TWJwcyBsaWtlIHRoZSBvcmlnaW5hbCBQaGFzZSAyIGNlbGwKCQljb25zdCBsb3NzUmF0ZSA9IDAuMDUKCQljb25zdCBuUGFja2V0cyA9IDg3NDAgLy8gfjEwTUIKCgkJcGFja2V0c1BlclN0ZXAgOj0gaW50KG1hdGguUm91bmQobGlua1JhdGVCcHMgKiBzdGVwRHVyLlNlY29uZHMoKSAvIChub21pbmFsU2VhbGVkUGt0Qnl0ZXMgKiA4KSkpCgkJaWYgcGFja2V0c1BlclN0ZXAgPCAxIHsKCQkJcGFja2V0c1BlclN0ZXAgPSAxCgkJfQoKCQljbG9jayA6PSBuZXdTY2hlZE1hbnVhbENsb2NrKCkKCQlzZXNzIDo9IHRlc3RTY2hlZHVsZXJTZXNzaW9uKCkKCQlzZXNzLkJCUiA9IE5ld0JCUkNvbnRyb2xsZXJXaXRoQ2xvY2soMTM1MCwgJmJickNsb2NrQWRhcHRlcntjbG9ja30pCgkJcmVsIDo9IE5ld1VEUFJlbGlhYmlsaXR5KHNlc3MuQkJSKQoJCXJlbC5ub3cgPSBjbG9jay5Ob3cKCQlzZXNzLlJlbCA9IHJlbAoJCS8vIERlZXAgcXVldWUgKG5vIGJvdHRsZW5lY2sgZHJvcHMpOyBsb3NzIGlzIHJhbmRvbSA1JS4KCQlhY2tzIDo9IG5ld0ZhaXRoZnVsQWNrU2ltKGNsb2NrLCBzZXNzLCBiYXNlUlRULCBhY2tEZWxheSkKCQlhY2tzLmNoZWNrQ3duZCA9IHNlc3MuQkJSLkNvbmdlc3Rpb25XaW5kb3coKQoKCQlybmcgOj0gcmFuZC5OZXcocmFuZC5OZXdTb3VyY2UoNDIpKQoJCXZhciBsYXN0V2FzUnR4IGF0b21pYy5Cb29sCgkJdmFyIHNlbnRUb3RhbCwgZHJvcHBlZCBhdG9taWMuSW50NjQKCQl2YXIgd2lyZUJ5dGVzT3JpZyBhdG9taWMuSW50NjQKCgkJc2VuZEZ1bmMgOj0gZnVuYyhwa3QgW11ieXRlKSBlcnJvciB7CgkJCWlmIHJuZy5GbG9hdDY0KCkgPCBsb3NzUmF0ZSB7CgkJCQlkcm9wcGVkLkFkZCgxKQoJCQkJYWNrcy5vblNlbmROb0FjayhsZW4ocGt0KSkKCQkJCXJldHVybiBuaWwKCQkJfQoJCQlzZW50VG90YWwuQWRkKDEpCgkJCXdpcmVCeXRlc09yaWcuQWRkKGludDY0KGxlbihwa3QpKSkKCQkJLy8gTm8gcXVldWVpbmc6IHJlbGVhc2VEZWxheSB+MCwgQUNLIGF0IGJhc2VSVFQrYWNrRGVsYXkuCgkJCWFja3Mub25TZW5kKGxlbihwa3QpLCAwKQoJCQlyZXR1cm4gbmlsCgkJfQoJCXNjaGVkIDo9IE5ld1VEUFNlbmRTY2hlZHVsZXIoc2VzcywgRGlyQzJTLCBzZW5kRnVuYykKCQlzY2hlZC5ub3cgPSBjbG9jay5Ob3cKCQlzY2hlZC5uZXdUaW1lciA9IGNsb2NrLk5ld1RpbWVyCgkJc2NoZWQuZGVxdWV1ZUhvb2sgPSBmdW5jKHdhc1J0eCBib29sKSB7IGxhc3RXYXNSdHguU3RvcmUod2FzUnR4KSB9CgkJYWNrcy5zY2hlZCA9IHNjaGVkCgkJc2Vzcy5SZWwuT25SZXRyYW5zbWl0ID0gZnVuYyhmcmFtZXMgW11bXWJ5dGUpIGVycm9yIHsKCQkJcmV0dXJuIHNjaGVkLldyaXRlUmV0cmFuc21pdENodW5rZWQoZnJhbWVzKQoJCX0KCQlzZXNzLlJlbC5PblBhY2tldHNSZXRpcmVkID0gZnVuYyhwbnMgW111aW50MzIsIGJ5dGVzIFtdaW50KSB7CgkJCWFja3Mub25QYWNrZXRzUmV0aXJlZChwbnMsIGJ5dGVzKQoJCX0KCgkJcGF5bG9hZCA6PSBtYWtlKFtdYnl0ZSwgMTIwMCkKCQllbnF1ZXVlZCA6PSAwCgkJc3RhcnQgOj0gY2xvY2suTm93KCkKCQljb21wbGV0ZWQgOj0gZmFsc2UKCQltYXhEcmFpblN0ZXBzIDo9IDAKCQljdXJEcmFpblN0ZXBzIDo9IDAKCQlmb3Igc3RlcCA6PSAwOyBzdGVwIDwgNjAwMDA7IHN0ZXArKyB7CgkJCWZvciBpIDo9IDA7IGkgPCAxMCAmJiBlbnF1ZXVlZCA8IG5QYWNrZXRzOyBpKysgewoJCQkJc2NoZWQubXUuTG9jaygpCgkJCQlmdWxsIDo9IHNjaGVkLnF1ZXVlTGVuID49IFVEUFNjaGVkdWxlck1heFF1ZXVlCgkJCQlzY2hlZC5tdS5VbmxvY2soKQoJCQkJaWYgZnVsbCB7CgkJCQkJYnJlYWsKCQkJCX0KCQkJCWZyIDo9IEVuY29kZVVEUEZyYW1lKFVEUEZyYW1lU3RyZWFtLCBieXRlKGVucXVldWVkKSwgcGF5bG9hZCkKCQkJCWlmIGVyciA6PSBzY2hlZC5Xcml0ZShbXVtdYnl0ZXtmcn0pOyBlcnIgIT0gbmlsIHsKCQkJCQl0LkZhdGFsZigiV3JpdGUgJWQ6ICV2IiwgZW5xdWV1ZWQsIGVycikKCQkJCX0KCQkJCWVucXVldWVkKysKCQkJfQoJCQlmb3IgewoJCQkJYWNrcy5tdS5Mb2NrKCkKCQkJCWFja3MuY2hlY2tDd25kID0gc2Vzcy5CQlIuQ29uZ2VzdGlvbldpbmRvdygpCgkJCQlhY2tzLm11LlVubG9jaygpCgkJCQlpZiAhc2NoZWQudHJ5U2VuZCgpIHsKCQkJCQlicmVhawoJCQkJfQoJCQl9CgkJCXNlc3MuUmVsLkNoZWNrUlRPKCkKCQkJZm9yIHsKCQkJCWFja3MubXUuTG9jaygpCgkJCQlhY2tzLmNoZWNrQ3duZCA9IHNlc3MuQkJSLkNvbmdlc3Rpb25XaW5kb3coKQoJCQkJYWNrcy5tdS5VbmxvY2soKQoJCQkJaWYgIXNjaGVkLnRyeVNlbmQoKSB7CgkJCQkJYnJlYWsKCQkJCX0KCQkJfQoJCQljbG9jay5BZHZhbmNlKHN0ZXBEdXIpCgkJCWFja3MuZmlyZUR1ZSgpCgoJCQlpZiBzZXNzLkJCUi5JbkRyYWluKCkgewoJCQkJY3VyRHJhaW5TdGVwcysrCgkJCX0gZWxzZSB7CgkJCQlpZiBjdXJEcmFpblN0ZXBzID4gbWF4RHJhaW5TdGVwcyB7CgkJCQkJbWF4RHJhaW5TdGVwcyA9IGN1ckRyYWluU3RlcHMKCQkJCX0KCQkJCWN1ckRyYWluU3RlcHMgPSAwCgkJCX0KCgkJCWlmIGVucXVldWVkID09IG5QYWNrZXRzICYmIGFja3MudGVzdEluZmxpZ2h0KCkgPT0gMCB7CgkJCQlzY2hlZC5tdS5Mb2NrKCkKCQkJCXFsZW4gOj0gc2NoZWQucXVldWVMZW4KCQkJCXNjaGVkLm11LlVubG9jaygpCgkJCQlpZiBxbGVuID09IDAgewoJCQkJCWNvbXBsZXRlZCA9IHRydWUKCQkJCQlicmVhawoJCQkJfQoJCQl9CgkJfQoJCWlmIGN1ckRyYWluU3RlcHMgPiBtYXhEcmFpblN0ZXBzIHsKCQkJbWF4RHJhaW5TdGVwcyA9IGN1ckRyYWluU3RlcHMKCQl9CgkJZWxhcHNlZCA6PSBjbG9jay5Ob3coKS5TdWIoc3RhcnQpCgoJCS8vIFV0aWxpemF0aW9uOiBvcmlnaW5hbCBieXRlcyAvIChsaW5rIHJhdGUgKiBlbGFwc2VkKS4KCQkvLyBOb3RlOiByZXRyYW5zbWl0cyB3YXN0ZSBjYXBhY2l0eTsgdXRpbGl6YXRpb24gY291bnRzIG9ubHkKCQkvLyBvcmlnaW5hbCBieXRlcyB2cyB0aGVvcmV0aWNhbCBtYXguCgkJdHJ1ZUJ5dGVSYXRlIDo9IGZsb2F0NjQocGFja2V0c1BlclN0ZXApICogbm9taW5hbFNlYWxlZFBrdEJ5dGVzIC8gc3RlcER1ci5TZWNvbmRzKCkKCQl1dGlsIDo9IGZsb2F0NjQod2lyZUJ5dGVzT3JpZy5Mb2FkKCkpIC8gKHRydWVCeXRlUmF0ZSAqIGVsYXBzZWQuU2Vjb25kcygpKSAqIDEwMAoKCQl0LkxvZ2YoIjUlJWxvc3MvMjAwbXM6IGNvbXBsZXRlZD0ldiBlbGFwc2VkPSV2IHNlbnQ9JWQgZHJvcHBlZD0lZCB3aXJlT3JpZz0lZCB1dGlsPSUuMWYlJSBtYXhEcmFpblN0ZXBzPSVkICglLjFmbXMpIiwKCQkJY29tcGxldGVkLCBlbGFwc2VkLCBzZW50VG90YWwuTG9hZCgpLCBkcm9wcGVkLkxvYWQoKSwgd2lyZUJ5dGVzT3JpZy5Mb2FkKCksCgkJCXV0aWwsIG1heERyYWluU3RlcHMsIGZsb2F0NjQobWF4RHJhaW5TdGVwcykqNSkKCQlpZiAhY29tcGxldGVkIHsKCQkJdC5GYXRhbCgidHJhbnNmZXIgZGlkIG5vdCBjb21wbGV0ZSIpCgkJfQoJfSkKfQo=
+// Phase 2 re-test (2026-10-23, user-directed): 5% random loss + 200ms RTT
+// through the scheduler+BBR, measuring link utilization vs the 85%
+// baseline measured before the scheduler existed.
+//
+// If utilization drops below 70%, the DRAIN-stuck issue is likely the
+// cause (open issue, not a known limitation).
+package mistcore
+
+import (
+	"context"
+	"math"
+	"math/rand"
+	"sync/atomic"
+	"testing"
+	"time"
+)
+
+func TestZZPhase2Retest(t *testing.T) {
+	withWatchdog(t, 300*time.Second, func(context.Context) {
+		const baseRTT = 200 * time.Millisecond
+		const ackDelay = 10 * time.Millisecond
+		const stepDur = 5 * time.Millisecond
+		const linkRateBps = 8e6 // 8Mbps like the original Phase 2 cell
+		const lossRate = 0.05
+		const nPackets = 8740 // ~10MB
+
+		packetsPerStep := int(math.Round(linkRateBps * stepDur.Seconds() / (nominalSealedPktBytes * 8)))
+		if packetsPerStep < 1 {
+			packetsPerStep = 1
+		}
+
+		clock := newSchedManualClock()
+		sess := testSchedulerSession()
+		sess.BBR = NewBBRControllerWithClock(1350, &bbrClockAdapter{clock})
+		rel := NewUDPReliability(sess.BBR)
+		rel.now = clock.Now
+		sess.Rel = rel
+		// Deep queue (no bottleneck drops); loss is random 5%.
+		acks := newFaithfulAckSim(clock, sess, baseRTT, ackDelay)
+		acks.checkCwnd = sess.BBR.CongestionWindow()
+
+		rng := rand.New(rand.NewSource(42))
+		var lastWasRtx atomic.Bool
+		var sentTotal, dropped atomic.Int64
+		var wireBytesOrig atomic.Int64
+
+		sendFunc := func(pkt []byte) error {
+			if rng.Float64() < lossRate {
+				dropped.Add(1)
+				acks.onSendNoAck(len(pkt))
+				return nil
+			}
+			sentTotal.Add(1)
+			wireBytesOrig.Add(int64(len(pkt)))
+			// No queueing: releaseDelay ~0, ACK at baseRTT+ackDelay.
+			acks.onSend(len(pkt), 0)
+			return nil
+		}
+		sched := NewUDPSendScheduler(sess, DirC2S, sendFunc)
+		sched.now = clock.Now
+		sched.newTimer = clock.NewTimer
+		sched.dequeueHook = func(wasRtx bool) { lastWasRtx.Store(wasRtx) }
+		acks.sched = sched
+		sess.Rel.OnRetransmit = func(frames [][]byte) error {
+			return sched.WriteRetransmitChunked(frames)
+		}
+		sess.Rel.OnPacketsRetired = func(pns []uint32, bytes []int) {
+			acks.onPacketsRetired(pns, bytes)
+		}
+
+		payload := make([]byte, 1200)
+		enqueued := 0
+		start := clock.Now()
+		completed := false
+		maxDrainSteps := 0
+		curDrainSteps := 0
+		for step := 0; step < 60000; step++ {
+			for i := 0; i < 10 && enqueued < nPackets; i++ {
+				sched.mu.Lock()
+				full := sched.queueLen >= UDPSchedulerMaxQueue
+				sched.mu.Unlock()
+				if full {
+					break
+				}
+				fr := EncodeUDPFrame(UDPFrameStream, byte(enqueued), payload)
+				if err := sched.Write([][]byte{fr}); err != nil {
+					t.Fatalf("Write %d: %v", enqueued, err)
+				}
+				enqueued++
+			}
+			for {
+				acks.mu.Lock()
+				acks.checkCwnd = sess.BBR.CongestionWindow()
+				acks.mu.Unlock()
+				if !sched.trySend() {
+					break
+				}
+			}
+			sess.Rel.CheckRTO()
+			for {
+				acks.mu.Lock()
+				acks.checkCwnd = sess.BBR.CongestionWindow()
+				acks.mu.Unlock()
+				if !sched.trySend() {
+					break
+				}
+			}
+			clock.Advance(stepDur)
+			acks.fireDue()
+
+			if sess.BBR.InDrain() {
+				curDrainSteps++
+			} else {
+				if curDrainSteps > maxDrainSteps {
+					maxDrainSteps = curDrainSteps
+				}
+				curDrainSteps = 0
+			}
+
+			if enqueued == nPackets && acks.testInflight() == 0 {
+				sched.mu.Lock()
+				qlen := sched.queueLen
+				sched.mu.Unlock()
+				if qlen == 0 {
+					completed = true
+					break
+				}
+			}
+		}
+		if curDrainSteps > maxDrainSteps {
+			maxDrainSteps = curDrainSteps
+		}
+		elapsed := clock.Now().Sub(start)
+
+		// Utilization: original bytes / (link rate * elapsed).
+		// Note: retransmits waste capacity; utilization counts only
+		// original bytes vs theoretical max.
+		trueByteRate := float64(packetsPerStep) * nominalSealedPktBytes / stepDur.Seconds()
+		util := float64(wireBytesOrig.Load()) / (trueByteRate * elapsed.Seconds()) * 100
+
+		t.Logf("5%%loss/200ms: completed=%v elapsed=%v sent=%d dropped=%d wireOrig=%d util=%.1f%% maxDrainSteps=%d (%.1fms)",
+			completed, elapsed, sentTotal.Load(), dropped.Load(), wireBytesOrig.Load(),
+			util, maxDrainSteps, float64(maxDrainSteps)*5)
+		if !completed {
+			t.Fatal("transfer did not complete")
+		}
+	})
+}
