@@ -1,1 +1,15 @@
-bW9kdWxlIG1pc3QKCmdvIDEuMjYuMAoKcmVxdWlyZSBnb2xhbmcub3JnL3gvY3J5cHRvIHYwLjU4LjAKCnJlcXVpcmUgKAoJZ2l0aHViLmNvbS9hbmR5YmFsaG9sbS9icm90bGkgdjEuMC42IC8vIGluZGlyZWN0CglnaXRodWIuY29tL2FwZXJuZXQvcXVpYy1nbyB2MC42MS4xLTAuMjAyNjA4MDYwMTA5MTYtMTg0ZDA4MWVlZjNlIC8vIGluZGlyZWN0CglnaXRodWIuY29tL2tsYXVzcG9zdC9jb21wcmVzcyB2MS4xNy40IC8vIGluZGlyZWN0CglnaXRodWIuY29tL3JlZnJhY3Rpb24tbmV0d29ya2luZy91dGxzIHYxLjguMiAvLyBpbmRpcmVjdAoJZ29sYW5nLm9yZy94L2V4cCB2MC4wLjAtMjAyNjEwMTQxNDM2NDEtZjAyNTFlYjRhYTNlIC8vIGluZGlyZWN0Cglnb2xhbmcub3JnL3gvbmV0IHYwLjYwLjAgLy8gaW5kaXJlY3QKCWdvbGFuZy5vcmcveC9zeXMgdjAuNDkuMCAvLyBpbmRpcmVjdAopCg==
+module mist
+
+go 1.26.0
+
+require golang.org/x/crypto v0.58.0
+
+require (
+	github.com/andybalholm/brotli v1.0.6 // indirect
+	github.com/apernet/quic-go v0.61.1-0.20260806010916-184d081eef3e // indirect
+	github.com/klauspost/compress v1.17.4 // indirect
+	github.com/refraction-networking/utls v1.8.2 // indirect
+	golang.org/x/exp v0.0.0-20261014143641-f0251eb4aa3e // indirect
+	golang.org/x/net v0.60.0 // indirect
+	golang.org/x/sys v0.49.0 // indirect
+)
