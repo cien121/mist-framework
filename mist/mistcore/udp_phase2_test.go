@@ -35,7 +35,7 @@ func TestHeaderProtectRoundTrip(t *testing.T) {
 		t.Fatal("header protection did not change packet number")
 	}
 	// Spin bit (bit 5) should be unchanged.
-	if (masked[0]&0x20) != (orig[0]&0x20) {
+	if (masked[0] & 0x20) != (orig[0] & 0x20) {
 		t.Fatal("spin bit was masked (should stay)")
 	}
 	// Remove protection.
@@ -217,8 +217,8 @@ func TestBBRBasic(t *testing.T) {
 	// Simulate sending and acking.
 	ctl.OnPacketSent(0, 1350, 0)
 	ctl.OnPacketAcked(0, 1350, 0, 50*time.Millisecond)
-	if ctl.RTTStats().SmoothedRTT() != 50*time.Millisecond {
-		t.Fatalf("smoothed RTT = %v, want 50ms", ctl.RTTStats().SmoothedRTT())
+	if ctl.SmoothedRTT() != 50*time.Millisecond {
+		t.Fatalf("smoothed RTT = %v, want 50ms", ctl.SmoothedRTT())
 	}
 }
 

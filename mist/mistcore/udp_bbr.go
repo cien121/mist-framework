@@ -12,6 +12,7 @@
 package mistcore
 
 import (
+	"sync"
 	"time"
 
 	"github.com/apernet/quic-go/congestion"
@@ -28,6 +29,14 @@ import (
 // All newly-acknowledged packets participate in sampling (§11, 2026-10-22:
 // with new-packet-number retransmission there is no ambiguity, so excluding
 // retransmits would starve BBR of samples under loss).
+//
+// Thread safety: UDPRTTStats has NO lock of its own. It is guarded by the
+// owning BBRController's mu: every method here must only be called with
+// that lock held (all BBRController methods hold it, and the vendored
+// bbr.Sender only touches this provider from inside those methods).
+// Direct calls on the pointer returned by BBRController.RTTStats are only
+// safe single-threaded (tests); production code must use the locked
+// accessors on BBRController (SmoothedRTT, MinRTT, PTO).
 type UDPRTTStats struct {
 	minRTT      time.Duration
 	latestRTT   time.Duration
@@ -131,7 +140,22 @@ type UDPPacingParams struct {
 
 // BBRController wraps the ported BBR sender with a Mist-friendly API.
 // Packet numbers are uint32 (Mist) converted to congestion.PacketNumber (int64).
+//
+// Thread safety (2026-10-25 freeze/crash fix): the vendored bbr.Sender
+// assumes a single packet-handler goroutine and has no mutex, but Mist
+// calls it from three goroutines — the scheduler loop (PacingRate /
+// CongestionWindow / CanSend / OnPacketSent, under sched.mu), readPump
+// (OnPacketAcked via Rel.ProcessAck, under Rel.mu) and tickLoop
+// (OnPacketLost via Rel.CheckRTO, under Rel.mu). Different outer locks
+// meant zero mutual exclusion: -race showed 200+ races and the sampler
+// ring buffer corrupted its indices and panicked ("offset from invalid
+// index"), killing the whole app process through JNI. mu serializes
+// ALL sender/rttStats/pacing access. Lock order is always outer lock
+// (sched.mu or Rel.mu) -> mu; no BBR method ever takes an outer lock,
+// so no cycle is possible. WaitForPacing never holds mu across its
+// sleep.
 type BBRController struct {
+	mu       sync.Mutex
 	sender   *bbr.Sender
 	rttStats *UDPRTTStats
 	clock    bbr.Clock
@@ -168,6 +192,8 @@ func NewBBRControllerWithClock(maxDatagramSize int, clock bbr.Clock) *BBRControl
 
 // OnPacketSent notifies BBR that a packet was sent.
 func (c *BBRController) OnPacketSent(packetNum uint32, bytes int, bytesInFlight int) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	c.sender.OnPacketSent(
 		c.clock.Now(),
 		congestion.ByteCount(bytesInFlight),
@@ -176,7 +202,7 @@ func (c *BBRController) OnPacketSent(packetNum uint32, bytes int, bytesInFlight 
 		true, // retransmittable
 	)
 	// Update pacing: next send time based on pacing rate.
-	rate := c.PacingRate() // bytes per second
+	rate := c.pacingRateLocked() // bytes per second
 	if rate > 0 {
 		interval := time.Duration(float64(bytes) / float64(rate) * float64(time.Second))
 		c.nextSendTime = time.Now().Add(interval)
@@ -193,6 +219,8 @@ func (c *BBRController) OnPacketSent(packetNum uint32, bytes int, bytesInFlight 
 // the acked bytes because OnCongestionEventEx expects the PRE-event value
 // (it subtracts acked bytes itself).
 func (c *BBRController) OnPacketAcked(packetNum uint32, bytes int, bytesInFlight int, rtt time.Duration) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	// Update RTT stats (all acked packets participate).
 	c.rttStats.UpdateRTT(rtt, 0)
 	now := c.clock.Now()
@@ -214,6 +242,8 @@ func (c *BBRController) OnPacketAcked(packetNum uint32, bytes int, bytesInFlight
 // Routes through OnCongestionEventEx (the simple OnPacketLost is a no-op).
 // bytesInFlight is the POST-loss value; we add back for the pre-event value.
 func (c *BBRController) OnPacketLost(packetNum uint32, bytes int, bytesInFlight int) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	c.sender.OnCongestionEventEx(
 		congestion.ByteCount(bytesInFlight+bytes), // pre-event in-flight
 		c.clock.Now(),
@@ -229,31 +259,51 @@ func (c *BBRController) OnPacketLost(packetNum uint32, bytes int, bytesInFlight 
 
 // CanSend reports whether BBR allows sending (congestion window check).
 func (c *BBRController) CanSend(bytesInFlight int) bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	return c.sender.CanSend(congestion.ByteCount(bytesInFlight))
 }
 
 // CongestionWindow returns the current congestion window in bytes.
 func (c *BBRController) CongestionWindow() int {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	return int(c.sender.GetCongestionWindow())
 }
 
 // PacingRate returns the current pacing rate in bytes per second.
 func (c *BBRController) PacingRate() float64 {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.pacingRateLocked()
+}
+
+// pacingRateLocked is PacingRate without the lock, for use by other
+// methods that already hold mu (sync.Mutex is not reentrant).
+func (c *BBRController) pacingRateLocked() float64 {
 	// BBR Bandwidth is bits/sec; callers expect bytes/sec.
 	return float64(c.sender.PacingRate()) / 8
 }
 
 // WaitForPacing blocks until the pacing budget allows sending.
 // Returns immediately if pacing allows sending now.
+// It deliberately does NOT hold mu across the sleep: holding the
+// controller lock while sleeping would stall the scheduler, readPump
+// and tickLoop for the whole pacing delay.
 func (c *BBRController) WaitForPacing() {
+	c.mu.Lock()
+	next := c.nextSendTime
+	c.mu.Unlock()
 	now := time.Now()
-	if now.Before(c.nextSendTime) {
-		time.Sleep(c.nextSendTime.Sub(now))
+	if now.Before(next) {
+		time.Sleep(next.Sub(now))
 	}
 }
 
 // TimeUntilSend returns how long to wait before sending (for non-blocking use).
 func (c *BBRController) TimeUntilSend() time.Duration {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	d := time.Until(c.nextSendTime)
 	if d < 0 {
 		return 0
@@ -263,27 +313,65 @@ func (c *BBRController) TimeUntilSend() time.Duration {
 
 // InSlowStart reports whether BBR is in slow start.
 func (c *BBRController) InSlowStart() bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	return c.sender.InSlowStart()
 }
 
 // InDrain reports whether BBR is in the DRAIN phase. Exported for
 // diagnostics (2026-10-23: DRAIN-exit investigation).
 func (c *BBRController) InDrain() bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	return c.sender.InDrain()
 }
 
 // PacingGain returns BBR's current pacing gain. Exported for testing.
 func (c *BBRController) PacingGain() float64 {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	return c.sender.PacingGain()
 }
 
 // BandwidthEstimate returns BBR's current bandwidth estimate in bits per second.
 // Exported for testing and monitoring.
 func (c *BBRController) BandwidthEstimate() uint64 {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	return uint64(c.sender.BandwidthEstimate())
 }
 
-// RTTStats returns the RTT tracker (for RTO calculation).
+// SmoothedRTT returns the RTT tracker's smoothed RTT under the
+// controller lock. Production code must use this (and MinRTT/PTO
+// below), never methods on the raw RTTStats pointer.
+func (c *BBRController) SmoothedRTT() time.Duration {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.rttStats.SmoothedRTT()
+}
+
+// MinRTT returns the RTT tracker's minimum observed RTT under the
+// controller lock.
+func (c *BBRController) MinRTT() time.Duration {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.rttStats.MinRTT()
+}
+
+// PTO returns the RTT tracker's probe timeout under the controller lock.
+func (c *BBRController) PTO(includeMaxAckDelay bool) time.Duration {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.rttStats.PTO(includeMaxAckDelay)
+}
+
+// RTTStats returns the RTT tracker.
+//
+// Deprecated for production use: the returned pointer's methods are
+// NOT synchronized (the tracker is guarded by the controller's mu,
+// which a bare pointer cannot take). Only single-threaded callers
+// (tests) may use it; production code must use SmoothedRTT, MinRTT
+// and PTO above. Kept so existing tests keep compiling.
 func (c *BBRController) RTTStats() *UDPRTTStats {
 	return c.rttStats
 }
