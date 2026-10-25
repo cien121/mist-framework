@@ -71,17 +71,17 @@ func TestUDPStreamOffset(t *testing.T) {
 	}
 }
 
-// Test short header build/parse roundtrip.
+// Test short header build/parse roundtrip (F3 variable length).
 func TestUDPShortHeader(t *testing.T) {
 	var dcid [8]byte
 	for i := range dcid {
 		dcid[i] = byte(i)
 	}
 	header := BuildShortHeader(dcid, 42, false)
-	if len(header) != 13 {
-		t.Fatalf("header len != 13")
+	if len(header) != 11 {
+		t.Fatalf("header len for pn 42 != 11 (got %d)", len(header))
 	}
-	parsedDCID, pktNum, spin, err := ParseShortHeader(header[:])
+	parsedDCID, pktNum, spin, err := ParseShortHeader(header)
 	if err != nil {
 		t.Fatalf("parse failed: %v", err)
 	}
@@ -93,6 +93,18 @@ func TestUDPShortHeader(t *testing.T) {
 	}
 	if spin {
 		t.Errorf("spin should be false")
+	}
+	// At and above 65536 the 4-byte form (13 bytes) is used.
+	header = BuildShortHeader(dcid, 70000, true)
+	if len(header) != 13 {
+		t.Fatalf("header len for pn 70000 != 13 (got %d)", len(header))
+	}
+	parsedDCID, pktNum, spin, err = ParseShortHeader(header)
+	if err != nil {
+		t.Fatalf("parse failed: %v", err)
+	}
+	if parsedDCID != dcid || pktNum != 70000 || !spin {
+		t.Errorf("roundtrip mismatch: dcid=%v pktNum=%d spin=%v", parsedDCID, pktNum, spin)
 	}
 }
 

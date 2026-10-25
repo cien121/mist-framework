@@ -17,7 +17,7 @@ func TestHeaderProtectRoundTrip(t *testing.T) {
 	}
 
 	// Build a header, apply protection, then remove.
-	orig := BuildShortHeader(dcid, 42, false)
+	orig := BuildShortHeader(dcid, 42, false) // 2-byte pn form: 11 bytes
 	// Fake ciphertext (need 16 bytes for sample).
 	ciphertext := make([]byte, 32)
 	for i := range ciphertext {
@@ -26,12 +26,12 @@ func TestHeaderProtectRoundTrip(t *testing.T) {
 	sample := ciphertext[:16]
 
 	masked := make([]byte, len(orig))
-	copy(masked, orig[:])
+	copy(masked, orig)
 	if err := ApplyHeaderProtection(masked, hpKey, sample); err != nil {
 		t.Fatalf("apply: %v", err)
 	}
-	// Masked header should differ (packet number masked).
-	if masked[9] == orig[9] && masked[10] == orig[10] && masked[11] == orig[11] && masked[12] == orig[12] {
+	// Masked header should differ (packet number masked: bytes 9,10).
+	if masked[9] == orig[9] && masked[10] == orig[10] {
 		t.Fatal("header protection did not change packet number")
 	}
 	// Spin bit (bit 5) should be unchanged.

@@ -56,8 +56,18 @@ func TestQuicInitialSealOpenRoundtrip(t *testing.T) {
 	if hdr.packetNum != 1 {
 		t.Fatalf("packetNum mismatch: %d", hdr.packetNum)
 	}
-	if !bytes.Equal(plaintext, payload) {
-		t.Fatalf("payload mismatch: %x vs %x", plaintext, payload)
+	// F2: the sealed datagram is padded to >= 1200 bytes, so the raw
+	// plaintext is the CRYPTO frame plus zero PADDING bytes.
+	if len(packet) < 1200 {
+		t.Fatalf("sealed Initial len %d < 1200 (F2 padding missing)", len(packet))
+	}
+	if !bytes.HasPrefix(plaintext, payload) {
+		t.Fatalf("plaintext does not start with CRYPTO frame")
+	}
+	for i, b := range plaintext[len(payload):] {
+		if b != 0x00 {
+			t.Fatalf("plaintext byte %d after CRYPTO frame is 0x%02x, want PADDING 0x00", len(payload)+i, b)
+		}
 	}
 	// Decode CRYPTO frame.
 	off, data, _, err := decodeCryptoFrame(plaintext)

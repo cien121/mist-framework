@@ -930,7 +930,7 @@ func TestEstimatedSizeMatchesSeal(t *testing.T) {
 				continue
 			}
 
-			est := estimatedSize(frames)
+			est := estimatedSize(frames, ShortHeaderLen(sess.PeekPacketNum(DirC2S)))
 
 			// Tracked path (scheduler data path).
 			pkt, err := sess.sealPacketTracked(DirC2S, frames)
