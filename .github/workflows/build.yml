@@ -49,6 +49,8 @@ jobs:
       - name: Build AAR (gomobile bind)
         working-directory: core
         run: |
+          go get golang.org/x/mobile@latest
+          go mod tidy
           gomobile init
           gomobile bind -v -target=android/arm64 -androidapi 24 -trimpath \
             -ldflags='-s -w -buildid= -checklinkname=0' \
