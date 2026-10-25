@@ -1,8 +1,10 @@
 // Package mistcore: Mist UDP session management.
 //
 // A UDP session is established via the Initial handshake (§5):
-//   Client → Server: Initial(AUTH)    [QUIC long header]
-//   Server → Client: Initial(AUTH_OK) [QUIC long header]
+//
+//	Client → Server: Initial(AUTH)    [QUIC long header]
+//	Server → Client: Initial(AUTH_OK) [QUIC long header]
+//
 // Then both sides use short headers for data.
 //
 // Phase 1 scope: handshake + basic packet send/recv.
@@ -47,7 +49,7 @@ type UDPSession struct {
 	Rel *UDPReliability
 
 	// Created time (for idle timeout).
-	CreatedAt time.Time
+	CreatedAt  time.Time
 	LastActive time.Time
 
 	mu sync.Mutex
@@ -119,6 +121,17 @@ func (s *UDPSession) Touch() {
 func (s *UDPSession) Tick() {
 	s.Rel.FlushAck()
 	s.Rel.CheckRTO()
+}
+
+// FlushAck sends a pending ACK without scanning RTOs. readPump calls
+// this per received packet: ACKs stay prompt (FlushAck's own 10ms
+// throttle governs), while the O(in-flight) CheckRTO scan runs only
+// on the 10ms timer loop. Calling full Tick per packet made RTO-scan
+// CPU grow quadratically with throughput (packet rate x in-flight:
+// ~4% of a core at 32 Mbps, ~45% at 100 Mbps in benchmarks), which
+// capped sustained throughput on phones well below the link rate.
+func (s *UDPSession) FlushAck() {
+	s.Rel.FlushAck()
 }
 
 // SealPacket encrypts frames into a UDP datagram.

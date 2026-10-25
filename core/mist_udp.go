@@ -188,6 +188,14 @@ func (c *MistUDPClient) Connect(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("mist: listen: %w", err)
 	}
+	// Large socket buffers (best-effort; the kernel caps at rmem_max /
+	// wmem_max). The default ~212KB receive buffer is far below the
+	// bandwidth-delay product at 223ms RTT (~900KB at 32 Mbps), so a
+	// brief app stall (GC, scheduling) overflowed the kernel queue,
+	// dropped bursts, and made server-side BBR back off. 1MB absorbs
+	// bursts without stressing phone memory.
+	_ = conn.SetReadBuffer(1 << 20)
+	_ = conn.SetWriteBuffer(1 << 20)
 	session, err := c.handshake(ctx, conn, udpAddr)
 	if err != nil {
 		conn.Close()
@@ -364,7 +372,10 @@ func (c *MistUDPClient) readPump() {
 		for _, f := range frames {
 			c.dispatch(f)
 		}
-		session.Tick()
+		// ACK-only: RTO scans run on the 10ms tickLoop, not per packet
+		// (see UDPSession.FlushAck: per-packet CheckRTO scans cost
+		// O(in-flight) each and grow quadratically with throughput).
+		session.FlushAck()
 	}
 }
 
