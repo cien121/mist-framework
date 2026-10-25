@@ -7,6 +7,7 @@
 //
 //	MobileEngine:  NewMobileEngine() -> Start(tunFd, nodeURL) / Stop()
 //	              GetUploadBytes() / GetDownloadBytes() (polling)
+//	Ping:         Ping(nodeURL, timeoutSec) -> handshake ms (static)
 //
 // Java mapping (gomobile lowerCamelCase rules; verify against the
 // generated sources after the first bind):
@@ -15,6 +16,7 @@
 //	Kotlin: eng.start(fd, nodeURL)     // Go Start; throws on error
 //	Kotlin: eng.stop()                 // Go Stop
 //	Kotlin: eng.getUploadBytes()       // Go GetUploadBytes
+//	Kotlin: Mobile.ping(url, 5)        // Go Ping; throws on error
 //
 // TUN fd ownership: Kotlin passes the fd from ParcelFileDescriptor
 // .detachFd(). Go takes ownership via os.NewFile; core.Engine.Close()
@@ -31,9 +33,9 @@
 package mobile
 
 import (
-	"github.com/cien121/mist-framework/core"
 	"context"
 	"errors"
+	"github.com/cien121/mist-framework/core"
 	"os"
 	"sync"
 	"time"
@@ -180,4 +182,39 @@ func (m *MobileEngine) GetDownloadBytes() int64 {
 		return 0
 	}
 	return int64(e.Stats().DownloadBytes)
+}
+
+// Ping measures real Mist UDP handshake latency for a mist:// node link.
+// It parses the link, performs one QUIC Initial + AUTH handshake, and
+// closes the client, returning round-trip milliseconds. This is a true
+// handshake round-trip, not a TCP ping: the Mist server listens on UDP
+// only, so a TCP connect to the Mist port would always fail.
+// timeoutSec caps the whole attempt (0 or negative = 5s default,
+// capped at 30s). On failure it returns 0 and the error (surfaced as
+// a Java exception by the gomobile binding).
+func Ping(nodeURL string, timeoutSec int) (int64, error) {
+	if timeoutSec <= 0 {
+		timeoutSec = 5
+	}
+	if timeoutSec > 30 {
+		timeoutSec = 30
+	}
+	cfg, err := core.ParseMistURL(nodeURL)
+	if err != nil {
+		return 0, err
+	}
+	client, err := core.NewMistUDPClient(*cfg)
+	if err != nil {
+		return 0, err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeoutSec)*time.Second)
+	defer cancel()
+	start := time.Now()
+	if err := client.Connect(ctx); err != nil {
+		_ = client.Close()
+		return 0, err
+	}
+	elapsed := time.Since(start)
+	_ = client.Close()
+	return elapsed.Milliseconds(), nil
 }
