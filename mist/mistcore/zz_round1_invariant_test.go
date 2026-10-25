@@ -1,1 +1,94 @@
-Ly8gUm91bmQgMSB2YWxpZGF0aW9uOiBwcm92ZSB0aGUgaW52YXJpYW50IHRlc3RzIGNhdGNoIHRoZSBvbGQgZGlyZWN0LXNlbmQgYnVnLgovLwovLyBUaGlzIHRlc3QgbWltaWNzIHRoZSBPTEQgc2VuZCBwYXR0ZXJuIChkaXJlY3Qgc2VhbCArIHNlbmQsIG5vIHNjaGVkdWxlciwKLy8gbm8gY3duZCBnYXRlKSBhbmQgYXNzZXJ0cyB0aGUgY3duZCBpbnZhcmlhbnQuIEl0IE1VU1QgRkFJTCAocmVkKSBiZWNhdXNlCi8vIHRoZSBvbGQgcGF0aCBsZXRzIGluZmxpZ2h0IGdyb3cgdW5ib3VuZGVkIHdoaWxlIGN3bmQgc3RheXMgYXQgMTAgcGFja2V0cy4KLy8KLy8gSWYgdGhpcyB0ZXN0IGlzIEdSRUVOLCB0aGUgaW52YXJpYW50IGNoZWNrIGlzIGJyb2tlbiBhbmQgdGhlIHNjaGVkdWxlcidzCi8vICJwYXNzaW5nIiB0ZXN0cyBhcmUgbWVhbmluZ2xlc3MuCgpwYWNrYWdlIG1pc3Rjb3JlCgppbXBvcnQgKAoJInRlc3RpbmciCikKCi8vIFRlc3RSb3VuZDFPbGRQYXRoVmlvbGF0ZXNDd25kIHNlbmRzIDg3NCBwYWNrZXRzIHZpYSB0aGUgZGlyZWN0IHBhdGgKLy8gKHNlYWwgKyBpbW1lZGlhdGUgInNlbmQiLCBubyBzY2hlZHVsZXIpIGFuZCBhc3NlcnRzIGluZmxpZ2h0IDw9IGN3bmQuCi8vIEV4cGVjdGVkOiBGQUlMIC0gaW5mbGlnaHQgcmVhY2hlcyA4NzQqMTM1MCB3aGlsZSBjd25kIHN0YXlzIH4xMCoxMzUwLgpmdW5jIFRlc3RSb3VuZDFPbGRQYXRoVmlvbGF0ZXNDd25kKHQgKnRlc3RpbmcuVCkgewoJdmFyIHNpZCBbMTZdYnl0ZQoJZm9yIGkgOj0gcmFuZ2Ugc2lkIHsKCQlzaWRbaV0gPSBieXRlKGkpCgl9Cgl2YXIgazEsIGsyIFszMl1ieXRlCglmb3IgaSA6PSByYW5nZSBrMSB7CgkJazFbaV0gPSAweDExCgkJazJbaV0gPSAweDIyCgl9CglzZXNzIDo9IE5ld1VEUFNlc3Npb24oc2lkLCBrMSwgazIsIG5pbCwgbmlsKQoKCS8vIFNpbXVsYXRlIHRoZSBPTEQgZGlyZWN0LXNlbmQgcGF0dGVybjogc2VhbCBwYWNrZXQsICJzZW5kIiBpbW1lZGlhdGVseSwKCS8vIG5vIGN3bmQgY2hlY2ssIG5vIHBhY2luZy4gVGhpcyBpcyB3aGF0IGNtZC9taXN0LXVkcC10ZXN0IGRpZCBiZWZvcmUKCS8vIHRoZSBzY2hlZHVsZXIuCgl2aW9sYXRpb25zIDo9IDAKCWZvciBpIDo9IDA7IGkgPCA4NzQ7IGkrKyB7CgkJLy8gQnVpbGQgYSBkdW1teSBmcmFtZSAoMTMwMCBieXRlcyBwYXlsb2FkKS4KCQlmcmFtZSA6PSBtYWtlKFtdYnl0ZSwgMTMwMCkKCQlmcmFtZVswXSA9IDB4MDEgLy8gU1RSRUFNIGZyYW1lIHR5cGUKCgkJLy8gU2VhbCAoaW50ZXJuYWwgQVBJLCBzYW1lIGFzIG9sZCBwdWJsaWMgU2VhbFBhY2tldCkuCgkJXywgZXJyIDo9IHNlc3Muc2VhbFBhY2tldFRyYWNrZWQoRGlyQzJTLCBbXVtdYnl0ZXtmcmFtZX0pCgkJaWYgZXJyICE9IG5pbCB7CgkJCXQuRmF0YWxmKCJzZWFsIGZhaWxlZCBhdCBwYWNrZXQgJWQ6ICV2IiwgaSwgZXJyKQoJCX0KCQkvLyAiU2VuZCIgaW1tZWRpYXRlbHkgLSBubyBnYXRlLiBUaGlzIGlzIHRoZSBidWcuCgoJCS8vIENoZWNrIGludmFyaWFudCBBRlRFUiBhY2NvdW50aW5nIChzZWFsUGFja2V0VHJhY2tlZCBjYWxscwoJCS8vIFJlbC5QYWNrZXRTZW50IGFuZCBCQlIuT25QYWNrZXRTZW50KS4KCQlpbmZsaWdodCA6PSBzZXNzLlJlbC5CeXRlc0luRmxpZ2h0KCkKCQljd25kIDo9IHNlc3MuQkJSLkNvbmdlc3Rpb25XaW5kb3coKQoJCWlmIGluZmxpZ2h0ID4gY3duZCB7CgkJCXZpb2xhdGlvbnMrKwoJCQlpZiB2aW9sYXRpb25zID09IDEgewoJCQkJdC5Mb2dmKCJGSVJTVCBWSU9MQVRJT04gYXQgcGFja2V0ICVkOiBpbmZsaWdodD0lZCA+IGN3bmQ9JWQiLAoJCQkJCWksIGluZmxpZ2h0LCBjd25kKQoJCQl9CgkJfQoJfQoKCWlmIHZpb2xhdGlvbnMgPT0gMCB7CgkJdC5FcnJvcmYoImV4cGVjdGVkIGN3bmQgaW52YXJpYW50IHZpb2xhdGlvbnMgb24gb2xkIGRpcmVjdC1zZW5kIHBhdGgsIGdvdCAwIC0gdGVzdCBpcyBicm9rZW4iKQoJfSBlbHNlIHsKCQl0LkxvZ2YoIk9LIChyZWQgYXMgZXhwZWN0ZWQpOiAlZC84NzQgcGFja2V0cyB2aW9sYXRlZCBpbmZsaWdodDw9Y3duZCIsIHZpb2xhdGlvbnMpCgkJLy8gRGVsaWJlcmF0ZWx5IGZhaWwgdG8gcHJvdmUgdGhlIHRlc3QgY2F0Y2hlcyB0aGUgYnVnLgoJCXQuRXJyb3JmKCJST1VORDE6IG9sZCBwYXRoIHZpb2xhdGVzIGN3bmQgaW52YXJpYW50ICglZCB2aW9sYXRpb25zKSAtIHRlc3QgY29ycmVjdGx5IFJFRCIsIHZpb2xhdGlvbnMpCgl9Cn0KCi8vIFRlc3RSb3VuZDFCdXJzdFVuYm91bmRlZCB2ZXJpZmllcyB0aGF0IHRoZSBvbGQgcGF0aCBjYW4gZW1pdCBodW5kcmVkcyBvZgovLyBwYWNrZXRzIGluIGEgc3ViLW1pbGxpc2Vjb25kIGJ1cnN0IHdpdGggbm8gcGFjaW5nLgpmdW5jIFRlc3RSb3VuZDFCdXJzdFVuYm91bmRlZCh0ICp0ZXN0aW5nLlQpIHsKCXZhciBzaWQgWzE2XWJ5dGUKCXZhciBrMSwgazIgWzMyXWJ5dGUKCXNlc3MgOj0gTmV3VURQU2Vzc2lvbihzaWQsIGsxLCBrMiwgbmlsLCBuaWwpCgoJLy8gQ291bnQgaG93IG1hbnkgcGFja2V0cyBjYW4gYmUgInNlbnQiIHdpdGhvdXQgYW55IGRlbGF5LgoJLy8gT2xkIHBhdGg6IGFsbCA4NzQgZ28gb3V0IGltbWVkaWF0ZWx5LgoJc2VudCA6PSAwCglmb3IgaSA6PSAwOyBpIDwgODc0OyBpKysgewoJCWZyYW1lIDo9IG1ha2UoW11ieXRlLCAxMzAwKQoJCWZyYW1lWzBdID0gMHgwMQoJCWlmIF8sIGVyciA6PSBzZXNzLnNlYWxQYWNrZXRUcmFja2VkKERpckMyUywgW11bXWJ5dGV7ZnJhbWV9KTsgZXJyICE9IG5pbCB7CgkJCXQuRmF0YWxmKCJzZWFsIGZhaWxlZDogJXYiLCBlcnIpCgkJfQoJCXNlbnQrKwoJfQoKCS8vIElmIHdlIGdvdCBoZXJlIHdpdGhvdXQgYmxvY2tpbmcsIHRoZSBidXJzdCB3YXMgdW5ib3VuZGVkLgoJLy8gQSBwcm9wZXIgc2NoZWR1bGVyIHdvdWxkIGhhdmUgYmxvY2tlZCBhZnRlciB+MTAgcGFja2V0cyAoaW5pdGlhbCBjd25kKS4KCXQuTG9nZigic2VudCAlZCBwYWNrZXRzIHdpdGggemVybyBibG9ja2luZyIsIHNlbnQpCglpZiBzZW50ID09IDg3NCB7CgkJdC5FcnJvcmYoIlJPVU5EMTogb2xkIHBhdGggc2VudCBhbGwgODc0IHBhY2tldHMgd2l0aCBubyBnYXRpbmcgLSB0ZXN0IGNvcnJlY3RseSBSRUQgKHVuYm91bmRlZCBidXJzdCkiKQoJfQp9Cg==
+// Round 1 validation: prove the invariant tests catch the old direct-send bug.
+//
+// This test mimics the OLD send pattern (direct seal + send, no scheduler,
+// no cwnd gate) and asserts the cwnd invariant. It MUST FAIL (red) because
+// the old path lets inflight grow unbounded while cwnd stays at 10 packets.
+//
+// If this test is GREEN, the invariant check is broken and the scheduler's
+// "passing" tests are meaningless.
+
+package mistcore
+
+import (
+	"testing"
+)
+
+// TestRound1OldPathViolatesCwnd sends 874 packets via the direct path
+// (seal + immediate "send", no scheduler) and asserts inflight <= cwnd.
+// Expected: FAIL - inflight reaches 874*1350 while cwnd stays ~10*1350.
+func TestRound1OldPathViolatesCwnd(t *testing.T) {
+	var sid [16]byte
+	for i := range sid {
+		sid[i] = byte(i)
+	}
+	var k1, k2 [32]byte
+	for i := range k1 {
+		k1[i] = 0x11
+		k2[i] = 0x22
+	}
+	sess := NewUDPSession(sid, k1, k2, nil, nil)
+
+	// Simulate the OLD direct-send pattern: seal packet, "send" immediately,
+	// no cwnd check, no pacing. This is what cmd/mist-udp-test did before
+	// the scheduler.
+	violations := 0
+	for i := 0; i < 874; i++ {
+		// Build a dummy frame (1300 bytes payload).
+		frame := make([]byte, 1300)
+		frame[0] = 0x01 // STREAM frame type
+
+		// Seal (internal API, same as old public SealPacket).
+		_, err := sess.sealPacketTracked(DirC2S, [][]byte{frame})
+		if err != nil {
+			t.Fatalf("seal failed at packet %d: %v", i, err)
+		}
+		// "Send" immediately - no gate. This is the bug.
+
+		// Check invariant AFTER accounting (sealPacketTracked calls
+		// Rel.PacketSent and BBR.OnPacketSent).
+		inflight := sess.Rel.BytesInFlight()
+		cwnd := sess.BBR.CongestionWindow()
+		if inflight > cwnd {
+			violations++
+			if violations == 1 {
+				t.Logf("FIRST VIOLATION at packet %d: inflight=%d > cwnd=%d",
+					i, inflight, cwnd)
+			}
+		}
+	}
+
+	if violations == 0 {
+		t.Errorf("expected cwnd invariant violations on old direct-send path, got 0 - test is broken")
+	} else {
+		t.Logf("OK (red as expected): %d/874 packets violated inflight<=cwnd", violations)
+		// Deliberately fail to prove the test catches the bug.
+		t.Errorf("ROUND1: old path violates cwnd invariant (%d violations) - test correctly RED", violations)
+	}
+}
+
+// TestRound1BurstUnbounded verifies that the old path can emit hundreds of
+// packets in a sub-millisecond burst with no pacing.
+func TestRound1BurstUnbounded(t *testing.T) {
+	var sid [16]byte
+	var k1, k2 [32]byte
+	sess := NewUDPSession(sid, k1, k2, nil, nil)
+
+	// Count how many packets can be "sent" without any delay.
+	// Old path: all 874 go out immediately.
+	sent := 0
+	for i := 0; i < 874; i++ {
+		frame := make([]byte, 1300)
+		frame[0] = 0x01
+		if _, err := sess.sealPacketTracked(DirC2S, [][]byte{frame}); err != nil {
+			t.Fatalf("seal failed: %v", err)
+		}
+		sent++
+	}
+
+	// If we got here without blocking, the burst was unbounded.
+	// A proper scheduler would have blocked after ~10 packets (initial cwnd).
+	t.Logf("sent %d packets with zero blocking", sent)
+	if sent == 874 {
+		t.Errorf("ROUND1: old path sent all 874 packets with no gating - test correctly RED (unbounded burst)")
+	}
+}

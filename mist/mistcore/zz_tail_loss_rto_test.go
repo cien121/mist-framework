@@ -1,1 +1,524 @@
-Ly8gUmVwcm8gKyByZWdyZXNzaW9uIGZvcjogc2VydmVyLXNpZGUgUzJDIHRhaWwgbG9zcyBuZXZlciByZWNvdmVyZWQuCi8vCi8vIFByb2R1Y3Rpb24gc3ltcHRvbSAoMjAyNi0xMC0yMyBsYWIpOiAxMDBLQiBlY2hvIGludGVybWl0dGVudGx5IGZhaWxlZCB3aXRoCi8vICAgInRpbWVvdXQgd2FpdGluZyBmb3IgcGVlciAoZ290IDEwMTIwMC8xMDI0MDAgYnl0ZXMpIgovLyBpLmUuIHRoZSBsYXN0IH4zIGVjaG8gcGFja2V0cyB3ZXJlIGxvc3QgYW5kIG5ldmVyIHJldHJhbnNtaXR0ZWQgd2l0aGluIHRoZQovLyAzMHMgY2xpZW50IHRpbWVvdXQuCi8vCi8vIFJvb3QgY2F1c2U6IGNtZC9taXN0LXNlcnZlci9tYWluLmdvJ3MgcGVyaW9kaWMgbG9vcCAoYWNrRmx1c2hMb29wKSBvbmx5Ci8vIGNhbGxlZCBzZXNzLlJlbC5GbHVzaEFjaygpIOKAlCBpdCBORVZFUiBjYWxsZWQgc2Vzcy5SZWwuQ2hlY2tSVE8oKS4gVGhlCi8vIE9uUmV0cmFuc21pdCBjYWxsYmFjayB3YXMgd2lyZWQgY29ycmVjdGx5LCBidXQgbm90aGluZyBldmVyIGludm9rZWQgdGhlCi8vIFJUTyBzY2FuIG9uIHRoZSBzZXJ2ZXIsIHNvIGFueSBzZXJ2ZXItPmNsaWVudCBwYWNrZXQgbG9zcyB3YXMgcGVybWFuZW50LgovLyBGYXN0IHJldHJhbnNtaXQgY2FuJ3Qgc2F2ZSB0aGUgdGFpbCBlaXRoZXI6IGl0IG5lZWRzIDMgZHVwIEFDS3MsIGJ1dCBhZnRlcgovLyBhIGNsZWFuIHRhaWwgZHJvcCBubyBtb3JlIHBhY2tldHMgYXJyaXZlIHRvIGdlbmVyYXRlIHRoZW0uCi8vIFRoZSBzYW5kYm94IG5ldmVyIGNhdWdodCBpdCBiZWNhdXNlIHRoZSBpbi1wcm9jZXNzIGhhcm5lc3MgZHJvdmUKLy8gc3J2LlJlbC5DaGVja1JUTygpIG1hbnVhbGx5IG9uIGJvdGggZW5kcy4KLy8KLy8gVGhpcyB0ZXN0IG1vZGVscyB0aGUgcHJvZHVjdGlvbiBzZXJ2ZXIgdGljayBFWEFDVExZLiBzZXJ2ZXJUaWNrIGJlbG93IE1VU1QKLy8gYmUga2VwdCBpbiBzeW5jIHdpdGggdGlja0xvb3AgaW4gY21kL21pc3Qtc2VydmVyL21haW4uZ286Ci8vICAgLSBwcmUtZml4OiAgRmx1c2hBY2soKSBvbmx5ICAgICAgICAgICAgLT4gdGVzdCBGQUlMUyAoYnVnIHJlcHJvLCB2ZXJpZmllZCAyMDI2LTEwLTIzKQovLyAgIC0gcG9zdC1maXg6IFVEUFNlc3Npb24uVGljaygpICAgICAgICAgICAtPiB0ZXN0IFBBU1NFUyAocmVncmVzc2lvbiBndWFyZCkKLy8gc2VydmVyVGljayBjYWxscyB0aGUgc2FtZSBlbnRyeSBwb2ludCAoc3J2LlRpY2soKSkgYXMgcHJvZHVjdGlvbiwgc28gdGhlCi8vIHRlc3QgYnJlYWtzIGlmIHRoZSB0d28gZXZlciBkaXZlcmdlLgovLwovLyBTY2VuYXJpbzogc2VydmVyIHNydHQgc2VlZGVkIHRvIDIwMG1zIChhcyBhIHJlYWwgMjAwbXMtUlRUIHNlc3Npb24gd291bGQKLy8gaGF2ZSksIDEwMEtCIGVjaG8gd2hlcmUgdGhlIGxhc3QgMyBTMkMgZWNobyBkYXRhZ3JhbXMgYXJlIGRyb3BwZWQuIEFzc2VydHMKLy8gdGhlIHNlcnZlcidzIFJUTyBmaXJlcyBhbmQgdGhlIHRhaWwgaXMgcmVjb3ZlcmVkIHdpdGhpbiBhIHJlYXNvbmFibGUgdGltZS4KcGFja2FnZSBtaXN0Y29yZQoKaW1wb3J0ICgKCSJlbmNvZGluZy9iaW5hcnkiCgkibmV0IgoJInRlc3RpbmciCgkidGltZSIKKQoKZnVuYyBUZXN0WlpUYWlsTG9zc1NlcnZlclJUTyh0ICp0ZXN0aW5nLlQpIHsKCWN1ciA6PSB0aW1lLk5vdygpCglzdGFydFRpbWUgOj0gY3VyCglub3cgOj0gZnVuYygpIHRpbWUuVGltZSB7IHJldHVybiBjdXIgfQoJYWR2YW5jZSA6PSBmdW5jKGQgdGltZS5EdXJhdGlvbikgeyBjdXIgPSBjdXIuQWRkKGQpIH0KCgl2YXIgc2Vzc2lvbklEIFsxNl1ieXRlCgltdXN0UmFuZChzZXNzaW9uSURbOl0pCgl2YXIga0MyUywga1MyQyBbMzJdYnl0ZQoJbXVzdFJhbmQoa0MyU1s6XSkKCW11c3RSYW5kKGtTMkNbOl0pCgljb2RlYyA6PSAmUVVJQ0luaXRpYWxDb2RlY3t9CgljbGlBZGRyLCBfIDo9IG5ldC5SZXNvbHZlVURQQWRkcigidWRwIiwgIjEyNy4wLjAuMToxMTExIikKCXNydkFkZHIsIF8gOj0gbmV0LlJlc29sdmVVRFBBZGRyKCJ1ZHAiLCAiMTI3LjAuMC4xOjIyMjIiKQoJY2xpIDo9IE5ld1VEUFNlc3Npb24oc2Vzc2lvbklELCBrQzJTLCBrUzJDLCBzcnZBZGRyLCBjb2RlYykKCXNydiA6PSBOZXdVRFBTZXNzaW9uKHNlc3Npb25JRCwga0MyUywga1MyQywgY2xpQWRkciwgY29kZWMpCgljbGkuUmVsLm5vdyA9IG5vdwoJc3J2LlJlbC5ub3cgPSBub3cKCS8vIFNlZWQgc2VydmVyIFJUVCBhcyBhIHJlYWwgMjAwbXMtUlRUIHNlc3Npb24gd291bGQgaGF2ZSBhZnRlciBoYW5kc2hha2VzLgoJLy8gUlRPID0gMjAwbXMgKyBtYXgoNCoyNW1zLCAyMDAvOG1zLCAxbXMpICsgMTBtcyA9IDMxMG1zLgoJc3J2LlJlbC5zcnR0ID0gMjAwICogdGltZS5NaWxsaXNlY29uZAoJc3J2LlJlbC5ydHR2YXIgPSAyNSAqIHRpbWUuTWlsbGlzZWNvbmQKCgl2YXIgY2xpVG9TcnYsIHNydlRvQ2xpIFtdW11ieXRlCgkvLyBpc0VjaG9baV0gbWFya3Mgc3J2VG9DbGlbaV0gYXMgYW4gZWNobyBkYXRhZ3JhbSAodnMgdW50cmFja2VkIEFDSykuCgl2YXIgaXNFY2hvIFtdYm9vbAoJc3J2UmV0cmFucyA6PSAwCgoJY2xpLlJlbC5PbkFja05lZWRlZCA9IGZ1bmMobGFyZ2VzdCB1aW50MzIsIHJhbmdlcyBbXVsyXXVpbnQzMiwgYWNrRGVsYXkgdGltZS5EdXJhdGlvbikgewoJCWQsIGVyciA6PSBjbGkuU2VhbFBhY2tldFVudHJhY2tlZChEaXJDMlMsIFtdW11ieXRle0VuY29kZUFja0ZyYW1lKDAsIGxhcmdlc3QsIGFja0RlbGF5LCByYW5nZXMpfSkKCQlpZiBlcnIgIT0gbmlsIHsKCQkJdC5GYXRhbGYoImNsaSBhY2sgc2VhbDogJXYiLCBlcnIpCgkJfQoJCWNsaVRvU3J2ID0gYXBwZW5kKGNsaVRvU3J2LCBkKQoJfQoJY2xpLlJlbC5PblJldHJhbnNtaXQgPSBmdW5jKGZyYW1lcyBbXVtdYnl0ZSkgZXJyb3IgewoJCWQsIGVyciA6PSBjbGkuc2VhbFBhY2tldFRyYWNrZWQoRGlyQzJTLCBmcmFtZXMpCgkJaWYgZXJyICE9IG5pbCB7CgkJCXQuRmF0YWxmKCJjbGkgcmV0cmFuc21pdCBzZWFsOiAldiIsIGVycikKCQl9CgkJY2xpVG9TcnYgPSBhcHBlbmQoY2xpVG9TcnYsIGQpCgkJcmV0dXJuIG5pbAoJfQoJc3J2LlJlbC5PbkFja05lZWRlZCA9IGZ1bmMobGFyZ2VzdCB1aW50MzIsIHJhbmdlcyBbXVsyXXVpbnQzMiwgYWNrRGVsYXkgdGltZS5EdXJhdGlvbikgewoJCWQsIGVyciA6PSBzcnYuU2VhbFBhY2tldFVudHJhY2tlZChEaXJTMkMsIFtdW11ieXRle0VuY29kZUFja0ZyYW1lKDAsIGxhcmdlc3QsIGFja0RlbGF5LCByYW5nZXMpfSkKCQlpZiBlcnIgIT0gbmlsIHsKCQkJdC5GYXRhbGYoInNydiBhY2sgc2VhbDogJXYiLCBlcnIpCgkJfQoJCXNydlRvQ2xpID0gYXBwZW5kKHNydlRvQ2xpLCBkKQoJCWlzRWNobyA9IGFwcGVuZChpc0VjaG8sIGZhbHNlKQoJfQoJc3J2LlJlbC5PblJldHJhbnNtaXQgPSBmdW5jKGZyYW1lcyBbXVtdYnl0ZSkgZXJyb3IgewoJCXNydlJldHJhbnMrKwoJCS8vIENodW5rIHRvIGZpdCBNYXhVRFBQbGFpbnRleHQgKFJUTyBtYXkgYmF0Y2ggc2V2ZXJhbCBwYWNrZXRzKS4KCQl2YXIgYmF0Y2ggW11bXWJ5dGUKCQliYXRjaFNpemUgOj0gMAoJCWZsdXNoIDo9IGZ1bmMoKSB7CgkJCWlmIGxlbihiYXRjaCkgPT0gMCB7CgkJCQlyZXR1cm4KCQkJfQoJCQlkLCBlcnIgOj0gc3J2LnNlYWxQYWNrZXRUcmFja2VkKERpclMyQywgYmF0Y2gpCgkJCWlmIGVyciAhPSBuaWwgewoJCQkJdC5GYXRhbGYoInNydiByZXRyYW5zbWl0IHNlYWw6ICV2IiwgZXJyKQoJCQl9CgkJCXNydlRvQ2xpID0gYXBwZW5kKHNydlRvQ2xpLCBkKQoJCQlpc0VjaG8gPSBhcHBlbmQoaXNFY2hvLCB0cnVlKQoJCQliYXRjaCA9IG5pbAoJCQliYXRjaFNpemUgPSAwCgkJfQoJCWZvciBfLCBmIDo9IHJhbmdlIGZyYW1lcyB7CgkJCWlmIGJhdGNoU2l6ZStsZW4oZikgPiBNYXhVRFBQbGFpbnRleHQgJiYgbGVuKGJhdGNoKSA+IDAgewoJCQkJZmx1c2goKQoJCQl9CgkJCWJhdGNoID0gYXBwZW5kKGJhdGNoLCBmKQoJCQliYXRjaFNpemUgKz0gbGVuKGYpCgkJfQoJCWZsdXNoKCkKCQl0LkxvZ2YoInNlcnZlciByZXRyYW5zbWl0ICMlZCBhdCArJXYgKHNydHQ9JXYgcnR0dmFyPSV2IHJ0bz0ldikiLCBzcnZSZXRyYW5zLCBjdXIuU3ViKHN0YXJ0VGltZSksIHNydi5SZWwuc3J0dCwgc3J2LlJlbC5ydHR2YXIsIHNydi5SZWwuUlRPKCkpCgkJcmV0dXJuIG5pbAoJfQoKCS8vIFNlcnZlciBmcmFtZSBoYW5kbGluZyBtaXJyb3JzIGhhbmRsZURhdGEncyBlY2hvIHN3aXRjaC4KCWhhbmRsZVNydiA6PSBmdW5jKGRncmFtIFtdYnl0ZSkgewoJCWZyYW1lcywgXywgZXJyIDo9IHNydi5PcGVuUGFja2V0KERpckMyUywgZGdyYW0pCgkJaWYgZXJyICE9IG5pbCB7CgkJCXQuRmF0YWxmKCJzcnYgb3BlbjogJXYiLCBlcnIpCgkJfQoJCWZvciBfLCBmIDo9IHJhbmdlIGZyYW1lcyB7CgkJCXN3aXRjaCBmLlR5cGUgewoJCQljYXNlIFVEUEZyYW1lQWNrOgoJCQkJbGFyZ2VzdCwgYWNrRGVsYXksIHJhbmdlcywgZXJyIDo9IERlY29kZUFja0ZyYW1lKGYuUGF5bG9hZCkKCQkJCWlmIGVyciAhPSBuaWwgewoJCQkJCXQuRmF0YWxmKCJzcnYgYWNrIGRlY29kZTogJXYiLCBlcnIpCgkJCQl9CgkJCQlzcnYuUmVsLlByb2Nlc3NBY2sobGFyZ2VzdCwgYWNrRGVsYXksIHJhbmdlcykKCQkJY2FzZSBVRFBGcmFtZVN0cmVhbToKCQkJCWVjaG8gOj0gRW5jb2RlVURQRnJhbWUoVURQRnJhbWVTdHJlYW0sIGYuU0lELCBmLlBheWxvYWQpCgkJCQlkLCBlcnIgOj0gc3J2LnNlYWxQYWNrZXRUcmFja2VkKERpclMyQywgW11bXWJ5dGV7ZWNob30pCgkJCQlpZiBlcnIgIT0gbmlsIHsKCQkJCQl0LkZhdGFsZigic3J2IGVjaG8gc2VhbDogJXYiLCBlcnIpCgkJCQl9CgkJCQlzcnZUb0NsaSA9IGFwcGVuZChzcnZUb0NsaSwgZCkKCQkJCWlzRWNobyA9IGFwcGVuZChpc0VjaG8sIHRydWUpCgkJCWNhc2UgVURQRnJhbWVTeW46CgkJCX0KCQl9Cgl9CgoJY29uc3QgdG90YWwgPSAxMDAgKiAxMDI0CglyeEJ1ZiA6PSBtYWtlKFtdYnl0ZSwgdG90YWwpCglyeFNlZW4gOj0gbWFrZShbXWJvb2wsIHRvdGFsKQoJcnhHb3QgOj0gMAoJaGFuZGxlQ2xpIDo9IGZ1bmMoZGdyYW0gW11ieXRlKSB7CgkJZnJhbWVzLCBfLCBlcnIgOj0gY2xpLk9wZW5QYWNrZXQoRGlyUzJDLCBkZ3JhbSkKCQlpZiBlcnIgIT0gbmlsIHsKCQkJdC5GYXRhbGYoImNsaSBvcGVuOiAldiIsIGVycikKCQl9CgkJZm9yIF8sIGYgOj0gcmFuZ2UgZnJhbWVzIHsKCQkJaWYgZi5UeXBlID09IFVEUEZyYW1lQWNrIHsKCQkJCWxhcmdlc3QsIGFja0RlbGF5LCByYW5nZXMsIGVyciA6PSBEZWNvZGVBY2tGcmFtZShmLlBheWxvYWQpCgkJCQlpZiBlcnIgIT0gbmlsIHsKCQkJCQl0LkZhdGFsZigiY2xpIGFjayBkZWNvZGU6ICV2IiwgZXJyKQoJCQkJfQoJCQkJY2xpLlJlbC5Qcm9jZXNzQWNrKGxhcmdlc3QsIGFja0RlbGF5LCByYW5nZXMpCgkJCQljb250aW51ZQoJCQl9CgkJCWlmIGYuVHlwZSA9PSBVRFBGcmFtZVN0cmVhbSAmJiBsZW4oZi5QYXlsb2FkKSA+PSA4IHsKCQkJCW9mZiA6PSBiaW5hcnkuQmlnRW5kaWFuLlVpbnQ2NChmLlBheWxvYWRbOjhdKQoJCQkJZm9yIGksIGIgOj0gcmFuZ2UgZi5QYXlsb2FkWzg6XSB7CgkJCQkJaWR4IDo9IGludChvZmYpICsgaQoJCQkJCWlmICFyeFNlZW5baWR4XSB7CgkJCQkJCXJ4U2VlbltpZHhdID0gdHJ1ZQoJCQkJCQlyeEdvdCsrCgkJCQkJfQoJCQkJCXJ4QnVmW2lkeF0gPSBiCgkJCQl9CgkJCX0KCQl9Cgl9CgoJLy8gRHJhaW5zIHVzZSBubyB0aW1lIGFkdmFuY2VtZW50IChiYXRjaGluZyBrZWVwcyBBQ0tzIGZpbml0ZSksIGV4YWN0bHkKCS8vIGxpa2UgVGVzdFpaRWNob1NpbSdzIHByb3ZlbiBwYXR0ZXJuLiBPbmx5IFBoYXNlIDMgYWR2YW5jZXMgdGhlIGNsb2NrLgoJdmFyIGVjaG9Ib2xkIFtdW11ieXRlCglkcmFpbkMyUyA6PSBmdW5jKCkgewoJCWZvciBsZW4oY2xpVG9TcnYpID4gMCB7CgkJCWQgOj0gY2xpVG9TcnZbMF0KCQkJY2xpVG9TcnYgPSBjbGlUb1NydlsxOl0KCQkJaGFuZGxlU3J2KGQpCgkJfQoJfQoJZHJhaW5TMkNIb2xkRWNobyA6PSBmdW5jKCkgewoJCWZvciBsZW4oc3J2VG9DbGkpID4gMCB7CgkJCWQgOj0gc3J2VG9DbGlbMF0KCQkJc3J2VG9DbGkgPSBzcnZUb0NsaVsxOl0KCQkJZSA6PSBpc0VjaG9bMF0KCQkJaXNFY2hvID0gaXNFY2hvWzE6XQoJCQlpZiBlIHsKCQkJCWVjaG9Ib2xkID0gYXBwZW5kKGVjaG9Ib2xkLCBkKQoJCQl9IGVsc2UgewoJCQkJaGFuZGxlQ2xpKGQpCgkJCX0KCQl9Cgl9CgoJLy8gUGhhc2UgMTogY2xpZW50IHNlbmRzIDEwMEtCOyBzZXJ2ZXIgZWNob2VzIChoZWxkIGJhY2spLgoJY2xpU2VuZCA6PSBmdW5jKGZyYW1lcyAuLi5bXWJ5dGUpIHsKCQlkLCBlcnIgOj0gY2xpLnNlYWxQYWNrZXRUcmFja2VkKERpckMyUywgZnJhbWVzKQoJCWlmIGVyciAhPSBuaWwgewoJCQl0LkZhdGFsZigiY2xpIHNlYWw6ICV2IiwgZXJyKQoJCX0KCQljbGlUb1NydiA9IGFwcGVuZChjbGlUb1NydiwgZCkKCX0KCWNsaVNlbmQoRW5jb2RlVURQRnJhbWUoVURQRnJhbWVTeW4sIDEsIG5pbCkpCglkYXRhIDo9IG1ha2UoW11ieXRlLCB0b3RhbCkKCWZvciBpIDo9IHJhbmdlIGRhdGEgewoJCWRhdGFbaV0gPSBieXRlKGkqMzEgKyA3KQoJfQoJZm9yIG8gOj0gMDsgbyA8IHRvdGFsOyBvICs9IDEyMDAgewoJCW4gOj0gMTIwMAoJCWlmIG8rbiA+IHRvdGFsIHsKCQkJbiA9IHRvdGFsIC0gbwoJCX0KCQljbGlTZW5kKEVuY29kZVN0cmVhbUZyYW1lKDEsIHVpbnQ2NChvKSwgZGF0YVtvOm8rbl0pKQoJfQoJZm9yIGkgOj0gMDsgaSA8IDg7IGkrKyB7CgkJZHJhaW5DMlMoKQoJCWRyYWluUzJDSG9sZEVjaG8oKQoJfQoJLy8gRGlzY2FyZCBiYWNrZ3JvdW5kIEFDSyBsZWZ0b3ZlcnM7IG9ubHkgaGVsZCBlY2hvZXMgbWF0dGVyIG5vdy4KCWNsaVRvU3J2LCBzcnZUb0NsaSwgaXNFY2hvID0gbmlsLCBuaWwsIG5pbAoJdC5Mb2dmKCJwaGFzZSAxOiAlZCBlY2hvZXMgaGVsZCwgc3J2IHNlbnRQYWNrZXRzPSVkIiwgbGVuKGVjaG9Ib2xkKSwgbGVuKHNydi5SZWwuc2VudFBhY2tldHMpKQoKCS8vIFBoYXNlIDI6IGRlbGl2ZXIgYWxsIGVjaG9lcyBFWENFUFQgdGhlIGxhc3QgMyAodGFpbCBsb3NzKSwgdGhlbiBmbHVzaAoJLy8gdGhlIHJlc3VsdGluZyBjbGllbnQgQUNLcy4gQWZ0ZXJ3YXJkcyB0aGUgc2VydmVyIG11c3QgaG9sZCBleGFjdGx5IHRoZQoJLy8gMyBkcm9wcGVkIHBhY2tldHMgYW5kIG5vdGhpbmcgZWxzZS4KCWNvbnN0IGRyb3BUYWlsID0gMwoJaWYgbGVuKGVjaG9Ib2xkKSA8IGRyb3BUYWlsKzEgewoJCXQuRmF0YWxmKCJub3QgZW5vdWdoIGVjaG9lcyBoZWxkOiAlZCIsIGxlbihlY2hvSG9sZCkpCgl9Cglmb3IgaSwgZCA6PSByYW5nZSBlY2hvSG9sZCB7CgkJaWYgaSA+PSBsZW4oZWNob0hvbGQpLWRyb3BUYWlsIHsKCQkJdC5Mb2dmKCJkcm9wcGluZyB0YWlsIGVjaG8gJWQvJWQiLCBpKzEsIGxlbihlY2hvSG9sZCkpCgkJCWNvbnRpbnVlCgkJfQoJCWhhbmRsZUNsaShkKQoJfQoJZWNob0hvbGQgPSBuaWwKCWZvciBpIDo9IDA7IGkgPCA4OyBpKysgewoJCWRyYWluQzJTKCkKCQkvLyBTMkMgbm93IGNhcnJpZXMgb25seSBiYWNrZ3JvdW5kIEFDS3M7IGRlbGl2ZXIgdGhlbS4KCQlmb3IgbGVuKHNydlRvQ2xpKSA+IDAgewoJCQlkIDo9IHNydlRvQ2xpWzBdCgkJCXNydlRvQ2xpID0gc3J2VG9DbGlbMTpdCgkJCWlmIGxlbihpc0VjaG8pID4gMCB7CgkJCQlpc0VjaG8gPSBpc0VjaG9bMTpdCgkJCX0KCQkJaGFuZGxlQ2xpKGQpCgkJfQoJfQoJY2xpVG9TcnYsIHNydlRvQ2xpLCBpc0VjaG8gPSBuaWwsIG5pbCwgbmlsCgl0LkxvZ2YoInBoYXNlIDI6IHJ4R290PSVkLyVkIHNydiBzZW50UGFja2V0cz0lZCAod2FudCA+PSVkKSIsCgkJcnhHb3QsIHRvdGFsLCBsZW4oc3J2LlJlbC5zZW50UGFja2V0cyksIGRyb3BUYWlsKQoJaWYgcnhHb3QgPT0gdG90YWwgewoJCXQuRmF0YWxmKCJ0YWlsIGRyb3AgZGlkIG5vdCB0YWtlIGVmZmVjdCIpCgl9CglpZiBuIDo9IGxlbihzcnYuUmVsLnNlbnRQYWNrZXRzKTsgbiA8IGRyb3BUYWlsIHsKCQl0LkZhdGFsZigic2VydmVyIHNlbnRQYWNrZXRzPSVkLCB3YW50IGF0IGxlYXN0ICVkICh0aGUgZHJvcHBlZCB0YWlsKSIsIG4sIGRyb3BUYWlsKQoJfQoKCS8vIFBoYXNlIDM6IDEwbXMgdGljayBsb29wLCAzMHMgc2ltdWxhdGVkLiBUaGlzIGlzIHRoZSBvbmx5IHBoYXNlIHdoZXJlCgkvLyB0aGUgY2xvY2sgYWR2YW5jZXMsIHNvIFJUTyBjYW4gZmlyZS4KCS8vIHNlcnZlclRpY2sgY2FsbHMgdGhlIHNhbWUgVURQU2Vzc2lvbi5UaWNrKCkgZW50cnkgcG9pbnQgYXMgcHJvZHVjdGlvbgoJLy8gdGlja0xvb3AgaW4gY21kL21pc3Qtc2VydmVyL21haW4uZ287IGNsaWVudFRpY2sgbWlycm9ycyB0aGUgY2xpZW50J3MKCS8vIHB1bXAgbG9vcCAoYWxzbyBUaWNrKCkgc2luY2UgdGhlIFRpY2soKSBidW5kbGluZykuCglzZXJ2ZXJUaWNrIDo9IGZ1bmMoKSB7CgkJc3J2LlRpY2soKQoJfQoJY2xpZW50VGljayA6PSBmdW5jKCkgewoJCWNsaS5UaWNrKCkKCX0KCWRyYWluSW5zdGFudCA6PSBmdW5jKCkgewoJCWZvciBsZW4oY2xpVG9TcnYpID4gMCB7CgkJCWQgOj0gY2xpVG9TcnZbMF0KCQkJY2xpVG9TcnYgPSBjbGlUb1NydlsxOl0KCQkJaGFuZGxlU3J2KGQpCgkJfQoJCWZvciBsZW4oc3J2VG9DbGkpID4gMCB7CgkJCWQgOj0gc3J2VG9DbGlbMF0KCQkJc3J2VG9DbGkgPSBzcnZUb0NsaVsxOl0KCQkJaWYgbGVuKGlzRWNobykgPiAwIHsKCQkJCWlzRWNobyA9IGlzRWNob1sxOl0KCQkJfQoJCQloYW5kbGVDbGkoZCkKCQl9Cgl9CglkZWFkbGluZSA6PSBjdXIuQWRkKDMwICogdGltZS5TZWNvbmQpCglmb3IgcnhHb3QgPCB0b3RhbCAmJiBjdXIuQmVmb3JlKGRlYWRsaW5lKSB7CgkJYWR2YW5jZSgxMCAqIHRpbWUuTWlsbGlzZWNvbmQpCgkJc2VydmVyVGljaygpCgkJY2xpZW50VGljaygpCgkJZHJhaW5JbnN0YW50KCkKCX0KCgl0LkxvZ2YoInBoYXNlIDM6IHJ4R290PSVkLyVkIHNydlJldHJhbnM9JWQgc2ltRWxhcHNlZD0ldiIsCgkJcnhHb3QsIHRvdGFsLCBzcnZSZXRyYW5zLCBjdXIuU3ViKHN0YXJ0VGltZSkpCglpZiByeEdvdCAhPSB0b3RhbCB7CgkJdC5GYXRhbGYoIkJVRyBSRVBSTzogdGFpbCBsb3NzIG5vdCByZWNvdmVyZWQ6IGdvdCAlZC8lZCwgc2VydmVyIHJldHJhbnNtaXRzPSVkIiwKCQkJcnhHb3QsIHRvdGFsLCBzcnZSZXRyYW5zKQoJfQoJZm9yIGkgOj0gcmFuZ2UgZGF0YSB7CgkJaWYgcnhCdWZbaV0gIT0gZGF0YVtpXSB7CgkJCXQuRmF0YWxmKCJkYXRhIG1pc21hdGNoIGF0IGJ5dGUgJWQiLCBpKQoJCX0KCX0KCWlmIHNydlJldHJhbnMgPT0gMCB7CgkJdC5GYXRhbGYoImV4cGVjdGVkIHNlcnZlciBSVE8gcmV0cmFuc21pdHMsIGdvdCAwIikKCX0KCXQuTG9nZigiUEFTUzogc2VydmVyIFJUTyByZWNvdmVyZWQgdGFpbCBsb3NzIHdpdGggJWQgcmV0cmFuc21pdChzKSIsIHNydlJldHJhbnMpCn0KCi8vIFN5bW1ldHJpYyB0byBUZXN0WlpUYWlsTG9zc1NlcnZlclJUTzogZHJvcCB0aGUgTEFTVCAzIGNsaWVudC0+c2VydmVyCi8vIGRhdGFncmFtcyBhbmQgYXNzZXJ0IHRoZSBDTElFTlQncyBSVE8gcmVjb3ZlcnMgdGhlbS4gVGhpcyBpcyB0aGUgbWlycm9yCi8vIGltYWdlIG9mIHRoZSAyMDI2LTEwLTIzIGxhYiBidWc6IGl0IHByb3ZlcyBVRFBTZXNzaW9uLlRpY2soKSBkcml2ZXMKLy8gQ2hlY2tSVE8gb24gdGhlIGNsaWVudCBzaWRlIHRvbywgbm90IGp1c3QgdGhlIHNlcnZlci4KLy8KLy8gU2NlbmFyaW86IGNsaWVudCBzZW5kcyAxMCBzdHJlYW0gcGFja2V0cyAoc2ltdWxhdGVkIGNsb2NrLCAyMDBtcyBSVFQpOwovLyB0aGUgbGFzdCAzIG5ldmVyIHJlYWNoIHRoZSBzZXJ2ZXIuIENsaWVudCBUaWNrKCkgZXZlcnkgMTBtcyBtdXN0IGZpcmUgUlRPCi8vICh+MzEwbXMpIGFuZCByZXRyYW5zbWl0OyB0aGUgc2VydmVyIG11c3QgZXZlbnR1YWxseSByZWNlaXZlIGFsbCAxMC4KZnVuYyBUZXN0WlpUYWlsTG9zc0NsaWVudFJUTyh0ICp0ZXN0aW5nLlQpIHsKCWN1ciA6PSB0aW1lLk5vdygpCglzdGFydFRpbWUgOj0gY3VyCglub3cgOj0gZnVuYygpIHRpbWUuVGltZSB7IHJldHVybiBjdXIgfQoJYWR2YW5jZSA6PSBmdW5jKGQgdGltZS5EdXJhdGlvbikgeyBjdXIgPSBjdXIuQWRkKGQpIH0KCgl2YXIgc2Vzc2lvbklEIFsxNl1ieXRlCgltdXN0UmFuZChzZXNzaW9uSURbOl0pCgl2YXIga0MyUywga1MyQyBbMzJdYnl0ZQoJbXVzdFJhbmQoa0MyU1s6XSkKCW11c3RSYW5kKGtTMkNbOl0pCgljb2RlYyA6PSAmUVVJQ0luaXRpYWxDb2RlY3t9CgljbGlBZGRyLCBfIDo9IG5ldC5SZXNvbHZlVURQQWRkcigidWRwIiwgIjEyNy4wLjAuMToxMTExIikKCXNydkFkZHIsIF8gOj0gbmV0LlJlc29sdmVVRFBBZGRyKCJ1ZHAiLCAiMTI3LjAuMC4xOjIyMjIiKQoJY2xpIDo9IE5ld1VEUFNlc3Npb24oc2Vzc2lvbklELCBrQzJTLCBrUzJDLCBzcnZBZGRyLCBjb2RlYykKCXNydiA6PSBOZXdVRFBTZXNzaW9uKHNlc3Npb25JRCwga0MyUywga1MyQywgY2xpQWRkciwgY29kZWMpCgljbGkuUmVsLm5vdyA9IG5vdwoJc3J2LlJlbC5ub3cgPSBub3cKCS8vIFNlZWQgY2xpZW50IFJUVCBhcyBhIHJlYWwgMjAwbXMtUlRUIHNlc3Npb24gd291bGQgaGF2ZS4KCS8vIFJUTyA9IDIwMG1zICsgbWF4KDQqMjVtcywgMjAwLzhtcywgMW1zKSArIDEwbXMgPSAzMTBtcy4KCWNsaS5SZWwuc3J0dCA9IDIwMCAqIHRpbWUuTWlsbGlzZWNvbmQKCWNsaS5SZWwucnR0dmFyID0gMjUgKiB0aW1lLk1pbGxpc2Vjb25kCgoJdmFyIGNsaVRvU3J2LCBzcnZUb0NsaSBbXVtdYnl0ZQoJY2xpUmV0cmFucyA6PSAwCglzcnZHb3QgOj0gbWFrZShbXWJvb2wsIDEwKQoKCWNsaS5SZWwuT25BY2tOZWVkZWQgPSBmdW5jKGxhcmdlc3QgdWludDMyLCByYW5nZXMgW11bMl11aW50MzIsIGFja0RlbGF5IHRpbWUuRHVyYXRpb24pIHsKCQlkLCBlcnIgOj0gY2xpLlNlYWxQYWNrZXRVbnRyYWNrZWQoRGlyQzJTLCBbXVtdYnl0ZXtFbmNvZGVBY2tGcmFtZSgwLCBsYXJnZXN0LCBhY2tEZWxheSwgcmFuZ2VzKX0pCgkJaWYgZXJyICE9IG5pbCB7CgkJCXQuRmF0YWxmKCJjbGkgYWNrIHNlYWw6ICV2IiwgZXJyKQoJCX0KCQljbGlUb1NydiA9IGFwcGVuZChjbGlUb1NydiwgZCkKCX0KCWNsaS5SZWwuT25SZXRyYW5zbWl0ID0gZnVuYyhmcmFtZXMgW11bXWJ5dGUpIGVycm9yIHsKCQljbGlSZXRyYW5zKysKCQl0LkxvZ2YoImNsaWVudCByZXRyYW5zbWl0ICMlZCBhdCArJXYgKHNydHQ9JXYgcnR0dmFyPSV2IHJ0bz0ldikiLCBjbGlSZXRyYW5zLCBjdXIuU3ViKHN0YXJ0VGltZSksIGNsaS5SZWwuc3J0dCwgY2xpLlJlbC5ydHR2YXIsIGNsaS5SZWwuUlRPKCkpCgkJLy8gQ2h1bmsgdG8gZml0IE1heFVEUFBsYWludGV4dCAoUlRPIG1heSBiYXRjaCBzZXZlcmFsIHBhY2tldHMpLgoJCXZhciBiYXRjaCBbXVtdYnl0ZQoJCWJhdGNoU2l6ZSA6PSAwCgkJZmx1c2ggOj0gZnVuYygpIHsKCQkJaWYgbGVuKGJhdGNoKSA9PSAwIHsKCQkJCXJldHVybgoJCQl9CgkJCWQsIGVyciA6PSBjbGkuc2VhbFBhY2tldFRyYWNrZWQoRGlyQzJTLCBiYXRjaCkKCQkJaWYgZXJyICE9IG5pbCB7CgkJCQl0LkZhdGFsZigiY2xpIHJldHJhbnNtaXQgc2VhbDogJXYiLCBlcnIpCgkJCX0KCQkJY2xpVG9TcnYgPSBhcHBlbmQoY2xpVG9TcnYsIGQpCgkJCWJhdGNoID0gbmlsCgkJCWJhdGNoU2l6ZSA9IDAKCQl9CgkJZm9yIF8sIGYgOj0gcmFuZ2UgZnJhbWVzIHsKCQkJaWYgYmF0Y2hTaXplK2xlbihmKSA+IE1heFVEUFBsYWludGV4dCAmJiBsZW4oYmF0Y2gpID4gMCB7CgkJCQlmbHVzaCgpCgkJCX0KCQkJYmF0Y2ggPSBhcHBlbmQoYmF0Y2gsIGYpCgkJCWJhdGNoU2l6ZSArPSBsZW4oZikKCQl9CgkJZmx1c2goKQoJCXJldHVybiBuaWwKCX0KCXNydi5SZWwuT25BY2tOZWVkZWQgPSBmdW5jKGxhcmdlc3QgdWludDMyLCByYW5nZXMgW11bMl11aW50MzIsIGFja0RlbGF5IHRpbWUuRHVyYXRpb24pIHsKCQlkLCBlcnIgOj0gc3J2LlNlYWxQYWNrZXRVbnRyYWNrZWQoRGlyUzJDLCBbXVtdYnl0ZXtFbmNvZGVBY2tGcmFtZSgwLCBsYXJnZXN0LCBhY2tEZWxheSwgcmFuZ2VzKX0pCgkJaWYgZXJyICE9IG5pbCB7CgkJCXQuRmF0YWxmKCJzcnYgYWNrIHNlYWw6ICV2IiwgZXJyKQoJCX0KCQlzcnZUb0NsaSA9IGFwcGVuZChzcnZUb0NsaSwgZCkKCX0KCXNydi5SZWwuT25SZXRyYW5zbWl0ID0gZnVuYyhmcmFtZXMgW11bXWJ5dGUpIGVycm9yIHsKCQkvLyBTZXJ2ZXIgc2hvdWxkIGhhdmUgbm90aGluZyB0byByZXRyYW5zbWl0IGluIHRoaXMgc2NlbmFyaW8uCgkJZCwgZXJyIDo9IHNydi5zZWFsUGFja2V0VHJhY2tlZChEaXJTMkMsIGZyYW1lcykKCQlpZiBlcnIgIT0gbmlsIHsKCQkJdC5GYXRhbGYoInNydiByZXRyYW5zbWl0IHNlYWw6ICV2IiwgZXJyKQoJCX0KCQlzcnZUb0NsaSA9IGFwcGVuZChzcnZUb0NsaSwgZCkKCQlyZXR1cm4gbmlsCgl9CgoJaGFuZGxlU3J2IDo9IGZ1bmMoZGdyYW0gW11ieXRlKSB7CgkJZnJhbWVzLCBfLCBlcnIgOj0gc3J2Lk9wZW5QYWNrZXQoRGlyQzJTLCBkZ3JhbSkKCQlpZiBlcnIgIT0gbmlsIHsKCQkJdC5GYXRhbGYoInNydiBvcGVuOiAldiIsIGVycikKCQl9CgkJZm9yIF8sIGYgOj0gcmFuZ2UgZnJhbWVzIHsKCQkJc3dpdGNoIGYuVHlwZSB7CgkJCWNhc2UgVURQRnJhbWVBY2s6CgkJCQlsYXJnZXN0LCBhY2tEZWxheSwgcmFuZ2VzLCBlcnIgOj0gRGVjb2RlQWNrRnJhbWUoZi5QYXlsb2FkKQoJCQkJaWYgZXJyICE9IG5pbCB7CgkJCQkJdC5GYXRhbGYoInNydiBhY2sgZGVjb2RlOiAldiIsIGVycikKCQkJCX0KCQkJCXNydi5SZWwuUHJvY2Vzc0FjayhsYXJnZXN0LCBhY2tEZWxheSwgcmFuZ2VzKQoJCQljYXNlIFVEUEZyYW1lU3RyZWFtOgoJCQkJLy8gUGF5bG9hZCBsYXlvdXQgZnJvbSBFbmNvZGVTdHJlYW1GcmFtZTogW09GRlNFVCg4KV1bREFUQV0uCgkJCQlpZiBsZW4oZi5QYXlsb2FkKSA+PSA4IHsKCQkJCQlvZmYgOj0gYmluYXJ5LkJpZ0VuZGlhbi5VaW50NjQoZi5QYXlsb2FkWzo4XSkKCQkJCQlpZHggOj0gaW50KG9mZiAvIDEyMDApCgkJCQkJaWYgaWR4ID49IDAgJiYgaWR4IDwgbGVuKHNydkdvdCkgewoJCQkJCQlzcnZHb3RbaWR4XSA9IHRydWUKCQkJCQl9CgkJCQl9CgkJCX0KCQl9Cgl9CgloYW5kbGVDbGkgOj0gZnVuYyhkZ3JhbSBbXWJ5dGUpIHsKCQlmcmFtZXMsIF8sIGVyciA6PSBjbGkuT3BlblBhY2tldChEaXJTMkMsIGRncmFtKQoJCWlmIGVyciAhPSBuaWwgewoJCQl0LkZhdGFsZigiY2xpIG9wZW46ICV2IiwgZXJyKQoJCX0KCQlmb3IgXywgZiA6PSByYW5nZSBmcmFtZXMgewoJCQlpZiBmLlR5cGUgPT0gVURQRnJhbWVBY2sgewoJCQkJbGFyZ2VzdCwgYWNrRGVsYXksIHJhbmdlcywgZXJyIDo9IERlY29kZUFja0ZyYW1lKGYuUGF5bG9hZCkKCQkJCWlmIGVyciAhPSBuaWwgewoJCQkJCXQuRmF0YWxmKCJjbGkgYWNrIGRlY29kZTogJXYiLCBlcnIpCgkJCQl9CgkJCQljbGkuUmVsLlByb2Nlc3NBY2sobGFyZ2VzdCwgYWNrRGVsYXksIHJhbmdlcykKCQkJfQoJCX0KCX0KCgkvLyBQaGFzZSAxOiBjbGllbnQgc2VuZHMgMTAgc3RyZWFtIHBhY2tldHMuIERyb3AgdGhlIGxhc3QgMyBpbiB0cmFuc2l0LgoJY29uc3QgblBrdHMgPSAxMAoJY29uc3QgZHJvcFRhaWwgPSAzCgl2YXIgYzJzSG9sZCBbXVtdYnl0ZQoJZm9yIGkgOj0gMDsgaSA8IG5Qa3RzOyBpKysgewoJCXBheWxvYWQgOj0gbWFrZShbXWJ5dGUsIDEyMDApCgkJZm9yIGogOj0gcmFuZ2UgcGF5bG9hZCB7CgkJCXBheWxvYWRbal0gPSBieXRlKGkqMzEgKyBqKQoJCX0KCQlkLCBlcnIgOj0gY2xpLnNlYWxQYWNrZXRUcmFja2VkKERpckMyUywgW11bXWJ5dGV7RW5jb2RlU3RyZWFtRnJhbWUoMSwgdWludDY0KGkqMTIwMCksIHBheWxvYWQpfSkKCQlpZiBlcnIgIT0gbmlsIHsKCQkJdC5GYXRhbGYoImNsaSBzZWFsOiAldiIsIGVycikKCQl9CgkJYzJzSG9sZCA9IGFwcGVuZChjMnNIb2xkLCBkKQoJfQoJZm9yIGksIGQgOj0gcmFuZ2UgYzJzSG9sZCB7CgkJaWYgaSA+PSBuUGt0cy1kcm9wVGFpbCB7CgkJCXQuTG9nZigiZHJvcHBpbmcgdGFpbCBDMlMgcGFja2V0ICVkLyVkIiwgaSsxLCBuUGt0cykKCQkJY29udGludWUKCQl9CgkJY2xpVG9TcnYgPSBhcHBlbmQoY2xpVG9TcnYsIGQpCgl9CgljMnNIb2xkID0gbmlsCgoJZHJhaW5JbnN0YW50IDo9IGZ1bmMoKSB7CgkJZm9yIGxlbihjbGlUb1NydikgPiAwIHsKCQkJZCA6PSBjbGlUb1NydlswXQoJCQljbGlUb1NydiA9IGNsaVRvU3J2WzE6XQoJCQloYW5kbGVTcnYoZCkKCQl9CgkJZm9yIGxlbihzcnZUb0NsaSkgPiAwIHsKCQkJZCA6PSBzcnZUb0NsaVswXQoJCQlzcnZUb0NsaSA9IHNydlRvQ2xpWzE6XQoJCQloYW5kbGVDbGkoZCkKCQl9Cgl9CglkcmFpbkluc3RhbnQoKSAvLyBkZWxpdmVyIHRoZSA3ICsgdGhlaXIgQUNLcwoJY2xpVG9TcnYsIHNydlRvQ2xpID0gbmlsLCBuaWwKCglnb3QgOj0gMAoJZm9yIF8sIGcgOj0gcmFuZ2Ugc3J2R290IHsKCQlpZiBnIHsKCQkJZ290KysKCQl9Cgl9Cgl0LkxvZ2YoInBoYXNlIDE6IHNlcnZlciBnb3QgJWQvJWQgKHRhaWwgZHJvcHBlZCkiLCBnb3QsIG5Qa3RzKQoJaWYgZ290ICE9IG5Qa3RzLWRyb3BUYWlsIHsKCQl0LkZhdGFsZigicGhhc2UgMSBzZXR1cCB3cm9uZzogc2VydmVyIGdvdCAlZCwgd2FudCAlZCIsIGdvdCwgblBrdHMtZHJvcFRhaWwpCgl9Cgl0LkxvZ2YoInBoYXNlIDEgZW5kOiBjbGllbnQgc3J0dD0ldiBydHR2YXI9JXYgcnRvPSV2IiwgY2xpLlJlbC5zcnR0LCBjbGkuUmVsLnJ0dHZhciwgY2xpLlJlbC5SVE8oKSkKCgkvLyBQaGFzZSAyOiAxMG1zIHRpY2sgbG9vcCwgMzBzIHNpbXVsYXRlZC4gQ2xpZW50IFRpY2soKSBtdXN0IGZpcmUgUlRPCgkvLyAofjMxMG1zKSBhbmQgcmV0cmFuc21pdCB0aGUgZHJvcHBlZCB0YWlsOyBzZXJ2ZXIgQUNLcyB0aGVtLgoJc3J2R290Q291bnQgOj0gZnVuYygpIGludCB7CgkJbiA6PSAwCgkJZm9yIF8sIGcgOj0gcmFuZ2Ugc3J2R290IHsKCQkJaWYgZyB7CgkJCQluKysKCQkJfQoJCX0KCQlyZXR1cm4gbgoJfQoJZGVhZGxpbmUgOj0gY3VyLkFkZCgzMCAqIHRpbWUuU2Vjb25kKQoJZm9yIHNydkdvdENvdW50KCkgPCBuUGt0cyAmJiBjdXIuQmVmb3JlKGRlYWRsaW5lKSB7CgkJYWR2YW5jZSgxMCAqIHRpbWUuTWlsbGlzZWNvbmQpCgkJY2xpLlRpY2soKQoJCXNydi5UaWNrKCkKCQlkcmFpbkluc3RhbnQoKQoJfQoKCXQuTG9nZigicGhhc2UgMjogc2VydmVyIGdvdCAlZC8lZCBjbGlSZXRyYW5zPSVkIHNpbUVsYXBzZWQ9JXYiLAoJCXNydkdvdENvdW50KCksIG5Qa3RzLCBjbGlSZXRyYW5zLCBjdXIuU3ViKHN0YXJ0VGltZSkpCglpZiBzcnZHb3RDb3VudCgpICE9IG5Qa3RzIHsKCQl0LkZhdGFsZigiY2xpZW50IFJUTyBkaWQgbm90IHJlY292ZXIgdGFpbCBsb3NzOiBzZXJ2ZXIgZ290ICVkLyVkLCBjbGllbnQgcmV0cmFuc21pdHM9JWQiLAoJCQlzcnZHb3RDb3VudCgpLCBuUGt0cywgY2xpUmV0cmFucykKCX0KCWlmIGNsaVJldHJhbnMgPT0gMCB7CgkJdC5GYXRhbGYoImV4cGVjdGVkIGNsaWVudCBSVE8gcmV0cmFuc21pdHMsIGdvdCAwIikKCX0KCXQuTG9nZigiUEFTUzogY2xpZW50IFJUTyByZWNvdmVyZWQgdGFpbCBsb3NzIHdpdGggJWQgcmV0cmFuc21pdChzKSIsIGNsaVJldHJhbnMpCn0K
+// Repro + regression for: server-side S2C tail loss never recovered.
+//
+// Production symptom (2026-10-23 lab): 100KB echo intermittently failed with
+//   "timeout waiting for peer (got 101200/102400 bytes)"
+// i.e. the last ~3 echo packets were lost and never retransmitted within the
+// 30s client timeout.
+//
+// Root cause: cmd/mist-server/main.go's periodic loop (ackFlushLoop) only
+// called sess.Rel.FlushAck() — it NEVER called sess.Rel.CheckRTO(). The
+// OnRetransmit callback was wired correctly, but nothing ever invoked the
+// RTO scan on the server, so any server->client packet loss was permanent.
+// Fast retransmit can't save the tail either: it needs 3 dup ACKs, but after
+// a clean tail drop no more packets arrive to generate them.
+// The sandbox never caught it because the in-process harness drove
+// srv.Rel.CheckRTO() manually on both ends.
+//
+// This test models the production server tick EXACTLY. serverTick below MUST
+// be kept in sync with tickLoop in cmd/mist-server/main.go:
+//   - pre-fix:  FlushAck() only            -> test FAILS (bug repro, verified 2026-10-23)
+//   - post-fix: UDPSession.Tick()           -> test PASSES (regression guard)
+// serverTick calls the same entry point (srv.Tick()) as production, so the
+// test breaks if the two ever diverge.
+//
+// Scenario: server srtt seeded to 200ms (as a real 200ms-RTT session would
+// have), 100KB echo where the last 3 S2C echo datagrams are dropped. Asserts
+// the server's RTO fires and the tail is recovered within a reasonable time.
+package mistcore
+
+import (
+	"encoding/binary"
+	"net"
+	"testing"
+	"time"
+)
+
+func TestZZTailLossServerRTO(t *testing.T) {
+	cur := time.Now()
+	startTime := cur
+	now := func() time.Time { return cur }
+	advance := func(d time.Duration) { cur = cur.Add(d) }
+
+	var sessionID [16]byte
+	mustRand(sessionID[:])
+	var kC2S, kS2C [32]byte
+	mustRand(kC2S[:])
+	mustRand(kS2C[:])
+	codec := &QUICInitialCodec{}
+	cliAddr, _ := net.ResolveUDPAddr("udp", "127.0.0.1:1111")
+	srvAddr, _ := net.ResolveUDPAddr("udp", "127.0.0.1:2222")
+	cli := NewUDPSession(sessionID, kC2S, kS2C, srvAddr, codec)
+	srv := NewUDPSession(sessionID, kC2S, kS2C, cliAddr, codec)
+	cli.Rel.now = now
+	srv.Rel.now = now
+	// Seed server RTT as a real 200ms-RTT session would have after handshakes.
+	// RTO = 200ms + max(4*25ms, 200/8ms, 1ms) + 10ms = 310ms.
+	srv.Rel.srtt = 200 * time.Millisecond
+	srv.Rel.rttvar = 25 * time.Millisecond
+
+	var cliToSrv, srvToCli [][]byte
+	// isEcho[i] marks srvToCli[i] as an echo datagram (vs untracked ACK).
+	var isEcho []bool
+	srvRetrans := 0
+
+	cli.Rel.OnAckNeeded = func(largest uint32, ranges [][2]uint32, ackDelay time.Duration) {
+		d, err := cli.SealPacketUntracked(DirC2S, [][]byte{EncodeAckFrame(0, largest, ackDelay, ranges)})
+		if err != nil {
+			t.Fatalf("cli ack seal: %v", err)
+		}
+		cliToSrv = append(cliToSrv, d)
+	}
+	cli.Rel.OnRetransmit = func(frames [][]byte) error {
+		d, err := cli.sealPacketTracked(DirC2S, frames)
+		if err != nil {
+			t.Fatalf("cli retransmit seal: %v", err)
+		}
+		cliToSrv = append(cliToSrv, d)
+		return nil
+	}
+	srv.Rel.OnAckNeeded = func(largest uint32, ranges [][2]uint32, ackDelay time.Duration) {
+		d, err := srv.SealPacketUntracked(DirS2C, [][]byte{EncodeAckFrame(0, largest, ackDelay, ranges)})
+		if err != nil {
+			t.Fatalf("srv ack seal: %v", err)
+		}
+		srvToCli = append(srvToCli, d)
+		isEcho = append(isEcho, false)
+	}
+	srv.Rel.OnRetransmit = func(frames [][]byte) error {
+		srvRetrans++
+		// Chunk to fit MaxUDPPlaintext (RTO may batch several packets).
+		var batch [][]byte
+		batchSize := 0
+		flush := func() {
+			if len(batch) == 0 {
+				return
+			}
+			d, err := srv.sealPacketTracked(DirS2C, batch)
+			if err != nil {
+				t.Fatalf("srv retransmit seal: %v", err)
+			}
+			srvToCli = append(srvToCli, d)
+			isEcho = append(isEcho, true)
+			batch = nil
+			batchSize = 0
+		}
+		for _, f := range frames {
+			if batchSize+len(f) > MaxUDPPlaintext && len(batch) > 0 {
+				flush()
+			}
+			batch = append(batch, f)
+			batchSize += len(f)
+		}
+		flush()
+		t.Logf("server retransmit #%d at +%v (srtt=%v rttvar=%v rto=%v)", srvRetrans, cur.Sub(startTime), srv.Rel.srtt, srv.Rel.rttvar, srv.Rel.RTO())
+		return nil
+	}
+
+	// Server frame handling mirrors handleData's echo switch.
+	handleSrv := func(dgram []byte) {
+		frames, _, err := srv.OpenPacket(DirC2S, dgram)
+		if err != nil {
+			t.Fatalf("srv open: %v", err)
+		}
+		for _, f := range frames {
+			switch f.Type {
+			case UDPFrameAck:
+				largest, ackDelay, ranges, err := DecodeAckFrame(f.Payload)
+				if err != nil {
+					t.Fatalf("srv ack decode: %v", err)
+				}
+				srv.Rel.ProcessAck(largest, ackDelay, ranges)
+			case UDPFrameStream:
+				echo := EncodeUDPFrame(UDPFrameStream, f.SID, f.Payload)
+				d, err := srv.sealPacketTracked(DirS2C, [][]byte{echo})
+				if err != nil {
+					t.Fatalf("srv echo seal: %v", err)
+				}
+				srvToCli = append(srvToCli, d)
+				isEcho = append(isEcho, true)
+			case UDPFrameSyn:
+			}
+		}
+	}
+
+	const total = 100 * 1024
+	rxBuf := make([]byte, total)
+	rxSeen := make([]bool, total)
+	rxGot := 0
+	handleCli := func(dgram []byte) {
+		frames, _, err := cli.OpenPacket(DirS2C, dgram)
+		if err != nil {
+			t.Fatalf("cli open: %v", err)
+		}
+		for _, f := range frames {
+			if f.Type == UDPFrameAck {
+				largest, ackDelay, ranges, err := DecodeAckFrame(f.Payload)
+				if err != nil {
+					t.Fatalf("cli ack decode: %v", err)
+				}
+				cli.Rel.ProcessAck(largest, ackDelay, ranges)
+				continue
+			}
+			if f.Type == UDPFrameStream && len(f.Payload) >= 8 {
+				off := binary.BigEndian.Uint64(f.Payload[:8])
+				for i, b := range f.Payload[8:] {
+					idx := int(off) + i
+					if !rxSeen[idx] {
+						rxSeen[idx] = true
+						rxGot++
+					}
+					rxBuf[idx] = b
+				}
+			}
+		}
+	}
+
+	// Drains use no time advancement (batching keeps ACKs finite), exactly
+	// like TestZZEchoSim's proven pattern. Only Phase 3 advances the clock.
+	var echoHold [][]byte
+	drainC2S := func() {
+		for len(cliToSrv) > 0 {
+			d := cliToSrv[0]
+			cliToSrv = cliToSrv[1:]
+			handleSrv(d)
+		}
+	}
+	drainS2CHoldEcho := func() {
+		for len(srvToCli) > 0 {
+			d := srvToCli[0]
+			srvToCli = srvToCli[1:]
+			e := isEcho[0]
+			isEcho = isEcho[1:]
+			if e {
+				echoHold = append(echoHold, d)
+			} else {
+				handleCli(d)
+			}
+		}
+	}
+
+	// Phase 1: client sends 100KB; server echoes (held back).
+	cliSend := func(frames ...[]byte) {
+		d, err := cli.sealPacketTracked(DirC2S, frames)
+		if err != nil {
+			t.Fatalf("cli seal: %v", err)
+		}
+		cliToSrv = append(cliToSrv, d)
+	}
+	cliSend(EncodeUDPFrame(UDPFrameSyn, 1, nil))
+	data := make([]byte, total)
+	for i := range data {
+		data[i] = byte(i*31 + 7)
+	}
+	for o := 0; o < total; o += 1200 {
+		n := 1200
+		if o+n > total {
+			n = total - o
+		}
+		cliSend(EncodeStreamFrame(1, uint64(o), data[o:o+n]))
+	}
+	for i := 0; i < 8; i++ {
+		drainC2S()
+		drainS2CHoldEcho()
+	}
+	// Discard background ACK leftovers; only held echoes matter now.
+	cliToSrv, srvToCli, isEcho = nil, nil, nil
+	t.Logf("phase 1: %d echoes held, srv sentPackets=%d", len(echoHold), len(srv.Rel.sentPackets))
+
+	// Phase 2: deliver all echoes EXCEPT the last 3 (tail loss), then flush
+	// the resulting client ACKs. Afterwards the server must hold exactly the
+	// 3 dropped packets and nothing else.
+	const dropTail = 3
+	if len(echoHold) < dropTail+1 {
+		t.Fatalf("not enough echoes held: %d", len(echoHold))
+	}
+	for i, d := range echoHold {
+		if i >= len(echoHold)-dropTail {
+			t.Logf("dropping tail echo %d/%d", i+1, len(echoHold))
+			continue
+		}
+		handleCli(d)
+	}
+	echoHold = nil
+	for i := 0; i < 8; i++ {
+		drainC2S()
+		// S2C now carries only background ACKs; deliver them.
+		for len(srvToCli) > 0 {
+			d := srvToCli[0]
+			srvToCli = srvToCli[1:]
+			if len(isEcho) > 0 {
+				isEcho = isEcho[1:]
+			}
+			handleCli(d)
+		}
+	}
+	cliToSrv, srvToCli, isEcho = nil, nil, nil
+	t.Logf("phase 2: rxGot=%d/%d srv sentPackets=%d (want >=%d)",
+		rxGot, total, len(srv.Rel.sentPackets), dropTail)
+	if rxGot == total {
+		t.Fatalf("tail drop did not take effect")
+	}
+	if n := len(srv.Rel.sentPackets); n < dropTail {
+		t.Fatalf("server sentPackets=%d, want at least %d (the dropped tail)", n, dropTail)
+	}
+
+	// Phase 3: 10ms tick loop, 30s simulated. This is the only phase where
+	// the clock advances, so RTO can fire.
+	// serverTick calls the same UDPSession.Tick() entry point as production
+	// tickLoop in cmd/mist-server/main.go; clientTick mirrors the client's
+	// pump loop (also Tick() since the Tick() bundling).
+	serverTick := func() {
+		srv.Tick()
+	}
+	clientTick := func() {
+		cli.Tick()
+	}
+	drainInstant := func() {
+		for len(cliToSrv) > 0 {
+			d := cliToSrv[0]
+			cliToSrv = cliToSrv[1:]
+			handleSrv(d)
+		}
+		for len(srvToCli) > 0 {
+			d := srvToCli[0]
+			srvToCli = srvToCli[1:]
+			if len(isEcho) > 0 {
+				isEcho = isEcho[1:]
+			}
+			handleCli(d)
+		}
+	}
+	deadline := cur.Add(30 * time.Second)
+	for rxGot < total && cur.Before(deadline) {
+		advance(10 * time.Millisecond)
+		serverTick()
+		clientTick()
+		drainInstant()
+	}
+
+	t.Logf("phase 3: rxGot=%d/%d srvRetrans=%d simElapsed=%v",
+		rxGot, total, srvRetrans, cur.Sub(startTime))
+	if rxGot != total {
+		t.Fatalf("BUG REPRO: tail loss not recovered: got %d/%d, server retransmits=%d",
+			rxGot, total, srvRetrans)
+	}
+	for i := range data {
+		if rxBuf[i] != data[i] {
+			t.Fatalf("data mismatch at byte %d", i)
+		}
+	}
+	if srvRetrans == 0 {
+		t.Fatalf("expected server RTO retransmits, got 0")
+	}
+	t.Logf("PASS: server RTO recovered tail loss with %d retransmit(s)", srvRetrans)
+}
+
+// Symmetric to TestZZTailLossServerRTO: drop the LAST 3 client->server
+// datagrams and assert the CLIENT's RTO recovers them. This is the mirror
+// image of the 2026-10-23 lab bug: it proves UDPSession.Tick() drives
+// CheckRTO on the client side too, not just the server.
+//
+// Scenario: client sends 10 stream packets (simulated clock, 200ms RTT);
+// the last 3 never reach the server. Client Tick() every 10ms must fire RTO
+// (~310ms) and retransmit; the server must eventually receive all 10.
+func TestZZTailLossClientRTO(t *testing.T) {
+	cur := time.Now()
+	startTime := cur
+	now := func() time.Time { return cur }
+	advance := func(d time.Duration) { cur = cur.Add(d) }
+
+	var sessionID [16]byte
+	mustRand(sessionID[:])
+	var kC2S, kS2C [32]byte
+	mustRand(kC2S[:])
+	mustRand(kS2C[:])
+	codec := &QUICInitialCodec{}
+	cliAddr, _ := net.ResolveUDPAddr("udp", "127.0.0.1:1111")
+	srvAddr, _ := net.ResolveUDPAddr("udp", "127.0.0.1:2222")
+	cli := NewUDPSession(sessionID, kC2S, kS2C, srvAddr, codec)
+	srv := NewUDPSession(sessionID, kC2S, kS2C, cliAddr, codec)
+	cli.Rel.now = now
+	srv.Rel.now = now
+	// Seed client RTT as a real 200ms-RTT session would have.
+	// RTO = 200ms + max(4*25ms, 200/8ms, 1ms) + 10ms = 310ms.
+	cli.Rel.srtt = 200 * time.Millisecond
+	cli.Rel.rttvar = 25 * time.Millisecond
+
+	var cliToSrv, srvToCli [][]byte
+	cliRetrans := 0
+	srvGot := make([]bool, 10)
+
+	cli.Rel.OnAckNeeded = func(largest uint32, ranges [][2]uint32, ackDelay time.Duration) {
+		d, err := cli.SealPacketUntracked(DirC2S, [][]byte{EncodeAckFrame(0, largest, ackDelay, ranges)})
+		if err != nil {
+			t.Fatalf("cli ack seal: %v", err)
+		}
+		cliToSrv = append(cliToSrv, d)
+	}
+	cli.Rel.OnRetransmit = func(frames [][]byte) error {
+		cliRetrans++
+		t.Logf("client retransmit #%d at +%v (srtt=%v rttvar=%v rto=%v)", cliRetrans, cur.Sub(startTime), cli.Rel.srtt, cli.Rel.rttvar, cli.Rel.RTO())
+		// Chunk to fit MaxUDPPlaintext (RTO may batch several packets).
+		var batch [][]byte
+		batchSize := 0
+		flush := func() {
+			if len(batch) == 0 {
+				return
+			}
+			d, err := cli.sealPacketTracked(DirC2S, batch)
+			if err != nil {
+				t.Fatalf("cli retransmit seal: %v", err)
+			}
+			cliToSrv = append(cliToSrv, d)
+			batch = nil
+			batchSize = 0
+		}
+		for _, f := range frames {
+			if batchSize+len(f) > MaxUDPPlaintext && len(batch) > 0 {
+				flush()
+			}
+			batch = append(batch, f)
+			batchSize += len(f)
+		}
+		flush()
+		return nil
+	}
+	srv.Rel.OnAckNeeded = func(largest uint32, ranges [][2]uint32, ackDelay time.Duration) {
+		d, err := srv.SealPacketUntracked(DirS2C, [][]byte{EncodeAckFrame(0, largest, ackDelay, ranges)})
+		if err != nil {
+			t.Fatalf("srv ack seal: %v", err)
+		}
+		srvToCli = append(srvToCli, d)
+	}
+	srv.Rel.OnRetransmit = func(frames [][]byte) error {
+		// Server should have nothing to retransmit in this scenario.
+		d, err := srv.sealPacketTracked(DirS2C, frames)
+		if err != nil {
+			t.Fatalf("srv retransmit seal: %v", err)
+		}
+		srvToCli = append(srvToCli, d)
+		return nil
+	}
+
+	handleSrv := func(dgram []byte) {
+		frames, _, err := srv.OpenPacket(DirC2S, dgram)
+		if err != nil {
+			t.Fatalf("srv open: %v", err)
+		}
+		for _, f := range frames {
+			switch f.Type {
+			case UDPFrameAck:
+				largest, ackDelay, ranges, err := DecodeAckFrame(f.Payload)
+				if err != nil {
+					t.Fatalf("srv ack decode: %v", err)
+				}
+				srv.Rel.ProcessAck(largest, ackDelay, ranges)
+			case UDPFrameStream:
+				// Payload layout from EncodeStreamFrame: [OFFSET(8)][DATA].
+				if len(f.Payload) >= 8 {
+					off := binary.BigEndian.Uint64(f.Payload[:8])
+					idx := int(off / 1200)
+					if idx >= 0 && idx < len(srvGot) {
+						srvGot[idx] = true
+					}
+				}
+			}
+		}
+	}
+	handleCli := func(dgram []byte) {
+		frames, _, err := cli.OpenPacket(DirS2C, dgram)
+		if err != nil {
+			t.Fatalf("cli open: %v", err)
+		}
+		for _, f := range frames {
+			if f.Type == UDPFrameAck {
+				largest, ackDelay, ranges, err := DecodeAckFrame(f.Payload)
+				if err != nil {
+					t.Fatalf("cli ack decode: %v", err)
+				}
+				cli.Rel.ProcessAck(largest, ackDelay, ranges)
+			}
+		}
+	}
+
+	// Phase 1: client sends 10 stream packets. Drop the last 3 in transit.
+	const nPkts = 10
+	const dropTail = 3
+	var c2sHold [][]byte
+	for i := 0; i < nPkts; i++ {
+		payload := make([]byte, 1200)
+		for j := range payload {
+			payload[j] = byte(i*31 + j)
+		}
+		d, err := cli.sealPacketTracked(DirC2S, [][]byte{EncodeStreamFrame(1, uint64(i*1200), payload)})
+		if err != nil {
+			t.Fatalf("cli seal: %v", err)
+		}
+		c2sHold = append(c2sHold, d)
+	}
+	for i, d := range c2sHold {
+		if i >= nPkts-dropTail {
+			t.Logf("dropping tail C2S packet %d/%d", i+1, nPkts)
+			continue
+		}
+		cliToSrv = append(cliToSrv, d)
+	}
+	c2sHold = nil
+
+	drainInstant := func() {
+		for len(cliToSrv) > 0 {
+			d := cliToSrv[0]
+			cliToSrv = cliToSrv[1:]
+			handleSrv(d)
+		}
+		for len(srvToCli) > 0 {
+			d := srvToCli[0]
+			srvToCli = srvToCli[1:]
+			handleCli(d)
+		}
+	}
+	drainInstant() // deliver the 7 + their ACKs
+	cliToSrv, srvToCli = nil, nil
+
+	got := 0
+	for _, g := range srvGot {
+		if g {
+			got++
+		}
+	}
+	t.Logf("phase 1: server got %d/%d (tail dropped)", got, nPkts)
+	if got != nPkts-dropTail {
+		t.Fatalf("phase 1 setup wrong: server got %d, want %d", got, nPkts-dropTail)
+	}
+	t.Logf("phase 1 end: client srtt=%v rttvar=%v rto=%v", cli.Rel.srtt, cli.Rel.rttvar, cli.Rel.RTO())
+
+	// Phase 2: 10ms tick loop, 30s simulated. Client Tick() must fire RTO
+	// (~310ms) and retransmit the dropped tail; server ACKs them.
+	srvGotCount := func() int {
+		n := 0
+		for _, g := range srvGot {
+			if g {
+				n++
+			}
+		}
+		return n
+	}
+	deadline := cur.Add(30 * time.Second)
+	for srvGotCount() < nPkts && cur.Before(deadline) {
+		advance(10 * time.Millisecond)
+		cli.Tick()
+		srv.Tick()
+		drainInstant()
+	}
+
+	t.Logf("phase 2: server got %d/%d cliRetrans=%d simElapsed=%v",
+		srvGotCount(), nPkts, cliRetrans, cur.Sub(startTime))
+	if srvGotCount() != nPkts {
+		t.Fatalf("client RTO did not recover tail loss: server got %d/%d, client retransmits=%d",
+			srvGotCount(), nPkts, cliRetrans)
+	}
+	if cliRetrans == 0 {
+		t.Fatalf("expected client RTO retransmits, got 0")
+	}
+	t.Logf("PASS: client RTO recovered tail loss with %d retransmit(s)", cliRetrans)
+}
