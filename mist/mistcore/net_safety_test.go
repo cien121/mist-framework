@@ -1,1 +1,206 @@
-cGFja2FnZSBtaXN0Y29yZQoKaW1wb3J0ICgKCSJjb250ZXh0IgoJIm5ldCIKCSJzdHJpbmdzIgoJInRlc3RpbmciCikKCi8vIHRlc3RDdHggcmV0dXJucyBhIGNvbnRleHQgZm9yIHNhZmV0eS1nYXRlIHRlc3RzLgpmdW5jIHRlc3RDdHgoKSBjb250ZXh0LkNvbnRleHQgewoJcmV0dXJuIGNvbnRleHQuQmFja2dyb3VuZCgpCn0KCi8vIHVuc2FmZUNvZGVjIHJldHVybnMgdGhlIHRlc3Qtb25seSByYW5kb20tY2lwaGVydGV4dCBjb2RlYy4KZnVuYyB1bnNhZmVDb2RlYygpIEluaXRpYWxDb2RlYyB7IHJldHVybiAmUmFuZG9tQ2lwaGVydGV4dENvZGVje30gfQoKZnVuYyBUZXN0SVBBbGxvd2VkQnlQb2xpY3kodCAqdGVzdGluZy5UKSB7CgljYXNlcyA6PSBbXXN0cnVjdCB7CgkJbmFtZSAgc3RyaW5nCgkJaXAgICAgc3RyaW5nCgkJYWxsb3cgYm9vbAoJfXsKCQkvLyBBbGxvd2VkOiBsb29wYmFjaywgUkZDIDE5MTgsIFVMQSwgbGluay1sb2NhbC4KCQl7Imxvb3BiYWNrNCIsICIxMjcuMC4wLjEiLCB0cnVlfSwKCQl7Imxvb3BiYWNrNiIsICI6OjEiLCB0cnVlfSwKCQl7InJmYzE5MThfMTAiLCAiMTAuOC4wLjEiLCB0cnVlfSwKCQl7InJmYzE5MThfMTBfMiIsICIxMC4yNTUuMjU1LjI1NSIsIHRydWV9LAoJCXsicmZjMTkxOF8xNzIiLCAiMTcyLjE2LjAuMSIsIHRydWV9LAoJCXsicmZjMTkxOF8xOTIiLCAiMTkyLjE2OC4xLjEiLCB0cnVlfSwKCQl7InVsYSIsICJmZDAwOjoxIiwgdHJ1ZX0sCgkJeyJsaW5rbG9jYWw2IiwgImZlODA6OjEiLCB0cnVlfSwKCQkvLyBEZW5pZWQ6IHB1YmxpYywgQ0dOQVQsIHVuc3BlY2lmaWVkLCBtdWx0aWNhc3QuCgkJeyJwdWJsaWM0IiwgIjguOC44LjgiLCBmYWxzZX0sCgkJeyJwdWJsaWM0XzIiLCAiMTQ4LjEzNS4xMC4xOSIsIGZhbHNlfSwKCQl7InB1YmxpYzYiLCAiMjYwNzpmMTMwOjA6MTEzOjozMSIsIGZhbHNlfSwKCQl7InB1YmxpYzZfMiIsICIyMDAxOjQ4NjA6NDg2MDo6ODg4OCIsIGZhbHNlfSwKCQl7ImNnbmF0IiwgIjEwMC42NC4wLjEiLCBmYWxzZX0sCgkJeyJjZ25hdF8yIiwgIjEwMC4xMjcuMjU1LjI1NCIsIGZhbHNlfSwKCQl7InVuc3BlY2lmaWVkNCIsICIwLjAuMC4wIiwgZmFsc2V9LAoJCXsidW5zcGVjaWZpZWQ2IiwgIjo6IiwgZmFsc2V9LAoJCXsibXVsdGljYXN0NCIsICIyMjQuMC4wLjEiLCBmYWxzZX0sCgkJeyJtdWx0aWNhc3Q2IiwgImZmMDI6OjEiLCBmYWxzZX0sCgkJLy8gSVB2NC1tYXBwZWQgSVB2Njogbm9ybWFsaXplZCB0byBJUHY0IGJlZm9yZSBwb2xpY3kgY2hlY2suCgkJeyJtYXBwZWRfcHVibGljIiwgIjo6ZmZmZjo4LjguOC44IiwgZmFsc2V9LAoJCXsibWFwcGVkX3ByaXZhdGUiLCAiOjpmZmZmOjEwLjguMC4xIiwgdHJ1ZX0sCgkJeyJtYXBwZWRfbG9vcGJhY2siLCAiOjpmZmZmOjEyNy4wLjAuMSIsIHRydWV9LAoJfQoJZm9yIF8sIHRjIDo9IHJhbmdlIGNhc2VzIHsKCQl0LlJ1bih0Yy5uYW1lLCBmdW5jKHQgKnRlc3RpbmcuVCkgewoJCQlpcCA6PSBuZXQuUGFyc2VJUCh0Yy5pcCkKCQkJaWYgaXAgPT0gbmlsIHsKCQkJCXQuRmF0YWxmKCJiYWQgdGVzdCBJUCAlcSIsIHRjLmlwKQoJCQl9CgkJCWlmIGdvdCA6PSBpcEFsbG93ZWRCeVBvbGljeShpcCk7IGdvdCAhPSB0Yy5hbGxvdyB7CgkJCQl0LkZhdGFsZigiaXBBbGxvd2VkQnlQb2xpY3koJXEpID0gJXYsIHdhbnQgJXYiLCB0Yy5pcCwgZ290LCB0Yy5hbGxvdykKCQkJfQoJCX0pCgl9Cn0KCmZ1bmMgVGVzdFJlc29sdmVQZWVyQWRkclNhZmUodCAqdGVzdGluZy5UKSB7CgljdHggOj0gdGVzdEN0eCgpCgl1bnNhZmUgOj0gdW5zYWZlQ29kZWMoKQoKCWNhc2VzIDo9IFtdc3RydWN0IHsKCQluYW1lICAgIHN0cmluZwoJCWFkZHIgICAgc3RyaW5nCgkJd2FudEVyciBib29sCgkJd2FudElQICBzdHJpbmcgLy8gZXhwZWN0ZWQgSVAgd2hlbiBubyBlcnJvcgoJfXsKCQkvLyBBbGxvd2VkOiBwcml2YXRlL2xvb3BiYWNrIGxpdGVyYWxzLgoJCXsiYWxsb3dfMTAiLCAiMTAuOC4wLjE6MTQ0MyIsIGZhbHNlLCAiMTAuOC4wLjEifSwKCQl7ImFsbG93X2xvb3BiYWNrIiwgIjEyNy4wLjAuMToxNDQzIiwgZmFsc2UsICIxMjcuMC4wLjEifSwKCQl7ImFsbG93X2xvb3BiYWNrNiIsICJbOjoxXToxNDQzIiwgZmFsc2UsICI6OjEifSwKCQl7ImFsbG93X2xvY2FsaG9zdCIsICJsb2NhbGhvc3Q6MTQ0MyIsIGZhbHNlLCAiMTI3LjAuMC4xIn0sCgkJeyJhbGxvd19yZmMxOTE4IiwgIjE5Mi4xNjguMS4xMDoxNDQzIiwgZmFsc2UsICIxOTIuMTY4LjEuMTAifSwKCQkvLyBEZW5pZWQ6IHB1YmxpYywgdW5zcGVjaWZpZWQsIENHTkFULgoJCXsiZGVueV9wdWJsaWM0IiwgIjguOC44Ljg6MTQ0MyIsIHRydWUsICIifSwKCQl7ImRlbnlfcHVibGljNiIsICJbMjAwMTo0ODYwOjQ4NjA6Ojg4ODhdOjE0NDMiLCB0cnVlLCAiIn0sCgkJeyJkZW55X3Vuc3BlY2lmaWVkNCIsICIwLjAuMC4wOjE0NDMiLCB0cnVlLCAiIn0sCgkJeyJkZW55X3Vuc3BlY2lmaWVkNiIsICJbOjpdOjE0NDMiLCB0cnVlLCAiIn0sCgkJeyJkZW55X2NnbmF0IiwgIjEwMC42NC4wLjU6MTQ0MyIsIHRydWUsICIifSwKCQl7ImRlbnlfbWFwcGVkX3B1YmxpYyIsICJbOjpmZmZmOjguOC44LjhdOjE0NDMiLCB0cnVlLCAiIn0sCgkJLy8gRGVuaWVkOiB1bnJlc29sdmFibGUgaG9zdG5hbWUgKGZhaWwtY2xvc2VkKS4KCQl7ImRlbnlfYmFkaG9zdCIsICJub25leGlzdGVudC5pbnZhbGlkOjE0NDMiLCB0cnVlLCAiIn0sCgkJeyJkZW55X2VtcHR5IiwgIiIsIHRydWUsICIifSwKCQkvLyBBbGxvd2VkOiBtYXBwZWQgcHJpdmF0ZS4KCQl7ImFsbG93X21hcHBlZF9wcml2YXRlIiwgIls6OmZmZmY6MTAuOC4wLjFdOjE0NDMiLCBmYWxzZSwgIjEwLjguMC4xIn0sCgl9Cglmb3IgXywgdGMgOj0gcmFuZ2UgY2FzZXMgewoJCXQuUnVuKHRjLm5hbWUsIGZ1bmModCAqdGVzdGluZy5UKSB7CgkJCWdvdCwgZXJyIDo9IFJlc29sdmVQZWVyQWRkclNhZmUoY3R4LCB0Yy5hZGRyLCB1bnNhZmUpCgkJCWlmIHRjLndhbnRFcnIgewoJCQkJaWYgZXJyID09IG5pbCB7CgkJCQkJdC5GYXRhbGYoImV4cGVjdGVkIGVycm9yIGZvciAlcSwgZ290ICV2IiwgdGMuYWRkciwgZ290KQoJCQkJfQoJCQkJaWYgIXN0cmluZ3MuQ29udGFpbnMoZXJyLkVycm9yKCksICLpmo/mnLrlr4bmlocgSW5pdGlhbCDkuI3og73nlKjkuo7nnJ/lrp7nvZHnu5wiKSB7CgkJCQkJdC5GYXRhbGYoImVycm9yIG11c3Qgc3RhdGUgcmVhc29uIGluIENoaW5lc2UsIGdvdDogJXYiLCBlcnIpCgkJCQl9CgkJCQlyZXR1cm4KCQkJfQoJCQlpZiBlcnIgIT0gbmlsIHsKCQkJCXQuRmF0YWxmKCJ1bmV4cGVjdGVkIGVycm9yIGZvciAlcTogJXYiLCB0Yy5hZGRyLCBlcnIpCgkJCX0KCQkJaWYgZ290LklQLlN0cmluZygpICE9IHRjLndhbnRJUCB7CgkJCQl0LkZhdGFsZigiZ290IElQICVxLCB3YW50ICVxIiwgZ290LklQLlN0cmluZygpLCB0Yy53YW50SVApCgkJCX0KCQkJLy8gVGhlIHJldHVybmVkIGFkZHJlc3MgbXVzdCBiZSBhbiBJUCBsaXRlcmFsLCBub3QgYSBob3N0bmFtZToKCQkJLy8gbm8gcmUtcmVzb2x1dGlvbiBieSB0aGUgY2FsbGVyIChUT0NUT1Ugc2FmZSkuCgkJCWlmIGdvdC5JUCA9PSBuaWwgewoJCQkJdC5GYXRhbGYoInJldHVybmVkIElQIGlzIG5pbCBmb3IgJXEiLCB0Yy5hZGRyKQoJCQl9CgkJfSkKCX0KfQoKZnVuYyBUZXN0TGlzdGVuVURQU2FmZSh0ICp0ZXN0aW5nLlQpIHsKCWN0eCA6PSB0ZXN0Q3R4KCkKCXVuc2FmZSA6PSB1bnNhZmVDb2RlYygpCgoJLy8gRGVuaWVkIGFkZHJlc3NlcyBtdXN0IGZhaWwgYmVmb3JlIGJpbmRpbmcuCglkZW55Q2FzZXMgOj0gW11zdHJpbmd7CgkJIjAuMC4wLjA6MCIsCgkJIjguOC44Ljg6MCIsCgkJIlsyMDAxOjQ4NjA6NDg2MDo6ODg4OF06MCIsCgkJIjEwMC42NC4wLjE6MCIsCgkJIls6OmZmZmY6OC44LjguOF06MCIsCgkJIm5vbmV4aXN0ZW50LmludmFsaWQ6MCIsCgkJIiIsCgl9Cglmb3IgXywgYWRkciA6PSByYW5nZSBkZW55Q2FzZXMgewoJCXQuUnVuKCJkZW55XyIrYWRkciwgZnVuYyh0ICp0ZXN0aW5nLlQpIHsKCQkJY29ubiwgZXJyIDo9IExpc3RlblVEUFNhZmUoY3R4LCBhZGRyLCB1bnNhZmUpCgkJCWlmIGVyciA9PSBuaWwgewoJCQkJaWYgY29ubiAhPSBuaWwgewoJCQkJCWNvbm4uQ2xvc2UoKQoJCQkJfQoJCQkJdC5GYXRhbGYoImV4cGVjdGVkIGVycm9yIGZvciBsaXN0ZW4gJXEsIGdvdCBuaWwiLCBhZGRyKQoJCQl9CgkJCWlmICFzdHJpbmdzLkNvbnRhaW5zKGVyci5FcnJvcigpLCAi6ZqP5py65a+G5paHIEluaXRpYWwg5LiN6IO955So5LqO55yf5a6e572R57ucIikgewoJCQkJdC5GYXRhbGYoImVycm9yIG11c3Qgc3RhdGUgcmVhc29uIGluIENoaW5lc2UsIGdvdDogJXYiLCBlcnIpCgkJCX0KCQl9KQoJfQoKCS8vIEFsbG93ZWQgYWRkcmVzc2VzIG11c3QgYmluZCBzdWNjZXNzZnVsbHkuCglhbGxvd0Nhc2VzIDo9IFtdc3RyaW5newoJCSIxMjcuMC4wLjE6MCIsCgkJIls6OjFdOjAiLAoJfQoJZm9yIF8sIGFkZHIgOj0gcmFuZ2UgYWxsb3dDYXNlcyB7CgkJdC5SdW4oImFsbG93XyIrYWRkciwgZnVuYyh0ICp0ZXN0aW5nLlQpIHsKCQkJY29ubiwgZXJyIDo9IExpc3RlblVEUFNhZmUoY3R4LCBhZGRyLCB1bnNhZmUpCgkJCWlmIGVyciAhPSBuaWwgewoJCQkJdC5GYXRhbGYoInVuZXhwZWN0ZWQgZXJyb3IgZm9yIGxpc3RlbiAlcTogJXYiLCBhZGRyLCBlcnIpCgkJCX0KCQkJY29ubi5DbG9zZSgpCgkJfSkKCX0KfQoKZnVuYyBUZXN0Q2hlY2tDb2RlY0ZvcklQc0hvc3RuYW1lU2ltdWxhdGlvbih0ICp0ZXN0aW5nLlQpIHsKCS8vIFNpbXVsYXRlcyAiaG9zdG5hbWUgcmVzb2x2ZWQgdG8gcHVibGljL3ByaXZhdGUiOiB0aGUgZ2F0ZSBzZWVzIGV2ZXJ5CgkvLyByZXNvbHZlZCBJUCBhbmQgZGVuaWVzIHRoZSB3aG9sZSBhZGRyZXNzIGlmIGFueSBvbmUgaXMgcHVibGljLgoJdW5zYWZlIDo9IHVuc2FmZUNvZGVjKCkKCgkvLyBBbGwgcHJpdmF0ZTogYWxsb3dlZCwgcmV0dXJucyBmaXJzdCBJUC4KCWlwcyA6PSBbXW5ldC5JUHtuZXQuUGFyc2VJUCgiMTAuOC4wLjEiKSwgbmV0LlBhcnNlSVAoIjEwLjguMC4yIil9Cglnb3QsIGVyciA6PSBjaGVja0NvZGVjRm9ySVBzKHVuc2FmZSwgImV4YW1wbGUuaW50ZXJuYWw6MTQ0MyIsIGlwcykKCWlmIGVyciAhPSBuaWwgewoJCXQuRmF0YWxmKCJhbGwtcHJpdmF0ZSBzaG91bGQgYmUgYWxsb3dlZDogJXYiLCBlcnIpCgl9CglpZiBnb3QuU3RyaW5nKCkgIT0gIjEwLjguMC4xIiB7CgkJdC5GYXRhbGYoImdvdCAlcSwgd2FudCAxMC44LjAuMSIsIGdvdC5TdHJpbmcoKSkKCX0KCgkvLyBPbmUgcHVibGljIGFtb25nIHByaXZhdGU6IGRlbmllZCAoZmFpbC1jbG9zZWQgb24gbWl4ZWQgcmVzdWx0cykuCglpcHMgPSBbXW5ldC5JUHtuZXQuUGFyc2VJUCgiMTAuOC4wLjEiKSwgbmV0LlBhcnNlSVAoIjguOC44LjgiKX0KCWlmIF8sIGVyciA6PSBjaGVja0NvZGVjRm9ySVBzKHVuc2FmZSwgImV4YW1wbGUuY29tOjE0NDMiLCBpcHMpOyBlcnIgPT0gbmlsIHsKCQl0LkZhdGFsZigibWl4ZWQgcHVibGljL3ByaXZhdGUgbXVzdCBiZSBkZW5pZWQiKQoJfQoKCS8vIFByb2R1Y3Rpb24tc2FmZSBjb2RlYzogYWxsb3dlZCBldmVyeXdoZXJlLgoJc2FmZSA6PSAmc2FmZVRlc3RDb2RlY3t9CglpcHMgPSBbXW5ldC5JUHtuZXQuUGFyc2VJUCgiOC44LjguOCIpfQoJaWYgXywgZXJyIDo9IGNoZWNrQ29kZWNGb3JJUHMoc2FmZSwgImV4YW1wbGUuY29tOjE0NDMiLCBpcHMpOyBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigic2FmZSBjb2RlYyBzaG91bGQgYmUgYWxsb3dlZCBvbiBwdWJsaWM6ICV2IiwgZXJyKQoJfQp9CgovLyBUZXN0Tm9CeXBhc3NDb21waWxlVGltZSBkb2N1bWVudHMgdGhlIGludmFyaWFudDogdGhlIG9ubHkgc3VwcG9ydGVkIHBhdGhzCi8vIGFyZSBSZXNvbHZlUGVlckFkZHJTYWZlIChjbGllbnQpIGFuZCBMaXN0ZW5VRFBTYWZlIChzZXJ2ZXIpLiBUaGVyZSBpcyBubwovLyBleHBvcnRlZCBoZWxwZXIgdGhhdCBkaWFscyBvciBiaW5kcyB3aXRob3V0IHRoZSBjaGVjay4gVGhpcyB0ZXN0IGV4aXN0cyBzbwovLyBhIGZ1dHVyZSByZWZhY3RvciB0aGF0IGFkZHMgYSBieXBhc3MgYnJlYWtzIHRoZSBidWlsZCB2aWEgdGhlIGRvYyBjb21tZW50Ci8vIGFuZCBjb2RlIHJldmlldzsgdGhlIHJlYWwgZW5mb3JjZW1lbnQgaXMgdGhhdCBjbWQvIGNvZGUgaGFzIG5vIG90aGVyCi8vIG1pc3Rjb3JlIGVudHJ5IHBvaW50IHRvIGNhbGwuCmZ1bmMgVGVzdE5vQnlwYXNzQ29tcGlsZVRpbWUodCAqdGVzdGluZy5UKSB7CgkvLyBWZXJpZnkgdGhlIGNvbnN0cnVjdG9ycyBleGlzdCBhbmQgYXJlIHRoZSBkb2N1bWVudGVkIGNob2tlIHBvaW50cy4KCXZhciBfID0gUmVzb2x2ZVBlZXJBZGRyU2FmZQoJdmFyIF8gPSBMaXN0ZW5VRFBTYWZlCgkvLyBWZXJpZnkgdGhlIHJhdyBjaGVjayBpcyBub3QgYnlwYXNzZWQ6IENoZWNrSW5pdGlhbENvZGVjU2FmZUZvckFkZHIgaXMKCS8vIHN0aWxsIGF2YWlsYWJsZSBmb3IgdGhlIHNlcnZlciBwYXRoLCBidXQgbmV3IGNvZGUgbXVzdCB1c2UgdGhlCgkvLyBjb25zdHJ1Y3RvcnMgYWJvdmUuCgl2YXIgXyA9IENoZWNrSW5pdGlhbENvZGVjU2FmZUZvckFkZHIKfQo=
+package mistcore
+
+import (
+	"context"
+	"net"
+	"strings"
+	"testing"
+)
+
+// testCtx returns a context for safety-gate tests.
+func testCtx() context.Context {
+	return context.Background()
+}
+
+// unsafeCodec returns the test-only random-ciphertext codec.
+func unsafeCodec() InitialCodec { return &RandomCiphertextCodec{} }
+
+func TestIPAllowedByPolicy(t *testing.T) {
+	cases := []struct {
+		name  string
+		ip    string
+		allow bool
+	}{
+		// Allowed: loopback, RFC 1918, ULA, link-local.
+		{"loopback4", "127.0.0.1", true},
+		{"loopback6", "::1", true},
+		{"rfc1918_10", "10.8.0.1", true},
+		{"rfc1918_10_2", "10.255.255.255", true},
+		{"rfc1918_172", "172.16.0.1", true},
+		{"rfc1918_192", "192.168.1.1", true},
+		{"ula", "fd00::1", true},
+		{"linklocal6", "fe80::1", true},
+		// Denied: public, CGNAT, unspecified, multicast.
+		{"public4", "8.8.8.8", false},
+		{"public4_2", "148.135.10.19", false},
+		{"public6", "2607:f130:0:113::31", false},
+		{"public6_2", "2001:4860:4860::8888", false},
+		{"cgnat", "100.64.0.1", false},
+		{"cgnat_2", "100.127.255.254", false},
+		{"unspecified4", "0.0.0.0", false},
+		{"unspecified6", "::", false},
+		{"multicast4", "224.0.0.1", false},
+		{"multicast6", "ff02::1", false},
+		// IPv4-mapped IPv6: normalized to IPv4 before policy check.
+		{"mapped_public", "::ffff:8.8.8.8", false},
+		{"mapped_private", "::ffff:10.8.0.1", true},
+		{"mapped_loopback", "::ffff:127.0.0.1", true},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			ip := net.ParseIP(tc.ip)
+			if ip == nil {
+				t.Fatalf("bad test IP %q", tc.ip)
+			}
+			if got := ipAllowedByPolicy(ip); got != tc.allow {
+				t.Fatalf("ipAllowedByPolicy(%q) = %v, want %v", tc.ip, got, tc.allow)
+			}
+		})
+	}
+}
+
+func TestResolvePeerAddrSafe(t *testing.T) {
+	ctx := testCtx()
+	unsafe := unsafeCodec()
+
+	cases := []struct {
+		name    string
+		addr    string
+		wantErr bool
+		wantIP  string // expected IP when no error
+	}{
+		// Allowed: private/loopback literals.
+		{"allow_10", "10.8.0.1:1443", false, "10.8.0.1"},
+		{"allow_loopback", "127.0.0.1:1443", false, "127.0.0.1"},
+		{"allow_loopback6", "[::1]:1443", false, "::1"},
+		{"allow_localhost", "localhost:1443", false, "127.0.0.1"},
+		{"allow_rfc1918", "192.168.1.10:1443", false, "192.168.1.10"},
+		// Denied: public, unspecified, CGNAT.
+		{"deny_public4", "8.8.8.8:1443", true, ""},
+		{"deny_public6", "[2001:4860:4860::8888]:1443", true, ""},
+		{"deny_unspecified4", "0.0.0.0:1443", true, ""},
+		{"deny_unspecified6", "[::]:1443", true, ""},
+		{"deny_cgnat", "100.64.0.5:1443", true, ""},
+		{"deny_mapped_public", "[::ffff:8.8.8.8]:1443", true, ""},
+		// Denied: unresolvable hostname (fail-closed).
+		{"deny_badhost", "nonexistent.invalid:1443", true, ""},
+		{"deny_empty", "", true, ""},
+		// Allowed: mapped private.
+		{"allow_mapped_private", "[::ffff:10.8.0.1]:1443", false, "10.8.0.1"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := ResolvePeerAddrSafe(ctx, tc.addr, unsafe)
+			if tc.wantErr {
+				if err == nil {
+					t.Fatalf("expected error for %q, got %v", tc.addr, got)
+				}
+				if !strings.Contains(err.Error(), "随机密文 Initial 不能用于真实网络") {
+					t.Fatalf("error must state reason in Chinese, got: %v", err)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("unexpected error for %q: %v", tc.addr, err)
+			}
+			if got.IP.String() != tc.wantIP {
+				t.Fatalf("got IP %q, want %q", got.IP.String(), tc.wantIP)
+			}
+			// The returned address must be an IP literal, not a hostname:
+			// no re-resolution by the caller (TOCTOU safe).
+			if got.IP == nil {
+				t.Fatalf("returned IP is nil for %q", tc.addr)
+			}
+		})
+	}
+}
+
+func TestListenUDPSafe(t *testing.T) {
+	ctx := testCtx()
+	unsafe := unsafeCodec()
+
+	// Denied addresses must fail before binding.
+	denyCases := []string{
+		"0.0.0.0:0",
+		"8.8.8.8:0",
+		"[2001:4860:4860::8888]:0",
+		"100.64.0.1:0",
+		"[::ffff:8.8.8.8]:0",
+		"nonexistent.invalid:0",
+		"",
+	}
+	for _, addr := range denyCases {
+		t.Run("deny_"+addr, func(t *testing.T) {
+			conn, err := ListenUDPSafe(ctx, addr, unsafe)
+			if err == nil {
+				if conn != nil {
+					conn.Close()
+				}
+				t.Fatalf("expected error for listen %q, got nil", addr)
+			}
+			if !strings.Contains(err.Error(), "随机密文 Initial 不能用于真实网络") {
+				t.Fatalf("error must state reason in Chinese, got: %v", err)
+			}
+		})
+	}
+
+	// Allowed addresses must bind successfully.
+	allowCases := []string{
+		"127.0.0.1:0",
+		"[::1]:0",
+	}
+	for _, addr := range allowCases {
+		t.Run("allow_"+addr, func(t *testing.T) {
+			conn, err := ListenUDPSafe(ctx, addr, unsafe)
+			if err != nil {
+				t.Fatalf("unexpected error for listen %q: %v", addr, err)
+			}
+			conn.Close()
+		})
+	}
+}
+
+func TestCheckCodecForIPsHostnameSimulation(t *testing.T) {
+	// Simulates "hostname resolved to public/private": the gate sees every
+	// resolved IP and denies the whole address if any one is public.
+	unsafe := unsafeCodec()
+
+	// All private: allowed, returns first IP.
+	ips := []net.IP{net.ParseIP("10.8.0.1"), net.ParseIP("10.8.0.2")}
+	got, err := checkCodecForIPs(unsafe, "example.internal:1443", ips)
+	if err != nil {
+		t.Fatalf("all-private should be allowed: %v", err)
+	}
+	if got.String() != "10.8.0.1" {
+		t.Fatalf("got %q, want 10.8.0.1", got.String())
+	}
+
+	// One public among private: denied (fail-closed on mixed results).
+	ips = []net.IP{net.ParseIP("10.8.0.1"), net.ParseIP("8.8.8.8")}
+	if _, err := checkCodecForIPs(unsafe, "example.com:1443", ips); err == nil {
+		t.Fatalf("mixed public/private must be denied")
+	}
+
+	// Production-safe codec: allowed everywhere.
+	safe := &safeTestCodec{}
+	ips = []net.IP{net.ParseIP("8.8.8.8")}
+	if _, err := checkCodecForIPs(safe, "example.com:1443", ips); err != nil {
+		t.Fatalf("safe codec should be allowed on public: %v", err)
+	}
+}
+
+// TestNoBypassCompileTime documents the invariant: the only supported paths
+// are ResolvePeerAddrSafe (client) and ListenUDPSafe (server). There is no
+// exported helper that dials or binds without the check. This test exists so
+// a future refactor that adds a bypass breaks the build via the doc comment
+// and code review; the real enforcement is that cmd/ code has no other
+// mistcore entry point to call.
+func TestNoBypassCompileTime(t *testing.T) {
+	// Verify the constructors exist and are the documented choke points.
+	var _ = ResolvePeerAddrSafe
+	var _ = ListenUDPSafe
+	// Verify the raw check is not bypassed: CheckInitialCodecSafeForAddr is
+	// still available for the server path, but new code must use the
+	// constructors above.
+	var _ = CheckInitialCodecSafeForAddr
+}

@@ -1,1 +1,72 @@
-Ly8gcXVpY19pbml0aWFsX2NvZGVjX3Rlc3QuZ286IFRlc3RzIGZvciBRVUlDSW5pdGlhbENvZGVjIChQaGFzZSAwKS4KcGFja2FnZSBtaXN0Y29yZQoKaW1wb3J0ICgKCSJieXRlcyIKCSJ0ZXN0aW5nIgopCgpmdW5jIFRlc3RRVUlDSW5pdGlhbENvZGVjUm91bmR0cmlwKHQgKnRlc3RpbmcuVCkgewoJY29kZWMgOj0gJlFVSUNJbml0aWFsQ29kZWN7fQoJdmFyIGRjaWQsIHNjaWQgWzhdYnl0ZQoJZm9yIGkgOj0gcmFuZ2UgZGNpZCB7CgkJZGNpZFtpXSA9IGJ5dGUoMHgxMCArIGkpCgkJc2NpZFtpXSA9IGJ5dGUoMHgyMCArIGkpCgl9CgkvLyBDMlM6IGNsaWVudCBzZWFscyBBVVRILCBzZXJ2ZXIgb3BlbnMuCglhdXRoUGF5bG9hZCA6PSBbXWJ5dGUoInRlc3QtYXV0aC1kYXRhLTEyMzQ1IikKCXBhY2tldCwgZXJyIDo9IGNvZGVjLlNlYWxJbml0aWFsKGF1dGhQYXlsb2FkLCBkY2lkLCBzY2lkLCAxKQoJaWYgZXJyICE9IG5pbCB7CgkJdC5GYXRhbGYoIlNlYWxJbml0aWFsOiAldiIsIGVycikKCX0KCW9wZW5lZCwgb3V0RENJRCwgb3V0U0NJRCwgcG4sIGVyciA6PSBjb2RlYy5PcGVuSW5pdGlhbChwYWNrZXQpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigiT3BlbkluaXRpYWw6ICV2IiwgZXJyKQoJfQoJaWYgIWJ5dGVzLkVxdWFsKG9wZW5lZCwgYXV0aFBheWxvYWQpIHsKCQl0LkZhdGFsZigiQVVUSCBtaXNtYXRjaDogJXggdnMgJXgiLCBvcGVuZWQsIGF1dGhQYXlsb2FkKQoJfQoJaWYgb3V0RENJRCAhPSBkY2lkIHsKCQl0LkZhdGFsZigiRENJRCBtaXNtYXRjaDogJXggdnMgJXgiLCBvdXREQ0lELCBkY2lkKQoJfQoJaWYgb3V0U0NJRCAhPSBzY2lkIHsKCQl0LkZhdGFsZigiU0NJRCBtaXNtYXRjaDogJXggdnMgJXgiLCBvdXRTQ0lELCBzY2lkKQoJfQoJaWYgcG4gIT0gMSB7CgkJdC5GYXRhbGYoInBhY2tldE51bSBtaXNtYXRjaDogJWQiLCBwbikKCX0KCS8vIFMyQzogc2VydmVyIHNlYWxzIEFVVEhfT0ssIGNsaWVudCBvcGVucy4KCWF1dGhPSyA6PSBbXWJ5dGUoInRlc3QtYXV0aC1vay02Nzg5MCIpCglyZXNwUGFja2V0LCBlcnIgOj0gY29kZWMuU2VhbEluaXRpYWxSZXNwb25zZShhdXRoT0ssIGRjaWQsIHNjaWQsIDIpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigiU2VhbEluaXRpYWxSZXNwb25zZTogJXYiLCBlcnIpCgl9CglvcGVuZWRPSywgXywgXywgcG4yLCBlcnIgOj0gY29kZWMuT3BlbkluaXRpYWxSZXNwb25zZShyZXNwUGFja2V0KQoJaWYgZXJyICE9IG5pbCB7CgkJdC5GYXRhbGYoIk9wZW5Jbml0aWFsUmVzcG9uc2U6ICV2IiwgZXJyKQoJfQoJaWYgIWJ5dGVzLkVxdWFsKG9wZW5lZE9LLCBhdXRoT0spIHsKCQl0LkZhdGFsZigiQVVUSF9PSyBtaXNtYXRjaDogJXggdnMgJXgiLCBvcGVuZWRPSywgYXV0aE9LKQoJfQoJaWYgcG4yICE9IDIgewoJCXQuRmF0YWxmKCJwYWNrZXROdW0gbWlzbWF0Y2g6ICVkIiwgcG4yKQoJfQp9CgpmdW5jIFRlc3RRVUlDSW5pdGlhbENvZGVjQ3Jvc3NEaXJlY3Rpb25GYWlscyh0ICp0ZXN0aW5nLlQpIHsKCWNvZGVjIDo9ICZRVUlDSW5pdGlhbENvZGVje30KCXZhciBkY2lkLCBzY2lkIFs4XWJ5dGUKCWZvciBpIDo9IHJhbmdlIGRjaWQgewoJCWRjaWRbaV0gPSBieXRlKDB4MTAgKyBpKQoJCXNjaWRbaV0gPSBieXRlKDB4MjAgKyBpKQoJfQoJLy8gQzJTIHBhY2tldCBjYW5ub3QgYmUgb3BlbmVkIGFzIFMyQyByZXNwb25zZSAoZGlmZmVyZW50IGtleXMpLgoJcGFja2V0LCBlcnIgOj0gY29kZWMuU2VhbEluaXRpYWwoW11ieXRlKCJhdXRoIiksIGRjaWQsIHNjaWQsIDEpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigiU2VhbEluaXRpYWw6ICV2IiwgZXJyKQoJfQoJXywgXywgXywgXywgZXJyID0gY29kZWMuT3BlbkluaXRpYWxSZXNwb25zZShwYWNrZXQpCglpZiBlcnIgPT0gbmlsIHsKCQl0LkZhdGFsKCJDMlMgcGFja2V0IG9wZW5lZCBhcyBTMkMgcmVzcG9uc2UgKHNob3VsZCBmYWlsKSIpCgl9Cn0K
+// quic_initial_codec_test.go: Tests for QUICInitialCodec (Phase 0).
+package mistcore
+
+import (
+	"bytes"
+	"testing"
+)
+
+func TestQUICInitialCodecRoundtrip(t *testing.T) {
+	codec := &QUICInitialCodec{}
+	var dcid, scid [8]byte
+	for i := range dcid {
+		dcid[i] = byte(0x10 + i)
+		scid[i] = byte(0x20 + i)
+	}
+	// C2S: client seals AUTH, server opens.
+	authPayload := []byte("test-auth-data-12345")
+	packet, err := codec.SealInitial(authPayload, dcid, scid, 1)
+	if err != nil {
+		t.Fatalf("SealInitial: %v", err)
+	}
+	opened, outDCID, outSCID, pn, err := codec.OpenInitial(packet)
+	if err != nil {
+		t.Fatalf("OpenInitial: %v", err)
+	}
+	if !bytes.Equal(opened, authPayload) {
+		t.Fatalf("AUTH mismatch: %x vs %x", opened, authPayload)
+	}
+	if outDCID != dcid {
+		t.Fatalf("DCID mismatch: %x vs %x", outDCID, dcid)
+	}
+	if outSCID != scid {
+		t.Fatalf("SCID mismatch: %x vs %x", outSCID, scid)
+	}
+	if pn != 1 {
+		t.Fatalf("packetNum mismatch: %d", pn)
+	}
+	// S2C: server seals AUTH_OK, client opens.
+	authOK := []byte("test-auth-ok-67890")
+	respPacket, err := codec.SealInitialResponse(authOK, dcid, scid, 2)
+	if err != nil {
+		t.Fatalf("SealInitialResponse: %v", err)
+	}
+	openedOK, _, _, pn2, err := codec.OpenInitialResponse(respPacket)
+	if err != nil {
+		t.Fatalf("OpenInitialResponse: %v", err)
+	}
+	if !bytes.Equal(openedOK, authOK) {
+		t.Fatalf("AUTH_OK mismatch: %x vs %x", openedOK, authOK)
+	}
+	if pn2 != 2 {
+		t.Fatalf("packetNum mismatch: %d", pn2)
+	}
+}
+
+func TestQUICInitialCodecCrossDirectionFails(t *testing.T) {
+	codec := &QUICInitialCodec{}
+	var dcid, scid [8]byte
+	for i := range dcid {
+		dcid[i] = byte(0x10 + i)
+		scid[i] = byte(0x20 + i)
+	}
+	// C2S packet cannot be opened as S2C response (different keys).
+	packet, err := codec.SealInitial([]byte("auth"), dcid, scid, 1)
+	if err != nil {
+		t.Fatalf("SealInitial: %v", err)
+	}
+	_, _, _, _, err = codec.OpenInitialResponse(packet)
+	if err == nil {
+		t.Fatal("C2S packet opened as S2C response (should fail)")
+	}
+}

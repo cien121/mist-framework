@@ -1,1 +1,415 @@
-Ly8gUGFja2FnZSBtaXN0Y29yZSBpbXBsZW1lbnRzIHRoZSBNaXN0ICjpm74pIHByb3RvY29sIHYwLjEgd2lyZSBmb3JtYXQuCi8vCi8vIFNvdXJjZSBvZiB0cnV0aDogfi93b3Jrc3BhY2UvbWlzdC1wcm90b2NvbC9TUEVDLm1kLgovLyBUd28gaXJvbiBydWxlczogKDEpIHNpbGVudCBvbiBwcm9iZSAobmV2ZXIgcmV0dXJuIGZlYXR1cmUgZXJyb3JzKSwKLy8gKDIpIGEgKGtleSwgbm9uY2UpIHBhaXIgaXMgbmV2ZXIgcmV1c2VkLgovLwovLyBBRUFEIG5vdGUgKGNvb3JkaW5hdG9yIGRlY2lzaW9uLCBiaW5kcyBhbGwgaW1wbGVtZW50YXRpb25zKToKLy8gdGhlIHNwZWMgbWFuZGF0ZXMgWENoYUNoYTIwLVBvbHkxMzA1IHdoaWxlIGRlZmluaW5nIGEgMTItYnl0ZSBub25jZQovLyAoZXBvY2h8ZGlyfGNvdW50ZXIpLiBYQ2hhQ2hhMjAgbmVlZHMgMjQtYnl0ZSBub25jZXMsIHNvIGV2ZXJ5IEFFQUQgY2FsbAovLyB1c2VzIG5vbmNlMjQgPSAweDAwKjEyIHx8IG5vbmNlMTIgd2l0aCBjaGFjaGEyMHBvbHkxMzA1Lk5ld1guCnBhY2thZ2UgbWlzdGNvcmUKCmltcG9ydCAoCgkiY3J5cHRvL2NpcGhlciIKCSJjcnlwdG8vcmFuZCIKCSJlbmNvZGluZy9iaW5hcnkiCgkiZXJyb3JzIgoJInRpbWUiCgoJImdvbGFuZy5vcmcveC9jcnlwdG8vY2hhY2hhMjBwb2x5MTMwNSIKCSJnb2xhbmcub3JnL3gvY3J5cHRvL2N1cnZlMjU1MTkiCgkiZ29sYW5nLm9yZy94L2NyeXB0by9oa2RmIgoJImNyeXB0by9zaGEyNTYiCikKCi8vIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQovLyBDb25zdGFudHMKLy8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpjb25zdCAoCglWZXJzaW9uIGJ5dGUgPSAweDAxCgoJLy8gRnJhbWUgbGltaXRzIChTUEVDIDcuMSwgQi4xKS4KCU1heEZyYW1lTGVuID0gMTYzODQgLy8gTEVOIGZpZWxkIG1heDogYnl0ZXMgYWZ0ZXIgdGhlIExFTiBmaWVsZCBpdHNlbGYKCU1heExpbmVMZW4gID0gMTYzODYgLy8gbWF4IG9uLXdpcmUgZnJhbWUgc2l6ZQoKCS8vIFN0cmVhbSBpZCBzcGFjZSAoU1BFQyA5LjEpLgoJU2lkQ29udHJvbCA9IDAKCVNpZE1heCAgICAgPSAxNQoKCS8vIEZsYWdzOiBoaWdoIG5pYmJsZSBvZiB0aGUgU0lEL0YgYnl0ZSAoU1BFQyA3LjEpLgoJRmxhZ1NZTiA9IDB4ODAKCUZsYWdGSU4gPSAweDQwCglGbGFnUlNUID0gMHgyMAoKCS8vIE5vbmNlIGRpcmVjdGlvbiB3b3JkcyAoU1BFQyA3LjIpLgoJRGlyQzJTIHVpbnQzMiA9IDB4MDAwMDAwMDAKCURpclMyQyB1aW50MzIgPSAweEZGRkZGRkZGCgoJLy8gQ29udHJvbC1zdHJlYW0gbWVzc2FnZSB0eXBlcyAoU1BFQyA5LjYpLgoJTXNnQ29ubmVjdFJlcSAgID0gMHgwMQoJTXNnQ29ubmVjdFJlc3AgID0gMHgwMgoJTXNnVURQQXNzb2NSZXEgID0gMHgwMwoJTXNnV2luZG93VXBkYXRlID0gMHgwNAoJTXNnUGluZyAgICAgICAgID0gMHgwNQoJTXNnUG9uZyAgICAgICAgID0gMHgwNgoJTXNnUmVzdW1lICAgICAgID0gMHgwNwoJTXNnUmVzdW1lT0sgICAgID0gMHgwOAoJTXNnQ2xvc2VTZXNzaW9uID0gMHgwOQoKCS8vIENPTk5FQ1QgYWRkcmVzcyB0eXBlcyAoU1BFQyA5LjIpLgoJQVR5cElQdjQgICA9IDB4MDEKCUFUeXBEb21haW4gPSAweDAzCglBVHlwSVB2NiAgID0gMHgwNAoKCS8vIEFVVEggd2lyZSBzaXplcy4KCUF1dGhXaXJlTGVuICAgPSA4OSAgLy8gMTYgKyAxMiArICg0NSArIDE2KQoJQXV0aE9LV2lyZUxlbiA9IDEyNCAvLyAxMiArICg5NiArIDE2KQoKCWFlYWRUYWdMZW4gPSAxNgopCgovLyBEZWZhdWx0cyAoU1BFQyBhcHBlbmRpeCBCLjIpLgpjb25zdCAoCglEZWZhdWx0SGVhcnRiZWF0U2VjICAgICAgPSAzMAoJRGVmYXVsdFNoYXBpbmdIZWF2eVBrdHMgID0gMzIKCURlZmF1bHRTaGFwaW5nUGFkTWluICAgICA9IDY0CglEZWZhdWx0U2hhcGluZ1BhZE1heCAgICAgPSA1MTIKCURlZmF1bHRTaGFwaW5nSml0dGVyTXMgICA9IDE1CglEZWZhdWx0U2hhcGluZ1RhaWxQYWQgICAgPSAwCglEZWZhdWx0TWF4U3RyZWFtcyAgICAgICAgPSAxNgoJRGVmYXVsdEluaXRXaW5kb3cgICAgICAgID0gMzIgKiAxMDI0ICogMTAyNAoJRGVmYXVsdFdpbmRvd1VwZGF0ZUV2ZXJ5ID0gMTAyNCAqIDEwMjQKCURlZmF1bHRBdXRoV2luZG93U2VjICAgICA9IDYwCglEZWZhdWx0Tm9uY2VDYWNoZVRUTCAgICAgPSAxMjAgLy8gc2Vjb25kcwopCgp2YXIgKAoJRXJyRnJhbWVUb29CaWcgICA9IGVycm9ycy5OZXcoIm1pc3Q6IGZyYW1lIHRvbyBiaWciKQoJRXJyRnJhbWVUb29TbWFsbCA9IGVycm9ycy5OZXcoIm1pc3Q6IGZyYW1lIHRvbyBzbWFsbCIpCglFcnJBRUFERmFpbGVkICAgID0gZXJyb3JzLk5ldygibWlzdDogYWVhZCBvcGVuIGZhaWxlZCIpCglFcnJCYWRBdXRoICAgICAgID0gZXJyb3JzLk5ldygibWlzdDogYmFkIGF1dGgiKQoJRXJyUmVwbGF5ZWQgICAgICA9IGVycm9ycy5OZXcoIm1pc3Q6IHJlcGxheWVkIG5vbmNlIikKCUVyclN0YWxlVFMgICAgICAgPSBlcnJvcnMuTmV3KCJtaXN0OiB0aW1lc3RhbXAgb3V0c2lkZSB3aW5kb3ciKQoJRXJyVW5rbm93bkNJRCAgICA9IGVycm9ycy5OZXcoIm1pc3Q6IHVua25vd24gY2xpZW50IGlkIikKKQoKLy8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCi8vIEFFQUQgKFhDaGFDaGEyMC1Qb2x5MTMwNSwgMjQtYnl0ZSBub25jZSA9IDEyIHplcm8gYnl0ZXMgfHwgMTItYnl0ZSBub25jZSkKLy8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpmdW5jIG5ld0FFQUQoa2V5ICpbMzJdYnl0ZSkgKGNpcGhlci5BRUFELCBlcnJvcikgewoJcmV0dXJuIGNoYWNoYTIwcG9seTEzMDUuTmV3WChrZXlbOl0pCn0KCi8vIGV4cGFuZE5vbmNlIGNvbnZlcnRzIHRoZSAxMi1ieXRlIChlcG9jaHxkaXJ8Y291bnRlcikgbm9uY2UgdG8gdGhlIDI0LWJ5dGUKLy8gbm9uY2UgWENoYUNoYTIwIHJlcXVpcmVzLgpmdW5jIGV4cGFuZE5vbmNlKG5vbmNlMTIgW11ieXRlKSBbXWJ5dGUgewoJbiA6PSBtYWtlKFtdYnl0ZSwgMjQpCgljb3B5KG5bMTI6XSwgbm9uY2UxMikKCXJldHVybiBuCn0KCi8vIEJ1aWxkTm9uY2UgYXNzZW1ibGVzIHRoZSAxMi1ieXRlIG5vbmNlOiBlcG9jaCg0LEJFKSB8IGRpcig0KSB8IGN0cig0LEJFKS4KZnVuYyBCdWlsZE5vbmNlKGVwb2NoLCBkaXIsIGN0ciB1aW50MzIpIFtdYnl0ZSB7CgluIDo9IG1ha2UoW11ieXRlLCAxMikKCWJpbmFyeS5CaWdFbmRpYW4uUHV0VWludDMyKG5bMDo0XSwgZXBvY2gpCgliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQzMihuWzQ6OF0sIGRpcikKCWJpbmFyeS5CaWdFbmRpYW4uUHV0VWludDMyKG5bODoxMl0sIGN0cikKCXJldHVybiBuCn0KCmZ1bmMgc2VhbChrZXkgKlszMl1ieXRlLCBub25jZTEyLCBwbGFpbnRleHQsIGFhZCBbXWJ5dGUpIChbXWJ5dGUsIGVycm9yKSB7CglhLCBlcnIgOj0gbmV3QUVBRChrZXkpCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gbmlsLCBlcnIKCX0KCXJldHVybiBhLlNlYWwobmlsLCBleHBhbmROb25jZShub25jZTEyKSwgcGxhaW50ZXh0LCBhYWQpLCBuaWwKfQoKZnVuYyBvcGVuKGtleSAqWzMyXWJ5dGUsIG5vbmNlMTIsIGNpcGhlcnRleHQsIGFhZCBbXWJ5dGUpIChbXWJ5dGUsIGVycm9yKSB7CglhLCBlcnIgOj0gbmV3QUVBRChrZXkpCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gbmlsLCBlcnIKCX0KCXB0LCBlcnIgOj0gYS5PcGVuKG5pbCwgZXhwYW5kTm9uY2Uobm9uY2UxMiksIGNpcGhlcnRleHQsIGFhZCkKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIEVyckFFQURGYWlsZWQKCX0KCXJldHVybiBwdCwgbmlsCn0KCi8vIFJhbmRvbUJ5dGVzIHJldHVybnMgbiBDU1BSTkcgYnl0ZXMuCmZ1bmMgUmFuZG9tQnl0ZXMobiBpbnQpIFtdYnl0ZSB7CgliIDo9IG1ha2UoW11ieXRlLCBuKQoJXywgXyA9IHJhbmQuUmVhZChiKQoJcmV0dXJuIGIKfQoKLy8gWmVyb2l6ZSBjbGVhcnMga2V5IG1hdGVyaWFsLgpmdW5jIFplcm9pemUoYiBbXWJ5dGUpIHsKCWZvciBpIDo9IHJhbmdlIGIgewoJCWJbaV0gPSAwCgl9Cn0KCi8vIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQovLyBGcmFtZSBjb2RlYyAoU1BFQyA3KQovLyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCi8vIEVuY29kZUZyYW1lIGJ1aWxkcyBvbmUgb24td2lyZSBmcmFtZS4KLy8gTGF5b3V0OiBbTEVOKDIsQkUpXVtQTEVOKDEpXVtTSUQvRigxKV1bRU5DX1BBWUxPQURdW1BBRERJTkcoUExFTildCi8vIExFTiA9IDIgKyBsZW4oRU5DX1BBWUxPQUQpICsgcGFkTGVuLCBpLmUuIGV2ZXJ5dGhpbmcgYWZ0ZXIgdGhlIExFTiBmaWVsZC4KLy8gYWFkIGlzIHRoZSA0LWJ5dGUgaGVhZGVyLiBwYWRMZW4gYnl0ZXMgb2YgcmFuZG9tIHBhZGRpbmcgYXJlIGFwcGVuZGVkLgpmdW5jIEVuY29kZUZyYW1lKHNpZEZsYWdzIGJ5dGUsIHBsYWludGV4dCBbXWJ5dGUsIHBhZExlbiBpbnQsIGtleSAqWzMyXWJ5dGUsIGVwb2NoLCBkaXIsIGN0ciB1aW50MzIpIChbXWJ5dGUsIGVycm9yKSB7CglpZiBwYWRMZW4gPCAwIHx8IHBhZExlbiA+IDI1NSB7CgkJLy8gUExFTiBpcyBhIHNpbmdsZSBieXRlIChTUEVDIDcuMSk7IHRoZSBhcHBlbmRpeCBCIHJhbmdlCgkJLy8gIjY0LTE0MDAiIGZvciBzaGFwaW5nX3BhZF9tYXggaXMgY2xhbXBlZCB0byAyNTUgaGVyZS4KCQlyZXR1cm4gbmlsLCBlcnJvcnMuTmV3KCJtaXN0OiBiYWQgcGFkTGVuIikKCX0KCWVuY0xlbiA6PSBsZW4ocGxhaW50ZXh0KSArIGFlYWRUYWdMZW4KCXRvdGFsIDo9IDIgKyBlbmNMZW4gKyBwYWRMZW4KCWlmIHRvdGFsID4gTWF4RnJhbWVMZW4gfHwgdG90YWwgPCAyIHsKCQlyZXR1cm4gbmlsLCBFcnJGcmFtZVRvb0JpZwoJfQoJaGVhZGVyIDo9IG1ha2UoW11ieXRlLCA0KQoJYmluYXJ5LkJpZ0VuZGlhbi5QdXRVaW50MTYoaGVhZGVyWzA6Ml0sIHVpbnQxNih0b3RhbCkpCgloZWFkZXJbMl0gPSBieXRlKHBhZExlbikKCWhlYWRlclszXSA9IHNpZEZsYWdzCgllbmMsIGVyciA6PSBzZWFsKGtleSwgQnVpbGROb25jZShlcG9jaCwgZGlyLCBjdHIpLCBwbGFpbnRleHQsIGhlYWRlcikKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIGVycgoJfQoJb3V0IDo9IG1ha2UoW11ieXRlLCAwLCA0K2xlbihlbmMpK3BhZExlbikKCW91dCA9IGFwcGVuZChvdXQsIGhlYWRlci4uLikKCW91dCA9IGFwcGVuZChvdXQsIGVuYy4uLikKCWlmIHBhZExlbiA+IDAgewoJCW91dCA9IGFwcGVuZChvdXQsIFJhbmRvbUJ5dGVzKHBhZExlbikuLi4pCgl9CglyZXR1cm4gb3V0LCBuaWwKfQoKLy8gRGVjb2RlZEZyYW1lIGlzIHRoZSByZXN1bHQgb2YgRGVjb2RlRnJhbWUuCnR5cGUgRGVjb2RlZEZyYW1lIHN0cnVjdCB7CglTaWRGbGFncyBieXRlCglQYXlsb2FkICBbXWJ5dGUgLy8gZGVjcnlwdGVkCn0KCi8vIERlY29kZUZyYW1lIHBhcnNlcyBvbmUgZnVsbCBmcmFtZSBmcm9tIGJ1ZiAod2hpY2ggbXVzdCBob2xkIGV4YWN0bHkgb25lCi8vIGZyYW1lOiAyICsgTEVOIGJ5dGVzKS4gY3RyIGlzIHRoZSBleHBlY3RlZCBjb3VudGVyIGZvciB0aGlzIGRpcmVjdGlvbjsKLy8gaXQgaXMgTk9UIGluY3JlbWVudGVkIGhlcmUuCmZ1bmMgRGVjb2RlRnJhbWUoYnVmIFtdYnl0ZSwga2V5ICpbMzJdYnl0ZSwgZXBvY2gsIGRpciwgY3RyIHVpbnQzMikgKCpEZWNvZGVkRnJhbWUsIGVycm9yKSB7CglpZiBsZW4oYnVmKSA8IDIgewoJCXJldHVybiBuaWwsIEVyckZyYW1lVG9vU21hbGwKCX0KCWxuIDo9IGludChiaW5hcnkuQmlnRW5kaWFuLlVpbnQxNihidWZbMDoyXSkpCglpZiBsbiA8IDIgfHwgbG4gPiBNYXhGcmFtZUxlbiB7CgkJcmV0dXJuIG5pbCwgRXJyRnJhbWVUb29CaWcKCX0KCWlmIGxlbihidWYpIDwgMitsbiB7CgkJcmV0dXJuIG5pbCwgRXJyRnJhbWVUb29TbWFsbAoJfQoJaGVhZGVyIDo9IGJ1ZlswOjRdCglwYWRMZW4gOj0gaW50KGJ1ZlsyXSkKCXNpZEZsYWdzIDo9IGJ1ZlszXQoJZW5jTGVuIDo9IGxuIC0gMiAtIHBhZExlbgoJaWYgZW5jTGVuIDwgYWVhZFRhZ0xlbiB7CgkJcmV0dXJuIG5pbCwgRXJyRnJhbWVUb29TbWFsbAoJfQoJZW5jIDo9IGJ1Zls0IDogNCtlbmNMZW5dCglwdCwgZXJyIDo9IG9wZW4oa2V5LCBCdWlsZE5vbmNlKGVwb2NoLCBkaXIsIGN0ciksIGVuYywgaGVhZGVyKQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXJyCgl9CglyZXR1cm4gJkRlY29kZWRGcmFtZXtTaWRGbGFnczogc2lkRmxhZ3MsIFBheWxvYWQ6IHB0fSwgbmlsCn0KCi8vIEZyYW1lV2lyZUxlbiByZXR1cm5zIHRoZSB0b3RhbCBvbi13aXJlIGJ5dGVzICgyICsgTEVOKSBmb3IgYSBmcmFtZSB3aG9zZQovLyBmaXJzdCB0d28gYnl0ZXMgYXJlIGF2YWlsYWJsZS4gUmV0dXJucyAwIGlmIGZld2VyIHRoYW4gMiBieXRlcy4KZnVuYyBGcmFtZVdpcmVMZW4oZmlyc3QyIFtdYnl0ZSkgaW50IHsKCWlmIGxlbihmaXJzdDIpIDwgMiB7CgkJcmV0dXJuIDAKCX0KCXJldHVybiAyICsgaW50KGJpbmFyeS5CaWdFbmRpYW4uVWludDE2KGZpcnN0MikpCn0KCi8vIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQovLyBIYW5kc2hha2U6IEFVVEggLyBBVVRIX09LIChTUEVDIDYpCi8vIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKLy8gQnVpbGRBVVRIIGNvbnN0cnVjdHMgdGhlIDg5LWJ5dGUgQVVUSCBtZXNzYWdlLgovLyBSZXR1cm5zIHdpcmUgYnl0ZXMgYW5kIHRoZSBjbGllbnQncyBlcGhlbWVyYWwgcHVibGljIGtleS4KZnVuYyBCdWlsZEFVVEgoY2lkIFsxNl1ieXRlLCBrQXV0aCAqWzMyXWJ5dGUsIGZlYXQgYnl0ZSwgbm93IHRpbWUuVGltZSkgKHdpcmUgW11ieXRlLCBlcGhQdWIgWzMyXWJ5dGUsIGVwaFByaXYgWzMyXWJ5dGUsIGVyciBlcnJvcikgewoJcHJpdiA6PSBSYW5kb21CeXRlcygzMikKCXB1YiwgZXJyIDo9IGN1cnZlMjU1MTkuWDI1NTE5KHByaXYsIGN1cnZlMjU1MTkuQmFzZXBvaW50KQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXBoUHViLCBlcGhQcml2LCBlcnIKCX0KCWNvcHkoZXBoUHJpdls6XSwgcHJpdikKCWNvcHkoZXBoUHViWzpdLCBwdWIpCglaZXJvaXplKHByaXYpCgoJcGxhaW4gOj0gbWFrZShbXWJ5dGUsIDQ1KQoJcGxhaW5bMF0gPSBWZXJzaW9uCgliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQ2NChwbGFpblsxOjldLCB1aW50NjQobm93LlVuaXgoKSkpCgljb3B5KHBsYWluWzk6NDFdLCBlcGhQdWJbOl0pCglwbGFpbls0MV0gPSBmZWF0CgkvLyBwbGFpbls0Mjo0NV0gUlNWRCA9IDAKCglub25jZSA6PSBSYW5kb21CeXRlcygxMikKCWN0LCBlcnIgOj0gc2VhbChrQXV0aCwgbm9uY2UsIHBsYWluLCBjaWRbOl0pCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gbmlsLCBlcGhQdWIsIGVwaFByaXYsIGVycgoJfQoJd2lyZSA9IG1ha2UoW11ieXRlLCAwLCBBdXRoV2lyZUxlbikKCXdpcmUgPSBhcHBlbmQod2lyZSwgY2lkWzpdLi4uKQoJd2lyZSA9IGFwcGVuZCh3aXJlLCBub25jZS4uLikKCXdpcmUgPSBhcHBlbmQod2lyZSwgY3QuLi4pCglyZXR1cm4gd2lyZSwgZXBoUHViLCBlcGhQcml2LCBuaWwKfQoKLy8gQXV0aFJlc3VsdCBpcyBhIHN1Y2Nlc3NmdWxseSB2YWxpZGF0ZWQgQVVUSC4KdHlwZSBBdXRoUmVzdWx0IHN0cnVjdCB7CglDSUQgICAgWzE2XWJ5dGUKCUVwaFB1YiBbMzJdYnl0ZQoJVFMgICAgIGludDY0CglGZWF0ICAgYnl0ZQp9CgovLyBQYXJzZUFVVEggdmFsaWRhdGVzIGFuIDg5LWJ5dGUgQVVUSCBtZXNzYWdlIChzZXJ2ZXIgc2lkZSwgU1BFQyA2LjIgc2l4IHN0ZXBzKS4KLy8gbG9va3VwIHJlc29sdmVzIENJRCAtPiBLX2F1dGguIE9uIEFOWSBmYWlsdXJlIGl0IHJldHVybnMgYW4gZXJyb3IgYW5kIHRoZQovLyBjYWxsZXIgbXVzdCBzd2l0Y2ggdGhlIGNvbm5lY3Rpb24gdG8gZ3Vlc3QgbW9kZSAobmV2ZXIgc2lnbmFsIHRoZSByZWFzb24pLgpmdW5jIFBhcnNlQVVUSCh3aXJlIFtdYnl0ZSwgbG9va3VwIGZ1bmMoY2lkIFsxNl1ieXRlKSAoa0F1dGggKlszMl1ieXRlLCBvayBib29sKSwgbm93IHRpbWUuVGltZSwgd2luZG93U2VjIGludDY0LCBjYWNoZSAqTm9uY2VDYWNoZSkgKCpBdXRoUmVzdWx0LCBlcnJvcikgewoJaWYgbGVuKHdpcmUpICE9IEF1dGhXaXJlTGVuIHsKCQlyZXR1cm4gbmlsLCBFcnJCYWRBdXRoCgl9Cgl2YXIgY2lkIFsxNl1ieXRlCgljb3B5KGNpZFs6XSwgd2lyZVswOjE2XSkKCW5vbmNlIDo9IHdpcmVbMTY6MjhdCgljdCA6PSB3aXJlWzI4Ol0KCglrQXV0aCwgb2sgOj0gbG9va3VwKGNpZCkKCWlmICFvayB7CgkJcmV0dXJuIG5pbCwgRXJyVW5rbm93bkNJRAoJfQoJcHQsIGVyciA6PSBvcGVuKGtBdXRoLCBub25jZSwgY3QsIGNpZFs6XSkKCWlmIGVyciAhPSBuaWwgfHwgbGVuKHB0KSAhPSA0NSB7CgkJcmV0dXJuIG5pbCwgRXJyQmFkQXV0aAoJfQoJaWYgcHRbMF0gIT0gVmVyc2lvbiB7CgkJcmV0dXJuIG5pbCwgRXJyQmFkQXV0aAoJfQoJdHMgOj0gaW50NjQoYmluYXJ5LkJpZ0VuZGlhbi5VaW50NjQocHRbMTo5XSkpCglpZiBhYnM2NChub3cuVW5peCgpLXRzKSA+IHdpbmRvd1NlYyB7CgkJcmV0dXJuIG5pbCwgRXJyU3RhbGVUUwoJfQoJdmFyIG4xMiBbMTJdYnl0ZQoJY29weShuMTJbOl0sIG5vbmNlKQoJaWYgY2FjaGUuU2VlbihuMTIpIHsKCQlyZXR1cm4gbmlsLCBFcnJSZXBsYXllZAoJfQoJcmVzIDo9ICZBdXRoUmVzdWx0e0NJRDogY2lkLCBUUzogdHMsIEZlYXQ6IHB0WzQxXX0KCWNvcHkocmVzLkVwaFB1Yls6XSwgcHRbOTo0MV0pCglyZXR1cm4gcmVzLCBuaWwKfQoKLy8gQnVpbGRBdXRoT0sgY29uc3RydWN0cyB0aGUgMTI0LWJ5dGUgQVVUSF9PSyBtZXNzYWdlIChzZXJ2ZXIgc2lkZSkuCmZ1bmMgQnVpbGRBdXRoT0soa0F1dGggKlszMl1ieXRlLCBzcnZFcGhQdWIgWzMyXWJ5dGUsIGNvbm5JRCBbMTZdYnl0ZSwgcmVzdW1lVG9rIFszMl1ieXRlLCBtYXhTdHJlYW1zIGJ5dGUsIGhiU2VjIHVpbnQxNiwgbm93IHRpbWUuVGltZSkgKFtdYnl0ZSwgZXJyb3IpIHsKCXBsYWluIDo9IG1ha2UoW11ieXRlLCA5NikKCWNvcHkocGxhaW5bMDozMl0sIHNydkVwaFB1Yls6XSkKCWNvcHkocGxhaW5bMzI6NDhdLCBjb25uSURbOl0pCgljb3B5KHBsYWluWzQ4OjgwXSwgcmVzdW1lVG9rWzpdKQoJYmluYXJ5LkJpZ0VuZGlhbi5QdXRVaW50NjQocGxhaW5bODA6ODhdLCB1aW50NjQobm93LlVuaXgoKSkpCglwbGFpbls4OF0gPSBtYXhTdHJlYW1zCgliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQxNihwbGFpbls4OTo5MV0sIGhiU2VjKQoJLy8gcGxhaW5bOTE6OTZdIFJTVkQgPSAwCgoJbm9uY2UgOj0gUmFuZG9tQnl0ZXMoMTIpCgljdCwgZXJyIDo9IHNlYWwoa0F1dGgsIG5vbmNlLCBwbGFpbiwgW11ieXRlKCJtaXN0LXYwLjEtYXV0aC1vayIpKQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXJyCgl9Cgl3aXJlIDo9IG1ha2UoW11ieXRlLCAwLCBBdXRoT0tXaXJlTGVuKQoJd2lyZSA9IGFwcGVuZCh3aXJlLCBub25jZS4uLikKCXdpcmUgPSBhcHBlbmQod2lyZSwgY3QuLi4pCglyZXR1cm4gd2lyZSwgbmlsCn0KCi8vIEF1dGhPS1Jlc3VsdCBpcyBhIHZhbGlkYXRlZCBBVVRIX09LLgp0eXBlIEF1dGhPS1Jlc3VsdCBzdHJ1Y3QgewoJU3J2RXBoUHViICBbMzJdYnl0ZQoJQ29ubklEICAgICBbMTZdYnl0ZQoJUmVzdW1lVG9rICBbMzJdYnl0ZQoJU3J2VFMgICAgICBpbnQ2NAoJTWF4U3RyZWFtcyBieXRlCglIQlNlYyAgICAgIHVpbnQxNgp9CgovLyBQYXJzZUF1dGhPSyB2YWxpZGF0ZXMgYSAxMjQtYnl0ZSBBVVRIX09LIG1lc3NhZ2UgKGNsaWVudCBzaWRlKS4KZnVuYyBQYXJzZUF1dGhPSyh3aXJlIFtdYnl0ZSwga0F1dGggKlszMl1ieXRlKSAoKkF1dGhPS1Jlc3VsdCwgZXJyb3IpIHsKCWlmIGxlbih3aXJlKSAhPSBBdXRoT0tXaXJlTGVuIHsKCQlyZXR1cm4gbmlsLCBFcnJCYWRBdXRoCgl9Cglub25jZSwgY3QgOj0gd2lyZVswOjEyXSwgd2lyZVsxMjpdCglwdCwgZXJyIDo9IG9wZW4oa0F1dGgsIG5vbmNlLCBjdCwgW11ieXRlKCJtaXN0LXYwLjEtYXV0aC1vayIpKQoJaWYgZXJyICE9IG5pbCB8fCBsZW4ocHQpICE9IDk2IHsKCQlyZXR1cm4gbmlsLCBFcnJCYWRBdXRoCgl9CglyZXMgOj0gJkF1dGhPS1Jlc3VsdHtTcnZUUzogaW50NjQoYmluYXJ5LkJpZ0VuZGlhbi5VaW50NjQocHRbODA6ODhdKSksIE1heFN0cmVhbXM6IHB0Wzg4XSwgSEJTZWM6IGJpbmFyeS5CaWdFbmRpYW4uVWludDE2KHB0Wzg5OjkxXSl9Cgljb3B5KHJlcy5TcnZFcGhQdWJbOl0sIHB0WzA6MzJdKQoJY29weShyZXMuQ29ubklEWzpdLCBwdFszMjo0OF0pCgljb3B5KHJlcy5SZXN1bWVUb2tbOl0sIHB0WzQ4OjgwXSkKCXJldHVybiByZXMsIG5pbAp9CgovLyBEZXJpdmVTZXNzaW9uS2V5cyBpbXBsZW1lbnRzIFNQRUMgNi40LgovLyBzaGFyZWQgPSBYMjU1MTkocHJpdiwgcGVlclB1Yik7IHNhbHQgPSBjbGllbnRFcGhQdWIgfCBzZXJ2ZXJFcGhQdWI7Ci8vIG9rbSA9IEhLREYtU0hBMjU2KHNhbHQsIHNoYXJlZCwgIm1pc3QtdjAuMS9zZXNzaW9uIiwgNjQpOwovLyBrQzJTID0gb2ttWzA6MzJdLCBrUzJDID0gb2ttWzMyOjY0XS4KZnVuYyBEZXJpdmVTZXNzaW9uS2V5cyhjbGllbnRFcGhQdWIsIHNlcnZlckVwaFB1Yiwgc2hhcmVkIFszMl1ieXRlKSAoa0MyUywga1MyQyBbMzJdYnl0ZSkgewoJc2FsdCA6PSBtYWtlKFtdYnl0ZSwgMCwgNjQpCglzYWx0ID0gYXBwZW5kKHNhbHQsIGNsaWVudEVwaFB1Yls6XS4uLikKCXNhbHQgPSBhcHBlbmQoc2FsdCwgc2VydmVyRXBoUHViWzpdLi4uKQoJb2ttIDo9IG1ha2UoW11ieXRlLCA2NCkKCWtkZiA6PSBoa2RmLk5ldyhzaGEyNTYuTmV3LCBzaGFyZWRbOl0sIHNhbHQsIFtdYnl0ZSgibWlzdC12MC4xL3Nlc3Npb24iKSkKCWlmIF8sIGVyciA6PSBrZGYuUmVhZChva20pOyBlcnIgIT0gbmlsIHsKCQlwYW5pYygibWlzdDogaGtkZiByZWFkIGZhaWxlZDogIiArIGVyci5FcnJvcigpKQoJfQoJY29weShrQzJTWzpdLCBva21bMDozMl0pCgljb3B5KGtTMkNbOl0sIG9rbVszMjo2NF0pCglaZXJvaXplKG9rbSkKCXJldHVybiBrQzJTLCBrUzJDCn0KCi8vIFgyNTUxOVNoYXJlZCBjb21wdXRlcyBYMjU1MTkocHJpdiwgcHViKS4KZnVuYyBYMjU1MTlTaGFyZWQocHJpdiwgcHViICpbMzJdYnl0ZSkgKFszMl1ieXRlLCBlcnJvcikgewoJdmFyIG91dCBbMzJdYnl0ZQoJcywgZXJyIDo9IGN1cnZlMjU1MTkuWDI1NTE5KHByaXZbOl0sIHB1Yls6XSkKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBvdXQsIGVycgoJfQoJY29weShvdXRbOl0sIHMpCglaZXJvaXplKHMpCglyZXR1cm4gb3V0LCBuaWwKfQoKLy8gWDI1NTE5S2V5cGFpciBnZW5lcmF0ZXMgYW4gZXBoZW1lcmFsIGtleXBhaXIuCmZ1bmMgWDI1NTE5S2V5cGFpcigpIChwcml2LCBwdWIgWzMyXWJ5dGUsIGVyciBlcnJvcikgewoJcCA6PSBSYW5kb21CeXRlcygzMikKCXEsIGVyciA6PSBjdXJ2ZTI1NTE5LlgyNTUxOShwLCBjdXJ2ZTI1NTE5LkJhc2Vwb2ludCkKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBwcml2LCBwdWIsIGVycgoJfQoJY29weShwcml2WzpdLCBwKQoJY29weShwdWJbOl0sIHEpCglaZXJvaXplKHApCglyZXR1cm4gcHJpdiwgcHViLCBuaWwKfQoKZnVuYyBhYnM2NCh2IGludDY0KSBpbnQ2NCB7CglpZiB2IDwgMCB7CgkJcmV0dXJuIC12Cgl9CglyZXR1cm4gdgp9Cg==
+// Package mistcore implements the Mist (雾) protocol v0.1 wire format.
+//
+// Source of truth: ~/workspace/mist-protocol/SPEC.md.
+// Two iron rules: (1) silent on probe (never return feature errors),
+// (2) a (key, nonce) pair is never reused.
+//
+// AEAD note (coordinator decision, binds all implementations):
+// the spec mandates XChaCha20-Poly1305 while defining a 12-byte nonce
+// (epoch|dir|counter). XChaCha20 needs 24-byte nonces, so every AEAD call
+// uses nonce24 = 0x00*12 || nonce12 with chacha20poly1305.NewX.
+package mistcore
+
+import (
+	"crypto/cipher"
+	"crypto/rand"
+	"encoding/binary"
+	"errors"
+	"time"
+
+	"golang.org/x/crypto/chacha20poly1305"
+	"golang.org/x/crypto/curve25519"
+	"golang.org/x/crypto/hkdf"
+	"crypto/sha256"
+)
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+const (
+	Version byte = 0x01
+
+	// Frame limits (SPEC 7.1, B.1).
+	MaxFrameLen = 16384 // LEN field max: bytes after the LEN field itself
+	MaxLineLen  = 16386 // max on-wire frame size
+
+	// Stream id space (SPEC 9.1).
+	SidControl = 0
+	SidMax     = 15
+
+	// Flags: high nibble of the SID/F byte (SPEC 7.1).
+	FlagSYN = 0x80
+	FlagFIN = 0x40
+	FlagRST = 0x20
+
+	// Nonce direction words (SPEC 7.2).
+	DirC2S uint32 = 0x00000000
+	DirS2C uint32 = 0xFFFFFFFF
+
+	// Control-stream message types (SPEC 9.6).
+	MsgConnectReq   = 0x01
+	MsgConnectResp  = 0x02
+	MsgUDPAssocReq  = 0x03
+	MsgWindowUpdate = 0x04
+	MsgPing         = 0x05
+	MsgPong         = 0x06
+	MsgResume       = 0x07
+	MsgResumeOK     = 0x08
+	MsgCloseSession = 0x09
+
+	// CONNECT address types (SPEC 9.2).
+	ATypIPv4   = 0x01
+	ATypDomain = 0x03
+	ATypIPv6   = 0x04
+
+	// AUTH wire sizes.
+	AuthWireLen   = 89  // 16 + 12 + (45 + 16)
+	AuthOKWireLen = 124 // 12 + (96 + 16)
+
+	aeadTagLen = 16
+)
+
+// Defaults (SPEC appendix B.2).
+const (
+	DefaultHeartbeatSec      = 30
+	DefaultShapingHeavyPkts  = 32
+	DefaultShapingPadMin     = 64
+	DefaultShapingPadMax     = 512
+	DefaultShapingJitterMs   = 15
+	DefaultShapingTailPad    = 0
+	DefaultMaxStreams        = 16
+	DefaultInitWindow        = 32 * 1024 * 1024
+	DefaultWindowUpdateEvery = 1024 * 1024
+	DefaultAuthWindowSec     = 60
+	DefaultNonceCacheTTL     = 120 // seconds
+)
+
+var (
+	ErrFrameTooBig   = errors.New("mist: frame too big")
+	ErrFrameTooSmall = errors.New("mist: frame too small")
+	ErrAEADFailed    = errors.New("mist: aead open failed")
+	ErrBadAuth       = errors.New("mist: bad auth")
+	ErrReplayed      = errors.New("mist: replayed nonce")
+	ErrStaleTS       = errors.New("mist: timestamp outside window")
+	ErrUnknownCID    = errors.New("mist: unknown client id")
+)
+
+// ---------------------------------------------------------------------------
+// AEAD (XChaCha20-Poly1305, 24-byte nonce = 12 zero bytes || 12-byte nonce)
+// ---------------------------------------------------------------------------
+
+func newAEAD(key *[32]byte) (cipher.AEAD, error) {
+	return chacha20poly1305.NewX(key[:])
+}
+
+// expandNonce converts the 12-byte (epoch|dir|counter) nonce to the 24-byte
+// nonce XChaCha20 requires.
+func expandNonce(nonce12 []byte) []byte {
+	n := make([]byte, 24)
+	copy(n[12:], nonce12)
+	return n
+}
+
+// BuildNonce assembles the 12-byte nonce: epoch(4,BE) | dir(4) | ctr(4,BE).
+func BuildNonce(epoch, dir, ctr uint32) []byte {
+	n := make([]byte, 12)
+	binary.BigEndian.PutUint32(n[0:4], epoch)
+	binary.BigEndian.PutUint32(n[4:8], dir)
+	binary.BigEndian.PutUint32(n[8:12], ctr)
+	return n
+}
+
+func seal(key *[32]byte, nonce12, plaintext, aad []byte) ([]byte, error) {
+	a, err := newAEAD(key)
+	if err != nil {
+		return nil, err
+	}
+	return a.Seal(nil, expandNonce(nonce12), plaintext, aad), nil
+}
+
+func open(key *[32]byte, nonce12, ciphertext, aad []byte) ([]byte, error) {
+	a, err := newAEAD(key)
+	if err != nil {
+		return nil, err
+	}
+	pt, err := a.Open(nil, expandNonce(nonce12), ciphertext, aad)
+	if err != nil {
+		return nil, ErrAEADFailed
+	}
+	return pt, nil
+}
+
+// RandomBytes returns n CSPRNG bytes.
+func RandomBytes(n int) []byte {
+	b := make([]byte, n)
+	_, _ = rand.Read(b)
+	return b
+}
+
+// Zeroize clears key material.
+func Zeroize(b []byte) {
+	for i := range b {
+		b[i] = 0
+	}
+}
+
+// ---------------------------------------------------------------------------
+// Frame codec (SPEC 7)
+// ---------------------------------------------------------------------------
+
+// EncodeFrame builds one on-wire frame.
+// Layout: [LEN(2,BE)][PLEN(1)][SID/F(1)][ENC_PAYLOAD][PADDING(PLEN)]
+// LEN = 2 + len(ENC_PAYLOAD) + padLen, i.e. everything after the LEN field.
+// aad is the 4-byte header. padLen bytes of random padding are appended.
+func EncodeFrame(sidFlags byte, plaintext []byte, padLen int, key *[32]byte, epoch, dir, ctr uint32) ([]byte, error) {
+	if padLen < 0 || padLen > 255 {
+		// PLEN is a single byte (SPEC 7.1); the appendix B range
+		// "64-1400" for shaping_pad_max is clamped to 255 here.
+		return nil, errors.New("mist: bad padLen")
+	}
+	encLen := len(plaintext) + aeadTagLen
+	total := 2 + encLen + padLen
+	if total > MaxFrameLen || total < 2 {
+		return nil, ErrFrameTooBig
+	}
+	header := make([]byte, 4)
+	binary.BigEndian.PutUint16(header[0:2], uint16(total))
+	header[2] = byte(padLen)
+	header[3] = sidFlags
+	enc, err := seal(key, BuildNonce(epoch, dir, ctr), plaintext, header)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]byte, 0, 4+len(enc)+padLen)
+	out = append(out, header...)
+	out = append(out, enc...)
+	if padLen > 0 {
+		out = append(out, RandomBytes(padLen)...)
+	}
+	return out, nil
+}
+
+// DecodedFrame is the result of DecodeFrame.
+type DecodedFrame struct {
+	SidFlags byte
+	Payload  []byte // decrypted
+}
+
+// DecodeFrame parses one full frame from buf (which must hold exactly one
+// frame: 2 + LEN bytes). ctr is the expected counter for this direction;
+// it is NOT incremented here.
+func DecodeFrame(buf []byte, key *[32]byte, epoch, dir, ctr uint32) (*DecodedFrame, error) {
+	if len(buf) < 2 {
+		return nil, ErrFrameTooSmall
+	}
+	ln := int(binary.BigEndian.Uint16(buf[0:2]))
+	if ln < 2 || ln > MaxFrameLen {
+		return nil, ErrFrameTooBig
+	}
+	if len(buf) < 2+ln {
+		return nil, ErrFrameTooSmall
+	}
+	header := buf[0:4]
+	padLen := int(buf[2])
+	sidFlags := buf[3]
+	encLen := ln - 2 - padLen
+	if encLen < aeadTagLen {
+		return nil, ErrFrameTooSmall
+	}
+	enc := buf[4 : 4+encLen]
+	pt, err := open(key, BuildNonce(epoch, dir, ctr), enc, header)
+	if err != nil {
+		return nil, err
+	}
+	return &DecodedFrame{SidFlags: sidFlags, Payload: pt}, nil
+}
+
+// FrameWireLen returns the total on-wire bytes (2 + LEN) for a frame whose
+// first two bytes are available. Returns 0 if fewer than 2 bytes.
+func FrameWireLen(first2 []byte) int {
+	if len(first2) < 2 {
+		return 0
+	}
+	return 2 + int(binary.BigEndian.Uint16(first2))
+}
+
+// ---------------------------------------------------------------------------
+// Handshake: AUTH / AUTH_OK (SPEC 6)
+// ---------------------------------------------------------------------------
+
+// BuildAUTH constructs the 89-byte AUTH message.
+// Returns wire bytes and the client's ephemeral public key.
+func BuildAUTH(cid [16]byte, kAuth *[32]byte, feat byte, now time.Time) (wire []byte, ephPub [32]byte, ephPriv [32]byte, err error) {
+	priv := RandomBytes(32)
+	pub, err := curve25519.X25519(priv, curve25519.Basepoint)
+	if err != nil {
+		return nil, ephPub, ephPriv, err
+	}
+	copy(ephPriv[:], priv)
+	copy(ephPub[:], pub)
+	Zeroize(priv)
+
+	plain := make([]byte, 45)
+	plain[0] = Version
+	binary.BigEndian.PutUint64(plain[1:9], uint64(now.Unix()))
+	copy(plain[9:41], ephPub[:])
+	plain[41] = feat
+	// plain[42:45] RSVD = 0
+
+	nonce := RandomBytes(12)
+	ct, err := seal(kAuth, nonce, plain, cid[:])
+	if err != nil {
+		return nil, ephPub, ephPriv, err
+	}
+	wire = make([]byte, 0, AuthWireLen)
+	wire = append(wire, cid[:]...)
+	wire = append(wire, nonce...)
+	wire = append(wire, ct...)
+	return wire, ephPub, ephPriv, nil
+}
+
+// AuthResult is a successfully validated AUTH.
+type AuthResult struct {
+	CID    [16]byte
+	EphPub [32]byte
+	TS     int64
+	Feat   byte
+}
+
+// ParseAUTH validates an 89-byte AUTH message (server side, SPEC 6.2 six steps).
+// lookup resolves CID -> K_auth. On ANY failure it returns an error and the
+// caller must switch the connection to guest mode (never signal the reason).
+func ParseAUTH(wire []byte, lookup func(cid [16]byte) (kAuth *[32]byte, ok bool), now time.Time, windowSec int64, cache *NonceCache) (*AuthResult, error) {
+	if len(wire) != AuthWireLen {
+		return nil, ErrBadAuth
+	}
+	var cid [16]byte
+	copy(cid[:], wire[0:16])
+	nonce := wire[16:28]
+	ct := wire[28:]
+
+	kAuth, ok := lookup(cid)
+	if !ok {
+		return nil, ErrUnknownCID
+	}
+	pt, err := open(kAuth, nonce, ct, cid[:])
+	if err != nil || len(pt) != 45 {
+		return nil, ErrBadAuth
+	}
+	if pt[0] != Version {
+		return nil, ErrBadAuth
+	}
+	ts := int64(binary.BigEndian.Uint64(pt[1:9]))
+	if abs64(now.Unix()-ts) > windowSec {
+		return nil, ErrStaleTS
+	}
+	var n12 [12]byte
+	copy(n12[:], nonce)
+	if cache.Seen(n12) {
+		return nil, ErrReplayed
+	}
+	res := &AuthResult{CID: cid, TS: ts, Feat: pt[41]}
+	copy(res.EphPub[:], pt[9:41])
+	return res, nil
+}
+
+// BuildAuthOK constructs the 124-byte AUTH_OK message (server side).
+func BuildAuthOK(kAuth *[32]byte, srvEphPub [32]byte, connID [16]byte, resumeTok [32]byte, maxStreams byte, hbSec uint16, now time.Time) ([]byte, error) {
+	plain := make([]byte, 96)
+	copy(plain[0:32], srvEphPub[:])
+	copy(plain[32:48], connID[:])
+	copy(plain[48:80], resumeTok[:])
+	binary.BigEndian.PutUint64(plain[80:88], uint64(now.Unix()))
+	plain[88] = maxStreams
+	binary.BigEndian.PutUint16(plain[89:91], hbSec)
+	// plain[91:96] RSVD = 0
+
+	nonce := RandomBytes(12)
+	ct, err := seal(kAuth, nonce, plain, []byte("mist-v0.1-auth-ok"))
+	if err != nil {
+		return nil, err
+	}
+	wire := make([]byte, 0, AuthOKWireLen)
+	wire = append(wire, nonce...)
+	wire = append(wire, ct...)
+	return wire, nil
+}
+
+// AuthOKResult is a validated AUTH_OK.
+type AuthOKResult struct {
+	SrvEphPub  [32]byte
+	ConnID     [16]byte
+	ResumeTok  [32]byte
+	SrvTS      int64
+	MaxStreams byte
+	HBSec      uint16
+}
+
+// ParseAuthOK validates a 124-byte AUTH_OK message (client side).
+func ParseAuthOK(wire []byte, kAuth *[32]byte) (*AuthOKResult, error) {
+	if len(wire) != AuthOKWireLen {
+		return nil, ErrBadAuth
+	}
+	nonce, ct := wire[0:12], wire[12:]
+	pt, err := open(kAuth, nonce, ct, []byte("mist-v0.1-auth-ok"))
+	if err != nil || len(pt) != 96 {
+		return nil, ErrBadAuth
+	}
+	res := &AuthOKResult{SrvTS: int64(binary.BigEndian.Uint64(pt[80:88])), MaxStreams: pt[88], HBSec: binary.BigEndian.Uint16(pt[89:91])}
+	copy(res.SrvEphPub[:], pt[0:32])
+	copy(res.ConnID[:], pt[32:48])
+	copy(res.ResumeTok[:], pt[48:80])
+	return res, nil
+}
+
+// DeriveSessionKeys implements SPEC 6.4.
+// shared = X25519(priv, peerPub); salt = clientEphPub | serverEphPub;
+// okm = HKDF-SHA256(salt, shared, "mist-v0.1/session", 64);
+// kC2S = okm[0:32], kS2C = okm[32:64].
+func DeriveSessionKeys(clientEphPub, serverEphPub, shared [32]byte) (kC2S, kS2C [32]byte) {
+	salt := make([]byte, 0, 64)
+	salt = append(salt, clientEphPub[:]...)
+	salt = append(salt, serverEphPub[:]...)
+	okm := make([]byte, 64)
+	kdf := hkdf.New(sha256.New, shared[:], salt, []byte("mist-v0.1/session"))
+	if _, err := kdf.Read(okm); err != nil {
+		panic("mist: hkdf read failed: " + err.Error())
+	}
+	copy(kC2S[:], okm[0:32])
+	copy(kS2C[:], okm[32:64])
+	Zeroize(okm)
+	return kC2S, kS2C
+}
+
+// X25519Shared computes X25519(priv, pub).
+func X25519Shared(priv, pub *[32]byte) ([32]byte, error) {
+	var out [32]byte
+	s, err := curve25519.X25519(priv[:], pub[:])
+	if err != nil {
+		return out, err
+	}
+	copy(out[:], s)
+	Zeroize(s)
+	return out, nil
+}
+
+// X25519Keypair generates an ephemeral keypair.
+func X25519Keypair() (priv, pub [32]byte, err error) {
+	p := RandomBytes(32)
+	q, err := curve25519.X25519(p, curve25519.Basepoint)
+	if err != nil {
+		return priv, pub, err
+	}
+	copy(priv[:], p)
+	copy(pub[:], q)
+	Zeroize(p)
+	return priv, pub, nil
+}
+
+func abs64(v int64) int64 {
+	if v < 0 {
+		return -v
+	}
+	return v
+}

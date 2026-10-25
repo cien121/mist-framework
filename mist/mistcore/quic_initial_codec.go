@@ -1,1 +1,108 @@
-Ly8gcXVpY19pbml0aWFsX2NvZGVjLmdvOiBRVUlDSW5pdGlhbENvZGVjIGltcGxlbWVudHMgSW5pdGlhbENvZGVjIHdpdGggcmVhbAovLyBRVUlDIEluaXRpYWwgcGFja2V0cyBwZXIgUkZDIDkwMDAvOTAwMSAoUGhhc2UgMCkuCi8vCi8vIFRoaXMgaXMgdGhlIHByb2R1Y3Rpb24tc2FmZSBjb2RlYzogSW5pdGlhbCBwYWNrZXRzIGFyZSBpbmRpc3Rpbmd1aXNoYWJsZQovLyBmcm9tIGdlbnVpbmUgUVVJQyBJbml0aWFsIHBhY2tldHMgdW5kZXIgRFBJICh2YWxpZCBsb25nIGhlYWRlciwgUkZDIDkwMDEKLy8gZW5jcnlwdGlvbiwgaGVhZGVyIHByb3RlY3Rpb24pLgpwYWNrYWdlIG1pc3Rjb3JlCgppbXBvcnQgKAoJImVycm9ycyIKKQoKLy8gUVVJQ0luaXRpYWxDb2RlYyBpcyB0aGUgUGhhc2UgMCBwcm9kdWN0aW9uIEluaXRpYWwgY29kZWMuCnR5cGUgUVVJQ0luaXRpYWxDb2RlYyBzdHJ1Y3R7fQoKLy8gU2VhbEluaXRpYWwgZW5jcnlwdHMgYW4gQVVUSCBwYXlsb2FkIGludG8gYSBRVUlDIEluaXRpYWwgcGFja2V0IChDMlMpLgpmdW5jIChjICpRVUlDSW5pdGlhbENvZGVjKSBTZWFsSW5pdGlhbChhdXRoUGF5bG9hZCBbXWJ5dGUsIGRjaWQgWzhdYnl0ZSwgc2NpZCBbOF1ieXRlLCBwYWNrZXROdW0gdWludDMyKSAoW11ieXRlLCBlcnJvcikgewoJY2xpZW50U2VjcmV0cywgXywgZXJyIDo9IGRlcml2ZVF1aWNJbml0aWFsU2VjcmV0cyhkY2lkWzpdKQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXJyCgl9CglmcmFtZSA6PSBlbmNvZGVDcnlwdG9GcmFtZSgwLCBhdXRoUGF5bG9hZCkKCXJldHVybiBzZWFsUXVpY0luaXRpYWwoZGNpZFs6XSwgc2NpZFs6XSwgbmlsLCBwYWNrZXROdW0sIGNsaWVudFNlY3JldHMsIGZyYW1lKQp9CgovLyBPcGVuSW5pdGlhbCBkZWNyeXB0cyBhIFFVSUMgSW5pdGlhbCBwYWNrZXQsIHJldHVybmluZyB0aGUgQVVUSCBwYXlsb2FkLgovLyBUaGUgRENJRCBpcyByZWFkIGZyb20gdGhlIHBhY2tldCBoZWFkZXIgKHVuZW5jcnlwdGVkKSBmb3Iga2V5IGRlcml2YXRpb24uCmZ1bmMgKGMgKlFVSUNJbml0aWFsQ29kZWMpIE9wZW5Jbml0aWFsKHBhY2tldCBbXWJ5dGUpIChhdXRoUGF5bG9hZCBbXWJ5dGUsIGRjaWQgWzhdYnl0ZSwgc2NpZCBbOF1ieXRlLCBwYWNrZXROdW0gdWludDMyLCBlcnIgZXJyb3IpIHsKCS8vIFBhcnNlIERDSUQgZnJvbSBoZWFkZXIgKGJlZm9yZSBkZWNyeXB0aW9uKSBmb3Iga2V5IGRlcml2YXRpb24uCglwYXJzZWREQ0lELCBlcnIgOj0gcGFyc2VRdWljSW5pdGlhbERDSUQocGFja2V0KQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZGNpZCwgc2NpZCwgMCwgZXJyCgl9CgljbGllbnRTZWNyZXRzLCBfLCBlcnIgOj0gZGVyaXZlUXVpY0luaXRpYWxTZWNyZXRzKHBhcnNlZERDSUQpCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gbmlsLCBkY2lkLCBzY2lkLCAwLCBlcnIKCX0KCWhkciwgcGxhaW50ZXh0LCBlcnIgOj0gb3BlblF1aWNJbml0aWFsKHBhY2tldCwgY2xpZW50U2VjcmV0cykKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIGRjaWQsIHNjaWQsIDAsIGVycgoJfQoJXywgZGF0YSwgXywgZXJyIDo9IGRlY29kZUNyeXB0b0ZyYW1lKHBsYWludGV4dCkKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIGRjaWQsIHNjaWQsIDAsIGVycgoJfQoJY29weShkY2lkWzpdLCBoZHIuZGNpZCkKCWNvcHkoc2NpZFs6XSwgaGRyLnNjaWQpCglyZXR1cm4gZGF0YSwgZGNpZCwgc2NpZCwgaGRyLnBhY2tldE51bSwgbmlsCn0KCi8vIFNlYWxJbml0aWFsUmVzcG9uc2UgZW5jcnlwdHMgYW4gQVVUSF9PSyBwYXlsb2FkIGludG8gYSBRVUlDIEluaXRpYWwgcGFja2V0IChTMkMpLgpmdW5jIChjICpRVUlDSW5pdGlhbENvZGVjKSBTZWFsSW5pdGlhbFJlc3BvbnNlKGF1dGhPS1BheWxvYWQgW11ieXRlLCBkY2lkIFs4XWJ5dGUsIHNjaWQgWzhdYnl0ZSwgcGFja2V0TnVtIHVpbnQzMikgKFtdYnl0ZSwgZXJyb3IpIHsKCV8sIHNlcnZlclNlY3JldHMsIGVyciA6PSBkZXJpdmVRdWljSW5pdGlhbFNlY3JldHMoZGNpZFs6XSkKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIGVycgoJfQoJZnJhbWUgOj0gZW5jb2RlQ3J5cHRvRnJhbWUoMCwgYXV0aE9LUGF5bG9hZCkKCXJldHVybiBzZWFsUXVpY0luaXRpYWwoZGNpZFs6XSwgc2NpZFs6XSwgbmlsLCBwYWNrZXROdW0sIHNlcnZlclNlY3JldHMsIGZyYW1lKQp9CgovLyBPcGVuSW5pdGlhbFJlc3BvbnNlIGRlY3J5cHRzIGEgUVVJQyBJbml0aWFsIHBhY2tldCwgcmV0dXJuaW5nIHRoZSBBVVRIX09LIHBheWxvYWQuCmZ1bmMgKGMgKlFVSUNJbml0aWFsQ29kZWMpIE9wZW5Jbml0aWFsUmVzcG9uc2UocGFja2V0IFtdYnl0ZSkgKGF1dGhPS1BheWxvYWQgW11ieXRlLCBkY2lkIFs4XWJ5dGUsIHNjaWQgWzhdYnl0ZSwgcGFja2V0TnVtIHVpbnQzMiwgZXJyIGVycm9yKSB7CglwYXJzZWREQ0lELCBlcnIgOj0gcGFyc2VRdWljSW5pdGlhbERDSUQocGFja2V0KQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZGNpZCwgc2NpZCwgMCwgZXJyCgl9CglfLCBzZXJ2ZXJTZWNyZXRzLCBlcnIgOj0gZGVyaXZlUXVpY0luaXRpYWxTZWNyZXRzKHBhcnNlZERDSUQpCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gbmlsLCBkY2lkLCBzY2lkLCAwLCBlcnIKCX0KCWhkciwgcGxhaW50ZXh0LCBlcnIgOj0gb3BlblF1aWNJbml0aWFsKHBhY2tldCwgc2VydmVyU2VjcmV0cykKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIGRjaWQsIHNjaWQsIDAsIGVycgoJfQoJXywgZGF0YSwgXywgZXJyIDo9IGRlY29kZUNyeXB0b0ZyYW1lKHBsYWludGV4dCkKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIGRjaWQsIHNjaWQsIDAsIGVycgoJfQoJY29weShkY2lkWzpdLCBoZHIuZGNpZCkKCWNvcHkoc2NpZFs6XSwgaGRyLnNjaWQpCglyZXR1cm4gZGF0YSwgZGNpZCwgc2NpZCwgaGRyLnBhY2tldE51bSwgbmlsCn0KCi8vIHBhcnNlUXVpY0luaXRpYWxEQ0lEIGV4dHJhY3RzIHRoZSBEQ0lEIGZyb20gYSBRVUlDIEluaXRpYWwgcGFja2V0IGhlYWRlci4KLy8gVGhlIGhlYWRlciBmaWVsZHMgYmVmb3JlIHRoZSBwYWNrZXQgbnVtYmVyIGFyZSBub3QgaGVhZGVyLXByb3RlY3RlZAovLyAob25seSB0aGUgZmlyc3QgYnl0ZSBsb3cgYml0cyBhbmQgcGFja2V0IG51bWJlciBhcmUgbWFza2VkKS4KZnVuYyBwYXJzZVF1aWNJbml0aWFsRENJRChwYWNrZXQgW11ieXRlKSAoW11ieXRlLCBlcnJvcikgewoJaWYgbGVuKHBhY2tldCkgPCA2IHsKCQlyZXR1cm4gbmlsLCBlcnJvcnMuTmV3KCJxdWljOiBwYWNrZXQgdG9vIHNob3J0IikKCX0KCXBvcyA6PSAxICsgNCAvLyBmaXJzdCBieXRlICsgdmVyc2lvbgoJaWYgbGVuKHBhY2tldCkgPCBwb3MrMSB7CgkJcmV0dXJuIG5pbCwgZXJyb3JzLk5ldygicXVpYzogdHJ1bmNhdGVkIERDSUQgbGVuIikKCX0KCWRjaWRMZW4gOj0gaW50KHBhY2tldFtwb3NdKQoJcG9zKysKCWlmIGxlbihwYWNrZXQpIDwgcG9zK2RjaWRMZW4gewoJCXJldHVybiBuaWwsIGVycm9ycy5OZXcoInF1aWM6IHRydW5jYXRlZCBEQ0lEIikKCX0KCXJldHVybiBwYWNrZXRbcG9zIDogcG9zK2RjaWRMZW5dLCBuaWwKfQoKLy8gUHJvZHVjdGlvblNhZmUgbWFya3MgUVVJQ0luaXRpYWxDb2RlYyBhcyBwcm9kdWN0aW9uLXNhZmUuCi8vIFJlYWwgUVVJQyBJbml0aWFsIHBhY2tldHMgYXJlIGluZGlzdGluZ3Vpc2hhYmxlIGZyb20gZ2VudWluZSBRVUlDIHVuZGVyIERQSS4KZnVuYyAoYyAqUVVJQ0luaXRpYWxDb2RlYykgUHJvZHVjdGlvblNhZmUoKSBib29sIHsgcmV0dXJuIHRydWUgfQoKLy8gRW5zdXJlIFFVSUNJbml0aWFsQ29kZWMgaW1wbGVtZW50cyBJbml0aWFsQ29kZWMuCnZhciBfIEluaXRpYWxDb2RlYyA9ICgqUVVJQ0luaXRpYWxDb2RlYykobmlsKQo=
+// quic_initial_codec.go: QUICInitialCodec implements InitialCodec with real
+// QUIC Initial packets per RFC 9000/9001 (Phase 0).
+//
+// This is the production-safe codec: Initial packets are indistinguishable
+// from genuine QUIC Initial packets under DPI (valid long header, RFC 9001
+// encryption, header protection).
+package mistcore
+
+import (
+	"errors"
+)
+
+// QUICInitialCodec is the Phase 0 production Initial codec.
+type QUICInitialCodec struct{}
+
+// SealInitial encrypts an AUTH payload into a QUIC Initial packet (C2S).
+func (c *QUICInitialCodec) SealInitial(authPayload []byte, dcid [8]byte, scid [8]byte, packetNum uint32) ([]byte, error) {
+	clientSecrets, _, err := deriveQuicInitialSecrets(dcid[:])
+	if err != nil {
+		return nil, err
+	}
+	frame := encodeCryptoFrame(0, authPayload)
+	return sealQuicInitial(dcid[:], scid[:], nil, packetNum, clientSecrets, frame)
+}
+
+// OpenInitial decrypts a QUIC Initial packet, returning the AUTH payload.
+// The DCID is read from the packet header (unencrypted) for key derivation.
+func (c *QUICInitialCodec) OpenInitial(packet []byte) (authPayload []byte, dcid [8]byte, scid [8]byte, packetNum uint32, err error) {
+	// Parse DCID from header (before decryption) for key derivation.
+	parsedDCID, err := parseQuicInitialDCID(packet)
+	if err != nil {
+		return nil, dcid, scid, 0, err
+	}
+	clientSecrets, _, err := deriveQuicInitialSecrets(parsedDCID)
+	if err != nil {
+		return nil, dcid, scid, 0, err
+	}
+	hdr, plaintext, err := openQuicInitial(packet, clientSecrets)
+	if err != nil {
+		return nil, dcid, scid, 0, err
+	}
+	_, data, _, err := decodeCryptoFrame(plaintext)
+	if err != nil {
+		return nil, dcid, scid, 0, err
+	}
+	copy(dcid[:], hdr.dcid)
+	copy(scid[:], hdr.scid)
+	return data, dcid, scid, hdr.packetNum, nil
+}
+
+// SealInitialResponse encrypts an AUTH_OK payload into a QUIC Initial packet (S2C).
+func (c *QUICInitialCodec) SealInitialResponse(authOKPayload []byte, dcid [8]byte, scid [8]byte, packetNum uint32) ([]byte, error) {
+	_, serverSecrets, err := deriveQuicInitialSecrets(dcid[:])
+	if err != nil {
+		return nil, err
+	}
+	frame := encodeCryptoFrame(0, authOKPayload)
+	return sealQuicInitial(dcid[:], scid[:], nil, packetNum, serverSecrets, frame)
+}
+
+// OpenInitialResponse decrypts a QUIC Initial packet, returning the AUTH_OK payload.
+func (c *QUICInitialCodec) OpenInitialResponse(packet []byte) (authOKPayload []byte, dcid [8]byte, scid [8]byte, packetNum uint32, err error) {
+	parsedDCID, err := parseQuicInitialDCID(packet)
+	if err != nil {
+		return nil, dcid, scid, 0, err
+	}
+	_, serverSecrets, err := deriveQuicInitialSecrets(parsedDCID)
+	if err != nil {
+		return nil, dcid, scid, 0, err
+	}
+	hdr, plaintext, err := openQuicInitial(packet, serverSecrets)
+	if err != nil {
+		return nil, dcid, scid, 0, err
+	}
+	_, data, _, err := decodeCryptoFrame(plaintext)
+	if err != nil {
+		return nil, dcid, scid, 0, err
+	}
+	copy(dcid[:], hdr.dcid)
+	copy(scid[:], hdr.scid)
+	return data, dcid, scid, hdr.packetNum, nil
+}
+
+// parseQuicInitialDCID extracts the DCID from a QUIC Initial packet header.
+// The header fields before the packet number are not header-protected
+// (only the first byte low bits and packet number are masked).
+func parseQuicInitialDCID(packet []byte) ([]byte, error) {
+	if len(packet) < 6 {
+		return nil, errors.New("quic: packet too short")
+	}
+	pos := 1 + 4 // first byte + version
+	if len(packet) < pos+1 {
+		return nil, errors.New("quic: truncated DCID len")
+	}
+	dcidLen := int(packet[pos])
+	pos++
+	if len(packet) < pos+dcidLen {
+		return nil, errors.New("quic: truncated DCID")
+	}
+	return packet[pos : pos+dcidLen], nil
+}
+
+// ProductionSafe marks QUICInitialCodec as production-safe.
+// Real QUIC Initial packets are indistinguishable from genuine QUIC under DPI.
+func (c *QUICInitialCodec) ProductionSafe() bool { return true }
+
+// Ensure QUICInitialCodec implements InitialCodec.
+var _ InitialCodec = (*QUICInitialCodec)(nil)
