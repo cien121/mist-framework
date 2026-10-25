@@ -47,7 +47,7 @@ jobs:
           echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/29.0.14206865" >> $GITHUB_ENV
 
       - name: Build AAR (gomobile bind)
-        working-directory: core
+        working-directory: mobile
         run: |
           go get -tool golang.org/x/mobile/cmd/gobind
           go mod tidy
@@ -55,10 +55,10 @@ jobs:
           gomobile bind -v -target=android/arm64 -androidapi 24 -trimpath \
             -ldflags='-s -w -buildid= -checklinkname=0' \
             -o mistframework.aar \
-            github.com/cien121/mist-framework/core
+            github.com/cien121/mist-framework/mobile
 
       - name: Upload AAR artifact
         uses: actions/upload-artifact@v7
         with:
           name: mistframework-aar
-          path: core/mistframework.aar
+          path: mobile/mistframework.aar
