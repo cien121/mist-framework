@@ -1,1 +1,27 @@
-cGFja2FnZSBiYnIKCmltcG9ydCAoCgkibWF0aCIKCSJ0aW1lIgoKCSJnaXRodWIuY29tL2FwZXJuZXQvcXVpYy1nby9jb25nZXN0aW9uIgopCgpjb25zdCAoCglpbmZCYW5kd2lkdGggPSBCYW5kd2lkdGgobWF0aC5NYXhVaW50NjQpCikKCi8vIEJhbmR3aWR0aCBvZiBhIGNvbm5lY3Rpb24KdHlwZSBCYW5kd2lkdGggdWludDY0Cgpjb25zdCAoCgkvLyBCaXRzUGVyU2Vjb25kIGlzIDEgYml0IHBlciBzZWNvbmQKCUJpdHNQZXJTZWNvbmQgQmFuZHdpZHRoID0gMQoJLy8gQnl0ZXNQZXJTZWNvbmQgaXMgMSBieXRlIHBlciBzZWNvbmQKCUJ5dGVzUGVyU2Vjb25kID0gOCAqIEJpdHNQZXJTZWNvbmQKKQoKLy8gQmFuZHdpZHRoRnJvbURlbHRhIGNhbGN1bGF0ZXMgdGhlIGJhbmR3aWR0aCBmcm9tIGEgbnVtYmVyIG9mIGJ5dGVzIGFuZCBhIHRpbWUgZGVsdGEKZnVuYyBCYW5kd2lkdGhGcm9tRGVsdGEoYnl0ZXMgY29uZ2VzdGlvbi5CeXRlQ291bnQsIGRlbHRhIHRpbWUuRHVyYXRpb24pIEJhbmR3aWR0aCB7CglyZXR1cm4gQmFuZHdpZHRoKGJ5dGVzKSAqIEJhbmR3aWR0aCh0aW1lLlNlY29uZCkgLyBCYW5kd2lkdGgoZGVsdGEpICogQnl0ZXNQZXJTZWNvbmQKfQo=
+package bbr
+
+import (
+	"math"
+	"time"
+
+	"github.com/apernet/quic-go/congestion"
+)
+
+const (
+	infBandwidth = Bandwidth(math.MaxUint64)
+)
+
+// Bandwidth of a connection
+type Bandwidth uint64
+
+const (
+	// BitsPerSecond is 1 bit per second
+	BitsPerSecond Bandwidth = 1
+	// BytesPerSecond is 1 byte per second
+	BytesPerSecond = 8 * BitsPerSecond
+)
+
+// BandwidthFromDelta calculates the bandwidth from a number of bytes and a time delta
+func BandwidthFromDelta(bytes congestion.ByteCount, delta time.Duration) Bandwidth {
+	return Bandwidth(bytes) * Bandwidth(time.Second) / Bandwidth(delta) * BytesPerSecond
+}

@@ -1,1 +1,80 @@
-cGFja2FnZSBjb21tb24KCmltcG9ydCAoCgkidGltZSIKCgkiZ2l0aHViLmNvbS9hcGVybmV0L3F1aWMtZ28vY29uZ2VzdGlvbiIKCSJnaXRodWIuY29tL2FwZXJuZXQvcXVpYy1nby9tb25vdGltZSIKKQoKY29uc3QgKAoJbWF4QnVyc3RQYWNrZXRzICAgICAgICAgICAgICAgPSAxMAoJbWF4QnVyc3RQYWNpbmdEZWxheU11bHRpcGxpZXIgPSA0CikKCi8vIFBhY2VyIGltcGxlbWVudHMgYSB0b2tlbiBidWNrZXQgcGFjaW5nIGFsZ29yaXRobS4KdHlwZSBQYWNlciBzdHJ1Y3QgewoJYnVkZ2V0QXRMYXN0U2VudCBjb25nZXN0aW9uLkJ5dGVDb3VudAoJbWF4RGF0YWdyYW1TaXplICBjb25nZXN0aW9uLkJ5dGVDb3VudAoJbGFzdFNlbnRUaW1lICAgICBtb25vdGltZS5UaW1lCglnZXRCYW5kd2lkdGggICAgIGZ1bmMoKSBjb25nZXN0aW9uLkJ5dGVDb3VudCAvLyBpbiBieXRlcy9zCn0KCmZ1bmMgTmV3UGFjZXIoZ2V0QmFuZHdpZHRoIGZ1bmMoKSBjb25nZXN0aW9uLkJ5dGVDb3VudCkgKlBhY2VyIHsKCXAgOj0gJlBhY2VyewoJCWJ1ZGdldEF0TGFzdFNlbnQ6IG1heEJ1cnN0UGFja2V0cyAqIGNvbmdlc3Rpb24uSW5pdGlhbFBhY2tldFNpemUsCgkJbWF4RGF0YWdyYW1TaXplOiAgY29uZ2VzdGlvbi5Jbml0aWFsUGFja2V0U2l6ZSwKCQlnZXRCYW5kd2lkdGg6ICAgICBnZXRCYW5kd2lkdGgsCgl9CglyZXR1cm4gcAp9CgpmdW5jIChwICpQYWNlcikgU2VudFBhY2tldChzZW5kVGltZSBtb25vdGltZS5UaW1lLCBzaXplIGNvbmdlc3Rpb24uQnl0ZUNvdW50KSB7CglidWRnZXQgOj0gcC5CdWRnZXQoc2VuZFRpbWUpCglpZiBzaXplID4gYnVkZ2V0IHsKCQlwLmJ1ZGdldEF0TGFzdFNlbnQgPSAwCgl9IGVsc2UgewoJCXAuYnVkZ2V0QXRMYXN0U2VudCA9IGJ1ZGdldCAtIHNpemUKCX0KCXAubGFzdFNlbnRUaW1lID0gc2VuZFRpbWUKfQoKZnVuYyAocCAqUGFjZXIpIEJ1ZGdldChub3cgbW9ub3RpbWUuVGltZSkgY29uZ2VzdGlvbi5CeXRlQ291bnQgewoJaWYgcC5sYXN0U2VudFRpbWUuSXNaZXJvKCkgewoJCXJldHVybiBwLm1heEJ1cnN0U2l6ZSgpCgl9CglidWRnZXQgOj0gcC5idWRnZXRBdExhc3RTZW50ICsgKHAuZ2V0QmFuZHdpZHRoKCkqY29uZ2VzdGlvbi5CeXRlQ291bnQobm93LlN1YihwLmxhc3RTZW50VGltZSkuTmFub3NlY29uZHMoKSkpLzFlOQoJaWYgYnVkZ2V0IDwgMCB7IC8vIHByb3RlY3QgYWdhaW5zdCBvdmVyZmxvd3MKCQlidWRnZXQgPSBjb25nZXN0aW9uLkJ5dGVDb3VudCgxPDw2MiAtIDEpCgl9CglyZXR1cm4gbWluKHAubWF4QnVyc3RTaXplKCksIGJ1ZGdldCkKfQoKZnVuYyAocCAqUGFjZXIpIG1heEJ1cnN0U2l6ZSgpIGNvbmdlc3Rpb24uQnl0ZUNvdW50IHsKCXJldHVybiBtYXgoCgkJY29uZ2VzdGlvbi5CeXRlQ291bnQoKG1heEJ1cnN0UGFjaW5nRGVsYXlNdWx0aXBsaWVyKmNvbmdlc3Rpb24uTWluUGFjaW5nRGVsYXkpLk5hbm9zZWNvbmRzKCkpKnAuZ2V0QmFuZHdpZHRoKCkvMWU5LAoJCW1heEJ1cnN0UGFja2V0cypwLm1heERhdGFncmFtU2l6ZSwKCSkKfQoKLy8gVGltZVVudGlsU2VuZCByZXR1cm5zIHdoZW4gdGhlIG5leHQgcGFja2V0IHNob3VsZCBiZSBzZW50LgovLyBJdCByZXR1cm5zIHRoZSB6ZXJvIHZhbHVlIGlmIGEgcGFja2V0IGNhbiBiZSBzZW50IGltbWVkaWF0ZWx5LgpmdW5jIChwICpQYWNlcikgVGltZVVudGlsU2VuZCgpIG1vbm90aW1lLlRpbWUgewoJaWYgcC5idWRnZXRBdExhc3RTZW50ID49IHAubWF4RGF0YWdyYW1TaXplIHsKCQlyZXR1cm4gMAoJfQoJZGlmZiA6PSAxZTkgKiB1aW50NjQocC5tYXhEYXRhZ3JhbVNpemUtcC5idWRnZXRBdExhc3RTZW50KQoJYncgOj0gdWludDY0KHAuZ2V0QmFuZHdpZHRoKCkpCgkvLyBXZSBtaWdodCBuZWVkIHRvIHJvdW5kIHVwIHRoaXMgdmFsdWUuCgkvLyBPdGhlcndpc2UsIHdlIG1pZ2h0IGhhdmUgYSBidWRnZXQgKHNsaWdodGx5KSBzbWFsbGVyIHRoYW4gdGhlIGRhdGFncmFtIHNpemUgd2hlbiB0aGUgdGltZXIgZXhwaXJlcy4KCWQgOj0gZGlmZiAvIGJ3CgkvLyB0aGlzIGlzIGVmZmVjdGl2ZWx5IGEgbWF0aC5DZWlsLCBidXQgdXNpbmcgb25seSBpbnRlZ2VyIG1hdGgKCWlmIGRpZmYlYncgPiAwIHsKCQlkKysKCX0KCXJldHVybiBwLmxhc3RTZW50VGltZS5BZGQobWF4KGNvbmdlc3Rpb24uTWluUGFjaW5nRGVsYXksIHRpbWUuRHVyYXRpb24oZCkqdGltZS5OYW5vc2Vjb25kKSkKfQoKZnVuYyAocCAqUGFjZXIpIFNldE1heERhdGFncmFtU2l6ZShzIGNvbmdlc3Rpb24uQnl0ZUNvdW50KSB7CglwLm1heERhdGFncmFtU2l6ZSA9IHMKfQo=
+package common
+
+import (
+	"time"
+
+	"github.com/apernet/quic-go/congestion"
+	"github.com/apernet/quic-go/monotime"
+)
+
+const (
+	maxBurstPackets               = 10
+	maxBurstPacingDelayMultiplier = 4
+)
+
+// Pacer implements a token bucket pacing algorithm.
+type Pacer struct {
+	budgetAtLastSent congestion.ByteCount
+	maxDatagramSize  congestion.ByteCount
+	lastSentTime     monotime.Time
+	getBandwidth     func() congestion.ByteCount // in bytes/s
+}
+
+func NewPacer(getBandwidth func() congestion.ByteCount) *Pacer {
+	p := &Pacer{
+		budgetAtLastSent: maxBurstPackets * congestion.InitialPacketSize,
+		maxDatagramSize:  congestion.InitialPacketSize,
+		getBandwidth:     getBandwidth,
+	}
+	return p
+}
+
+func (p *Pacer) SentPacket(sendTime monotime.Time, size congestion.ByteCount) {
+	budget := p.Budget(sendTime)
+	if size > budget {
+		p.budgetAtLastSent = 0
+	} else {
+		p.budgetAtLastSent = budget - size
+	}
+	p.lastSentTime = sendTime
+}
+
+func (p *Pacer) Budget(now monotime.Time) congestion.ByteCount {
+	if p.lastSentTime.IsZero() {
+		return p.maxBurstSize()
+	}
+	budget := p.budgetAtLastSent + (p.getBandwidth()*congestion.ByteCount(now.Sub(p.lastSentTime).Nanoseconds()))/1e9
+	if budget < 0 { // protect against overflows
+		budget = congestion.ByteCount(1<<62 - 1)
+	}
+	return min(p.maxBurstSize(), budget)
+}
+
+func (p *Pacer) maxBurstSize() congestion.ByteCount {
+	return max(
+		congestion.ByteCount((maxBurstPacingDelayMultiplier*congestion.MinPacingDelay).Nanoseconds())*p.getBandwidth()/1e9,
+		maxBurstPackets*p.maxDatagramSize,
+	)
+}
+
+// TimeUntilSend returns when the next packet should be sent.
+// It returns the zero value if a packet can be sent immediately.
+func (p *Pacer) TimeUntilSend() monotime.Time {
+	if p.budgetAtLastSent >= p.maxDatagramSize {
+		return 0
+	}
+	diff := 1e9 * uint64(p.maxDatagramSize-p.budgetAtLastSent)
+	bw := uint64(p.getBandwidth())
+	// We might need to round up this value.
+	// Otherwise, we might have a budget (slightly) smaller than the datagram size when the timer expires.
+	d := diff / bw
+	// this is effectively a math.Ceil, but using only integer math
+	if diff%bw > 0 {
+		d++
+	}
+	return p.lastSentTime.Add(max(congestion.MinPacingDelay, time.Duration(d)*time.Nanosecond))
+}
+
+func (p *Pacer) SetMaxDatagramSize(s congestion.ByteCount) {
+	p.maxDatagramSize = s
+}
