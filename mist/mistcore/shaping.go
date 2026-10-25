@@ -1,1 +1,122 @@
-cGFja2FnZSBtaXN0Y29yZQoKaW1wb3J0ICgKCSJjcnlwdG8vcmFuZCIKCSJtYXRoL2JpZyIKCSJzeW5jIgoJInRpbWUiCikKCi8vIFNoYXBlciBpbXBsZW1lbnRzIFNQRUMgOCAodHJhZmZpYyBzaGFwaW5nLCBoZWF2eS1maXJzdCB0aGVuIGxpZ2h0KS4KLy8gT25lIFNoYXBlciBpbnN0YW5jZSBpcyB1c2VkIHBlciBkaXJlY3Rpb24gb2YgYSBzZXNzaW9uLgp0eXBlIFNoYXBlciBzdHJ1Y3QgewoJbXUgICAgICAgICAgICBzeW5jLk11dGV4CgloZWF2eVRvdGFsICAgIGludCAvLyBOIGZyb20gY29uZmlnCgloZWF2eURvbmUgICAgIGludAoJcGFkTWluLCBwYWRNYXggaW50CglqaXR0ZXJNYXhNcyAgIGludAoJdGFpbFBhZCAgICAgICBpbnQKfQoKLy8gTmV3U2hhcGVyIGNyZWF0ZXMgYSBzaGFwZXIuIGhlYXZ5VG90YWw9MCBkaXNhYmxlcyBzaGFwaW5nIGVudGlyZWx5LgovLwovLyBwYWRNYXggaXMgY2xhbXBlZCB0byAyNTU6IFBMRU4gaXMgYSBzaW5nbGUgYnl0ZSBvbiB0aGUgd2lyZSAoU1BFQyA3LjEpLAovLyBzbyB0aGUgYXBwZW5kaXggQiByYW5nZSAiNjQtMTQwMCIgZm9yIHNoYXBpbmdfcGFkX21heCBjYW5ub3QgYmUgaG9ub3JlZAovLyBiZXlvbmQgMjU1LiBDb29yZGluYXRvciBkZWNpc2lvbjogd2lyZSBmb3JtYXQgd2lucy4KZnVuYyBOZXdTaGFwZXIoaGVhdnlUb3RhbCwgcGFkTWluLCBwYWRNYXgsIGppdHRlck1heE1zLCB0YWlsUGFkIGludCkgKlNoYXBlciB7CglpZiBwYWRNYXggPiAyNTUgewoJCXBhZE1heCA9IDI1NQoJfQoJaWYgcGFkTWluID4gcGFkTWF4IHsKCQlwYWRNaW4gPSBwYWRNYXgKCX0KCXJldHVybiAmU2hhcGVyewoJCWhlYXZ5VG90YWw6ICBoZWF2eVRvdGFsLAoJCXBhZE1pbjogICAgICBwYWRNaW4sCgkJcGFkTWF4OiAgICAgIHBhZE1heCwKCQlqaXR0ZXJNYXhNczogaml0dGVyTWF4TXMsCgkJdGFpbFBhZDogICAgIHRhaWxQYWQsCgl9Cn0KCmZ1bmMgcmFuZEludChuIGludCkgaW50IHsKCWlmIG4gPD0gMCB7CgkJcmV0dXJuIDAKCX0KCXYsIGVyciA6PSByYW5kLkludChyYW5kLlJlYWRlciwgYmlnLk5ld0ludChpbnQ2NChuKSkpCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gMAoJfQoJcmV0dXJuIGludCh2LkludDY0KCkpCn0KCi8vIFBhZExlbiByZXR1cm5zIHRoZSByYW5kb20gcGFkZGluZyBsZW5ndGggZm9yIHRoZSBuZXh0IGZyYW1lLgpmdW5jIChzICpTaGFwZXIpIFBhZExlbigpIGludCB7CglzLm11LkxvY2soKQoJZGVmZXIgcy5tdS5VbmxvY2soKQoJaWYgcy5oZWF2eURvbmUgPCBzLmhlYXZ5VG90YWwgewoJCXNwYW4gOj0gcy5wYWRNYXggLSBzLnBhZE1pbgoJCWlmIHNwYW4gPCAwIHsKCQkJc3BhbiA9IDAKCQl9CgkJcmV0dXJuIHMucGFkTWluICsgcmFuZEludChzcGFuKzEpCgl9CglpZiBzLnRhaWxQYWQgPiAwIHsKCQlyZXR1cm4gcmFuZEludChzLnRhaWxQYWQgKyAxKQoJfQoJcmV0dXJuIDAKfQoKLy8gRGVsYXkgc2xlZXBzIGEgcmFuZG9tIGppdHRlciBiZWZvcmUgc2VuZGluZyAoaGVhdnkgcGhhc2Ugb25seSkuCmZ1bmMgKHMgKlNoYXBlcikgRGVsYXkoKSB7CglzLm11LkxvY2soKQoJaGVhdnkgOj0gcy5oZWF2eURvbmUgPCBzLmhlYXZ5VG90YWwKCWptYXggOj0gcy5qaXR0ZXJNYXhNcwoJcy5tdS5VbmxvY2soKQoJaWYgaGVhdnkgJiYgam1heCA+IDAgewoJCXRpbWUuU2xlZXAodGltZS5EdXJhdGlvbihyYW5kSW50KGptYXgrMSkpICogdGltZS5NaWxsaXNlY29uZCkKCX0KfQoKLy8gRG9uZSByZWNvcmRzIG9uZSBzZW50IGZyYW1lLgpmdW5jIChzICpTaGFwZXIpIERvbmUoKSB7CglzLm11LkxvY2soKQoJcy5oZWF2eURvbmUrKwoJcy5tdS5VbmxvY2soKQp9CgovLyBJbkhlYXZ5IHJlcG9ydHMgd2hldGhlciB0aGUgc2hhcGVyIGlzIHN0aWxsIGluIHRoZSBoZWF2eSBwaGFzZS4KZnVuYyAocyAqU2hhcGVyKSBJbkhlYXZ5KCkgYm9vbCB7CglzLm11LkxvY2soKQoJZGVmZXIgcy5tdS5VbmxvY2soKQoJcmV0dXJuIHMuaGVhdnlEb25lIDwgcy5oZWF2eVRvdGFsCn0KCi8vIEZyYWdtZW50IHNwbGl0cyBiIGludG8gMS0zIGlycmVndWxhciBjaHVua3MgZHVyaW5nIHRoZSBoZWF2eSBwaGFzZQovLyAoaXJyZWd1bGFyIHdyaXRlIGZyYWdtZW50YXRpb24sIFNQRUMgOC4yKS4gT3V0c2lkZSB0aGUgaGVhdnkgcGhhc2UgaXQKLy8gcmV0dXJucyBiIGFzIGEgc2luZ2xlIGNodW5rLgpmdW5jIChzICpTaGFwZXIpIEZyYWdtZW50KGIgW11ieXRlKSBbXVtdYnl0ZSB7CglpZiAhcy5JbkhlYXZ5KCkgfHwgbGVuKGIpIDwgNjQgewoJCXJldHVybiBbXVtdYnl0ZXtifQoJfQoJbiA6PSAxICsgcmFuZEludCgzKSAvLyAxLi4zIGNodW5rcwoJaWYgbiA9PSAxIHsKCQlyZXR1cm4gW11bXWJ5dGV7Yn0KCX0KCW91dCA6PSBtYWtlKFtdW11ieXRlLCAwLCBuKQoJcmVzdCA6PSBiCglmb3IgaSA6PSAwOyBpIDwgbi0xICYmIGxlbihyZXN0KSA+IDA7IGkrKyB7CgkJY3V0IDo9IDEgKyByYW5kSW50KGxlbihyZXN0KS0xKQoJCW91dCA9IGFwcGVuZChvdXQsIHJlc3RbOmN1dF0pCgkJcmVzdCA9IHJlc3RbY3V0Ol0KCX0KCW91dCA9IGFwcGVuZChvdXQsIHJlc3QpCglyZXR1cm4gb3V0Cn0KCi8vIEhlYXZ5RG9uZUNvdW50IGlzIGZvciB0ZXN0cy9kaWFnbm9zdGljcy4KZnVuYyAocyAqU2hhcGVyKSBIZWF2eURvbmVDb3VudCgpIGludCB7CglzLm11LkxvY2soKQoJZGVmZXIgcy5tdS5VbmxvY2soKQoJcmV0dXJuIHMuaGVhdnlEb25lCn0K
+package mistcore
+
+import (
+	"crypto/rand"
+	"math/big"
+	"sync"
+	"time"
+)
+
+// Shaper implements SPEC 8 (traffic shaping, heavy-first then light).
+// One Shaper instance is used per direction of a session.
+type Shaper struct {
+	mu            sync.Mutex
+	heavyTotal    int // N from config
+	heavyDone     int
+	padMin, padMax int
+	jitterMaxMs   int
+	tailPad       int
+}
+
+// NewShaper creates a shaper. heavyTotal=0 disables shaping entirely.
+//
+// padMax is clamped to 255: PLEN is a single byte on the wire (SPEC 7.1),
+// so the appendix B range "64-1400" for shaping_pad_max cannot be honored
+// beyond 255. Coordinator decision: wire format wins.
+func NewShaper(heavyTotal, padMin, padMax, jitterMaxMs, tailPad int) *Shaper {
+	if padMax > 255 {
+		padMax = 255
+	}
+	if padMin > padMax {
+		padMin = padMax
+	}
+	return &Shaper{
+		heavyTotal:  heavyTotal,
+		padMin:      padMin,
+		padMax:      padMax,
+		jitterMaxMs: jitterMaxMs,
+		tailPad:     tailPad,
+	}
+}
+
+func randInt(n int) int {
+	if n <= 0 {
+		return 0
+	}
+	v, err := rand.Int(rand.Reader, big.NewInt(int64(n)))
+	if err != nil {
+		return 0
+	}
+	return int(v.Int64())
+}
+
+// PadLen returns the random padding length for the next frame.
+func (s *Shaper) PadLen() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.heavyDone < s.heavyTotal {
+		span := s.padMax - s.padMin
+		if span < 0 {
+			span = 0
+		}
+		return s.padMin + randInt(span+1)
+	}
+	if s.tailPad > 0 {
+		return randInt(s.tailPad + 1)
+	}
+	return 0
+}
+
+// Delay sleeps a random jitter before sending (heavy phase only).
+func (s *Shaper) Delay() {
+	s.mu.Lock()
+	heavy := s.heavyDone < s.heavyTotal
+	jmax := s.jitterMaxMs
+	s.mu.Unlock()
+	if heavy && jmax > 0 {
+		time.Sleep(time.Duration(randInt(jmax+1)) * time.Millisecond)
+	}
+}
+
+// Done records one sent frame.
+func (s *Shaper) Done() {
+	s.mu.Lock()
+	s.heavyDone++
+	s.mu.Unlock()
+}
+
+// InHeavy reports whether the shaper is still in the heavy phase.
+func (s *Shaper) InHeavy() bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.heavyDone < s.heavyTotal
+}
+
+// Fragment splits b into 1-3 irregular chunks during the heavy phase
+// (irregular write fragmentation, SPEC 8.2). Outside the heavy phase it
+// returns b as a single chunk.
+func (s *Shaper) Fragment(b []byte) [][]byte {
+	if !s.InHeavy() || len(b) < 64 {
+		return [][]byte{b}
+	}
+	n := 1 + randInt(3) // 1..3 chunks
+	if n == 1 {
+		return [][]byte{b}
+	}
+	out := make([][]byte, 0, n)
+	rest := b
+	for i := 0; i < n-1 && len(rest) > 0; i++ {
+		cut := 1 + randInt(len(rest)-1)
+		out = append(out, rest[:cut])
+		rest = rest[cut:]
+	}
+	out = append(out, rest)
+	return out
+}
+
+// HeavyDoneCount is for tests/diagnostics.
+func (s *Shaper) HeavyDoneCount() int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.heavyDone
+}

@@ -1,1 +1,96 @@
-Ly8gUGFja2FnZSBtaXN0Y29yZTogTWlzdCBVRFAgY3J5cHRvLgovLwovLyBVRFAgdXNlcyBYQ2hhQ2hhMjAtUG9seTEzMDUgKHNhbWUgYXMgVENQKSB3aXRoIGEgMjQtYnl0ZSBub25jZToKLy8gICBOT05DRSA9IFtTRVNTSU9OX0lEKDgpXVtESVIoNCldW1BBQ0tFVF9OVU0oNCldW1JFU0VSVkVEKDgpXQovLwovLyBUaGlzIGRpZmZlcnMgZnJvbSBUQ1AncyAxMi1ieXRlIG5vbmNlIChlcG9jaHxkaXJ8Y291bnRlcikgZXhwYW5kZWQgdG8gMjQuCi8vIFVEUCBoYXMgbm8gRVBPQ0ggaW4gdGhlIG5vbmNlOyBtaWdyYXRpb24gdXNlcyB0aGUgTUlHUkFURSBmcmFtZSBpbnN0ZWFkLgpwYWNrYWdlIG1pc3Rjb3JlCgppbXBvcnQgKAoJImNyeXB0by9jaXBoZXIiCgkiY3J5cHRvL3NoYTI1NiIKCSJlbmNvZGluZy9iaW5hcnkiCgkiZXJyb3JzIgoJImlvIgoKCSJnb2xhbmcub3JnL3gvY3J5cHRvL2NoYWNoYTIwcG9seTEzMDUiCgkiZ29sYW5nLm9yZy94L2NyeXB0by9oa2RmIgopCgovLyBVRFAgbm9uY2UgbGF5b3V0ICgyNCBieXRlcywgWENoYUNoYTIwKS4KY29uc3QgKAoJdWRwTm9uY2VMZW4gPSAyNAoJdWRwTm9uY2VTZXNzaW9uSURPZmYgPSAwCgl1ZHBOb25jZURpck9mZiAgICAgICA9IDgKCXVkcE5vbmNlUGt0TnVtT2ZmICAgID0gMTIKCXVkcE5vbmNlUmVzZXJ2ZWRPZmYgID0gMTYKKQoKLy8gVURQTm9uY2UgYnVpbGRzIHRoZSAyNC1ieXRlIFhDaGFDaGEyMCBub25jZSBmb3IgVURQIHBhY2tldHMuCi8vCi8vICAgc2Vzc2lvbklEOiBmaXJzdCA4IGJ5dGVzIG9mIHRoZSAxNi1ieXRlIENPTk5fSUQgKMKnNS4yKQovLyAgIGRpcjogICAgICAgRGlyQzJTICgweDAwMDAwMDAwKSBvciBEaXJTMkMgKDB4RkZGRkZGRkYpCi8vICAgcGFja2V0TnVtOiAzMi1iaXQgcGFja2V0IG51bWJlciAocHJlLW1hc2sgcmVhbCB2YWx1ZSwgwqc0LjIpCmZ1bmMgVURQTm9uY2Uoc2Vzc2lvbklEIFs4XWJ5dGUsIGRpciB1aW50MzIsIHBhY2tldE51bSB1aW50MzIpIFsyNF1ieXRlIHsKCXZhciBuIFsyNF1ieXRlCgljb3B5KG5bdWRwTm9uY2VTZXNzaW9uSURPZmY6XSwgc2Vzc2lvbklEWzpdKQoJYmluYXJ5LkJpZ0VuZGlhbi5QdXRVaW50MzIoblt1ZHBOb25jZURpck9mZjpdLCBkaXIpCgliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQzMihuW3VkcE5vbmNlUGt0TnVtT2ZmOl0sIHBhY2tldE51bSkKCS8vIFJFU0VSVkVEKDgpIHN0YXlzIHplcm8uCglyZXR1cm4gbgp9CgovLyB1ZHBBRUFEIGNyZWF0ZXMgYW4gWENoYUNoYTIwLVBvbHkxMzA1IEFFQUQgZnJvbSBhIDMyLWJ5dGUga2V5LgpmdW5jIHVkcEFFQUQoa2V5ICpbMzJdYnl0ZSkgKGNpcGhlci5BRUFELCBlcnJvcikgewoJcmV0dXJuIGNoYWNoYTIwcG9seTEzMDUuTmV3WChrZXlbOl0pCn0KCi8vIFVEUFNlYWwgZW5jcnlwdHMgcGxhaW50ZXh0IHdpdGggdGhlIGdpdmVuIGtleSwgbm9uY2UsIGFuZCBBQUQuCi8vIFJldHVybnMgY2lwaGVydGV4dCAoaW5jbHVkZXMgMTYtYnl0ZSBhdXRoIHRhZykuCmZ1bmMgVURQU2VhbChrZXkgKlszMl1ieXRlLCBub25jZSBbMjRdYnl0ZSwgcGxhaW50ZXh0LCBhYWQgW11ieXRlKSAoW11ieXRlLCBlcnJvcikgewoJYWVhZCwgZXJyIDo9IHVkcEFFQUQoa2V5KQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXJyCgl9CglyZXR1cm4gYWVhZC5TZWFsKG5pbCwgbm9uY2VbOl0sIHBsYWludGV4dCwgYWFkKSwgbmlsCn0KCi8vIFVEUE9wZW4gZGVjcnlwdHMgY2lwaGVydGV4dCB3aXRoIHRoZSBnaXZlbiBrZXksIG5vbmNlLCBhbmQgQUFELgovLyBSZXR1cm5zIHBsYWludGV4dCBvciBhbiBlcnJvciAoYXV0aGVudGljYXRpb24gZmFpbHVyZSA9IHNpbGVudCBkcm9wKS4KZnVuYyBVRFBPcGVuKGtleSAqWzMyXWJ5dGUsIG5vbmNlIFsyNF1ieXRlLCBjaXBoZXJ0ZXh0LCBhYWQgW11ieXRlKSAoW11ieXRlLCBlcnJvcikgewoJYWVhZCwgZXJyIDo9IHVkcEFFQUQoa2V5KQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXJyCgl9CglwbGFpbiwgZXJyIDo9IGFlYWQuT3BlbihuaWwsIG5vbmNlWzpdLCBjaXBoZXJ0ZXh0LCBhYWQpCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gbmlsLCBlcnJvcnMuTmV3KCJ1ZHA6IGFlYWQgb3BlbiBmYWlsZWQiKQoJfQoJcmV0dXJuIHBsYWluLCBuaWwKfQoKLy8gVURQRGVyaXZlSFBLZXkgZGVyaXZlcyB0aGUgaGVhZGVyLXByb3RlY3Rpb24ga2V5IGZvciBvbmUgZGlyZWN0aW9uLgovLwovLyAgIGhwX2tleSA9IEhLREYtU0hBMjU2KHNhbHQ9c2Vzc2lvbl9rZXksIGlrbT1EQ0lELCBpbmZvPSJtaXN0LXVkcC9ocC1jMnMifCJtaXN0LXVkcC9ocC1zMmMiLCBMPTMyKQovLwovLyBQZXIgZGVzaWduIMKnMy4yOiBocF9rZXkgaXMgZGVyaXZlZCBwZXItZGlyZWN0aW9uIChjMnMgYW5kIHMyYyB1c2UgZGlmZmVyZW50IGtleXMpLgpmdW5jIFVEUERlcml2ZUhQS2V5KHNlc3Npb25LZXkgKlszMl1ieXRlLCBkY2lkIFs4XWJ5dGUsIGRpciB1aW50MzIpIFszMl1ieXRlIHsKCXZhciBpbmZvIHN0cmluZwoJaWYgZGlyID09IERpckMyUyB7CgkJaW5mbyA9ICJtaXN0LXVkcC9ocC1jMnMiCgl9IGVsc2UgewoJCWluZm8gPSAibWlzdC11ZHAvaHAtczJjIgoJfQoJLy8gaGtkZi5OZXcoaGFzaCwgc2VjcmV0PWlrbSwgc2FsdCwgaW5mbykgZG9lcyBFeHRyYWN0KHNhbHQsIHNlY3JldCkgdGhlbiBFeHBhbmQuCglrZGYgOj0gaGtkZi5OZXcoc2hhMjU2Lk5ldywgZGNpZFs6XSwgc2Vzc2lvbktleVs6XSwgW11ieXRlKGluZm8pKQoJdmFyIG91dCBbMzJdYnl0ZQoJLy8gUmVhZEZ1bGwgaXMgZ3VhcmFudGVlZCBieSBoa2RmLlJlYWRlciBmb3IgTCA8PSAyNTUqSGFzaExlbi4KCWlmIF8sIGVyciA6PSBpby5SZWFkRnVsbChrZGYsIG91dFs6XSk7IGVyciAhPSBuaWwgewoJCS8vIFNob3VsZCBuZXZlciBoYXBwZW47IHplcm8ga2V5IG9uIGVycm9yLgoJCWZvciBpIDo9IHJhbmdlIG91dCB7CgkJCW91dFtpXSA9IDAKCQl9Cgl9CglyZXR1cm4gb3V0Cn0K
+// Package mistcore: Mist UDP crypto.
+//
+// UDP uses XChaCha20-Poly1305 (same as TCP) with a 24-byte nonce:
+//   NONCE = [SESSION_ID(8)][DIR(4)][PACKET_NUM(4)][RESERVED(8)]
+//
+// This differs from TCP's 12-byte nonce (epoch|dir|counter) expanded to 24.
+// UDP has no EPOCH in the nonce; migration uses the MIGRATE frame instead.
+package mistcore
+
+import (
+	"crypto/cipher"
+	"crypto/sha256"
+	"encoding/binary"
+	"errors"
+	"io"
+
+	"golang.org/x/crypto/chacha20poly1305"
+	"golang.org/x/crypto/hkdf"
+)
+
+// UDP nonce layout (24 bytes, XChaCha20).
+const (
+	udpNonceLen = 24
+	udpNonceSessionIDOff = 0
+	udpNonceDirOff       = 8
+	udpNoncePktNumOff    = 12
+	udpNonceReservedOff  = 16
+)
+
+// UDPNonce builds the 24-byte XChaCha20 nonce for UDP packets.
+//
+//   sessionID: first 8 bytes of the 16-byte CONN_ID (§5.2)
+//   dir:       DirC2S (0x00000000) or DirS2C (0xFFFFFFFF)
+//   packetNum: 32-bit packet number (pre-mask real value, §4.2)
+func UDPNonce(sessionID [8]byte, dir uint32, packetNum uint32) [24]byte {
+	var n [24]byte
+	copy(n[udpNonceSessionIDOff:], sessionID[:])
+	binary.BigEndian.PutUint32(n[udpNonceDirOff:], dir)
+	binary.BigEndian.PutUint32(n[udpNoncePktNumOff:], packetNum)
+	// RESERVED(8) stays zero.
+	return n
+}
+
+// udpAEAD creates an XChaCha20-Poly1305 AEAD from a 32-byte key.
+func udpAEAD(key *[32]byte) (cipher.AEAD, error) {
+	return chacha20poly1305.NewX(key[:])
+}
+
+// UDPSeal encrypts plaintext with the given key, nonce, and AAD.
+// Returns ciphertext (includes 16-byte auth tag).
+func UDPSeal(key *[32]byte, nonce [24]byte, plaintext, aad []byte) ([]byte, error) {
+	aead, err := udpAEAD(key)
+	if err != nil {
+		return nil, err
+	}
+	return aead.Seal(nil, nonce[:], plaintext, aad), nil
+}
+
+// UDPOpen decrypts ciphertext with the given key, nonce, and AAD.
+// Returns plaintext or an error (authentication failure = silent drop).
+func UDPOpen(key *[32]byte, nonce [24]byte, ciphertext, aad []byte) ([]byte, error) {
+	aead, err := udpAEAD(key)
+	if err != nil {
+		return nil, err
+	}
+	plain, err := aead.Open(nil, nonce[:], ciphertext, aad)
+	if err != nil {
+		return nil, errors.New("udp: aead open failed")
+	}
+	return plain, nil
+}
+
+// UDPDeriveHPKey derives the header-protection key for one direction.
+//
+//   hp_key = HKDF-SHA256(salt=session_key, ikm=DCID, info="mist-udp/hp-c2s"|"mist-udp/hp-s2c", L=32)
+//
+// Per design §3.2: hp_key is derived per-direction (c2s and s2c use different keys).
+func UDPDeriveHPKey(sessionKey *[32]byte, dcid [8]byte, dir uint32) [32]byte {
+	var info string
+	if dir == DirC2S {
+		info = "mist-udp/hp-c2s"
+	} else {
+		info = "mist-udp/hp-s2c"
+	}
+	// hkdf.New(hash, secret=ikm, salt, info) does Extract(salt, secret) then Expand.
+	kdf := hkdf.New(sha256.New, dcid[:], sessionKey[:], []byte(info))
+	var out [32]byte
+	// ReadFull is guaranteed by hkdf.Reader for L <= 255*HashLen.
+	if _, err := io.ReadFull(kdf, out[:]); err != nil {
+		// Should never happen; zero key on error.
+		for i := range out {
+			out[i] = 0
+		}
+	}
+	return out
+}

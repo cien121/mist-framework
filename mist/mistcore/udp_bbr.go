@@ -1,1 +1,299 @@
-Ly8gUGFja2FnZSBtaXN0Y29yZTogTWlzdCBVRFAgQkJSIGNvbmdlc3Rpb24gY29udHJvbC4KLy8KLy8gV3JhcHMgdGhlIEJCUiBpbXBsZW1lbnRhdGlvbiBwb3J0ZWQgZnJvbSBIeTIKLy8gKG1pc3Rjb3JlL2Jiciwgb3JpZ2luYWxseSB4cmF5LWNvcmUvdHJhbnNwb3J0L2ludGVybmV0L2h5c3RlcmlhL2Nvbmdlc3Rpb24vYmJyKS4KLy8KLy8gRGVzaWduIGRlY2lzaW9ucyBwZXIgVURQLURFU0lHTi5tZCDCpzcgKGNoYW4sIDIwMjYtMTAtMjIpOgovLyAgIC0gQkJSIChub3QgQ1VCSUMvUmVubywgbm90IEh5MidzICJCcnV0YWwiKQovLyAgIC0gSW5pdGlhbCB3aW5kb3c6IDEwIHBhY2tldHMKLy8gICAtIFJUcHJvcCB3aW5kb3c6IDEwcywgQnRsQncgd2luZG93OiAxMCBSVFQgKEJCUiBkZWZhdWx0cykKLy8gICAtIFBhY2tldCBwYWNpbmc6IHBhY2luZ19yYXRlID0gQnRsQncgKiBnYWluICh1c2VyIGV4cGxpY2l0bHkgcmVxdWVzdGVkLAovLyAgICAgInJlZmVyZW5jZSBIeTIncyBwYWNrZXQgc2VuZGluZyBzcGVlZCIpCnBhY2thZ2UgbWlzdGNvcmUKCmltcG9ydCAoCgkidGltZSIKCgkiZ2l0aHViLmNvbS9hcGVybmV0L3F1aWMtZ28vY29uZ2VzdGlvbiIKCSJnaXRodWIuY29tL2FwZXJuZXQvcXVpYy1nby9tb25vdGltZSIKCgkibWlzdC9taXN0Y29yZS9iYnIiCikKCi8vIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQovLyBSVFQgdHJhY2tlciAoaW1wbGVtZW50cyBjb25nZXN0aW9uLlJUVFN0YXRzUHJvdmlkZXIgZm9yIEJCUikKLy8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgovLyBVRFBSVFRTdGF0cyB0cmFja3MgUlRUIHNhbXBsZXMgdXNpbmcgdGhlIHN0YW5kYXJkIEphY29ic29uL0thcmVscyBhbGdvcml0aG0uCi8vIEFsbCBuZXdseS1hY2tub3dsZWRnZWQgcGFja2V0cyBwYXJ0aWNpcGF0ZSBpbiBzYW1wbGluZyAowqcxMSwgMjAyNi0xMC0yMjoKLy8gd2l0aCBuZXctcGFja2V0LW51bWJlciByZXRyYW5zbWlzc2lvbiB0aGVyZSBpcyBubyBhbWJpZ3VpdHksIHNvIGV4Y2x1ZGluZwovLyByZXRyYW5zbWl0cyB3b3VsZCBzdGFydmUgQkJSIG9mIHNhbXBsZXMgdW5kZXIgbG9zcykuCnR5cGUgVURQUlRUU3RhdHMgc3RydWN0IHsKCW1pblJUVCAgICAgIHRpbWUuRHVyYXRpb24KCWxhdGVzdFJUVCAgIHRpbWUuRHVyYXRpb24KCXNtb290aGVkUlRUIHRpbWUuRHVyYXRpb24KCXJ0dFZhciAgICAgIHRpbWUuRHVyYXRpb24KCW1heEFja0RlbGF5IHRpbWUuRHVyYXRpb24KCWhhc1NhbXBsZSAgIGJvb2wKfQoKLy8gTmV3VURQUlRUU3RhdHMgY3JlYXRlcyBhbiBSVFQgdHJhY2tlciB3aXRoIG5vIHNhbXBsZXMgeWV0LgpmdW5jIE5ld1VEUFJUVFN0YXRzKCkgKlVEUFJUVFN0YXRzIHsKCXJldHVybiAmVURQUlRUU3RhdHN7CgkJbWF4QWNrRGVsYXk6IDI1ICogdGltZS5NaWxsaXNlY29uZCwgLy8gUVVJQyBkZWZhdWx0IG1heF9hY2tfZGVsYXkKCX0KfQoKLy8gVXBkYXRlUlRUIHJlY29yZHMgYSBuZXcgUlRUIHNhbXBsZSAoaW1wbGVtZW50cyBSVFRTdGF0c1Byb3ZpZGVyKS4KZnVuYyAociAqVURQUlRUU3RhdHMpIFVwZGF0ZVJUVChzZW5kRGVsdGEsIGFja0RlbGF5IHRpbWUuRHVyYXRpb24pIHsKCXIubGF0ZXN0UlRUID0gc2VuZERlbHRhCglpZiBhY2tEZWxheSA+IHIubWF4QWNrRGVsYXkgewoJCWFja0RlbGF5ID0gci5tYXhBY2tEZWxheQoJfQoJcnR0U2FtcGxlIDo9IHNlbmREZWx0YQoJaWYgcnR0U2FtcGxlIDwgMCB7CgkJcnR0U2FtcGxlID0gMAoJfQoJaWYgIXIuaGFzU2FtcGxlIHsKCQlyLm1pblJUVCA9IHJ0dFNhbXBsZQoJCXIuc21vb3RoZWRSVFQgPSBydHRTYW1wbGUKCQlyLnJ0dFZhciA9IHJ0dFNhbXBsZSAvIDIKCQlyLmhhc1NhbXBsZSA9IHRydWUKCQlyZXR1cm4KCX0KCWlmIHJ0dFNhbXBsZSA8IHIubWluUlRUIHsKCQlyLm1pblJUVCA9IHJ0dFNhbXBsZQoJfQoJLy8gUkZDIDYyOTgtc3R5bGUgdXBkYXRlLgoJcnR0VmFyU2FtcGxlIDo9IHIuc21vb3RoZWRSVFQgLSBydHRTYW1wbGUKCWlmIHJ0dFZhclNhbXBsZSA8IDAgewoJCXJ0dFZhclNhbXBsZSA9IC1ydHRWYXJTYW1wbGUKCX0KCXIucnR0VmFyID0gKDMqci5ydHRWYXIgKyBydHRWYXJTYW1wbGUpIC8gNAoJci5zbW9vdGhlZFJUVCA9ICg3KnIuc21vb3RoZWRSVFQgKyBydHRTYW1wbGUpIC8gOAp9CgovLyBNaW5SVFQgcmV0dXJucyB0aGUgbWluaW11bSBvYnNlcnZlZCBSVFQuCmZ1bmMgKHIgKlVEUFJUVFN0YXRzKSBNaW5SVFQoKSB0aW1lLkR1cmF0aW9uIHsgcmV0dXJuIHIubWluUlRUIH0KCi8vIExhdGVzdFJUVCByZXR1cm5zIHRoZSBtb3N0IHJlY2VudCBSVFQgc2FtcGxlLgpmdW5jIChyICpVRFBSVFRTdGF0cykgTGF0ZXN0UlRUKCkgdGltZS5EdXJhdGlvbiB7IHJldHVybiByLmxhdGVzdFJUVCB9CgovLyBTbW9vdGhlZFJUVCByZXR1cm5zIHRoZSBleHBvbmVudGlhbGx5LXdlaWdodGVkIG1vdmluZyBhdmVyYWdlIFJUVC4KZnVuYyAociAqVURQUlRUU3RhdHMpIFNtb290aGVkUlRUKCkgdGltZS5EdXJhdGlvbiB7CglpZiAhci5oYXNTYW1wbGUgewoJCXJldHVybiAxMDAgKiB0aW1lLk1pbGxpc2Vjb25kIC8vIGRlZmF1bHQgYmVmb3JlIGFueSBzYW1wbGUKCX0KCXJldHVybiByLnNtb290aGVkUlRUCn0KCi8vIE1lYW5EZXZpYXRpb24gcmV0dXJucyB0aGUgbWVhbiBSVFQgZGV2aWF0aW9uLgpmdW5jIChyICpVRFBSVFRTdGF0cykgTWVhbkRldmlhdGlvbigpIHRpbWUuRHVyYXRpb24geyByZXR1cm4gci5ydHRWYXIgfQoKLy8gTWF4QWNrRGVsYXkgcmV0dXJucyB0aGUgbWF4aW11bSBBQ0sgZGVsYXkuCmZ1bmMgKHIgKlVEUFJUVFN0YXRzKSBNYXhBY2tEZWxheSgpIHRpbWUuRHVyYXRpb24geyByZXR1cm4gci5tYXhBY2tEZWxheSB9CgovLyBQVE8gcmV0dXJucyB0aGUgcHJvYmUgdGltZW91dCAoUlRPIGVxdWl2YWxlbnQpLgpmdW5jIChyICpVRFBSVFRTdGF0cykgUFRPKGluY2x1ZGVNYXhBY2tEZWxheSBib29sKSB0aW1lLkR1cmF0aW9uIHsKCXB0byA6PSByLlNtb290aGVkUlRUKCkgKyA0KnIucnR0VmFyCglpZiBpbmNsdWRlTWF4QWNrRGVsYXkgewoJCXB0byArPSByLm1heEFja0RlbGF5Cgl9CglpZiBwdG8gPCAyMDAqdGltZS5NaWxsaXNlY29uZCB7CgkJcHRvID0gMjAwICogdGltZS5NaWxsaXNlY29uZAoJfQoJcmV0dXJuIHB0bwp9CgovLyBTZXRJbml0aWFsUlRUIHNldHMgdGhlIGluaXRpYWwgUlRUIGVzdGltYXRlIChpbXBsZW1lbnRzIFJUVFN0YXRzUHJvdmlkZXIpLgpmdW5jIChyICpVRFBSVFRTdGF0cykgU2V0SW5pdGlhbFJUVCh0IHRpbWUuRHVyYXRpb24pIHsKCWlmICFyLmhhc1NhbXBsZSB7CgkJci5zbW9vdGhlZFJUVCA9IHQKCQlyLnJ0dFZhciA9IHQgLyAyCgkJci5taW5SVFQgPSB0Cgl9Cn0KCi8vIFNldE1heEFja0RlbGF5IHNldHMgdGhlIG1heGltdW0gQUNLIGRlbGF5IChpbXBsZW1lbnRzIFJUVFN0YXRzUHJvdmlkZXIpLgpmdW5jIChyICpVRFBSVFRTdGF0cykgU2V0TWF4QWNrRGVsYXkobWFkIHRpbWUuRHVyYXRpb24pIHsKCXIubWF4QWNrRGVsYXkgPSBtYWQKfQoKLy8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCi8vIEJCUiBjb250cm9sbGVyIHdyYXBwZXIKLy8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgovLyBVRFBQYWNpbmdQYXJhbXMgaG9sZHMgdGhlIHBhY2luZyBzdGF0ZS4KdHlwZSBVRFBQYWNpbmdQYXJhbXMgc3RydWN0IHsKCS8vIG5leHRTZW5kVGltZSBpcyB0aGUgZWFybGllc3QgdGltZSB0aGUgbmV4dCBwYWNrZXQgbWF5IGJlIHNlbnQuCgluZXh0U2VuZFRpbWUgbW9ub3RpbWUuVGltZQp9CgovLyBCQlJDb250cm9sbGVyIHdyYXBzIHRoZSBwb3J0ZWQgQkJSIHNlbmRlciB3aXRoIGEgTWlzdC1mcmllbmRseSBBUEkuCi8vIFBhY2tldCBudW1iZXJzIGFyZSB1aW50MzIgKE1pc3QpIGNvbnZlcnRlZCB0byBjb25nZXN0aW9uLlBhY2tldE51bWJlciAoaW50NjQpLgp0eXBlIEJCUkNvbnRyb2xsZXIgc3RydWN0IHsKCXNlbmRlciAgICpiYnIuU2VuZGVyCglydHRTdGF0cyAqVURQUlRUU3RhdHMKCWNsb2NrICAgIGJici5DbG9jawoKCS8vIFBhY2luZyBzdGF0ZS4KCW5leHRTZW5kVGltZSB0aW1lLlRpbWUKfQoKLy8gTmV3QkJSQ29udHJvbGxlciBjcmVhdGVzIGEgQkJSIGNvbnRyb2xsZXIgZm9yIGEgVURQIHNlc3Npb24uCi8vCi8vIG1heERhdGFncmFtU2l6ZTogdHlwaWNhbGx5IDEzNTAgKHNlZSDCpzguNCkuCi8vIFVzZXMgdGhlIHN0YW5kYXJkIEJCUiBwcm9maWxlIChCQlJ2MS1zdHlsZSBkZWZhdWx0cyBwZXIgwqc3LjIpLgpmdW5jIE5ld0JCUkNvbnRyb2xsZXIobWF4RGF0YWdyYW1TaXplIGludCkgKkJCUkNvbnRyb2xsZXIgewoJcmV0dXJuIE5ld0JCUkNvbnRyb2xsZXJXaXRoQ2xvY2sobWF4RGF0YWdyYW1TaXplLCBiYnIuRGVmYXVsdENsb2Nre30pCn0KCi8vIE5ld0JCUkNvbnRyb2xsZXJXaXRoQ2xvY2sgY3JlYXRlcyBhIEJCUiBjb250cm9sbGVyIHdpdGggYW4gaW5qZWN0YWJsZSBjbG9jay4KLy8gVGVzdHMgdXNlIGEgc2ltdWxhdGVkIGNsb2NrIGhlcmUgZm9yIGRldGVybWluaXN0aWMsIHRpbWUtaW5kZXBlbmRlbnQgcmVzdWx0cy4KZnVuYyBOZXdCQlJDb250cm9sbGVyV2l0aENsb2NrKG1heERhdGFncmFtU2l6ZSBpbnQsIGNsb2NrIGJici5DbG9jaykgKkJCUkNvbnRyb2xsZXIgewoJc2VuZGVyIDo9IGJici5OZXdCYnJTZW5kZXIoCgkJY2xvY2ssCgkJY29uZ2VzdGlvbi5CeXRlQ291bnQobWF4RGF0YWdyYW1TaXplKSwKCQliYnIuUHJvZmlsZVN0YW5kYXJkLAoJKQoJcnR0U3RhdHMgOj0gTmV3VURQUlRUU3RhdHMoKQoJc2VuZGVyLlNldFJUVFN0YXRzUHJvdmlkZXIocnR0U3RhdHMpCglyZXR1cm4gJkJCUkNvbnRyb2xsZXJ7CgkJc2VuZGVyOiAgICAgICBzZW5kZXIsCgkJcnR0U3RhdHM6ICAgICBydHRTdGF0cywKCQljbG9jazogICAgICAgIGNsb2NrLAoJCW5leHRTZW5kVGltZTogdGltZS5Ob3coKSwKCX0KfQoKLy8gT25QYWNrZXRTZW50IG5vdGlmaWVzIEJCUiB0aGF0IGEgcGFja2V0IHdhcyBzZW50LgpmdW5jIChjICpCQlJDb250cm9sbGVyKSBPblBhY2tldFNlbnQocGFja2V0TnVtIHVpbnQzMiwgYnl0ZXMgaW50LCBieXRlc0luRmxpZ2h0IGludCkgewoJYy5zZW5kZXIuT25QYWNrZXRTZW50KAoJCWMuY2xvY2suTm93KCksCgkJY29uZ2VzdGlvbi5CeXRlQ291bnQoYnl0ZXNJbkZsaWdodCksCgkJY29uZ2VzdGlvbi5QYWNrZXROdW1iZXIocGFja2V0TnVtKSwKCQljb25nZXN0aW9uLkJ5dGVDb3VudChieXRlcyksCgkJdHJ1ZSwgLy8gcmV0cmFuc21pdHRhYmxlCgkpCgkvLyBVcGRhdGUgcGFjaW5nOiBuZXh0IHNlbmQgdGltZSBiYXNlZCBvbiBwYWNpbmcgcmF0ZS4KCXJhdGUgOj0gYy5QYWNpbmdSYXRlKCkgLy8gYnl0ZXMgcGVyIHNlY29uZAoJaWYgcmF0ZSA+IDAgewoJCWludGVydmFsIDo9IHRpbWUuRHVyYXRpb24oZmxvYXQ2NChieXRlcykgLyBmbG9hdDY0KHJhdGUpICogZmxvYXQ2NCh0aW1lLlNlY29uZCkpCgkJYy5uZXh0U2VuZFRpbWUgPSB0aW1lLk5vdygpLkFkZChpbnRlcnZhbCkKCX0KfQoKLy8gT25QYWNrZXRBY2tlZCBub3RpZmllcyBCQlIgdGhhdCBhIHBhY2tldCB3YXMgYWNrbm93bGVkZ2VkLgovLyBydHQgaXMgdGhlIG1lYXN1cmVkIFJUVCBmb3IgdGhpcyBwYWNrZXQgKHNlbmQgdGltZSDihpIgYWNrIHJlY2VpcHQpLgovLyBBbGwgbmV3bHktYWNrbm93bGVkZ2VkIHBhY2tldHMgcGFydGljaXBhdGUgaW4gUlRUIHNhbXBsaW5nICjCpzExKS4KLy8KLy8gTk9URTogdGhlIHVuZGVybHlpbmcgYmJyU2VuZGVyLk9uUGFja2V0QWNrZWQgaXMgYSBuby1vcDsgdGhlIHJlYWwgbG9naWMKLy8gbGl2ZXMgaW4gT25Db25nZXN0aW9uRXZlbnRFeC4gV2Ugcm91dGUgdGhyb3VnaCBpdCBoZXJlIHdpdGggYSBzaW5nbGUtcGFja2V0Ci8vIGV2ZW50LiBieXRlc0luRmxpZ2h0IGlzIHRoZSBQT1NULWFjayB2YWx1ZSBmcm9tIFVEUFJlbGlhYmlsaXR5OyB3ZSBhZGQgYmFjawovLyB0aGUgYWNrZWQgYnl0ZXMgYmVjYXVzZSBPbkNvbmdlc3Rpb25FdmVudEV4IGV4cGVjdHMgdGhlIFBSRS1ldmVudCB2YWx1ZQovLyAoaXQgc3VidHJhY3RzIGFja2VkIGJ5dGVzIGl0c2VsZikuCmZ1bmMgKGMgKkJCUkNvbnRyb2xsZXIpIE9uUGFja2V0QWNrZWQocGFja2V0TnVtIHVpbnQzMiwgYnl0ZXMgaW50LCBieXRlc0luRmxpZ2h0IGludCwgcnR0IHRpbWUuRHVyYXRpb24pIHsKCS8vIFVwZGF0ZSBSVFQgc3RhdHMgKGFsbCBhY2tlZCBwYWNrZXRzIHBhcnRpY2lwYXRlKS4KCWMucnR0U3RhdHMuVXBkYXRlUlRUKHJ0dCwgMCkKCW5vdyA6PSBjLmNsb2NrLk5vdygpCgljLnNlbmRlci5PbkNvbmdlc3Rpb25FdmVudEV4KAoJCWNvbmdlc3Rpb24uQnl0ZUNvdW50KGJ5dGVzSW5GbGlnaHQrYnl0ZXMpLCAvLyBwcmUtZXZlbnQgaW4tZmxpZ2h0CgkJbm93LAoJCVtdY29uZ2VzdGlvbi5BY2tlZFBhY2tldEluZm97CgkJCXsKCQkJCVBhY2tldE51bWJlcjogY29uZ2VzdGlvbi5QYWNrZXROdW1iZXIocGFja2V0TnVtKSwKCQkJCUJ5dGVzQWNrZWQ6ICAgY29uZ2VzdGlvbi5CeXRlQ291bnQoYnl0ZXMpLAoJCQkJUmVjZWl2ZWRUaW1lOiBub3csCgkJCX0sCgkJfSwKCQluaWwsCgkpCn0KCi8vIE9uUGFja2V0TG9zdCBub3RpZmllcyBCQlIgb2YgcGFja2V0IGxvc3MuCi8vIFJvdXRlcyB0aHJvdWdoIE9uQ29uZ2VzdGlvbkV2ZW50RXggKHRoZSBzaW1wbGUgT25QYWNrZXRMb3N0IGlzIGEgbm8tb3ApLgovLyBieXRlc0luRmxpZ2h0IGlzIHRoZSBQT1NULWxvc3MgdmFsdWU7IHdlIGFkZCBiYWNrIGZvciB0aGUgcHJlLWV2ZW50IHZhbHVlLgpmdW5jIChjICpCQlJDb250cm9sbGVyKSBPblBhY2tldExvc3QocGFja2V0TnVtIHVpbnQzMiwgYnl0ZXMgaW50LCBieXRlc0luRmxpZ2h0IGludCkgewoJYy5zZW5kZXIuT25Db25nZXN0aW9uRXZlbnRFeCgKCQljb25nZXN0aW9uLkJ5dGVDb3VudChieXRlc0luRmxpZ2h0K2J5dGVzKSwgLy8gcHJlLWV2ZW50IGluLWZsaWdodAoJCWMuY2xvY2suTm93KCksCgkJbmlsLAoJCVtdY29uZ2VzdGlvbi5Mb3N0UGFja2V0SW5mb3sKCQkJewoJCQkJUGFja2V0TnVtYmVyOiBjb25nZXN0aW9uLlBhY2tldE51bWJlcihwYWNrZXROdW0pLAoJCQkJQnl0ZXNMb3N0OiAgICBjb25nZXN0aW9uLkJ5dGVDb3VudChieXRlcyksCgkJCX0sCgkJfSwKCSkKfQoKLy8gQ2FuU2VuZCByZXBvcnRzIHdoZXRoZXIgQkJSIGFsbG93cyBzZW5kaW5nIChjb25nZXN0aW9uIHdpbmRvdyBjaGVjaykuCmZ1bmMgKGMgKkJCUkNvbnRyb2xsZXIpIENhblNlbmQoYnl0ZXNJbkZsaWdodCBpbnQpIGJvb2wgewoJcmV0dXJuIGMuc2VuZGVyLkNhblNlbmQoY29uZ2VzdGlvbi5CeXRlQ291bnQoYnl0ZXNJbkZsaWdodCkpCn0KCi8vIENvbmdlc3Rpb25XaW5kb3cgcmV0dXJucyB0aGUgY3VycmVudCBjb25nZXN0aW9uIHdpbmRvdyBpbiBieXRlcy4KZnVuYyAoYyAqQkJSQ29udHJvbGxlcikgQ29uZ2VzdGlvbldpbmRvdygpIGludCB7CglyZXR1cm4gaW50KGMuc2VuZGVyLkdldENvbmdlc3Rpb25XaW5kb3coKSkKfQoKLy8gUGFjaW5nUmF0ZSByZXR1cm5zIHRoZSBjdXJyZW50IHBhY2luZyByYXRlIGluIGJ5dGVzIHBlciBzZWNvbmQuCmZ1bmMgKGMgKkJCUkNvbnRyb2xsZXIpIFBhY2luZ1JhdGUoKSBmbG9hdDY0IHsKCS8vIEJCUiBCYW5kd2lkdGggaXMgYml0cy9zZWM7IGNhbGxlcnMgZXhwZWN0IGJ5dGVzL3NlYy4KCXJldHVybiBmbG9hdDY0KGMuc2VuZGVyLlBhY2luZ1JhdGUoKSkgLyA4Cn0KCi8vIFdhaXRGb3JQYWNpbmcgYmxvY2tzIHVudGlsIHRoZSBwYWNpbmcgYnVkZ2V0IGFsbG93cyBzZW5kaW5nLgovLyBSZXR1cm5zIGltbWVkaWF0ZWx5IGlmIHBhY2luZyBhbGxvd3Mgc2VuZGluZyBub3cuCmZ1bmMgKGMgKkJCUkNvbnRyb2xsZXIpIFdhaXRGb3JQYWNpbmcoKSB7Cglub3cgOj0gdGltZS5Ob3coKQoJaWYgbm93LkJlZm9yZShjLm5leHRTZW5kVGltZSkgewoJCXRpbWUuU2xlZXAoYy5uZXh0U2VuZFRpbWUuU3ViKG5vdykpCgl9Cn0KCi8vIFRpbWVVbnRpbFNlbmQgcmV0dXJucyBob3cgbG9uZyB0byB3YWl0IGJlZm9yZSBzZW5kaW5nIChmb3Igbm9uLWJsb2NraW5nIHVzZSkuCmZ1bmMgKGMgKkJCUkNvbnRyb2xsZXIpIFRpbWVVbnRpbFNlbmQoKSB0aW1lLkR1cmF0aW9uIHsKCWQgOj0gdGltZS5VbnRpbChjLm5leHRTZW5kVGltZSkKCWlmIGQgPCAwIHsKCQlyZXR1cm4gMAoJfQoJcmV0dXJuIGQKfQoKLy8gSW5TbG93U3RhcnQgcmVwb3J0cyB3aGV0aGVyIEJCUiBpcyBpbiBzbG93IHN0YXJ0LgpmdW5jIChjICpCQlJDb250cm9sbGVyKSBJblNsb3dTdGFydCgpIGJvb2wgewoJcmV0dXJuIGMuc2VuZGVyLkluU2xvd1N0YXJ0KCkKfQoKLy8gSW5EcmFpbiByZXBvcnRzIHdoZXRoZXIgQkJSIGlzIGluIHRoZSBEUkFJTiBwaGFzZS4gRXhwb3J0ZWQgZm9yCi8vIGRpYWdub3N0aWNzICgyMDI2LTEwLTIzOiBEUkFJTi1leGl0IGludmVzdGlnYXRpb24pLgpmdW5jIChjICpCQlJDb250cm9sbGVyKSBJbkRyYWluKCkgYm9vbCB7CglyZXR1cm4gYy5zZW5kZXIuSW5EcmFpbigpCn0KCi8vIFBhY2luZ0dhaW4gcmV0dXJucyBCQlIncyBjdXJyZW50IHBhY2luZyBnYWluLiBFeHBvcnRlZCBmb3IgdGVzdGluZy4KZnVuYyAoYyAqQkJSQ29udHJvbGxlcikgUGFjaW5nR2FpbigpIGZsb2F0NjQgewoJcmV0dXJuIGMuc2VuZGVyLlBhY2luZ0dhaW4oKQp9CgovLyBCYW5kd2lkdGhFc3RpbWF0ZSByZXR1cm5zIEJCUidzIGN1cnJlbnQgYmFuZHdpZHRoIGVzdGltYXRlIGluIGJpdHMgcGVyIHNlY29uZC4KLy8gRXhwb3J0ZWQgZm9yIHRlc3RpbmcgYW5kIG1vbml0b3JpbmcuCmZ1bmMgKGMgKkJCUkNvbnRyb2xsZXIpIEJhbmR3aWR0aEVzdGltYXRlKCkgdWludDY0IHsKCXJldHVybiB1aW50NjQoYy5zZW5kZXIuQmFuZHdpZHRoRXN0aW1hdGUoKSkKfQoKLy8gUlRUU3RhdHMgcmV0dXJucyB0aGUgUlRUIHRyYWNrZXIgKGZvciBSVE8gY2FsY3VsYXRpb24pLgpmdW5jIChjICpCQlJDb250cm9sbGVyKSBSVFRTdGF0cygpICpVRFBSVFRTdGF0cyB7CglyZXR1cm4gYy5ydHRTdGF0cwp9CgovLyBPbkFwcExpbWl0ZWQgbWFya3MgdGhlIGNvbm5lY3Rpb24gYXMgYXBwLWxpbWl0ZWQ6IHRoZSBhcHBsaWNhdGlvbiBoYXMKLy8gbm8gZGF0YSB0byBzZW5kLCBzbyB0aGUgY3VycmVudCBpZGxlIHBlcmlvZCBtdXN0IG5vdCBkcmFnIGRvd24gdGhlCi8vIGJhbmR3aWR0aCBlc3RpbWF0ZS4KLy8KLy8gVGhlIHVuZGVybHlpbmcgQkJSIHNlbmRlciBhbHJlYWR5IGRldGVjdHMgYXBwLWxpbWl0ZWQgY29uZGl0aW9ucwovLyBpbnRlcm5hbGx5IChpdCBjYWxscyBzYW1wbGVyLk9uQXBwTGltaXRlZCB3aGVuIENhblNlbmQgaXMgdHJ1ZSBidXQgbm8KLy8gcGFja2V0IGZvbGxvd3MpLiBUaGlzIG1ldGhvZCBpcyBhIG5vLW9wIGhvb2sgZm9yIHRoZSBzZW5kIHNjaGVkdWxlciB0bwovLyBkb2N1bWVudCB0aGUgaW50ZW50OyBubyBleHBsaWNpdCBub3RpZmljYXRpb24gaXMgcmVxdWlyZWQuCmZ1bmMgKGMgKkJCUkNvbnRyb2xsZXIpIE9uQXBwTGltaXRlZCgpIHt9Cg==
+// Package mistcore: Mist UDP BBR congestion control.
+//
+// Wraps the BBR implementation ported from Hy2
+// (mistcore/bbr, originally xray-core/transport/internet/hysteria/congestion/bbr).
+//
+// Design decisions per UDP-DESIGN.md §7 (chan, 2026-10-22):
+//   - BBR (not CUBIC/Reno, not Hy2's "Brutal")
+//   - Initial window: 10 packets
+//   - RTprop window: 10s, BtlBw window: 10 RTT (BBR defaults)
+//   - Packet pacing: pacing_rate = BtlBw * gain (user explicitly requested,
+//     "reference Hy2's packet sending speed")
+package mistcore
+
+import (
+	"time"
+
+	"github.com/apernet/quic-go/congestion"
+	"github.com/apernet/quic-go/monotime"
+
+	"mist/mistcore/bbr"
+)
+
+// ---------------------------------------------------------------------------
+// RTT tracker (implements congestion.RTTStatsProvider for BBR)
+// ---------------------------------------------------------------------------
+
+// UDPRTTStats tracks RTT samples using the standard Jacobson/Karels algorithm.
+// All newly-acknowledged packets participate in sampling (§11, 2026-10-22:
+// with new-packet-number retransmission there is no ambiguity, so excluding
+// retransmits would starve BBR of samples under loss).
+type UDPRTTStats struct {
+	minRTT      time.Duration
+	latestRTT   time.Duration
+	smoothedRTT time.Duration
+	rttVar      time.Duration
+	maxAckDelay time.Duration
+	hasSample   bool
+}
+
+// NewUDPRTTStats creates an RTT tracker with no samples yet.
+func NewUDPRTTStats() *UDPRTTStats {
+	return &UDPRTTStats{
+		maxAckDelay: 25 * time.Millisecond, // QUIC default max_ack_delay
+	}
+}
+
+// UpdateRTT records a new RTT sample (implements RTTStatsProvider).
+func (r *UDPRTTStats) UpdateRTT(sendDelta, ackDelay time.Duration) {
+	r.latestRTT = sendDelta
+	if ackDelay > r.maxAckDelay {
+		ackDelay = r.maxAckDelay
+	}
+	rttSample := sendDelta
+	if rttSample < 0 {
+		rttSample = 0
+	}
+	if !r.hasSample {
+		r.minRTT = rttSample
+		r.smoothedRTT = rttSample
+		r.rttVar = rttSample / 2
+		r.hasSample = true
+		return
+	}
+	if rttSample < r.minRTT {
+		r.minRTT = rttSample
+	}
+	// RFC 6298-style update.
+	rttVarSample := r.smoothedRTT - rttSample
+	if rttVarSample < 0 {
+		rttVarSample = -rttVarSample
+	}
+	r.rttVar = (3*r.rttVar + rttVarSample) / 4
+	r.smoothedRTT = (7*r.smoothedRTT + rttSample) / 8
+}
+
+// MinRTT returns the minimum observed RTT.
+func (r *UDPRTTStats) MinRTT() time.Duration { return r.minRTT }
+
+// LatestRTT returns the most recent RTT sample.
+func (r *UDPRTTStats) LatestRTT() time.Duration { return r.latestRTT }
+
+// SmoothedRTT returns the exponentially-weighted moving average RTT.
+func (r *UDPRTTStats) SmoothedRTT() time.Duration {
+	if !r.hasSample {
+		return 100 * time.Millisecond // default before any sample
+	}
+	return r.smoothedRTT
+}
+
+// MeanDeviation returns the mean RTT deviation.
+func (r *UDPRTTStats) MeanDeviation() time.Duration { return r.rttVar }
+
+// MaxAckDelay returns the maximum ACK delay.
+func (r *UDPRTTStats) MaxAckDelay() time.Duration { return r.maxAckDelay }
+
+// PTO returns the probe timeout (RTO equivalent).
+func (r *UDPRTTStats) PTO(includeMaxAckDelay bool) time.Duration {
+	pto := r.SmoothedRTT() + 4*r.rttVar
+	if includeMaxAckDelay {
+		pto += r.maxAckDelay
+	}
+	if pto < 200*time.Millisecond {
+		pto = 200 * time.Millisecond
+	}
+	return pto
+}
+
+// SetInitialRTT sets the initial RTT estimate (implements RTTStatsProvider).
+func (r *UDPRTTStats) SetInitialRTT(t time.Duration) {
+	if !r.hasSample {
+		r.smoothedRTT = t
+		r.rttVar = t / 2
+		r.minRTT = t
+	}
+}
+
+// SetMaxAckDelay sets the maximum ACK delay (implements RTTStatsProvider).
+func (r *UDPRTTStats) SetMaxAckDelay(mad time.Duration) {
+	r.maxAckDelay = mad
+}
+
+// ---------------------------------------------------------------------------
+// BBR controller wrapper
+// ---------------------------------------------------------------------------
+
+// UDPPacingParams holds the pacing state.
+type UDPPacingParams struct {
+	// nextSendTime is the earliest time the next packet may be sent.
+	nextSendTime monotime.Time
+}
+
+// BBRController wraps the ported BBR sender with a Mist-friendly API.
+// Packet numbers are uint32 (Mist) converted to congestion.PacketNumber (int64).
+type BBRController struct {
+	sender   *bbr.Sender
+	rttStats *UDPRTTStats
+	clock    bbr.Clock
+
+	// Pacing state.
+	nextSendTime time.Time
+}
+
+// NewBBRController creates a BBR controller for a UDP session.
+//
+// maxDatagramSize: typically 1350 (see §8.4).
+// Uses the standard BBR profile (BBRv1-style defaults per §7.2).
+func NewBBRController(maxDatagramSize int) *BBRController {
+	return NewBBRControllerWithClock(maxDatagramSize, bbr.DefaultClock{})
+}
+
+// NewBBRControllerWithClock creates a BBR controller with an injectable clock.
+// Tests use a simulated clock here for deterministic, time-independent results.
+func NewBBRControllerWithClock(maxDatagramSize int, clock bbr.Clock) *BBRController {
+	sender := bbr.NewBbrSender(
+		clock,
+		congestion.ByteCount(maxDatagramSize),
+		bbr.ProfileStandard,
+	)
+	rttStats := NewUDPRTTStats()
+	sender.SetRTTStatsProvider(rttStats)
+	return &BBRController{
+		sender:       sender,
+		rttStats:     rttStats,
+		clock:        clock,
+		nextSendTime: time.Now(),
+	}
+}
+
+// OnPacketSent notifies BBR that a packet was sent.
+func (c *BBRController) OnPacketSent(packetNum uint32, bytes int, bytesInFlight int) {
+	c.sender.OnPacketSent(
+		c.clock.Now(),
+		congestion.ByteCount(bytesInFlight),
+		congestion.PacketNumber(packetNum),
+		congestion.ByteCount(bytes),
+		true, // retransmittable
+	)
+	// Update pacing: next send time based on pacing rate.
+	rate := c.PacingRate() // bytes per second
+	if rate > 0 {
+		interval := time.Duration(float64(bytes) / float64(rate) * float64(time.Second))
+		c.nextSendTime = time.Now().Add(interval)
+	}
+}
+
+// OnPacketAcked notifies BBR that a packet was acknowledged.
+// rtt is the measured RTT for this packet (send time → ack receipt).
+// All newly-acknowledged packets participate in RTT sampling (§11).
+//
+// NOTE: the underlying bbrSender.OnPacketAcked is a no-op; the real logic
+// lives in OnCongestionEventEx. We route through it here with a single-packet
+// event. bytesInFlight is the POST-ack value from UDPReliability; we add back
+// the acked bytes because OnCongestionEventEx expects the PRE-event value
+// (it subtracts acked bytes itself).
+func (c *BBRController) OnPacketAcked(packetNum uint32, bytes int, bytesInFlight int, rtt time.Duration) {
+	// Update RTT stats (all acked packets participate).
+	c.rttStats.UpdateRTT(rtt, 0)
+	now := c.clock.Now()
+	c.sender.OnCongestionEventEx(
+		congestion.ByteCount(bytesInFlight+bytes), // pre-event in-flight
+		now,
+		[]congestion.AckedPacketInfo{
+			{
+				PacketNumber: congestion.PacketNumber(packetNum),
+				BytesAcked:   congestion.ByteCount(bytes),
+				ReceivedTime: now,
+			},
+		},
+		nil,
+	)
+}
+
+// OnPacketLost notifies BBR of packet loss.
+// Routes through OnCongestionEventEx (the simple OnPacketLost is a no-op).
+// bytesInFlight is the POST-loss value; we add back for the pre-event value.
+func (c *BBRController) OnPacketLost(packetNum uint32, bytes int, bytesInFlight int) {
+	c.sender.OnCongestionEventEx(
+		congestion.ByteCount(bytesInFlight+bytes), // pre-event in-flight
+		c.clock.Now(),
+		nil,
+		[]congestion.LostPacketInfo{
+			{
+				PacketNumber: congestion.PacketNumber(packetNum),
+				BytesLost:    congestion.ByteCount(bytes),
+			},
+		},
+	)
+}
+
+// CanSend reports whether BBR allows sending (congestion window check).
+func (c *BBRController) CanSend(bytesInFlight int) bool {
+	return c.sender.CanSend(congestion.ByteCount(bytesInFlight))
+}
+
+// CongestionWindow returns the current congestion window in bytes.
+func (c *BBRController) CongestionWindow() int {
+	return int(c.sender.GetCongestionWindow())
+}
+
+// PacingRate returns the current pacing rate in bytes per second.
+func (c *BBRController) PacingRate() float64 {
+	// BBR Bandwidth is bits/sec; callers expect bytes/sec.
+	return float64(c.sender.PacingRate()) / 8
+}
+
+// WaitForPacing blocks until the pacing budget allows sending.
+// Returns immediately if pacing allows sending now.
+func (c *BBRController) WaitForPacing() {
+	now := time.Now()
+	if now.Before(c.nextSendTime) {
+		time.Sleep(c.nextSendTime.Sub(now))
+	}
+}
+
+// TimeUntilSend returns how long to wait before sending (for non-blocking use).
+func (c *BBRController) TimeUntilSend() time.Duration {
+	d := time.Until(c.nextSendTime)
+	if d < 0 {
+		return 0
+	}
+	return d
+}
+
+// InSlowStart reports whether BBR is in slow start.
+func (c *BBRController) InSlowStart() bool {
+	return c.sender.InSlowStart()
+}
+
+// InDrain reports whether BBR is in the DRAIN phase. Exported for
+// diagnostics (2026-10-23: DRAIN-exit investigation).
+func (c *BBRController) InDrain() bool {
+	return c.sender.InDrain()
+}
+
+// PacingGain returns BBR's current pacing gain. Exported for testing.
+func (c *BBRController) PacingGain() float64 {
+	return c.sender.PacingGain()
+}
+
+// BandwidthEstimate returns BBR's current bandwidth estimate in bits per second.
+// Exported for testing and monitoring.
+func (c *BBRController) BandwidthEstimate() uint64 {
+	return uint64(c.sender.BandwidthEstimate())
+}
+
+// RTTStats returns the RTT tracker (for RTO calculation).
+func (c *BBRController) RTTStats() *UDPRTTStats {
+	return c.rttStats
+}
+
+// OnAppLimited marks the connection as app-limited: the application has
+// no data to send, so the current idle period must not drag down the
+// bandwidth estimate.
+//
+// The underlying BBR sender already detects app-limited conditions
+// internally (it calls sampler.OnAppLimited when CanSend is true but no
+// packet follows). This method is a no-op hook for the send scheduler to
+// document the intent; no explicit notification is required.
+func (c *BBRController) OnAppLimited() {}
