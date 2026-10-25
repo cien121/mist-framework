@@ -1,1 +1,812 @@
-Ly8gTWlzdCBVRFAgY2xpZW50IGZvciB0aGUgaW5kZXBlbmRlbnQgZnJhbWV3b3JrLgovLwovLyBIYW5kc2hha2UgYW5kIGRhdGEgcGF0aCByZXBsaWNhdGUgdGhlIHByb3ZlbiBtaXN0LXVkcC10ZXN0IGZsb3c6Ci8vIFFVSUMgSW5pdGlhbCAoUGhhc2UgMCkgKyBBVVRIL0FVVEhfT0sgKyBYMjU1MTkgc2Vzc2lvbiBrZXlzLCB0aGVuCi8vIFVEUFNlc3Npb24gKyBzZW5kIHNjaGVkdWxlciArIHJlbGlhYmlsaXR5IGxheWVyLgovLwovLyBTdHJlYW0gcHJvdG9jb2wgKGNsaWVudCBjb250cmFjdDsgbWlycm9ycyB0aGUgVENQIG11eCBwYXRoKToKLy8gICAtIFNZTiBvcGVucyBhIHN0cmVhbSAoU0lEID49IDEpLgovLyAgIC0gRmlyc3QgU1RSRUFNIHBheWxvYWQgaXMgRW5jb2RlQ29ubmVjdFJlcShhdHlwLCBhZGRyLCBwb3J0KS4KLy8gICAtIFNlcnZlciByZXBsaWVzIHdpdGggb25lIHN0YXR1cyBieXRlIG9uIHRoZSBzYW1lIHN0cmVhbToKLy8gICAgIDB4MDAgPSBjb25uZWN0ZWQsIDB4MDEgPSBkaWFsIGZhaWxlZC4gUGF5bG9hZCBkYXRhIGZvbGxvd3MKLy8gICAgIGltbWVkaWF0ZWx5IGFmdGVyIHRoZSBzdGF0dXMgYnl0ZSAob2Zmc2V0IDErKS4KLy8KLy8gRGF0YWdyYW1zIChVRFAgcmVsYXkpIHVzZSBVRFBGcmFtZURhdGFncmFtIGZyYW1lcyB3aG9zZSBwYXlsb2FkIGlzCi8vIEVuY29kZURhdGFncmFtKGF0eXAsIGFkZHIsIHBvcnQsIGRhdGEpOyByZXNwb25zZXMgY2FycnkgdGhlIG9yaWdpbmFsCi8vIHRhcmdldCBhcyB0aGVpciBzb3VyY2UgYWRkcmVzcy4KLy8KLy8gTk9URTogdGhlIGN1cnJlbnQgcHJvZHVjdGlvbiBVRFAgc2VydmVyIGlzIGxhYiBlY2hvIG1vZGUgKGl0IGVjaG9lcwovLyBTVFJFQU0gZnJhbWVzLCBubyBDT05ORUNUL2RpYWwpLiBUaGUgc2VydmVyLXNpZGUgVURQIHByb3h5IHVwZ3JhZGUKLy8gKENPTk5FQ1QgKyBkaWFsICsgVURQIHJlbGF5IG9uIHRoZSBVRFAgZGF0YSBwYXRoKSBpcyBhIHNlcGFyYXRlIHRhc2s7Ci8vIHRoaXMgY2xpZW50IGltcGxlbWVudHMgdGhlIGNvbnRyYWN0IGl0IHdpbGwgc3BlYWsuCnBhY2thZ2UgY29yZQoKaW1wb3J0ICgKCSJjb250ZXh0IgoJImNyeXB0by9obWFjIgoJImNyeXB0by9yYW5kIgoJImNyeXB0by9zaGEyNTYiCgkiZW5jb2RpbmcvYmFzZTY0IgoJImVuY29kaW5nL2JpbmFyeSIKCSJlbmNvZGluZy9oZXgiCgkiZXJyb3JzIgoJImZtdCIKCSJpbyIKCSJuZXQiCgkibmV0L3VybCIKCSJzdHJpbmdzIgoJInN5bmMiCgkidGltZSIKCgkibWlzdC9taXN0Y29yZSIKKQoKLy8gTWlzdENvbmZpZyBjb25maWd1cmVzIGEgTWlzdCBVRFAgY2xpZW50Lgp0eXBlIE1pc3RDb25maWcgc3RydWN0IHsKCVNlcnZlciAgIHN0cmluZyAvLyAiaG9zdDpwb3J0IiBvZiB0aGUgTWlzdCBVRFAgc2VydmVyCglDbGllbnRJRCBzdHJpbmcgLy8gMzIgaGV4IGNoYXJzICgxNiBieXRlcykKCUF1dGhLZXkgIHN0cmluZyAvLyBiYXNlNjQgc3RkLCAzMiBieXRlcwoJU05JICAgICAgc3RyaW5nIC8vIHJlc2VydmVkIGZvciB0aGUgVExTIHBhdGg7IHVudXNlZCBieSBVRFAKfQoKLy8gUGFyc2VNaXN0VVJMIHBhcnNlcyBhIG1pc3Q6Ly8gbm9kZSBsaW5rOgovLyBtaXN0Oi8vPGNpZEhleD5APGhvc3Q+Ojxwb3J0Pj9rZXk9PGJhc2U2NHVybD4mc25pPTxkb21haW4+IzxuYW1lPgpmdW5jIFBhcnNlTWlzdFVSTChyYXcgc3RyaW5nKSAoKk1pc3RDb25maWcsIGVycm9yKSB7Cgl1LCBlcnIgOj0gdXJsLlBhcnNlKHJhdykKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIGVycgoJfQoJaWYgdS5TY2hlbWUgIT0gIm1pc3QiIHsKCQlyZXR1cm4gbmlsLCBmbXQuRXJyb3JmKCJtaXN0OiBub3QgYSBtaXN0Oi8vIGxpbmsiKQoJfQoJY2lkIDo9IHUuVXNlci5Vc2VybmFtZSgpCglpZiBsZW4oY2lkKSAhPSAzMiB7CgkJcmV0dXJuIG5pbCwgZm10LkVycm9yZigibWlzdDogY2xpZW50SWQgbXVzdCBiZSAzMiBoZXggY2hhcnMiKQoJfQoJaWYgXywgZXJyIDo9IGhleC5EZWNvZGVTdHJpbmcoY2lkKTsgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZm10LkVycm9yZigibWlzdDogYmFkIGNsaWVudElkIGhleDogJXciLCBlcnIpCgl9Cglob3N0IDo9IHUuSG9zdAoJaWYgaG9zdCA9PSAiIiB7CgkJcmV0dXJuIG5pbCwgZm10LkVycm9yZigibWlzdDogbWlzc2luZyBob3N0IikKCX0KCWtleVVSTCA6PSB1LlF1ZXJ5KCkuR2V0KCJrZXkiKQoJaWYga2V5VVJMID09ICIiIHsKCQlyZXR1cm4gbmlsLCBmbXQuRXJyb3JmKCJtaXN0OiBtaXNzaW5nIGtleSIpCgl9CgkvLyBiYXNlNjR1cmwgLT4gYmFzZTY0IHN0ZC4KCWtleVN0ZCA6PSBzdHJpbmdzLlJlcGxhY2VBbGwoc3RyaW5ncy5SZXBsYWNlQWxsKGtleVVSTCwgIi0iLCAiKyIpLCAiXyIsICIvIikKCXN3aXRjaCBsZW4oa2V5U3RkKSAlIDQgewoJY2FzZSAyOgoJCWtleVN0ZCArPSAiPT0iCgljYXNlIDM6CgkJa2V5U3RkICs9ICI9IgoJfQoJa2V5Qnl0ZXMsIGVyciA6PSBiYXNlNjQuU3RkRW5jb2RpbmcuRGVjb2RlU3RyaW5nKGtleVN0ZCkKCWlmIGVyciAhPSBuaWwgfHwgbGVuKGtleUJ5dGVzKSAhPSAzMiB7CgkJcmV0dXJuIG5pbCwgZm10LkVycm9yZigibWlzdDoga2V5IG11c3QgYmUgMzIgYnl0ZXMgYmFzZTY0IikKCX0KCXJldHVybiAmTWlzdENvbmZpZ3sKCQlTZXJ2ZXI6ICAgaG9zdCwKCQlDbGllbnRJRDogc3RyaW5ncy5Ub0xvd2VyKGNpZCksCgkJQXV0aEtleTogIGtleVN0ZCwKCQlTTkk6ICAgICAgdS5RdWVyeSgpLkdldCgic25pIiksCgl9LCBuaWwKfQoKLy8gTWlzdFVEUENsaWVudCBpcyBhIE1pc3QgVURQIHByb3RvY29sIGNsaWVudCAoUHJvdG9jb2xDbGllbnQpLgp0eXBlIE1pc3RVRFBDbGllbnQgc3RydWN0IHsKCWNmZyAgIE1pc3RDb25maWcKCWNpZCAgIFsxNl1ieXRlCglrQXV0aCBbMzJdYnl0ZQoKCW11ICAgICAgc3luYy5NdXRleAoJY29ubiAgICAqbmV0LlVEUENvbm4KCXVkcEFkZHIgKm5ldC5VRFBBZGRyCglzZXNzaW9uICptaXN0Y29yZS5VRFBTZXNzaW9uCglzY2hlZCAgICptaXN0Y29yZS5VRFBTZW5kU2NoZWR1bGVyCgljb2RlYyAgICptaXN0Y29yZS5RVUlDSW5pdGlhbENvZGVjCgluZXh0U0lEIGJ5dGUKCXN0cmVhbXMgbWFwW2J5dGVdKm1pc3RTdHJlYW1Db25uCglkZ0ggICAgIERhdGFncmFtSGFuZGxlcgoJY2xvc2VkICBib29sCglkb25lICAgIGNoYW4gc3RydWN0e30KCXdnICAgICAgc3luYy5XYWl0R3JvdXAKfQoKLy8gTmV3TWlzdFVEUENsaWVudCBwYXJzZXMgY2ZnIGFuZCBwcmVwYXJlcyAoYnV0IGRvZXMgbm90IGNvbm5lY3QpIGEgY2xpZW50LgpmdW5jIE5ld01pc3RVRFBDbGllbnQoY2ZnIE1pc3RDb25maWcpICgqTWlzdFVEUENsaWVudCwgZXJyb3IpIHsKCWNpZEJ5dGVzLCBlcnIgOj0gaGV4LkRlY29kZVN0cmluZyhjZmcuQ2xpZW50SUQpCglpZiBlcnIgIT0gbmlsIHx8IGxlbihjaWRCeXRlcykgIT0gMTYgewoJCXJldHVybiBuaWwsIGVycm9ycy5OZXcoIm1pc3Q6IGNsaWVudElkIG11c3QgYmUgMTYgYnl0ZXMgaGV4IikKCX0KCWtleUJ5dGVzLCBlcnIgOj0gYmFzZTY0LlN0ZEVuY29kaW5nLkRlY29kZVN0cmluZyhjZmcuQXV0aEtleSkKCWlmIGVyciAhPSBuaWwgfHwgbGVuKGtleUJ5dGVzKSAhPSAzMiB7CgkJcmV0dXJuIG5pbCwgZXJyb3JzLk5ldygibWlzdDogYXV0aEtleSBtdXN0IGJlIDMyIGJ5dGVzIGJhc2U2NCIpCgl9CgljIDo9ICZNaXN0VURQQ2xpZW50ewoJCWNmZzogICAgIGNmZywKCQljb2RlYzogICAmbWlzdGNvcmUuUVVJQ0luaXRpYWxDb2RlY3t9LAoJCW5leHRTSUQ6IDEsCgkJc3RyZWFtczogbWFrZShtYXBbYnl0ZV0qbWlzdFN0cmVhbUNvbm4pLAoJCWRvbmU6ICAgIG1ha2UoY2hhbiBzdHJ1Y3R7fSksCgl9Cgljb3B5KGMuY2lkWzpdLCBjaWRCeXRlcykKCWNvcHkoYy5rQXV0aFs6XSwga2V5Qnl0ZXMpCglyZXR1cm4gYywgbmlsCn0KCi8vIE5hbWUgaW1wbGVtZW50cyBQcm90b2NvbENsaWVudC4KZnVuYyAoYyAqTWlzdFVEUENsaWVudCkgTmFtZSgpIHN0cmluZyB7IHJldHVybiAibWlzdCIgfQoKLy8gQ29ubmVjdCBwZXJmb3JtcyB0aGUgTWlzdCBVRFAgaGFuZHNoYWtlLiBTYWZlIHRvIGNhbGwgcmVwZWF0ZWRseTsKLy8gc3Vic2VxdWVudCBjYWxscyByZXR1cm4gdGhlIGV4aXN0aW5nIHNlc3Npb24uCmZ1bmMgKGMgKk1pc3RVRFBDbGllbnQpIENvbm5lY3QoY3R4IGNvbnRleHQuQ29udGV4dCkgZXJyb3IgewoJYy5tdS5Mb2NrKCkKCWlmIGMuc2Vzc2lvbiAhPSBuaWwgewoJCWMubXUuVW5sb2NrKCkKCQlyZXR1cm4gbmlsCgl9CgljLm11LlVubG9jaygpCgoJdWRwQWRkciwgZXJyIDo9IG1pc3Rjb3JlLlJlc29sdmVQZWVyQWRkclNhZmUoY3R4LCBjLmNmZy5TZXJ2ZXIsIGMuY29kZWMpCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gZm10LkVycm9yZigibWlzdDogc2FmZXR5IGdhdGU6ICV3IiwgZXJyKQoJfQoJY29ubiwgZXJyIDo9IG5ldC5MaXN0ZW5VRFAoInVkcCIsIG5pbCkKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBmbXQuRXJyb3JmKCJtaXN0OiBsaXN0ZW46ICV3IiwgZXJyKQoJfQoJc2Vzc2lvbiwgZXJyIDo9IGMuaGFuZHNoYWtlKGN0eCwgY29ubiwgdWRwQWRkcikKCWlmIGVyciAhPSBuaWwgewoJCWNvbm4uQ2xvc2UoKQoJCXJldHVybiBlcnIKCX0KCgljLm11LkxvY2soKQoJZGVmZXIgYy5tdS5VbmxvY2soKQoJaWYgYy5jbG9zZWQgewoJCWNvbm4uQ2xvc2UoKQoJCXJldHVybiBlcnJvcnMuTmV3KCJtaXN0OiBjbGllbnQgY2xvc2VkIikKCX0KCS8vIEFub3RoZXIgZ29yb3V0aW5lIG1heSBoYXZlIGNvbm5lY3RlZCBmaXJzdDsgcHJlZmVyIHRoZSBmaXJzdCBzZXNzaW9uLgoJaWYgYy5zZXNzaW9uICE9IG5pbCB7CgkJY29ubi5DbG9zZSgpCgkJcmV0dXJuIG5pbAoJfQoJYy5jb25uID0gY29ubgoJYy51ZHBBZGRyID0gdWRwQWRkcgoJYy5zZXNzaW9uID0gc2Vzc2lvbgoJYy5zY2hlZCA9IG1pc3Rjb3JlLk5ld1VEUFNlbmRTY2hlZHVsZXIoc2Vzc2lvbiwgbWlzdGNvcmUuRGlyQzJTLCBmdW5jKHBrdCBbXWJ5dGUpIGVycm9yIHsKCQlfLCBlcnIgOj0gY29ubi5Xcml0ZVRvVURQKHBrdCwgdWRwQWRkcikKCQlyZXR1cm4gZXJyCgl9KQoJLy8gUmVsaWFiaWxpdHkgY2FsbGJhY2tzIChzYW1lIHBhdHRlcm4gYXMgbWlzdC11ZHAtdGVzdCkuCglzZXNzaW9uLlJlbC5PbkFja05lZWRlZCA9IGZ1bmMobGFyZ2VzdCB1aW50MzIsIHJhbmdlcyBbXVsyXXVpbnQzMiwgYWNrRGVsYXkgdGltZS5EdXJhdGlvbikgewoJCWFjayA6PSBtaXN0Y29yZS5FbmNvZGVBY2tGcmFtZSgwLCBsYXJnZXN0LCBhY2tEZWxheSwgcmFuZ2VzKQoJCXBrdCwgZXJyIDo9IHNlc3Npb24uU2VhbFBhY2tldFVudHJhY2tlZChtaXN0Y29yZS5EaXJDMlMsIFtdW11ieXRle2Fja30pCgkJaWYgZXJyICE9IG5pbCB7CgkJCXJldHVybgoJCX0KCQlfLCBfID0gY29ubi5Xcml0ZVRvVURQKHBrdCwgdWRwQWRkcikKCX0KCXNlc3Npb24uUmVsLk9uUmV0cmFuc21pdCA9IGZ1bmMoZnJhbWVzIFtdW11ieXRlKSBlcnJvciB7CgkJYy5zY2hlZC5Xcml0ZVJldHJhbnNtaXRDaHVua2VkKGZyYW1lcykKCQlyZXR1cm4gbmlsCgl9CgljLnNjaGVkLlN0YXJ0KCkKCWMud2cuQWRkKDIpCglnbyBjLnJlYWRQdW1wKCkKCWdvIGMudGlja0xvb3AoKQoJcmV0dXJuIG5pbAp9CgovLyBoYW5kc2hha2UgcnVucyBJbml0aWFsICsgQVVUSCArIEFVVEhfT0sgYW5kIHJldHVybnMgYSBsaXZlIHNlc3Npb24uCmZ1bmMgKGMgKk1pc3RVRFBDbGllbnQpIGhhbmRzaGFrZShjdHggY29udGV4dC5Db250ZXh0LCBjb25uICpuZXQuVURQQ29ubiwgdWRwQWRkciAqbmV0LlVEUEFkZHIpICgqbWlzdGNvcmUuVURQU2Vzc2lvbiwgZXJyb3IpIHsKCWVwaFByaXYsIGVwaFB1YiwgZXJyIDo9IG1pc3Rjb3JlLlgyNTUxOUtleXBhaXIoKQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXJyCgl9CgkvLyBBVVRIIHBsYWludGV4dDogW1ZFUigxKT0weDAyXVtUUyg4KV1bRVBIX1BVQigzMildW0ZFQVQoMSldW01PREUoMSldW1JTVkQoMildCglhdXRoUGxhaW4gOj0gbWFrZShbXWJ5dGUsIDQ1KQoJYXV0aFBsYWluWzBdID0gMHgwMgoJYmluYXJ5LkJpZ0VuZGlhbi5QdXRVaW50NjQoYXV0aFBsYWluWzE6OV0sIHVpbnQ2NCh0aW1lLk5vdygpLlVuaXgoKSkpCgljb3B5KGF1dGhQbGFpbls5OjQxXSwgZXBoUHViWzpdKQoKCXZhciByZXNwb25zZSBbXWJ5dGUKCXZhciBzY2lkIFs4XWJ5dGUKCWZvciBhdHRlbXB0IDo9IDA7IGF0dGVtcHQgPCA0OyBhdHRlbXB0KysgewoJCXZhciBub25jZSBbMjRdYnl0ZQoJCWlmIF8sIGVyciA6PSByYW5kLlJlYWQobm9uY2VbOl0pOyBlcnIgIT0gbmlsIHsKCQkJcmV0dXJuIG5pbCwgZXJyCgkJfQoJCWlmIF8sIGVyciA6PSByYW5kLlJlYWQoc2NpZFs6XSk7IGVyciAhPSBuaWwgewoJCQlyZXR1cm4gbmlsLCBlcnIKCQl9CgkJbWFjIDo9IGhtYWMuTmV3KHNoYTI1Ni5OZXcsIGMua0F1dGhbOl0pCgkJbWFjLldyaXRlKG5vbmNlWzpdKQoJCXZhciBoYW5kc2hha2VDSUQgWzE2XWJ5dGUKCQljb3B5KGhhbmRzaGFrZUNJRFs6XSwgbWFjLlN1bShuaWwpWzoxNl0pCgkJY2lwaGVydGV4dCwgZXJyIDo9IG1pc3Rjb3JlLlVEUFNlYWwoJmMua0F1dGgsIG5vbmNlLCBhdXRoUGxhaW4sIGhhbmRzaGFrZUNJRFs6XSkKCQlpZiBlcnIgIT0gbmlsIHsKCQkJcmV0dXJuIG5pbCwgZXJyCgkJfQoJCWF1dGhXaXJlIDo9IG1ha2UoW11ieXRlLCAwLCAxNisyNCtsZW4oY2lwaGVydGV4dCkpCgkJYXV0aFdpcmUgPSBhcHBlbmQoYXV0aFdpcmUsIGhhbmRzaGFrZUNJRFs6XS4uLikKCQlhdXRoV2lyZSA9IGFwcGVuZChhdXRoV2lyZSwgbm9uY2VbOl0uLi4pCgkJYXV0aFdpcmUgPSBhcHBlbmQoYXV0aFdpcmUsIGNpcGhlcnRleHQuLi4pCgkJdmFyIGRjaWQgWzhdYnl0ZQoJCWluaXRpYWwsIGVyciA6PSBjLmNvZGVjLlNlYWxJbml0aWFsKGF1dGhXaXJlLCBkY2lkLCBzY2lkLCAwKQoJCWlmIGVyciAhPSBuaWwgewoJCQlyZXR1cm4gbmlsLCBlcnIKCQl9CgkJaWYgXywgZXJyIDo9IGNvbm4uV3JpdGVUb1VEUChpbml0aWFsLCB1ZHBBZGRyKTsgZXJyICE9IG5pbCB7CgkJCXJldHVybiBuaWwsIGVycgoJCX0KCQljb25uLlNldFJlYWREZWFkbGluZSh0aW1lLk5vdygpLkFkZCgxICogdGltZS5TZWNvbmQpKQoJCWJ1ZiA6PSBtYWtlKFtdYnl0ZSwgMjA0OCkKCQluLCBfLCBlcnIgOj0gY29ubi5SZWFkRnJvbVVEUChidWYpCgkJaWYgZXJyID09IG5pbCB7CgkJCXJlc3BvbnNlID0gYXBwZW5kKFtdYnl0ZShuaWwpLCBidWZbOm5dLi4uKQoJCQlicmVhawoJCX0KCQlzZWxlY3QgewoJCWNhc2UgPC1jdHguRG9uZSgpOgoJCQlyZXR1cm4gbmlsLCBjdHguRXJyKCkKCQlkZWZhdWx0OgoJCX0KCX0KCWlmIHJlc3BvbnNlID09IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXJyb3JzLk5ldygibWlzdDogaGFuZHNoYWtlIHRpbWVvdXQiKQoJfQoJYXV0aE9LV2lyZSwgcmVzcERDSUQsIF8sIF8sIGVyciA6PSBjLmNvZGVjLk9wZW5Jbml0aWFsUmVzcG9uc2UocmVzcG9uc2UpCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gbmlsLCBmbXQuRXJyb3JmKCJtaXN0OiBhdXRoX29rIHBhcnNlOiAldyIsIGVycikKCX0KCWlmIHJlc3BEQ0lEICE9IHNjaWQgewoJCXJldHVybiBuaWwsIGVycm9ycy5OZXcoIm1pc3Q6IERDSUQgbWlzbWF0Y2giKQoJfQoJaWYgbGVuKGF1dGhPS1dpcmUpIDwgMjQrMTYgewoJCXJldHVybiBuaWwsIGVycm9ycy5OZXcoIm1pc3Q6IGF1dGhfb2sgdG9vIHNob3J0IikKCX0KCXZhciBva05vbmNlIFsyNF1ieXRlCgljb3B5KG9rTm9uY2VbOl0sIGF1dGhPS1dpcmVbOjI0XSkKCW9rUGxhaW4sIGVyciA6PSBtaXN0Y29yZS5VRFBPcGVuKCZjLmtBdXRoLCBva05vbmNlLCBhdXRoT0tXaXJlWzI0Ol0sIG5pbCkKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIGZtdC5FcnJvcmYoIm1pc3Q6IGF1dGhfb2sgZGVjcnlwdDogJXciLCBlcnIpCgl9CglpZiBsZW4ob2tQbGFpbikgPCA0OCB7CgkJcmV0dXJuIG5pbCwgZXJyb3JzLk5ldygibWlzdDogYXV0aF9vayBwbGFpbiB0b28gc2hvcnQiKQoJfQoJdmFyIHNydkVwaFB1YiBbMzJdYnl0ZQoJY29weShzcnZFcGhQdWJbOl0sIG9rUGxhaW5bMDozMl0pCgl2YXIgc2Vzc2lvbklEIFsxNl1ieXRlCgljb3B5KHNlc3Npb25JRFs6XSwgb2tQbGFpblszMjo0OF0pCglzaGFyZWQsIGVyciA6PSBtaXN0Y29yZS5YMjU1MTlTaGFyZWQoJmVwaFByaXYsICZzcnZFcGhQdWIpCglpZiBlcnIgIT0gbmlsIHsKCQlyZXR1cm4gbmlsLCBlcnIKCX0KCWtDMlMsIGtTMkMgOj0gbWlzdGNvcmUuRGVyaXZlU2Vzc2lvbktleXMoZXBoUHViLCBzcnZFcGhQdWIsIHNoYXJlZCkKCXJldHVybiBtaXN0Y29yZS5OZXdVRFBTZXNzaW9uKHNlc3Npb25JRCwga0MyUywga1MyQywgdWRwQWRkciwgYy5jb2RlYyksIG5pbAp9CgovLyByZWFkUHVtcCBkZWNyeXB0cyBpbmNvbWluZyBkYXRhZ3JhbXMgYW5kIGRpc3BhdGNoZXMgZnJhbWVzLgpmdW5jIChjICpNaXN0VURQQ2xpZW50KSByZWFkUHVtcCgpIHsKCWRlZmVyIGMud2cuRG9uZSgpCglidWYgOj0gbWFrZShbXWJ5dGUsIDY1NTM1KQoJZm9yIHsKCQljLm11LkxvY2soKQoJCWNvbm4gOj0gYy5jb25uCgkJYy5tdS5VbmxvY2soKQoJCWlmIGNvbm4gPT0gbmlsIHsKCQkJcmV0dXJuCgkJfQoJCWNvbm4uU2V0UmVhZERlYWRsaW5lKHRpbWUuTm93KCkuQWRkKDUwMCAqIHRpbWUuTWlsbGlzZWNvbmQpKQoJCW4sIF8sIGVyciA6PSBjb25uLlJlYWRGcm9tVURQKGJ1ZikKCQlpZiBlcnIgIT0gbmlsIHsKCQkJc2VsZWN0IHsKCQkJY2FzZSA8LWMuZG9uZToKCQkJCXJldHVybgoJCQlkZWZhdWx0OgoJCQl9CgkJCWlmIG5lLCBvayA6PSBlcnIuKG5ldC5FcnJvcik7IG9rICYmIG5lLlRpbWVvdXQoKSB7CgkJCQljb250aW51ZQoJCQl9CgkJCXJldHVybgoJCX0KCQljLm11LkxvY2soKQoJCXNlc3Npb24gOj0gYy5zZXNzaW9uCgkJYy5tdS5VbmxvY2soKQoJCWlmIHNlc3Npb24gPT0gbmlsIHsKCQkJY29udGludWUKCQl9CgkJZnJhbWVzLCBfLCBlcnIgOj0gc2Vzc2lvbi5PcGVuUGFja2V0KG1pc3Rjb3JlLkRpclMyQywgYnVmWzpuXSkKCQlpZiBlcnIgIT0gbmlsIHsKCQkJY29udGludWUgLy8gZGVjcnlwdCBmYWlsZWQ7IGlnbm9yZQoJCX0KCQlmb3IgXywgZiA6PSByYW5nZSBmcmFtZXMgewoJCQljLmRpc3BhdGNoKGYpCgkJfQoJCXNlc3Npb24uVGljaygpCgl9Cn0KCi8vIHRpY2tMb29wIGZsdXNoZXMgQUNLcyBhbmQgc2NhbnMgUlRPcyBldmVyeSAxMG1zIChzZXJ2ZXIgZG9lcyB0aGUgc2FtZSkuCmZ1bmMgKGMgKk1pc3RVRFBDbGllbnQpIHRpY2tMb29wKCkgewoJZGVmZXIgYy53Zy5Eb25lKCkKCXQgOj0gdGltZS5OZXdUaWNrZXIoMTAgKiB0aW1lLk1pbGxpc2Vjb25kKQoJZGVmZXIgdC5TdG9wKCkKCWZvciB7CgkJc2VsZWN0IHsKCQljYXNlIDwtYy5kb25lOgoJCQlyZXR1cm4KCQljYXNlIDwtdC5DOgoJCQljLm11LkxvY2soKQoJCQlzZXNzaW9uIDo9IGMuc2Vzc2lvbgoJCQljLm11LlVubG9jaygpCgkJCWlmIHNlc3Npb24gIT0gbmlsIHsKCQkJCXNlc3Npb24uVGljaygpCgkJCX0KCQl9Cgl9Cn0KCi8vIGRpc3BhdGNoIHJvdXRlcyBvbmUgZGVjb2RlZCBmcmFtZS4KZnVuYyAoYyAqTWlzdFVEUENsaWVudCkgZGlzcGF0Y2goZiBtaXN0Y29yZS5VRFBGcmFtZSkgewoJc3dpdGNoIGYuVHlwZSB7CgljYXNlIG1pc3Rjb3JlLlVEUEZyYW1lQWNrOgoJCWxhcmdlc3QsIGFja0RlbGF5LCByYW5nZXMsIGVyciA6PSBtaXN0Y29yZS5EZWNvZGVBY2tGcmFtZShmLlBheWxvYWQpCgkJaWYgZXJyID09IG5pbCB7CgkJCWMubXUuTG9jaygpCgkJCXNlc3Npb24gOj0gYy5zZXNzaW9uCgkJCWMubXUuVW5sb2NrKCkKCQkJaWYgc2Vzc2lvbiAhPSBuaWwgewoJCQkJc2Vzc2lvbi5SZWwuUHJvY2Vzc0FjayhsYXJnZXN0LCBhY2tEZWxheSwgcmFuZ2VzKQoJCQl9CgkJfQoJY2FzZSBtaXN0Y29yZS5VRFBGcmFtZVN0cmVhbSwgbWlzdGNvcmUuVURQRnJhbWVGaW4sIG1pc3Rjb3JlLlVEUEZyYW1lUnN0OgoJCWMubXUuTG9jaygpCgkJc3QgOj0gYy5zdHJlYW1zW2YuU0lEXQoJCWMubXUuVW5sb2NrKCkKCQlpZiBzdCAhPSBuaWwgewoJCQlzdC5kZWxpdmVyKGYpCgkJfQoJY2FzZSBtaXN0Y29yZS5VRFBGcmFtZURhdGFncmFtOgoJCV8sIGFkZHIsIHBvcnQsIGRhdGEsIGVyciA6PSBtaXN0Y29yZS5EZWNvZGVEYXRhZ3JhbShmLlBheWxvYWQpCgkJaWYgZXJyICE9IG5pbCB7CgkJCXJldHVybgoJCX0KCQljLm11LkxvY2soKQoJCWggOj0gYy5kZ0gKCQljLm11LlVubG9jaygpCgkJaWYgaCAhPSBuaWwgewoJCQloKGZtdC5TcHJpbnRmKCIlczolZCIsIG5ldC5JUChhZGRyKS5TdHJpbmcoKSwgcG9ydCksIGRhdGEpCgkJfQoJY2FzZSBtaXN0Y29yZS5VRFBGcmFtZVBpbmc6CgkJLy8gUmVwbHkgUE9ORyAodW50cmFja2VkOiBQT05HcyBhcmUgbmV2ZXIgQUNLZWQpLgoJCWMubXUuTG9jaygpCgkJc2Vzc2lvbiwgc2NoZWQgOj0gYy5zZXNzaW9uLCBjLnNjaGVkCgkJY29ubiwgdWRwQWRkciA6PSBjLmNvbm4sIGMudWRwQWRkcgoJCWMubXUuVW5sb2NrKCkKCQlpZiBzZXNzaW9uICE9IG5pbCAmJiBjb25uICE9IG5pbCB7CgkJCV8gPSBzY2hlZCAvLyBzY2hlZHVsZXIgbm90IHVzZWQgZm9yIHVudHJhY2tlZCBmcmFtZXMKCQkJcG9uZyA6PSBtaXN0Y29yZS5FbmNvZGVVRFBGcmFtZShtaXN0Y29yZS5VRFBGcmFtZVBvbmcsIDAsIG5pbCkKCQkJaWYgcGt0LCBlcnIgOj0gc2Vzc2lvbi5TZWFsUGFja2V0VW50cmFja2VkKG1pc3Rjb3JlLkRpckMyUywgW11bXWJ5dGV7cG9uZ30pOyBlcnIgPT0gbmlsIHsKCQkJCV8sIF8gPSBjb25uLldyaXRlVG9VRFAocGt0LCB1ZHBBZGRyKQoJCQl9CgkJfQoJfQp9CgovLyBPbkRhdGFncmFtIHNldHMgdGhlIGhhbmRsZXIgZm9yIGluYm91bmQgcmVsYXkgZGF0YWdyYW1zLgpmdW5jIChjICpNaXN0VURQQ2xpZW50KSBPbkRhdGFncmFtKGggRGF0YWdyYW1IYW5kbGVyKSB7CgljLm11LkxvY2soKQoJZGVmZXIgYy5tdS5VbmxvY2soKQoJYy5kZ0ggPSBoCn0KCi8vIFNlbmREYXRhZ3JhbSBzZW5kcyBhIFVEUCByZWxheSBkYXRhZ3JhbSB0byB0YXJnZXQgKCJpcDpwb3J0IikuCmZ1bmMgKGMgKk1pc3RVRFBDbGllbnQpIFNlbmREYXRhZ3JhbSh0YXJnZXQgc3RyaW5nLCBkYXRhIFtdYnl0ZSkgZXJyb3IgewoJaG9zdCwgcG9ydFN0ciwgZXJyIDo9IG5ldC5TcGxpdEhvc3RQb3J0KHRhcmdldCkKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBlcnIKCX0KCXBvcnQsIGVyciA6PSBuZXQuTG9va3VwUG9ydCgidWRwIiwgcG9ydFN0cikKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBlcnIKCX0KCWlwIDo9IG5ldC5QYXJzZUlQKGhvc3QpCglpZiBpcCA9PSBuaWwgewoJCXJldHVybiBmbXQuRXJyb3JmKCJtaXN0OiBkYXRhZ3JhbSB0YXJnZXQgbXVzdCBiZSBhbiBJUDogJXMiLCBob3N0KQoJfQoJdmFyIGF0eXAgYnl0ZQoJdmFyIGFkZHIgW11ieXRlCglpZiBpcDQgOj0gaXAuVG80KCk7IGlwNCAhPSBuaWwgewoJCWF0eXAsIGFkZHIgPSBtaXN0Y29yZS5BVHlwSVB2NCwgW11ieXRlKGlwNCkKCX0gZWxzZSB7CgkJYXR5cCwgYWRkciA9IG1pc3Rjb3JlLkFUeXBJUHY2LCBbXWJ5dGUoaXAuVG8xNigpKQoJfQoJZGcgOj0gbWlzdGNvcmUuRW5jb2RlRGF0YWdyYW0oYXR5cCwgYWRkciwgdWludDE2KHBvcnQpLCBkYXRhKQoJZnJhbWUgOj0gbWlzdGNvcmUuRW5jb2RlVURQRnJhbWUobWlzdGNvcmUuVURQRnJhbWVEYXRhZ3JhbSwgMCwgZGcpCgljLm11LkxvY2soKQoJc2NoZWQgOj0gYy5zY2hlZAoJYy5tdS5VbmxvY2soKQoJaWYgc2NoZWQgPT0gbmlsIHsKCQlyZXR1cm4gZXJyb3JzLk5ldygibWlzdDogbm90IGNvbm5lY3RlZCIpCgl9CglyZXR1cm4gc2NoZWQuV3JpdGUoW11bXWJ5dGV7ZnJhbWV9KQp9CgovLyBEaWFsIGltcGxlbWVudHMgUHJvdG9jb2xDbGllbnQ6IG9wZW4gYSBNaXN0IHN0cmVhbSB0byBhZGRyICgiaG9zdDpwb3J0IikuCmZ1bmMgKGMgKk1pc3RVRFBDbGllbnQpIERpYWwoY3R4IGNvbnRleHQuQ29udGV4dCwgYWRkciBzdHJpbmcpIChuZXQuQ29ubiwgZXJyb3IpIHsKCWlmIGVyciA6PSBjLkNvbm5lY3QoY3R4KTsgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXJyCgl9Cglob3N0LCBwb3J0U3RyLCBlcnIgOj0gbmV0LlNwbGl0SG9zdFBvcnQoYWRkcikKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIGVycgoJfQoJcG9ydCwgZXJyIDo9IG5ldC5Mb29rdXBQb3J0KCJ0Y3AiLCBwb3J0U3RyKQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuIG5pbCwgZXJyCgl9Cgl2YXIgYXR5cCBieXRlCgl2YXIgYWIgW11ieXRlCglpZiBpcCA6PSBuZXQuUGFyc2VJUChob3N0KTsgaXAgIT0gbmlsIHsKCQlpZiBpcDQgOj0gaXAuVG80KCk7IGlwNCAhPSBuaWwgewoJCQlhdHlwLCBhYiA9IG1pc3Rjb3JlLkFUeXBJUHY0LCBbXWJ5dGUoaXA0KQoJCX0gZWxzZSB7CgkJCWF0eXAsIGFiID0gbWlzdGNvcmUuQVR5cElQdjYsIFtdYnl0ZShpcC5UbzE2KCkpCgkJfQoJfSBlbHNlIHsKCQlhdHlwLCBhYiA9IG1pc3Rjb3JlLkFUeXBEb21haW4sIFtdYnl0ZShob3N0KQoJfQoJY29ublJlcSA6PSBtaXN0Y29yZS5FbmNvZGVDb25uZWN0UmVxKGF0eXAsIGFiLCB1aW50MTYocG9ydCkpCgoJYy5tdS5Mb2NrKCkKCXNpZCA6PSBjLm5leHRTSUQKCWMubmV4dFNJRCsrCglpZiBjLm5leHRTSUQgPT0gMCB7CgkJYy5uZXh0U0lEID0gMQoJfQoJc3QgOj0gbmV3TWlzdFN0cmVhbUNvbm4oYywgc2lkLCBhZGRyKQoJYy5zdHJlYW1zW3NpZF0gPSBzdAoJc2NoZWQgOj0gYy5zY2hlZAoJYy5tdS5VbmxvY2soKQoKCS8vIFNZTiArIENPTk5FQ1QgaW4gb25lIGJhdGNoLgoJc3luIDo9IG1pc3Rjb3JlLkVuY29kZVVEUEZyYW1lKG1pc3Rjb3JlLlVEUEZyYW1lU3luLCBzaWQsIG5pbCkKCWZpcnN0IDo9IG1pc3Rjb3JlLkVuY29kZVN0cmVhbUZyYW1lKHNpZCwgMCwgY29ublJlcSkKCWlmIGVyciA6PSBzY2hlZC5Xcml0ZShbXVtdYnl0ZXtzeW4sIGZpcnN0fSk7IGVyciAhPSBuaWwgewoJCWMuZHJvcFN0cmVhbShzaWQpCgkJcmV0dXJuIG5pbCwgZXJyCgl9CgkvLyBXYWl0IGZvciB0aGUgMS1ieXRlIHN0YXR1czogMHgwMCA9IGNvbm5lY3RlZCwgMHgwMSA9IGZhaWxlZC4KCS8vIFRoZSBzdGF0dXMgYnl0ZSBpcyBvZmZzZXQgMDsgcGF5bG9hZCBkYXRhIHN0YXJ0cyBhdCBvZmZzZXQgMS4KCWlmIGVyciA6PSBzdC53YWl0U3RhdHVzKGN0eCk7IGVyciAhPSBuaWwgewoJCWMuZHJvcFN0cmVhbShzaWQpCgkJcmV0dXJuIG5pbCwgZXJyCgl9CgkvLyBDT05ORUNUIHJlcXVlc3Qgb2NjdXBpZXMgb2Zmc2V0IFswLCBsZW4oY29ublJlcSkpLgoJLy8gU3Vic2VxdWVudCBXcml0ZSBkYXRhIG11c3Qgc3RhcnQgYWZ0ZXIgaXQsIG5vdCBvdmVybGFwLgoJc3QubXUuTG9jaygpCglzdC53cml0ZU9mZiA9IHVpbnQ2NChsZW4oY29ublJlcSkpCglzdC5tdS5VbmxvY2soKQoJcmV0dXJuIHN0LCBuaWwKfQoKLy8gZHJvcFN0cmVhbSByZW1vdmVzIGEgc3RyZWFtIChvbiBkaWFsIGZhaWx1cmUpLgpmdW5jIChjICpNaXN0VURQQ2xpZW50KSBkcm9wU3RyZWFtKHNpZCBieXRlKSB7CgljLm11LkxvY2soKQoJZGVmZXIgYy5tdS5VbmxvY2soKQoJaWYgc3QsIG9rIDo9IGMuc3RyZWFtc1tzaWRdOyBvayB7CgkJc3QubWFya0Nsb3NlZChlcnJvcnMuTmV3KCJtaXN0OiBzdHJlYW0gZHJvcHBlZCIpKQoJCWRlbGV0ZShjLnN0cmVhbXMsIHNpZCkKCX0KfQoKLy8gQ2xvc2UgaW1wbGVtZW50cyBQcm90b2NvbENsaWVudC4KZnVuYyAoYyAqTWlzdFVEUENsaWVudCkgQ2xvc2UoKSBlcnJvciB7CgljLm11LkxvY2soKQoJaWYgYy5jbG9zZWQgewoJCWMubXUuVW5sb2NrKCkKCQlyZXR1cm4gbmlsCgl9CgljLmNsb3NlZCA9IHRydWUKCWNsb3NlKGMuZG9uZSkKCWNvbm4sIHNjaGVkIDo9IGMuY29ubiwgYy5zY2hlZAoJc3RyZWFtcyA6PSBjLnN0cmVhbXMKCWMuc3RyZWFtcyA9IG1ha2UobWFwW2J5dGVdKm1pc3RTdHJlYW1Db25uKQoJYy5tdS5VbmxvY2soKQoJZm9yIF8sIHN0IDo9IHJhbmdlIHN0cmVhbXMgewoJCXN0Lm1hcmtDbG9zZWQoZXJyb3JzLk5ldygibWlzdDogY2xpZW50IGNsb3NlZCIpKQoJfQoJaWYgc2NoZWQgIT0gbmlsIHsKCQlzY2hlZC5TdG9wKCkKCX0KCWlmIGNvbm4gIT0gbmlsIHsKCQljb25uLkNsb3NlKCkKCX0KCWMud2cuV2FpdCgpCglyZXR1cm4gbmlsCn0KCi8vIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQovLyBTdHJlYW0gY29ubmVjdGlvbiAobmV0LkNvbm4gb3ZlciBvbmUgTWlzdCBzdHJlYW0pCi8vIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKLy8gbWlzdFN0cmVhbUNvbm4gaXMgb25lIE1pc3Qgc3RyZWFtIGV4cG9zZWQgYXMgbmV0LkNvbm4uCi8vIFJlYWRzIHJlYXNzZW1ibGUgU1RSRUFNIGZyYW1lcyBieSBvZmZzZXQgKGR1cGxpY2F0ZXMvb3V0LW9mLW9yZGVyCi8vIGZyb20gcmV0cmFuc21pc3Npb25zIGFyZSBoYW5kbGVkKTsgd3JpdGVzIGNodW5rIGludG8gZnJhbWVzLgp0eXBlIG1pc3RTdHJlYW1Db25uIHN0cnVjdCB7CgljICAgICAgKk1pc3RVRFBDbGllbnQKCXNpZCAgICBieXRlCglyZW1vdGUgc3RyaW5nCgoJbXUgICAgICAgc3luYy5NdXRleAoJY29uZCAgICAgKnN5bmMuQ29uZAoJYnVmICAgICAgW11ieXRlICAgICAgICAgICAgLy8gY29udGlndW91cyBieXRlcyByZWFkeSB0byByZWFkCglwZW5kaW5nICBtYXBbdWludDY0XVtdYnl0ZSAvLyBvdXQtb2Ytb3JkZXIgY2h1bmtzIGJ5IG9mZnNldAoJbmV4dFJlYWQgdWludDY0ICAgICAgICAgICAgLy8gbmV4dCBvZmZzZXQgdG8gZGVsaXZlcgoJd3JpdGVPZmYgdWludDY0Cgllb2YgICAgICBib29sCgljbG9zZWQgICBib29sCgllcnIgICAgICBlcnJvcgoJcmVhZERMICAgdGltZS5UaW1lCn0KCmZ1bmMgbmV3TWlzdFN0cmVhbUNvbm4oYyAqTWlzdFVEUENsaWVudCwgc2lkIGJ5dGUsIHJlbW90ZSBzdHJpbmcpICptaXN0U3RyZWFtQ29ubiB7CglzdCA6PSAmbWlzdFN0cmVhbUNvbm57CgkJYzogICAgICAgYywKCQlzaWQ6ICAgICBzaWQsCgkJcmVtb3RlOiAgcmVtb3RlLAoJCXBlbmRpbmc6IG1ha2UobWFwW3VpbnQ2NF1bXWJ5dGUpLAoJfQoJc3QuY29uZCA9IHN5bmMuTmV3Q29uZCgmc3QubXUpCglyZXR1cm4gc3QKfQoKLy8gZGVsaXZlciByb3V0ZXMgb25lIGZyYW1lIGludG8gdGhlIHJlb3JkZXIgYnVmZmVyLgpmdW5jIChzdCAqbWlzdFN0cmVhbUNvbm4pIGRlbGl2ZXIoZiBtaXN0Y29yZS5VRFBGcmFtZSkgewoJc3QubXUuTG9jaygpCglkZWZlciBzdC5tdS5VbmxvY2soKQoJaWYgc3QuY2xvc2VkIHsKCQlyZXR1cm4KCX0KCXN3aXRjaCBmLlR5cGUgewoJY2FzZSBtaXN0Y29yZS5VRFBGcmFtZVN0cmVhbToKCQlpZiBsZW4oZi5QYXlsb2FkKSA8IDggewoJCQlyZXR1cm4KCQl9CgkJb2ZmIDo9IGJpbmFyeS5CaWdFbmRpYW4uVWludDY0KGYuUGF5bG9hZFs6OF0pCgkJZGF0YSA6PSBhcHBlbmQoW11ieXRlKG5pbCksIGYuUGF5bG9hZFs4Ol0uLi4pCgkJaWYgb2ZmIDwgc3QubmV4dFJlYWQgewoJCQkvLyBSZXRyYW5zbWl0IG92ZXJsYXA6IHRyaW0gYWxyZWFkeS1kZWxpdmVyZWQgcHJlZml4LgoJCQlza2lwIDo9IHN0Lm5leHRSZWFkIC0gb2ZmCgkJCWlmIHNraXAgPj0gdWludDY0KGxlbihkYXRhKSkgewoJCQkJcmV0dXJuCgkJCX0KCQkJZGF0YSA9IGRhdGFbc2tpcDpdCgkJCW9mZiA9IHN0Lm5leHRSZWFkCgkJfQoJCWlmIG9mZiA9PSBzdC5uZXh0UmVhZCB7CgkJCXN0LmJ1ZiA9IGFwcGVuZChzdC5idWYsIGRhdGEuLi4pCgkJCXN0Lm5leHRSZWFkICs9IHVpbnQ2NChsZW4oZGF0YSkpCgkJCS8vIERyYWluIGNvbnRpZ3VvdXMgcGVuZGluZyBjaHVua3MuCgkJCWZvciB7CgkJCQljaHVuaywgb2sgOj0gc3QucGVuZGluZ1tzdC5uZXh0UmVhZF0KCQkJCWlmICFvayB7CgkJCQkJYnJlYWsKCQkJCX0KCQkJCWRlbGV0ZShzdC5wZW5kaW5nLCBzdC5uZXh0UmVhZCkKCQkJCXN0LmJ1ZiA9IGFwcGVuZChzdC5idWYsIGNodW5rLi4uKQoJCQkJc3QubmV4dFJlYWQgKz0gdWludDY0KGxlbihjaHVuaykpCgkJCX0KCQl9IGVsc2UgewoJCQlpZiBfLCBvayA6PSBzdC5wZW5kaW5nW29mZl07ICFvayB7CgkJCQlzdC5wZW5kaW5nW29mZl0gPSBkYXRhCgkJCX0KCQl9CgkJc3QuY29uZC5Ccm9hZGNhc3QoKQoJY2FzZSBtaXN0Y29yZS5VRFBGcmFtZUZpbjoKCQlzdC5lb2YgPSB0cnVlCgkJc3QuY29uZC5Ccm9hZGNhc3QoKQoJY2FzZSBtaXN0Y29yZS5VRFBGcmFtZVJzdDoKCQlzdC5lcnIgPSBlcnJvcnMuTmV3KCJtaXN0OiBzdHJlYW0gcmVzZXQiKQoJCXN0LmNvbmQuQnJvYWRjYXN0KCkKCX0KfQoKLy8gd2FpdFN0YXR1cyByZWFkcyB0aGUgMS1ieXRlIENPTk5FQ1Qgc3RhdHVzIHdpdGggY3R4IHRpbWVvdXQuCmZ1bmMgKHN0ICptaXN0U3RyZWFtQ29ubikgd2FpdFN0YXR1cyhjdHggY29udGV4dC5Db250ZXh0KSBlcnJvciB7CgkvLyAxNXMgZGlhbCB0aW1lb3V0LCBtaXJyb3JpbmcgdGhlIHNlcnZlcidzIGRpYWwgdGltZW91dC4KCWRlYWRsaW5lIDo9IHRpbWUuTm93KCkuQWRkKDE1ICogdGltZS5TZWNvbmQpCglpZiBkLCBvayA6PSBjdHguRGVhZGxpbmUoKTsgb2sgJiYgZC5CZWZvcmUoZGVhZGxpbmUpIHsKCQlkZWFkbGluZSA9IGQKCX0KCV8gPSBzdC5TZXRSZWFkRGVhZGxpbmUoZGVhZGxpbmUpCgkvLyBDbGVhciB0aGUgZGVhZGxpbmUgYmVmb3JlIHJldHVybmluZzogdGhlIGNhbGxlciBnZXRzIGEgZnJlc2gKCS8vIGNvbm4sIGFuZCBhIGxlZnRvdmVyIGRpYWwgZGVhZGxpbmUgd291bGQga2lsbCBsYXRlciByZWFkcy4KCWRlZmVyIHN0LlNldFJlYWREZWFkbGluZSh0aW1lLlRpbWV7fSkKCWIgOj0gbWFrZShbXWJ5dGUsIDEpCglpZiBfLCBlcnIgOj0gc3QuUmVhZChiKTsgZXJyICE9IG5pbCB7CgkJcmV0dXJuIGZtdC5FcnJvcmYoIm1pc3Q6IGNvbm5lY3Qgc3RhdHVzOiAldyIsIGVycikKCX0KCWlmIGJbMF0gPT0gMHgwMSB7CgkJcmV0dXJuIGVycm9ycy5OZXcoIm1pc3Q6IHNlcnZlciBkaWFsIGZhaWxlZCIpCgl9CglpZiBiWzBdICE9IDB4MDAgewoJCXJldHVybiBmbXQuRXJyb3JmKCJtaXN0OiBiYWQgY29ubmVjdCBzdGF0dXMgJWQiLCBiWzBdKQoJfQoJcmV0dXJuIG5pbAp9CgovLyBtYXJrQ2xvc2VkIHVuYmxvY2tzIHJlYWRlcnMvd3JpdGVycyB3aXRoIGVyci4KZnVuYyAoc3QgKm1pc3RTdHJlYW1Db25uKSBtYXJrQ2xvc2VkKGVyciBlcnJvcikgewoJc3QubXUuTG9jaygpCglkZWZlciBzdC5tdS5VbmxvY2soKQoJaWYgc3QuZXJyID09IG5pbCB7CgkJc3QuZXJyID0gZXJyCgl9CglzdC5jbG9zZWQgPSB0cnVlCglzdC5jb25kLkJyb2FkY2FzdCgpCn0KCi8vIFJlYWQgaW1wbGVtZW50cyBuZXQuQ29ubi4KZnVuYyAoc3QgKm1pc3RTdHJlYW1Db25uKSBSZWFkKGIgW11ieXRlKSAoaW50LCBlcnJvcikgewoJc3QubXUuTG9jaygpCglkZWZlciBzdC5tdS5VbmxvY2soKQoJZm9yIGxlbihzdC5idWYpID09IDAgewoJCWlmIHN0LmVyciAhPSBuaWwgewoJCQlyZXR1cm4gMCwgc3QuZXJyCgkJfQoJCWlmIHN0LmVvZiB7CgkJCXJldHVybiAwLCBlcnJFT0YKCQl9CgkJaWYgIXN0LnJlYWRETC5Jc1plcm8oKSB7CgkJCS8vIERlYWRsaW5lIHdhaXQ6IHNwYXduIGEgdGltZXIgYnJvYWRjYXN0LgoJCQlkIDo9IHRpbWUuVW50aWwoc3QucmVhZERMKQoJCQlpZiBkIDw9IDAgewoJCQkJcmV0dXJuIDAsIGVyclRpbWVvdXQKCQkJfQoJCQl0aW1lciA6PSB0aW1lLkFmdGVyRnVuYyhkLCBzdC5jb25kLkJyb2FkY2FzdCkKCQkJc3QuY29uZC5XYWl0KCkKCQkJdGltZXIuU3RvcCgpCgkJCWlmIGxlbihzdC5idWYpID09IDAgJiYgIXN0LmVvZiAmJiBzdC5lcnIgPT0gbmlsICYmIHRpbWUuTm93KCkuQWZ0ZXIoc3QucmVhZERMKSB7CgkJCQlyZXR1cm4gMCwgZXJyVGltZW91dAoJCQl9CgkJCWNvbnRpbnVlCgkJfQoJCXN0LmNvbmQuV2FpdCgpCgl9CgluIDo9IGNvcHkoYiwgc3QuYnVmKQoJc3QuYnVmID0gYXBwZW5kKHN0LmJ1Zls6MDowXSwgc3QuYnVmW246XS4uLikKCXJldHVybiBuLCBuaWwKfQoKLy8gV3JpdGUgaW1wbGVtZW50cyBuZXQuQ29ubi4KZnVuYyAoc3QgKm1pc3RTdHJlYW1Db25uKSBXcml0ZShiIFtdYnl0ZSkgKGludCwgZXJyb3IpIHsKCXN0Lm11LkxvY2soKQoJaWYgc3QuY2xvc2VkIHx8IHN0LmVyciAhPSBuaWwgewoJCWVyciA6PSBzdC5lcnIKCQlzdC5tdS5VbmxvY2soKQoJCWlmIGVyciA9PSBuaWwgewoJCQllcnIgPSBlcnJDbG9zZWQKCQl9CgkJcmV0dXJuIDAsIGVycgoJfQoJb2ZmIDo9IHN0LndyaXRlT2ZmCglzdC5tdS5VbmxvY2soKQoKCS8vIENodW5rIGludG8gZnJhbWVzIHRoYXQgZml0IG9uZSBkYXRhZ3JhbSBwYXlsb2FkLgoJY29uc3QgbWF4Q2h1bmsgPSAxMjAwCglzZW50IDo9IDAKCWMgOj0gc3QuYwoJYy5tdS5Mb2NrKCkKCXNjaGVkIDo9IGMuc2NoZWQKCWMubXUuVW5sb2NrKCkKCWlmIHNjaGVkID09IG5pbCB7CgkJcmV0dXJuIDAsIGVycm9ycy5OZXcoIm1pc3Q6IG5vdCBjb25uZWN0ZWQiKQoJfQoJZm9yIHNlbnQgPCBsZW4oYikgewoJCW4gOj0gbGVuKGIpIC0gc2VudAoJCWlmIG4gPiBtYXhDaHVuayB7CgkJCW4gPSBtYXhDaHVuawoJCX0KCQlmcmFtZSA6PSBtaXN0Y29yZS5FbmNvZGVTdHJlYW1GcmFtZShzdC5zaWQsIG9mZiwgYltzZW50OnNlbnQrbl0pCgkJaWYgZXJyIDo9IHNjaGVkLldyaXRlKFtdW11ieXRle2ZyYW1lfSk7IGVyciAhPSBuaWwgewoJCQlyZXR1cm4gc2VudCwgZXJyCgkJfQoJCW9mZiArPSB1aW50NjQobikKCQlzZW50ICs9IG4KCX0KCXN0Lm11LkxvY2soKQoJc3Qud3JpdGVPZmYgPSBvZmYKCXN0Lm11LlVubG9jaygpCglyZXR1cm4gc2VudCwgbmlsCn0KCi8vIENsb3NlIGltcGxlbWVudHMgbmV0LkNvbm46IHNlbmQgRklOLCBmcmVlIHRoZSBTSUQuCmZ1bmMgKHN0ICptaXN0U3RyZWFtQ29ubikgQ2xvc2UoKSBlcnJvciB7CglzdC5tdS5Mb2NrKCkKCWlmIHN0LmNsb3NlZCB7CgkJc3QubXUuVW5sb2NrKCkKCQlyZXR1cm4gbmlsCgl9CglzdC5jbG9zZWQgPSB0cnVlCglvZmYgOj0gc3Qud3JpdGVPZmYKCXN0Lm11LlVubG9jaygpCgljIDo9IHN0LmMKCWMubXUuTG9jaygpCglzY2hlZCA6PSBjLnNjaGVkCglkZWxldGUoYy5zdHJlYW1zLCBzdC5zaWQpCgljLm11LlVubG9jaygpCglpZiBzY2hlZCAhPSBuaWwgewoJCWZpbiA6PSBtaXN0Y29yZS5FbmNvZGVGaW5GcmFtZShzdC5zaWQsIG9mZikKCQlfID0gc2NoZWQuV3JpdGUoW11bXWJ5dGV7ZmlufSkKCX0KCXN0LmNvbmQuQnJvYWRjYXN0KCkKCXJldHVybiBuaWwKfQoKLy8gQ2xvc2VXcml0ZSBzZW5kcyBGSU4gd2l0aG91dCBjbG9zaW5nIHRoZSByZWFkIHNpZGUuCmZ1bmMgKHN0ICptaXN0U3RyZWFtQ29ubikgQ2xvc2VXcml0ZSgpIGVycm9yIHsKCXN0Lm11LkxvY2soKQoJb2ZmIDo9IHN0LndyaXRlT2ZmCglzdC5tdS5VbmxvY2soKQoJYyA6PSBzdC5jCgljLm11LkxvY2soKQoJc2NoZWQgOj0gYy5zY2hlZAoJYy5tdS5VbmxvY2soKQoJaWYgc2NoZWQgPT0gbmlsIHsKCQlyZXR1cm4gZXJyb3JzLk5ldygibWlzdDogbm90IGNvbm5lY3RlZCIpCgl9CglmaW4gOj0gbWlzdGNvcmUuRW5jb2RlRmluRnJhbWUoc3Quc2lkLCBvZmYpCglyZXR1cm4gc2NoZWQuV3JpdGUoW11bXWJ5dGV7ZmlufSkKfQoKLy8gTG9jYWxBZGRyIC8gUmVtb3RlQWRkciBpbXBsZW1lbnQgbmV0LkNvbm4gKGJlc3QtZWZmb3J0KS4KZnVuYyAoc3QgKm1pc3RTdHJlYW1Db25uKSBMb2NhbEFkZHIoKSBuZXQuQWRkciB7IHJldHVybiAmbmV0LlRDUEFkZHJ7SVA6IG5ldC5JUHY0emVyb30gfQpmdW5jIChzdCAqbWlzdFN0cmVhbUNvbm4pIFJlbW90ZUFkZHIoKSBuZXQuQWRkciB7CglpZiBob3N0LCBwb3J0LCBlcnIgOj0gbmV0LlNwbGl0SG9zdFBvcnQoc3QucmVtb3RlKTsgZXJyID09IG5pbCB7CgkJaWYgcCwgZXJyIDo9IG5ldC5Mb29rdXBQb3J0KCJ0Y3AiLCBwb3J0KTsgZXJyID09IG5pbCB7CgkJCXJldHVybiAmbmV0LlRDUEFkZHJ7SVA6IG5ldC5QYXJzZUlQKGhvc3QpLCBQb3J0OiBwfQoJCX0KCX0KCXJldHVybiAmbmV0LlRDUEFkZHJ7fQp9CgovLyBTZXREZWFkbGluZSBpbXBsZW1lbnRzIG5ldC5Db25uIChyZWFkIHNpZGUgb25seSBpbiBNVlApLgpmdW5jIChzdCAqbWlzdFN0cmVhbUNvbm4pIFNldERlYWRsaW5lKHQgdGltZS5UaW1lKSBlcnJvciB7CglzdC5tdS5Mb2NrKCkKCWRlZmVyIHN0Lm11LlVubG9jaygpCglzdC5yZWFkREwgPSB0CglzdC5jb25kLkJyb2FkY2FzdCgpCglyZXR1cm4gbmlsCn0KCi8vIFNldFJlYWREZWFkbGluZSBpbXBsZW1lbnRzIG5ldC5Db25uLgpmdW5jIChzdCAqbWlzdFN0cmVhbUNvbm4pIFNldFJlYWREZWFkbGluZSh0IHRpbWUuVGltZSkgZXJyb3IgewoJc3QubXUuTG9jaygpCglkZWZlciBzdC5tdS5VbmxvY2soKQoJc3QucmVhZERMID0gdAoJc3QuY29uZC5Ccm9hZGNhc3QoKQoJcmV0dXJuIG5pbAp9CgovLyBTZXRXcml0ZURlYWRsaW5lIGltcGxlbWVudHMgbmV0LkNvbm4gKHdyaXRlcyBhcmUgc2NoZWR1bGVyLXBhY2VkOwovLyBkZWFkbGluZXMgYXJlIGFjY2VwdGVkIGJ1dCBub3QgZW5mb3JjZWQgaW4gdGhlIE1WUCkuCmZ1bmMgKHN0ICptaXN0U3RyZWFtQ29ubikgU2V0V3JpdGVEZWFkbGluZSh0IHRpbWUuVGltZSkgZXJyb3IgeyByZXR1cm4gbmlsIH0KCnZhciAoCgllcnJFT0YgICAgID0gaW8uRU9GCgllcnJUaW1lb3V0ID0gdGltZW91dEVycm9ye30KCWVyckNsb3NlZCAgPSBlcnJvcnMuTmV3KCJtaXN0OiBzdHJlYW0gY2xvc2VkIikKKQoKLy8gdGltZW91dEVycm9yIGlzIGEgbmV0LkVycm9yIGZvciByZWFkIGRlYWRsaW5lcy4KdHlwZSB0aW1lb3V0RXJyb3Igc3RydWN0e30KCmZ1bmMgKHRpbWVvdXRFcnJvcikgRXJyb3IoKSBzdHJpbmcgICB7IHJldHVybiAiaS9vIHRpbWVvdXQiIH0KZnVuYyAodGltZW91dEVycm9yKSBUaW1lb3V0KCkgYm9vbCAgIHsgcmV0dXJuIHRydWUgfQpmdW5jICh0aW1lb3V0RXJyb3IpIFRlbXBvcmFyeSgpIGJvb2wgeyByZXR1cm4gdHJ1ZSB9Cg==
+// Mist UDP client for the independent framework.
+//
+// Handshake and data path replicate the proven mist-udp-test flow:
+// QUIC Initial (Phase 0) + AUTH/AUTH_OK + X25519 session keys, then
+// UDPSession + send scheduler + reliability layer.
+//
+// Stream protocol (client contract; mirrors the TCP mux path):
+//   - SYN opens a stream (SID >= 1).
+//   - First STREAM payload is EncodeConnectReq(atyp, addr, port).
+//   - Server replies with one status byte on the same stream:
+//     0x00 = connected, 0x01 = dial failed. Payload data follows
+//     immediately after the status byte (offset 1+).
+//
+// Datagrams (UDP relay) use UDPFrameDatagram frames whose payload is
+// EncodeDatagram(atyp, addr, port, data); responses carry the original
+// target as their source address.
+//
+// NOTE: the current production UDP server is lab echo mode (it echoes
+// STREAM frames, no CONNECT/dial). The server-side UDP proxy upgrade
+// (CONNECT + dial + UDP relay on the UDP data path) is a separate task;
+// this client implements the contract it will speak.
+package core
+
+import (
+	"context"
+	"crypto/hmac"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/base64"
+	"encoding/binary"
+	"encoding/hex"
+	"errors"
+	"fmt"
+	"io"
+	"net"
+	"net/url"
+	"strings"
+	"sync"
+	"time"
+
+	"mist/mistcore"
+)
+
+// MistConfig configures a Mist UDP client.
+type MistConfig struct {
+	Server   string // "host:port" of the Mist UDP server
+	ClientID string // 32 hex chars (16 bytes)
+	AuthKey  string // base64 std, 32 bytes
+	SNI      string // reserved for the TLS path; unused by UDP
+}
+
+// ParseMistURL parses a mist:// node link:
+// mist://<cidHex>@<host>:<port>?key=<base64url>&sni=<domain>#<name>
+func ParseMistURL(raw string) (*MistConfig, error) {
+	u, err := url.Parse(raw)
+	if err != nil {
+		return nil, err
+	}
+	if u.Scheme != "mist" {
+		return nil, fmt.Errorf("mist: not a mist:// link")
+	}
+	cid := u.User.Username()
+	if len(cid) != 32 {
+		return nil, fmt.Errorf("mist: clientId must be 32 hex chars")
+	}
+	if _, err := hex.DecodeString(cid); err != nil {
+		return nil, fmt.Errorf("mist: bad clientId hex: %w", err)
+	}
+	host := u.Host
+	if host == "" {
+		return nil, fmt.Errorf("mist: missing host")
+	}
+	keyURL := u.Query().Get("key")
+	if keyURL == "" {
+		return nil, fmt.Errorf("mist: missing key")
+	}
+	// base64url -> base64 std.
+	keyStd := strings.ReplaceAll(strings.ReplaceAll(keyURL, "-", "+"), "_", "/")
+	switch len(keyStd) % 4 {
+	case 2:
+		keyStd += "=="
+	case 3:
+		keyStd += "="
+	}
+	keyBytes, err := base64.StdEncoding.DecodeString(keyStd)
+	if err != nil || len(keyBytes) != 32 {
+		return nil, fmt.Errorf("mist: key must be 32 bytes base64")
+	}
+	return &MistConfig{
+		Server:   host,
+		ClientID: strings.ToLower(cid),
+		AuthKey:  keyStd,
+		SNI:      u.Query().Get("sni"),
+	}, nil
+}
+
+// MistUDPClient is a Mist UDP protocol client (ProtocolClient).
+type MistUDPClient struct {
+	cfg   MistConfig
+	cid   [16]byte
+	kAuth [32]byte
+
+	mu      sync.Mutex
+	conn    *net.UDPConn
+	udpAddr *net.UDPAddr
+	session *mistcore.UDPSession
+	sched   *mistcore.UDPSendScheduler
+	codec   *mistcore.QUICInitialCodec
+	nextSID byte
+	streams map[byte]*mistStreamConn
+	dgH     DatagramHandler
+	closed  bool
+	done    chan struct{}
+	wg      sync.WaitGroup
+}
+
+// NewMistUDPClient parses cfg and prepares (but does not connect) a client.
+func NewMistUDPClient(cfg MistConfig) (*MistUDPClient, error) {
+	cidBytes, err := hex.DecodeString(cfg.ClientID)
+	if err != nil || len(cidBytes) != 16 {
+		return nil, errors.New("mist: clientId must be 16 bytes hex")
+	}
+	keyBytes, err := base64.StdEncoding.DecodeString(cfg.AuthKey)
+	if err != nil || len(keyBytes) != 32 {
+		return nil, errors.New("mist: authKey must be 32 bytes base64")
+	}
+	c := &MistUDPClient{
+		cfg:     cfg,
+		codec:   &mistcore.QUICInitialCodec{},
+		nextSID: 1,
+		streams: make(map[byte]*mistStreamConn),
+		done:    make(chan struct{}),
+	}
+	copy(c.cid[:], cidBytes)
+	copy(c.kAuth[:], keyBytes)
+	return c, nil
+}
+
+// Name implements ProtocolClient.
+func (c *MistUDPClient) Name() string { return "mist" }
+
+// Connect performs the Mist UDP handshake. Safe to call repeatedly;
+// subsequent calls return the existing session.
+func (c *MistUDPClient) Connect(ctx context.Context) error {
+	c.mu.Lock()
+	if c.session != nil {
+		c.mu.Unlock()
+		return nil
+	}
+	c.mu.Unlock()
+
+	udpAddr, err := mistcore.ResolvePeerAddrSafe(ctx, c.cfg.Server, c.codec)
+	if err != nil {
+		return fmt.Errorf("mist: safety gate: %w", err)
+	}
+	conn, err := net.ListenUDP("udp", nil)
+	if err != nil {
+		return fmt.Errorf("mist: listen: %w", err)
+	}
+	session, err := c.handshake(ctx, conn, udpAddr)
+	if err != nil {
+		conn.Close()
+		return err
+	}
+
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if c.closed {
+		conn.Close()
+		return errors.New("mist: client closed")
+	}
+	// Another goroutine may have connected first; prefer the first session.
+	if c.session != nil {
+		conn.Close()
+		return nil
+	}
+	c.conn = conn
+	c.udpAddr = udpAddr
+	c.session = session
+	c.sched = mistcore.NewUDPSendScheduler(session, mistcore.DirC2S, func(pkt []byte) error {
+		_, err := conn.WriteToUDP(pkt, udpAddr)
+		return err
+	})
+	// Reliability callbacks (same pattern as mist-udp-test).
+	session.Rel.OnAckNeeded = func(largest uint32, ranges [][2]uint32, ackDelay time.Duration) {
+		ack := mistcore.EncodeAckFrame(0, largest, ackDelay, ranges)
+		pkt, err := session.SealPacketUntracked(mistcore.DirC2S, [][]byte{ack})
+		if err != nil {
+			return
+		}
+		_, _ = conn.WriteToUDP(pkt, udpAddr)
+	}
+	session.Rel.OnRetransmit = func(frames [][]byte) error {
+		c.sched.WriteRetransmitChunked(frames)
+		return nil
+	}
+	c.sched.Start()
+	c.wg.Add(2)
+	go c.readPump()
+	go c.tickLoop()
+	return nil
+}
+
+// handshake runs Initial + AUTH + AUTH_OK and returns a live session.
+func (c *MistUDPClient) handshake(ctx context.Context, conn *net.UDPConn, udpAddr *net.UDPAddr) (*mistcore.UDPSession, error) {
+	ephPriv, ephPub, err := mistcore.X25519Keypair()
+	if err != nil {
+		return nil, err
+	}
+	// AUTH plaintext: [VER(1)=0x02][TS(8)][EPH_PUB(32)][FEAT(1)][MODE(1)][RSVD(2)]
+	authPlain := make([]byte, 45)
+	authPlain[0] = 0x02
+	binary.BigEndian.PutUint64(authPlain[1:9], uint64(time.Now().Unix()))
+	copy(authPlain[9:41], ephPub[:])
+
+	var response []byte
+	var scid [8]byte
+	for attempt := 0; attempt < 4; attempt++ {
+		var nonce [24]byte
+		if _, err := rand.Read(nonce[:]); err != nil {
+			return nil, err
+		}
+		if _, err := rand.Read(scid[:]); err != nil {
+			return nil, err
+		}
+		mac := hmac.New(sha256.New, c.kAuth[:])
+		mac.Write(nonce[:])
+		var handshakeCID [16]byte
+		copy(handshakeCID[:], mac.Sum(nil)[:16])
+		ciphertext, err := mistcore.UDPSeal(&c.kAuth, nonce, authPlain, handshakeCID[:])
+		if err != nil {
+			return nil, err
+		}
+		authWire := make([]byte, 0, 16+24+len(ciphertext))
+		authWire = append(authWire, handshakeCID[:]...)
+		authWire = append(authWire, nonce[:]...)
+		authWire = append(authWire, ciphertext...)
+		var dcid [8]byte
+		initial, err := c.codec.SealInitial(authWire, dcid, scid, 0)
+		if err != nil {
+			return nil, err
+		}
+		if _, err := conn.WriteToUDP(initial, udpAddr); err != nil {
+			return nil, err
+		}
+		conn.SetReadDeadline(time.Now().Add(1 * time.Second))
+		buf := make([]byte, 2048)
+		n, _, err := conn.ReadFromUDP(buf)
+		if err == nil {
+			response = append([]byte(nil), buf[:n]...)
+			break
+		}
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		default:
+		}
+	}
+	if response == nil {
+		return nil, errors.New("mist: handshake timeout")
+	}
+	authOKWire, respDCID, _, _, err := c.codec.OpenInitialResponse(response)
+	if err != nil {
+		return nil, fmt.Errorf("mist: auth_ok parse: %w", err)
+	}
+	if respDCID != scid {
+		return nil, errors.New("mist: DCID mismatch")
+	}
+	if len(authOKWire) < 24+16 {
+		return nil, errors.New("mist: auth_ok too short")
+	}
+	var okNonce [24]byte
+	copy(okNonce[:], authOKWire[:24])
+	okPlain, err := mistcore.UDPOpen(&c.kAuth, okNonce, authOKWire[24:], nil)
+	if err != nil {
+		return nil, fmt.Errorf("mist: auth_ok decrypt: %w", err)
+	}
+	if len(okPlain) < 48 {
+		return nil, errors.New("mist: auth_ok plain too short")
+	}
+	var srvEphPub [32]byte
+	copy(srvEphPub[:], okPlain[0:32])
+	var sessionID [16]byte
+	copy(sessionID[:], okPlain[32:48])
+	shared, err := mistcore.X25519Shared(&ephPriv, &srvEphPub)
+	if err != nil {
+		return nil, err
+	}
+	kC2S, kS2C := mistcore.DeriveSessionKeys(ephPub, srvEphPub, shared)
+	return mistcore.NewUDPSession(sessionID, kC2S, kS2C, udpAddr, c.codec), nil
+}
+
+// readPump decrypts incoming datagrams and dispatches frames.
+func (c *MistUDPClient) readPump() {
+	defer c.wg.Done()
+	buf := make([]byte, 65535)
+	for {
+		c.mu.Lock()
+		conn := c.conn
+		c.mu.Unlock()
+		if conn == nil {
+			return
+		}
+		conn.SetReadDeadline(time.Now().Add(500 * time.Millisecond))
+		n, _, err := conn.ReadFromUDP(buf)
+		if err != nil {
+			select {
+			case <-c.done:
+				return
+			default:
+			}
+			if ne, ok := err.(net.Error); ok && ne.Timeout() {
+				continue
+			}
+			return
+		}
+		c.mu.Lock()
+		session := c.session
+		c.mu.Unlock()
+		if session == nil {
+			continue
+		}
+		frames, _, err := session.OpenPacket(mistcore.DirS2C, buf[:n])
+		if err != nil {
+			continue // decrypt failed; ignore
+		}
+		for _, f := range frames {
+			c.dispatch(f)
+		}
+		session.Tick()
+	}
+}
+
+// tickLoop flushes ACKs and scans RTOs every 10ms (server does the same).
+func (c *MistUDPClient) tickLoop() {
+	defer c.wg.Done()
+	t := time.NewTicker(10 * time.Millisecond)
+	defer t.Stop()
+	for {
+		select {
+		case <-c.done:
+			return
+		case <-t.C:
+			c.mu.Lock()
+			session := c.session
+			c.mu.Unlock()
+			if session != nil {
+				session.Tick()
+			}
+		}
+	}
+}
+
+// dispatch routes one decoded frame.
+func (c *MistUDPClient) dispatch(f mistcore.UDPFrame) {
+	switch f.Type {
+	case mistcore.UDPFrameAck:
+		largest, ackDelay, ranges, err := mistcore.DecodeAckFrame(f.Payload)
+		if err == nil {
+			c.mu.Lock()
+			session := c.session
+			c.mu.Unlock()
+			if session != nil {
+				session.Rel.ProcessAck(largest, ackDelay, ranges)
+			}
+		}
+	case mistcore.UDPFrameStream, mistcore.UDPFrameFin, mistcore.UDPFrameRst:
+		c.mu.Lock()
+		st := c.streams[f.SID]
+		c.mu.Unlock()
+		if st != nil {
+			st.deliver(f)
+		}
+	case mistcore.UDPFrameDatagram:
+		_, addr, port, data, err := mistcore.DecodeDatagram(f.Payload)
+		if err != nil {
+			return
+		}
+		c.mu.Lock()
+		h := c.dgH
+		c.mu.Unlock()
+		if h != nil {
+			h(fmt.Sprintf("%s:%d", net.IP(addr).String(), port), data)
+		}
+	case mistcore.UDPFramePing:
+		// Reply PONG (untracked: PONGs are never ACKed).
+		c.mu.Lock()
+		session, sched := c.session, c.sched
+		conn, udpAddr := c.conn, c.udpAddr
+		c.mu.Unlock()
+		if session != nil && conn != nil {
+			_ = sched // scheduler not used for untracked frames
+			pong := mistcore.EncodeUDPFrame(mistcore.UDPFramePong, 0, nil)
+			if pkt, err := session.SealPacketUntracked(mistcore.DirC2S, [][]byte{pong}); err == nil {
+				_, _ = conn.WriteToUDP(pkt, udpAddr)
+			}
+		}
+	}
+}
+
+// OnDatagram sets the handler for inbound relay datagrams.
+func (c *MistUDPClient) OnDatagram(h DatagramHandler) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.dgH = h
+}
+
+// SendDatagram sends a UDP relay datagram to target ("ip:port").
+func (c *MistUDPClient) SendDatagram(target string, data []byte) error {
+	host, portStr, err := net.SplitHostPort(target)
+	if err != nil {
+		return err
+	}
+	port, err := net.LookupPort("udp", portStr)
+	if err != nil {
+		return err
+	}
+	ip := net.ParseIP(host)
+	if ip == nil {
+		return fmt.Errorf("mist: datagram target must be an IP: %s", host)
+	}
+	var atyp byte
+	var addr []byte
+	if ip4 := ip.To4(); ip4 != nil {
+		atyp, addr = mistcore.ATypIPv4, []byte(ip4)
+	} else {
+		atyp, addr = mistcore.ATypIPv6, []byte(ip.To16())
+	}
+	dg := mistcore.EncodeDatagram(atyp, addr, uint16(port), data)
+	frame := mistcore.EncodeUDPFrame(mistcore.UDPFrameDatagram, 0, dg)
+	c.mu.Lock()
+	sched := c.sched
+	c.mu.Unlock()
+	if sched == nil {
+		return errors.New("mist: not connected")
+	}
+	return sched.Write([][]byte{frame})
+}
+
+// Dial implements ProtocolClient: open a Mist stream to addr ("host:port").
+func (c *MistUDPClient) Dial(ctx context.Context, addr string) (net.Conn, error) {
+	if err := c.Connect(ctx); err != nil {
+		return nil, err
+	}
+	host, portStr, err := net.SplitHostPort(addr)
+	if err != nil {
+		return nil, err
+	}
+	port, err := net.LookupPort("tcp", portStr)
+	if err != nil {
+		return nil, err
+	}
+	var atyp byte
+	var ab []byte
+	if ip := net.ParseIP(host); ip != nil {
+		if ip4 := ip.To4(); ip4 != nil {
+			atyp, ab = mistcore.ATypIPv4, []byte(ip4)
+		} else {
+			atyp, ab = mistcore.ATypIPv6, []byte(ip.To16())
+		}
+	} else {
+		atyp, ab = mistcore.ATypDomain, []byte(host)
+	}
+	connReq := mistcore.EncodeConnectReq(atyp, ab, uint16(port))
+
+	c.mu.Lock()
+	sid := c.nextSID
+	c.nextSID++
+	if c.nextSID == 0 {
+		c.nextSID = 1
+	}
+	st := newMistStreamConn(c, sid, addr)
+	c.streams[sid] = st
+	sched := c.sched
+	c.mu.Unlock()
+
+	// SYN + CONNECT in one batch.
+	syn := mistcore.EncodeUDPFrame(mistcore.UDPFrameSyn, sid, nil)
+	first := mistcore.EncodeStreamFrame(sid, 0, connReq)
+	if err := sched.Write([][]byte{syn, first}); err != nil {
+		c.dropStream(sid)
+		return nil, err
+	}
+	// Wait for the 1-byte status: 0x00 = connected, 0x01 = failed.
+	// The status byte is offset 0; payload data starts at offset 1.
+	if err := st.waitStatus(ctx); err != nil {
+		c.dropStream(sid)
+		return nil, err
+	}
+	// CONNECT request occupies offset [0, len(connReq)).
+	// Subsequent Write data must start after it, not overlap.
+	st.mu.Lock()
+	st.writeOff = uint64(len(connReq))
+	st.mu.Unlock()
+	return st, nil
+}
+
+// dropStream removes a stream (on dial failure).
+func (c *MistUDPClient) dropStream(sid byte) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if st, ok := c.streams[sid]; ok {
+		st.markClosed(errors.New("mist: stream dropped"))
+		delete(c.streams, sid)
+	}
+}
+
+// Close implements ProtocolClient.
+func (c *MistUDPClient) Close() error {
+	c.mu.Lock()
+	if c.closed {
+		c.mu.Unlock()
+		return nil
+	}
+	c.closed = true
+	close(c.done)
+	conn, sched := c.conn, c.sched
+	streams := c.streams
+	c.streams = make(map[byte]*mistStreamConn)
+	c.mu.Unlock()
+	for _, st := range streams {
+		st.markClosed(errors.New("mist: client closed"))
+	}
+	if sched != nil {
+		sched.Stop()
+	}
+	if conn != nil {
+		conn.Close()
+	}
+	c.wg.Wait()
+	return nil
+}
+
+// ---------------------------------------------------------------------------
+// Stream connection (net.Conn over one Mist stream)
+// ---------------------------------------------------------------------------
+
+// mistStreamConn is one Mist stream exposed as net.Conn.
+// Reads reassemble STREAM frames by offset (duplicates/out-of-order
+// from retransmissions are handled); writes chunk into frames.
+type mistStreamConn struct {
+	c      *MistUDPClient
+	sid    byte
+	remote string
+
+	mu       sync.Mutex
+	cond     *sync.Cond
+	buf      []byte            // contiguous bytes ready to read
+	pending  map[uint64][]byte // out-of-order chunks by offset
+	nextRead uint64            // next offset to deliver
+	writeOff uint64
+	eof      bool
+	closed   bool
+	err      error
+	readDL   time.Time
+}
+
+func newMistStreamConn(c *MistUDPClient, sid byte, remote string) *mistStreamConn {
+	st := &mistStreamConn{
+		c:       c,
+		sid:     sid,
+		remote:  remote,
+		pending: make(map[uint64][]byte),
+	}
+	st.cond = sync.NewCond(&st.mu)
+	return st
+}
+
+// deliver routes one frame into the reorder buffer.
+func (st *mistStreamConn) deliver(f mistcore.UDPFrame) {
+	st.mu.Lock()
+	defer st.mu.Unlock()
+	if st.closed {
+		return
+	}
+	switch f.Type {
+	case mistcore.UDPFrameStream:
+		if len(f.Payload) < 8 {
+			return
+		}
+		off := binary.BigEndian.Uint64(f.Payload[:8])
+		data := append([]byte(nil), f.Payload[8:]...)
+		if off < st.nextRead {
+			// Retransmit overlap: trim already-delivered prefix.
+			skip := st.nextRead - off
+			if skip >= uint64(len(data)) {
+				return
+			}
+			data = data[skip:]
+			off = st.nextRead
+		}
+		if off == st.nextRead {
+			st.buf = append(st.buf, data...)
+			st.nextRead += uint64(len(data))
+			// Drain contiguous pending chunks.
+			for {
+				chunk, ok := st.pending[st.nextRead]
+				if !ok {
+					break
+				}
+				delete(st.pending, st.nextRead)
+				st.buf = append(st.buf, chunk...)
+				st.nextRead += uint64(len(chunk))
+			}
+		} else {
+			if _, ok := st.pending[off]; !ok {
+				st.pending[off] = data
+			}
+		}
+		st.cond.Broadcast()
+	case mistcore.UDPFrameFin:
+		st.eof = true
+		st.cond.Broadcast()
+	case mistcore.UDPFrameRst:
+		st.err = errors.New("mist: stream reset")
+		st.cond.Broadcast()
+	}
+}
+
+// waitStatus reads the 1-byte CONNECT status with ctx timeout.
+func (st *mistStreamConn) waitStatus(ctx context.Context) error {
+	// 15s dial timeout, mirroring the server's dial timeout.
+	deadline := time.Now().Add(15 * time.Second)
+	if d, ok := ctx.Deadline(); ok && d.Before(deadline) {
+		deadline = d
+	}
+	_ = st.SetReadDeadline(deadline)
+	// Clear the deadline before returning: the caller gets a fresh
+	// conn, and a leftover dial deadline would kill later reads.
+	defer st.SetReadDeadline(time.Time{})
+	b := make([]byte, 1)
+	if _, err := st.Read(b); err != nil {
+		return fmt.Errorf("mist: connect status: %w", err)
+	}
+	if b[0] == 0x01 {
+		return errors.New("mist: server dial failed")
+	}
+	if b[0] != 0x00 {
+		return fmt.Errorf("mist: bad connect status %d", b[0])
+	}
+	return nil
+}
+
+// markClosed unblocks readers/writers with err.
+func (st *mistStreamConn) markClosed(err error) {
+	st.mu.Lock()
+	defer st.mu.Unlock()
+	if st.err == nil {
+		st.err = err
+	}
+	st.closed = true
+	st.cond.Broadcast()
+}
+
+// Read implements net.Conn.
+func (st *mistStreamConn) Read(b []byte) (int, error) {
+	st.mu.Lock()
+	defer st.mu.Unlock()
+	for len(st.buf) == 0 {
+		if st.err != nil {
+			return 0, st.err
+		}
+		if st.eof {
+			return 0, errEOF
+		}
+		if !st.readDL.IsZero() {
+			// Deadline wait: spawn a timer broadcast.
+			d := time.Until(st.readDL)
+			if d <= 0 {
+				return 0, errTimeout
+			}
+			timer := time.AfterFunc(d, st.cond.Broadcast)
+			st.cond.Wait()
+			timer.Stop()
+			if len(st.buf) == 0 && !st.eof && st.err == nil && time.Now().After(st.readDL) {
+				return 0, errTimeout
+			}
+			continue
+		}
+		st.cond.Wait()
+	}
+	n := copy(b, st.buf)
+	st.buf = append(st.buf[:0:0], st.buf[n:]...)
+	return n, nil
+}
+
+// Write implements net.Conn.
+func (st *mistStreamConn) Write(b []byte) (int, error) {
+	st.mu.Lock()
+	if st.closed || st.err != nil {
+		err := st.err
+		st.mu.Unlock()
+		if err == nil {
+			err = errClosed
+		}
+		return 0, err
+	}
+	off := st.writeOff
+	st.mu.Unlock()
+
+	// Chunk into frames that fit one datagram payload.
+	const maxChunk = 1200
+	sent := 0
+	c := st.c
+	c.mu.Lock()
+	sched := c.sched
+	c.mu.Unlock()
+	if sched == nil {
+		return 0, errors.New("mist: not connected")
+	}
+	for sent < len(b) {
+		n := len(b) - sent
+		if n > maxChunk {
+			n = maxChunk
+		}
+		frame := mistcore.EncodeStreamFrame(st.sid, off, b[sent:sent+n])
+		if err := sched.Write([][]byte{frame}); err != nil {
+			return sent, err
+		}
+		off += uint64(n)
+		sent += n
+	}
+	st.mu.Lock()
+	st.writeOff = off
+	st.mu.Unlock()
+	return sent, nil
+}
+
+// Close implements net.Conn: send FIN, free the SID.
+func (st *mistStreamConn) Close() error {
+	st.mu.Lock()
+	if st.closed {
+		st.mu.Unlock()
+		return nil
+	}
+	st.closed = true
+	off := st.writeOff
+	st.mu.Unlock()
+	c := st.c
+	c.mu.Lock()
+	sched := c.sched
+	delete(c.streams, st.sid)
+	c.mu.Unlock()
+	if sched != nil {
+		fin := mistcore.EncodeFinFrame(st.sid, off)
+		_ = sched.Write([][]byte{fin})
+	}
+	st.cond.Broadcast()
+	return nil
+}
+
+// CloseWrite sends FIN without closing the read side.
+func (st *mistStreamConn) CloseWrite() error {
+	st.mu.Lock()
+	off := st.writeOff
+	st.mu.Unlock()
+	c := st.c
+	c.mu.Lock()
+	sched := c.sched
+	c.mu.Unlock()
+	if sched == nil {
+		return errors.New("mist: not connected")
+	}
+	fin := mistcore.EncodeFinFrame(st.sid, off)
+	return sched.Write([][]byte{fin})
+}
+
+// LocalAddr / RemoteAddr implement net.Conn (best-effort).
+func (st *mistStreamConn) LocalAddr() net.Addr { return &net.TCPAddr{IP: net.IPv4zero} }
+func (st *mistStreamConn) RemoteAddr() net.Addr {
+	if host, port, err := net.SplitHostPort(st.remote); err == nil {
+		if p, err := net.LookupPort("tcp", port); err == nil {
+			return &net.TCPAddr{IP: net.ParseIP(host), Port: p}
+		}
+	}
+	return &net.TCPAddr{}
+}
+
+// SetDeadline implements net.Conn (read side only in MVP).
+func (st *mistStreamConn) SetDeadline(t time.Time) error {
+	st.mu.Lock()
+	defer st.mu.Unlock()
+	st.readDL = t
+	st.cond.Broadcast()
+	return nil
+}
+
+// SetReadDeadline implements net.Conn.
+func (st *mistStreamConn) SetReadDeadline(t time.Time) error {
+	st.mu.Lock()
+	defer st.mu.Unlock()
+	st.readDL = t
+	st.cond.Broadcast()
+	return nil
+}
+
+// SetWriteDeadline implements net.Conn (writes are scheduler-paced;
+// deadlines are accepted but not enforced in the MVP).
+func (st *mistStreamConn) SetWriteDeadline(t time.Time) error { return nil }
+
+var (
+	errEOF     = io.EOF
+	errTimeout = timeoutError{}
+	errClosed  = errors.New("mist: stream closed")
+)
+
+// timeoutError is a net.Error for read deadlines.
+type timeoutError struct{}
+
+func (timeoutError) Error() string   { return "i/o timeout" }
+func (timeoutError) Timeout() bool   { return true }
+func (timeoutError) Temporary() bool { return true }

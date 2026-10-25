@@ -1,1 +1,312 @@
-cGFja2FnZSBjb3JlCgppbXBvcnQgKAoJImNvbnRleHQiCgkiZXJyb3JzIgoJIm5ldCIKCSJzeW5jIgoJInRlc3RpbmciCgkidGltZSIKKQoKLy8gbW9ja1RVTiBpcyBhIGNoYW5uZWwtYmFja2VkIFRVTkRldmljZSBmb3IgdGVzdHMuCnR5cGUgbW9ja1RVTiBzdHJ1Y3QgewoJcmVhZENoICBjaGFuIFtdYnl0ZQoJd3JpdGVDaCBjaGFuIFtdYnl0ZQoJZG9uZSAgICBjaGFuIHN0cnVjdHt9CglvbmNlICAgIHN5bmMuT25jZQp9CgpmdW5jIG5ld01vY2tUVU4oKSAqbW9ja1RVTiB7CglyZXR1cm4gJm1vY2tUVU57CgkJcmVhZENoOiAgbWFrZShjaGFuIFtdYnl0ZSwgMTYpLAoJCXdyaXRlQ2g6IG1ha2UoY2hhbiBbXWJ5dGUsIDE2KSwKCQlkb25lOiAgICBtYWtlKGNoYW4gc3RydWN0e30pLAoJfQp9CgpmdW5jIChtICptb2NrVFVOKSBSZWFkKGIgW11ieXRlKSAoaW50LCBlcnJvcikgewoJc2VsZWN0IHsKCWNhc2UgcGt0IDo9IDwtbS5yZWFkQ2g6CgkJcmV0dXJuIGNvcHkoYiwgcGt0KSwgbmlsCgljYXNlIDwtbS5kb25lOgoJCXJldHVybiAwLCBlcnJvcnMuTmV3KCJ0dW4gY2xvc2VkIikKCX0KfQoKZnVuYyAobSAqbW9ja1RVTikgV3JpdGUoYiBbXWJ5dGUpIChpbnQsIGVycm9yKSB7Cglwa3QgOj0gYXBwZW5kKFtdYnl0ZShuaWwpLCBiLi4uKQoJc2VsZWN0IHsKCWNhc2UgbS53cml0ZUNoIDwtIHBrdDoKCQlyZXR1cm4gbGVuKGIpLCBuaWwKCWNhc2UgPC1tLmRvbmU6CgkJcmV0dXJuIDAsIGVycm9ycy5OZXcoInR1biBjbG9zZWQiKQoJfQp9CgpmdW5jIChtICptb2NrVFVOKSBDbG9zZSgpIGVycm9yIHsKCW0ub25jZS5EbyhmdW5jKCkgeyBjbG9zZShtLmRvbmUpIH0pCglyZXR1cm4gbmlsCn0KCi8vIG1vY2tDbGllbnQgaW1wbGVtZW50cyBQcm90b2NvbENsaWVudCArIERhdGFncmFtQ2xpZW50Lgp0eXBlIG1vY2tDbGllbnQgc3RydWN0IHsKCW11ICAgICAgIHN5bmMuTXV0ZXgKCWRpYWxlZCAgIFtdc3RyaW5nCglkZ1NlbnQgICBbXWRnUmVjb3JkCglkZ0ggICAgICBEYXRhZ3JhbUhhbmRsZXIKCWRpYWxGdW5jIGZ1bmMoYWRkciBzdHJpbmcpIChuZXQuQ29ubiwgZXJyb3IpCn0KCnR5cGUgZGdSZWNvcmQgc3RydWN0IHsKCXRhcmdldCBzdHJpbmcKCWRhdGEgICBbXWJ5dGUKfQoKZnVuYyAoYyAqbW9ja0NsaWVudCkgTmFtZSgpIHN0cmluZyB7IHJldHVybiAibW9jayIgfQoKZnVuYyAoYyAqbW9ja0NsaWVudCkgRGlhbChjdHggY29udGV4dC5Db250ZXh0LCBhZGRyIHN0cmluZykgKG5ldC5Db25uLCBlcnJvcikgewoJYy5tdS5Mb2NrKCkKCWMuZGlhbGVkID0gYXBwZW5kKGMuZGlhbGVkLCBhZGRyKQoJZm4gOj0gYy5kaWFsRnVuYwoJYy5tdS5VbmxvY2soKQoJaWYgZm4gIT0gbmlsIHsKCQlyZXR1cm4gZm4oYWRkcikKCX0KCWNsaSwgc3J2IDo9IG5ldC5QaXBlKCkKCV8gPSBzcnYgLy8gaGVsZCBieSB0aGUgdGVzdCB2aWEgZGlhbEZ1bmMgbm9ybWFsbHk7IGRlZmF1bHQ6IGNsb3NlIGl0CglnbyBmdW5jKCkgewoJCWJ1ZiA6PSBtYWtlKFtdYnl0ZSwgNDA5NikKCQlmb3IgewoJCQlpZiBfLCBlcnIgOj0gc3J2LlJlYWQoYnVmKTsgZXJyICE9IG5pbCB7CgkJCQlyZXR1cm4KCQkJfQoJCX0KCX0oKQoJcmV0dXJuIGNsaSwgbmlsCn0KCmZ1bmMgKGMgKm1vY2tDbGllbnQpIENsb3NlKCkgZXJyb3IgeyByZXR1cm4gbmlsIH0KCmZ1bmMgKGMgKm1vY2tDbGllbnQpIFNlbmREYXRhZ3JhbSh0YXJnZXQgc3RyaW5nLCBkYXRhIFtdYnl0ZSkgZXJyb3IgewoJYy5tdS5Mb2NrKCkKCWRlZmVyIGMubXUuVW5sb2NrKCkKCWMuZGdTZW50ID0gYXBwZW5kKGMuZGdTZW50LCBkZ1JlY29yZHt0YXJnZXQsIGFwcGVuZChbXWJ5dGUobmlsKSwgZGF0YS4uLil9KQoJcmV0dXJuIG5pbAp9CgpmdW5jIChjICptb2NrQ2xpZW50KSBPbkRhdGFncmFtKGggRGF0YWdyYW1IYW5kbGVyKSB7CgljLm11LkxvY2soKQoJZGVmZXIgYy5tdS5VbmxvY2soKQoJYy5kZ0ggPSBoCn0KCmZ1bmMgKGMgKm1vY2tDbGllbnQpIGVtaXREYXRhZ3JhbShzcmNBZGRyIHN0cmluZywgZGF0YSBbXWJ5dGUpIHsKCWMubXUuTG9jaygpCgloIDo9IGMuZGdICgljLm11LlVubG9jaygpCglpZiBoICE9IG5pbCB7CgkJaChzcmNBZGRyLCBkYXRhKQoJfQp9CgpmdW5jIHdhaXRGb3IodCAqdGVzdGluZy5ULCB3aGF0IHN0cmluZywgY29uZCBmdW5jKCkgYm9vbCkgewoJdC5IZWxwZXIoKQoJZGVhZGxpbmUgOj0gdGltZS5Ob3coKS5BZGQoMyAqIHRpbWUuU2Vjb25kKQoJZm9yIHRpbWUuTm93KCkuQmVmb3JlKGRlYWRsaW5lKSB7CgkJaWYgY29uZCgpIHsKCQkJcmV0dXJuCgkJfQoJCXRpbWUuU2xlZXAoMTAgKiB0aW1lLk1pbGxpc2Vjb25kKQoJfQoJdC5GYXRhbGYoInRpbWVvdXQgd2FpdGluZyBmb3IgJXMiLCB3aGF0KQp9CgpmdW5jIFRlc3RFbmdpbmVVRFB2NCh0ICp0ZXN0aW5nLlQpIHsKCXR1biA6PSBuZXdNb2NrVFVOKCkKCWNsaSA6PSAmbW9ja0NsaWVudHt9CgllIDo9IE5ld0VuZ2luZShFbmdpbmVDb25maWd7VFVOOiB0dW4sIENsaWVudDogY2xpfSkKCWN0eCwgY2FuY2VsIDo9IGNvbnRleHQuV2l0aENhbmNlbChjb250ZXh0LkJhY2tncm91bmQoKSkKCWRlZmVyIGNhbmNlbCgpCglnbyBlLlJ1bihjdHgpCgoJYXBwSVAgOj0gbmV0LlBhcnNlSVAoIjEwLjAuMC4yIikKCWRuc0lQIDo9IG5ldC5QYXJzZUlQKCI4LjguOC44IikKCXNlZyA6PSBCdWlsZFVEUChhcHBJUCwgZG5zSVAsIDEyMzQ1LCA1MywgW11ieXRlKCJoZWxsby1kbnMiKSkKCXBrdCA6PSBCdWlsZElQdjQoYXBwSVAsIGRuc0lQLCBQcm90b1VEUCwgMSwgc2VnKQoJdHVuLnJlYWRDaCA8LSBwa3QKCgl3YWl0Rm9yKHQsICJkYXRhZ3JhbSBmb3J3YXJkIiwgZnVuYygpIGJvb2wgewoJCWNsaS5tdS5Mb2NrKCkKCQlkZWZlciBjbGkubXUuVW5sb2NrKCkKCQlyZXR1cm4gbGVuKGNsaS5kZ1NlbnQpID09IDEKCX0pCgljbGkubXUuTG9jaygpCglyZWMgOj0gY2xpLmRnU2VudFswXQoJY2xpLm11LlVubG9jaygpCglpZiByZWMudGFyZ2V0ICE9ICI4LjguOC44OjUzIiB8fCBzdHJpbmcocmVjLmRhdGEpICE9ICJoZWxsby1kbnMiIHsKCQl0LkZhdGFsZigiYmFkIGZvcndhcmQ6ICUrdiIsIHJlYykKCX0KCgkvLyBTaW11bGF0ZSB0aGUgcmVsYXkgcmVzcG9uc2UuCgljbGkuZW1pdERhdGFncmFtKCI4LjguOC44OjUzIiwgW11ieXRlKCJyZXNwb25zZSIpKQoJc2VsZWN0IHsKCWNhc2Ugb3V0IDo9IDwtdHVuLndyaXRlQ2g6CgkJcCwgZXJyIDo9IFBhcnNlSVAob3V0KQoJCWlmIGVyciAhPSBuaWwgewoJCQl0LkZhdGFsZigicGFyc2UgcmV0dXJuOiAldiIsIGVycikKCQl9CgkJaWYgcC5WZXJzaW9uICE9IDQgfHwgIXAuU3JjLkVxdWFsKGRuc0lQKSB8fCAhcC5Ec3QuRXF1YWwoYXBwSVApIHsKCQkJdC5GYXRhbGYoImJhZCByZXR1cm4gaGVhZGVyczogJSt2IiwgcCkKCQl9CgkJZGcsIGVyciA6PSBQYXJzZVVEUChwLlBheWxvYWQpCgkJaWYgZXJyICE9IG5pbCB7CgkJCXQuRmF0YWxmKCJwYXJzZSByZXR1cm4gdWRwOiAldiIsIGVycikKCQl9CgkJaWYgZGcuU3JjUG9ydCAhPSA1MyB8fCBkZy5Ec3RQb3J0ICE9IDEyMzQ1IHx8IHN0cmluZyhkZy5QYXlsb2FkKSAhPSAicmVzcG9uc2UiIHsKCQkJdC5GYXRhbGYoImJhZCByZXR1cm4gdWRwOiAlK3YiLCBkZykKCQl9CgljYXNlIDwtdGltZS5BZnRlcigzICogdGltZS5TZWNvbmQpOgoJCXQuRmF0YWwoIm5vIHJldHVybiBwYWNrZXQiKQoJfQp9CgpmdW5jIFRlc3RFbmdpbmVVRFB2Nih0ICp0ZXN0aW5nLlQpIHsKCXR1biA6PSBuZXdNb2NrVFVOKCkKCWNsaSA6PSAmbW9ja0NsaWVudHt9CgllIDo9IE5ld0VuZ2luZShFbmdpbmVDb25maWd7VFVOOiB0dW4sIENsaWVudDogY2xpfSkKCWN0eCwgY2FuY2VsIDo9IGNvbnRleHQuV2l0aENhbmNlbChjb250ZXh0LkJhY2tncm91bmQoKSkKCWRlZmVyIGNhbmNlbCgpCglnbyBlLlJ1bihjdHgpCgoJYXBwSVAgOj0gbmV0LlBhcnNlSVAoImZkMDA6OjIiKQoJZG5zSVAgOj0gbmV0LlBhcnNlSVAoIjI2MDY6NDcwMDo0NzAwOjoxMTExIikKCXNlZyA6PSBCdWlsZFVEUChhcHBJUCwgZG5zSVAsIDEyMzQ1LCA1MywgW11ieXRlKCJ2Ni1kbnMiKSkKCXBrdCA6PSBCdWlsZElQdjYoYXBwSVAsIGRuc0lQLCBQcm90b1VEUCwgc2VnKQoJdHVuLnJlYWRDaCA8LSBwa3QKCgl3YWl0Rm9yKHQsICJ2NiBkYXRhZ3JhbSBmb3J3YXJkIiwgZnVuYygpIGJvb2wgewoJCWNsaS5tdS5Mb2NrKCkKCQlkZWZlciBjbGkubXUuVW5sb2NrKCkKCQlyZXR1cm4gbGVuKGNsaS5kZ1NlbnQpID09IDEKCX0pCgljbGkubXUuTG9jaygpCglyZWMgOj0gY2xpLmRnU2VudFswXQoJY2xpLm11LlVubG9jaygpCglpZiByZWMudGFyZ2V0ICE9ICJbMjYwNjo0NzAwOjQ3MDA6OjExMTFdOjUzIiB8fCBzdHJpbmcocmVjLmRhdGEpICE9ICJ2Ni1kbnMiIHsKCQl0LkZhdGFsZigiYmFkIHY2IGZvcndhcmQ6ICUrdiIsIHJlYykKCX0KCgljbGkuZW1pdERhdGFncmFtKCJbMjYwNjo0NzAwOjQ3MDA6OjExMTFdOjUzIiwgW11ieXRlKCJ2Ni1yZXNwIikpCglzZWxlY3QgewoJY2FzZSBvdXQgOj0gPC10dW4ud3JpdGVDaDoKCQlwLCBlcnIgOj0gUGFyc2VJUChvdXQpCgkJaWYgZXJyICE9IG5pbCB7CgkJCXQuRmF0YWxmKCJwYXJzZSB2NiByZXR1cm46ICV2IiwgZXJyKQoJCX0KCQlpZiBwLlZlcnNpb24gIT0gNiB8fCAhcC5TcmMuRXF1YWwoZG5zSVApIHx8ICFwLkRzdC5FcXVhbChhcHBJUCkgewoJCQl0LkZhdGFsZigiYmFkIHY2IHJldHVybiBoZWFkZXJzOiAlK3YiLCBwKQoJCX0KCQlkZywgZXJyIDo9IFBhcnNlVURQKHAuUGF5bG9hZCkKCQlpZiBlcnIgIT0gbmlsIHsKCQkJdC5GYXRhbGYoInBhcnNlIHY2IHJldHVybiB1ZHA6ICV2IiwgZXJyKQoJCX0KCQlpZiBzdHJpbmcoZGcuUGF5bG9hZCkgIT0gInY2LXJlc3AiIHsKCQkJdC5GYXRhbGYoImJhZCB2NiByZXR1cm4gcGF5bG9hZDogJXEiLCBkZy5QYXlsb2FkKQoJCX0KCWNhc2UgPC10aW1lLkFmdGVyKDMgKiB0aW1lLlNlY29uZCk6CgkJdC5GYXRhbCgibm8gdjYgcmV0dXJuIHBhY2tldCIpCgl9Cn0KCmZ1bmMgVGVzdEVuZ2luZVRDUFNZTih0ICp0ZXN0aW5nLlQpIHsKCXR1biA6PSBuZXdNb2NrVFVOKCkKCXNydkNoIDo9IG1ha2UoY2hhbiBuZXQuQ29ubiwgMSkKCWNsaSA6PSAmbW9ja0NsaWVudHsKCQlkaWFsRnVuYzogZnVuYyhhZGRyIHN0cmluZykgKG5ldC5Db25uLCBlcnJvcikgewoJCQljbGksIHNydiA6PSBuZXQuUGlwZSgpCgkJCXNydkNoIDwtIHNydgoJCQlyZXR1cm4gY2xpLCBuaWwKCQl9LAoJfQoJZSA6PSBOZXdFbmdpbmUoRW5naW5lQ29uZmlne1RVTjogdHVuLCBDbGllbnQ6IGNsaX0pCgljdHgsIGNhbmNlbCA6PSBjb250ZXh0LldpdGhDYW5jZWwoY29udGV4dC5CYWNrZ3JvdW5kKCkpCglkZWZlciBjYW5jZWwoKQoJZ28gZS5SdW4oY3R4KQoKCWFwcElQIDo9IG5ldC5QYXJzZUlQKCIxMC4wLjAuMiIpCglkc3RJUCA6PSBuZXQuUGFyc2VJUCgiMS4yLjMuNCIpCglzeW4gOj0gQnVpbGRUQ1AoYXBwSVAsIGRzdElQLCA0MDAwMCwgNDQzLCAxMDAwLCAwLCBUQ1BTeW4sIG5pbCkKCXR1bi5yZWFkQ2ggPC0gQnVpbGRJUHY0KGFwcElQLCBkc3RJUCwgUHJvdG9UQ1AsIDEsIHN5bikKCgkvLyBFeHBlY3QgU1lOLUFDSy4KCXZhciBzeW5BY2sgW11ieXRlCglzZWxlY3QgewoJY2FzZSBzeW5BY2sgPSA8LXR1bi53cml0ZUNoOgoJY2FzZSA8LXRpbWUuQWZ0ZXIoMyAqIHRpbWUuU2Vjb25kKToKCQl0LkZhdGFsKCJubyBTWU4tQUNLIikKCX0KCXAsIGVyciA6PSBQYXJzZUlQKHN5bkFjaykKCWlmIGVyciAhPSBuaWwgewoJCXQuRmF0YWxmKCJwYXJzZSBzeW5hY2s6ICV2IiwgZXJyKQoJfQoJc2VnLCBlcnIgOj0gUGFyc2VUQ1AocC5QYXlsb2FkKQoJaWYgZXJyICE9IG5pbCB7CgkJdC5GYXRhbGYoInBhcnNlIHN5bmFjayB0Y3A6ICV2IiwgZXJyKQoJfQoJaWYgc2VnLkZsYWdzJihUQ1BTeW58VENQQWNrKSAhPSBUQ1BTeW58VENQQWNrIHx8IHNlZy5BY2sgIT0gMTAwMSB7CgkJdC5GYXRhbGYoImJhZCBTWU4tQUNLOiBmbGFncz0leCBhY2s9JWQiLCBzZWcuRmxhZ3MsIHNlZy5BY2spCgl9CglpZiBzZWcuU3JjUG9ydCAhPSA0NDMgfHwgc2VnLkRzdFBvcnQgIT0gNDAwMDAgewoJCXQuRmF0YWxmKCJiYWQgU1lOLUFDSyBwb3J0czogJSt2Iiwgc2VnKQoJfQoKCS8vIEFwcCBBQ0tzICsgc2VuZHMgZGF0YS4KCWFjayA6PSBCdWlsZFRDUChhcHBJUCwgZHN0SVAsIDQwMDAwLCA0NDMsIDEwMDEsIHNlZy5TZXErMSwgVENQQWNrLCBuaWwpCgl0dW4ucmVhZENoIDwtIEJ1aWxkSVB2NChhcHBJUCwgZHN0SVAsIFByb3RvVENQLCAyLCBhY2spCglkYXRhIDo9IEJ1aWxkVENQKGFwcElQLCBkc3RJUCwgNDAwMDAsIDQ0MywgMTAwMSwgc2VnLlNlcSsxLCBUQ1BQc2h8VENQQWNrLCBbXWJ5dGUoImhlbGxvIikpCgl0dW4ucmVhZENoIDwtIEJ1aWxkSVB2NChhcHBJUCwgZHN0SVAsIFByb3RvVENQLCAzLCBkYXRhKQoKCS8vIFRoZSBzdHJlYW0gc2hvdWxkIHJlY2VpdmUgImhlbGxvIi4KCXZhciBzcnYgbmV0LkNvbm4KCXNlbGVjdCB7CgljYXNlIHNydiA9IDwtc3J2Q2g6CgljYXNlIDwtdGltZS5BZnRlcigzICogdGltZS5TZWNvbmQpOgoJCXQuRmF0YWwoImRpYWwgbmV2ZXIgaGFwcGVuZWQiKQoJfQoJc3J2LlNldFJlYWREZWFkbGluZSh0aW1lLk5vdygpLkFkZCgzICogdGltZS5TZWNvbmQpKQoJYnVmIDo9IG1ha2UoW11ieXRlLCA2NCkKCW4sIGVyciA6PSBzcnYuUmVhZChidWYpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigic3RyZWFtIHJlYWQ6ICV2IiwgZXJyKQoJfQoJaWYgc3RyaW5nKGJ1Zls6bl0pICE9ICJoZWxsbyIgewoJCXQuRmF0YWxmKCJzdHJlYW0gZ290ICVxIiwgYnVmWzpuXSkKCX0KCgkvLyBTZXJ2ZXIgcmVwbGllczsgZW5naW5lIG11c3QgZW1pdCBhIFBTSCtBQ0sgc2VnbWVudC4KCWlmIF8sIGVyciA6PSBzcnYuV3JpdGUoW11ieXRlKCJ3b3JsZCIpKTsgZXJyICE9IG5pbCB7CgkJdC5GYXRhbGYoInN0cmVhbSB3cml0ZTogJXYiLCBlcnIpCgl9CgkvLyBEcmFpbiBhbnkgQUNLcyB0aGUgZW5naW5lIHNlbnQgZm9yIG91ciBkYXRhIHNlZ21lbnRzIGZpcnN0LgoJZGVhZGxpbmUgOj0gdGltZS5Ob3coKS5BZGQoMyAqIHRpbWUuU2Vjb25kKQoJZm9yIHsKCQlzZWxlY3QgewoJCWNhc2Ugb3V0IDo9IDwtdHVuLndyaXRlQ2g6CgkJCXBwLCBlcnIgOj0gUGFyc2VJUChvdXQpCgkJCWlmIGVyciAhPSBuaWwgewoJCQkJdC5GYXRhbGYoInBhcnNlIGRhdGEgc2VnOiAldiIsIGVycikKCQkJfQoJCQlzcywgZXJyIDo9IFBhcnNlVENQKHBwLlBheWxvYWQpCgkJCWlmIGVyciAhPSBuaWwgewoJCQkJdC5GYXRhbGYoInBhcnNlIGRhdGEgdGNwOiAldiIsIGVycikKCQkJfQoJCQlpZiBzdHJpbmcoc3MuUGF5bG9hZCkgPT0gIndvcmxkIiB7CgkJCQlyZXR1cm4gLy8gc3VjY2VzcwoJCQl9CgkJCS8vIE90aGVyd2lzZSBpdCdzIGFuIEFDSyBmb3Igb3VyIGRhdGE7IGtlZXAgd2FpdGluZy4KCQljYXNlIDwtdGltZS5BZnRlcih0aW1lLlVudGlsKGRlYWRsaW5lKSk6CgkJCXQuRmF0YWwoIm5vIGRhdGEgc2VnbWVudCBmcm9tIHNlcnZlciIpCgkJfQoJfQp9Cg==
+package core
+
+import (
+	"context"
+	"errors"
+	"net"
+	"sync"
+	"testing"
+	"time"
+)
+
+// mockTUN is a channel-backed TUNDevice for tests.
+type mockTUN struct {
+	readCh  chan []byte
+	writeCh chan []byte
+	done    chan struct{}
+	once    sync.Once
+}
+
+func newMockTUN() *mockTUN {
+	return &mockTUN{
+		readCh:  make(chan []byte, 16),
+		writeCh: make(chan []byte, 16),
+		done:    make(chan struct{}),
+	}
+}
+
+func (m *mockTUN) Read(b []byte) (int, error) {
+	select {
+	case pkt := <-m.readCh:
+		return copy(b, pkt), nil
+	case <-m.done:
+		return 0, errors.New("tun closed")
+	}
+}
+
+func (m *mockTUN) Write(b []byte) (int, error) {
+	pkt := append([]byte(nil), b...)
+	select {
+	case m.writeCh <- pkt:
+		return len(b), nil
+	case <-m.done:
+		return 0, errors.New("tun closed")
+	}
+}
+
+func (m *mockTUN) Close() error {
+	m.once.Do(func() { close(m.done) })
+	return nil
+}
+
+// mockClient implements ProtocolClient + DatagramClient.
+type mockClient struct {
+	mu       sync.Mutex
+	dialed   []string
+	dgSent   []dgRecord
+	dgH      DatagramHandler
+	dialFunc func(addr string) (net.Conn, error)
+}
+
+type dgRecord struct {
+	target string
+	data   []byte
+}
+
+func (c *mockClient) Name() string { return "mock" }
+
+func (c *mockClient) Dial(ctx context.Context, addr string) (net.Conn, error) {
+	c.mu.Lock()
+	c.dialed = append(c.dialed, addr)
+	fn := c.dialFunc
+	c.mu.Unlock()
+	if fn != nil {
+		return fn(addr)
+	}
+	cli, srv := net.Pipe()
+	_ = srv // held by the test via dialFunc normally; default: close it
+	go func() {
+		buf := make([]byte, 4096)
+		for {
+			if _, err := srv.Read(buf); err != nil {
+				return
+			}
+		}
+	}()
+	return cli, nil
+}
+
+func (c *mockClient) Close() error { return nil }
+
+func (c *mockClient) SendDatagram(target string, data []byte) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.dgSent = append(c.dgSent, dgRecord{target, append([]byte(nil), data...)})
+	return nil
+}
+
+func (c *mockClient) OnDatagram(h DatagramHandler) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.dgH = h
+}
+
+func (c *mockClient) emitDatagram(srcAddr string, data []byte) {
+	c.mu.Lock()
+	h := c.dgH
+	c.mu.Unlock()
+	if h != nil {
+		h(srcAddr, data)
+	}
+}
+
+func waitFor(t *testing.T, what string, cond func() bool) {
+	t.Helper()
+	deadline := time.Now().Add(3 * time.Second)
+	for time.Now().Before(deadline) {
+		if cond() {
+			return
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+	t.Fatalf("timeout waiting for %s", what)
+}
+
+func TestEngineUDPv4(t *testing.T) {
+	tun := newMockTUN()
+	cli := &mockClient{}
+	e := NewEngine(EngineConfig{TUN: tun, Client: cli})
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go e.Run(ctx)
+
+	appIP := net.ParseIP("10.0.0.2")
+	dnsIP := net.ParseIP("8.8.8.8")
+	seg := BuildUDP(appIP, dnsIP, 12345, 53, []byte("hello-dns"))
+	pkt := BuildIPv4(appIP, dnsIP, ProtoUDP, 1, seg)
+	tun.readCh <- pkt
+
+	waitFor(t, "datagram forward", func() bool {
+		cli.mu.Lock()
+		defer cli.mu.Unlock()
+		return len(cli.dgSent) == 1
+	})
+	cli.mu.Lock()
+	rec := cli.dgSent[0]
+	cli.mu.Unlock()
+	if rec.target != "8.8.8.8:53" || string(rec.data) != "hello-dns" {
+		t.Fatalf("bad forward: %+v", rec)
+	}
+
+	// Simulate the relay response.
+	cli.emitDatagram("8.8.8.8:53", []byte("response"))
+	select {
+	case out := <-tun.writeCh:
+		p, err := ParseIP(out)
+		if err != nil {
+			t.Fatalf("parse return: %v", err)
+		}
+		if p.Version != 4 || !p.Src.Equal(dnsIP) || !p.Dst.Equal(appIP) {
+			t.Fatalf("bad return headers: %+v", p)
+		}
+		dg, err := ParseUDP(p.Payload)
+		if err != nil {
+			t.Fatalf("parse return udp: %v", err)
+		}
+		if dg.SrcPort != 53 || dg.DstPort != 12345 || string(dg.Payload) != "response" {
+			t.Fatalf("bad return udp: %+v", dg)
+		}
+	case <-time.After(3 * time.Second):
+		t.Fatal("no return packet")
+	}
+}
+
+func TestEngineUDPv6(t *testing.T) {
+	tun := newMockTUN()
+	cli := &mockClient{}
+	e := NewEngine(EngineConfig{TUN: tun, Client: cli})
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go e.Run(ctx)
+
+	appIP := net.ParseIP("fd00::2")
+	dnsIP := net.ParseIP("2606:4700:4700::1111")
+	seg := BuildUDP(appIP, dnsIP, 12345, 53, []byte("v6-dns"))
+	pkt := BuildIPv6(appIP, dnsIP, ProtoUDP, seg)
+	tun.readCh <- pkt
+
+	waitFor(t, "v6 datagram forward", func() bool {
+		cli.mu.Lock()
+		defer cli.mu.Unlock()
+		return len(cli.dgSent) == 1
+	})
+	cli.mu.Lock()
+	rec := cli.dgSent[0]
+	cli.mu.Unlock()
+	if rec.target != "[2606:4700:4700::1111]:53" || string(rec.data) != "v6-dns" {
+		t.Fatalf("bad v6 forward: %+v", rec)
+	}
+
+	cli.emitDatagram("[2606:4700:4700::1111]:53", []byte("v6-resp"))
+	select {
+	case out := <-tun.writeCh:
+		p, err := ParseIP(out)
+		if err != nil {
+			t.Fatalf("parse v6 return: %v", err)
+		}
+		if p.Version != 6 || !p.Src.Equal(dnsIP) || !p.Dst.Equal(appIP) {
+			t.Fatalf("bad v6 return headers: %+v", p)
+		}
+		dg, err := ParseUDP(p.Payload)
+		if err != nil {
+			t.Fatalf("parse v6 return udp: %v", err)
+		}
+		if string(dg.Payload) != "v6-resp" {
+			t.Fatalf("bad v6 return payload: %q", dg.Payload)
+		}
+	case <-time.After(3 * time.Second):
+		t.Fatal("no v6 return packet")
+	}
+}
+
+func TestEngineTCPSYN(t *testing.T) {
+	tun := newMockTUN()
+	srvCh := make(chan net.Conn, 1)
+	cli := &mockClient{
+		dialFunc: func(addr string) (net.Conn, error) {
+			cli, srv := net.Pipe()
+			srvCh <- srv
+			return cli, nil
+		},
+	}
+	e := NewEngine(EngineConfig{TUN: tun, Client: cli})
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go e.Run(ctx)
+
+	appIP := net.ParseIP("10.0.0.2")
+	dstIP := net.ParseIP("1.2.3.4")
+	syn := BuildTCP(appIP, dstIP, 40000, 443, 1000, 0, TCPSyn, nil)
+	tun.readCh <- BuildIPv4(appIP, dstIP, ProtoTCP, 1, syn)
+
+	// Expect SYN-ACK.
+	var synAck []byte
+	select {
+	case synAck = <-tun.writeCh:
+	case <-time.After(3 * time.Second):
+		t.Fatal("no SYN-ACK")
+	}
+	p, err := ParseIP(synAck)
+	if err != nil {
+		t.Fatalf("parse synack: %v", err)
+	}
+	seg, err := ParseTCP(p.Payload)
+	if err != nil {
+		t.Fatalf("parse synack tcp: %v", err)
+	}
+	if seg.Flags&(TCPSyn|TCPAck) != TCPSyn|TCPAck || seg.Ack != 1001 {
+		t.Fatalf("bad SYN-ACK: flags=%x ack=%d", seg.Flags, seg.Ack)
+	}
+	if seg.SrcPort != 443 || seg.DstPort != 40000 {
+		t.Fatalf("bad SYN-ACK ports: %+v", seg)
+	}
+
+	// App ACKs + sends data.
+	ack := BuildTCP(appIP, dstIP, 40000, 443, 1001, seg.Seq+1, TCPAck, nil)
+	tun.readCh <- BuildIPv4(appIP, dstIP, ProtoTCP, 2, ack)
+	data := BuildTCP(appIP, dstIP, 40000, 443, 1001, seg.Seq+1, TCPPsh|TCPAck, []byte("hello"))
+	tun.readCh <- BuildIPv4(appIP, dstIP, ProtoTCP, 3, data)
+
+	// The stream should receive "hello".
+	var srv net.Conn
+	select {
+	case srv = <-srvCh:
+	case <-time.After(3 * time.Second):
+		t.Fatal("dial never happened")
+	}
+	srv.SetReadDeadline(time.Now().Add(3 * time.Second))
+	buf := make([]byte, 64)
+	n, err := srv.Read(buf)
+	if err != nil {
+		t.Fatalf("stream read: %v", err)
+	}
+	if string(buf[:n]) != "hello" {
+		t.Fatalf("stream got %q", buf[:n])
+	}
+
+	// Server replies; engine must emit a PSH+ACK segment.
+	if _, err := srv.Write([]byte("world")); err != nil {
+		t.Fatalf("stream write: %v", err)
+	}
+	// Drain any ACKs the engine sent for our data segments first.
+	deadline := time.Now().Add(3 * time.Second)
+	for {
+		select {
+		case out := <-tun.writeCh:
+			pp, err := ParseIP(out)
+			if err != nil {
+				t.Fatalf("parse data seg: %v", err)
+			}
+			ss, err := ParseTCP(pp.Payload)
+			if err != nil {
+				t.Fatalf("parse data tcp: %v", err)
+			}
+			if string(ss.Payload) == "world" {
+				return // success
+			}
+			// Otherwise it's an ACK for our data; keep waiting.
+		case <-time.After(time.Until(deadline)):
+			t.Fatal("no data segment from server")
+		}
+	}
+}

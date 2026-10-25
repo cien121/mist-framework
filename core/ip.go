@@ -1,1 +1,399 @@
-Ly8gSVAgcGFja2V0IHBhcnNpbmcgYW5kIGJ1aWxkaW5nIGZvciB0aGUgVFVOIGZvcndhcmRpbmcgZW5naW5lLgovLwovLyBJUHY0ICsgSVB2NiBkdWFsIHN0YWNrIChjaGFuIDIwMjYtMTAtMjQgcmVxdWlyZW1lbnQ6IHRoZSBNaXN0Ci8vIHByb2R1Y3Rpb24gZWdyZXNzIGlzIFZQUyBJUHY2LCBzbyB2NiByb3V0aW5nIGlzIG1hbmRhdG9yeSkuCi8vIFRDUCBhbmQgVURQIGhlYWRlcnMgYXJlIHBhcnNlZDsgY2hlY2tzdW1zIGFyZSBjb21wdXRlZCB3aXRoIHRoZQovLyBJUHY0IG9yIElQdjYgcHNldWRvLWhlYWRlciBhcyBhcHByb3ByaWF0ZS4KLy8KLy8gSVB2NiBleHRlbnNpb24gaGVhZGVycyBhcmUgd2Fsa2VkIHRvIGZpbmQgdGhlIHVwcGVyLWxheWVyIGhlYWRlcgovLyAoSG9wLWJ5LUhvcCwgUm91dGluZywgRnJhZ21lbnQsIERlc3RpbmF0aW9uIE9wdGlvbnMsIEFIKS4gRVNQCi8vIGNhbm5vdCBiZSB3YWxrZWQgYW5kIG5vbi1maXJzdCBmcmFnbWVudHMgY2Fycnkgbm8gTDQgaGVhZGVyOwovLyBib3RoIGFyZSBkcm9wcGVkIGJ5IHRoZSBlbmdpbmUuCnBhY2thZ2UgY29yZQoKaW1wb3J0ICgKCSJlbmNvZGluZy9iaW5hcnkiCgkiZXJyb3JzIgoJIm5ldCIKKQoKLy8gSVAgcHJvdG9jb2wgbnVtYmVycyAoc2hhcmVkIGJ5IHY0IGFuZCB2NiBuZXh0LWhlYWRlciBmaWVsZCkuCmNvbnN0ICgKCVByb3RvVENQICAgID0gNgoJUHJvdG9VRFAgICAgPSAxNwoJUHJvdG9JQ01QICAgPSAxCglQcm90b0lDTVB2NiA9IDU4CikKCi8vIElQdjYgZXh0ZW5zaW9uIGhlYWRlciB0eXBlcy4KY29uc3QgKAoJZXh0SG9wQnlIb3AgPSAwCglleHRSb3V0aW5nICA9IDQzCglleHRGcmFnbWVudCA9IDQ0CglleHRBSCAgICAgICA9IDUxCglleHRFU1AgICAgICA9IDUwCglleHREZXN0T3B0cyA9IDYwCikKCi8vIFRDUCBmbGFncy4KY29uc3QgKAoJVENQRmluID0gMHgwMQoJVENQU3luID0gMHgwMgoJVENQUnN0ID0gMHgwNAoJVENQUHNoID0gMHgwOAoJVENQQWNrID0gMHgxMAopCgovLyBJUFBhY2tldCBpcyBhIHBhcnNlZCBJUCBwYWNrZXQsIHY0IG9yIHY2LiBQYXlsb2FkIGlzIHRoZSBMNCBzZWdtZW50Ci8vIChUQ1Agb3IgVURQLCBpbmNsdWRpbmcgaXRzIGhlYWRlcikuIFRoZSBieXRlIHNsaWNlIGFsaWFzZXMgdGhlCi8vIG9yaWdpbmFsIHBhY2tldCBidWZmZXI7IGRvIG5vdCByZXRhaW4gaXQgcGFzdCB0aGUgY3VycmVudCBwYWNrZXQuCnR5cGUgSVBQYWNrZXQgc3RydWN0IHsKCVZlcnNpb24gaW50IC8vIDQgb3IgNgoJU3JjICAgICBuZXQuSVAKCURzdCAgICAgbmV0LklQCglQcm90byAgIHVpbnQ4IC8vIHVwcGVyLWxheWVyIHByb3RvY29sIGFmdGVyIGV4dGVuc2lvbiB3YWxrCglQYXlsb2FkIFtdYnl0ZQp9CgovLyBJUHY0UGFja2V0IGlzIGEgcGFyc2VkIElQdjQgcGFja2V0IChrZXB0IGZvciBkaXJlY3QgdjQgdXNlKS4KdHlwZSBJUHY0UGFja2V0IHN0cnVjdCB7CglTcmMgICAgIG5ldC5JUCAvLyA0IGJ5dGVzCglEc3QgICAgIG5ldC5JUCAvLyA0IGJ5dGVzCglQcm90byAgIHVpbnQ4CglQYXlsb2FkIFtdYnl0ZQoJSUQgICAgICB1aW50MTYKCVRUTCAgICAgdWludDgKfQoKLy8gSVB2NlBhY2tldCBpcyBhIHBhcnNlZCBJUHY2IHBhY2tldCAoa2VwdCBmb3IgZGlyZWN0IHY2IHVzZSkuCnR5cGUgSVB2NlBhY2tldCBzdHJ1Y3QgewoJU3JjICAgICBuZXQuSVAgLy8gMTYgYnl0ZXMKCURzdCAgICAgbmV0LklQIC8vIDE2IGJ5dGVzCglQcm90byAgIHVpbnQ4ICAvLyB1cHBlci1sYXllciBwcm90b2NvbCBhZnRlciBleHRlbnNpb24gd2FsawoJUGF5bG9hZCBbXWJ5dGUKfQoKLy8gVENQU2VnbWVudCBpcyBhIHBhcnNlZCBUQ1Agc2VnbWVudC4KdHlwZSBUQ1BTZWdtZW50IHN0cnVjdCB7CglTcmNQb3J0IHVpbnQxNgoJRHN0UG9ydCB1aW50MTYKCVNlcSAgICAgdWludDMyCglBY2sgICAgIHVpbnQzMgoJRmxhZ3MgICB1aW50OAoJUGF5bG9hZCBbXWJ5dGUKfQoKLy8gVURQUGFja2V0IGlzIGEgcGFyc2VkIFVEUCBkYXRhZ3JhbS4KdHlwZSBVRFBQYWNrZXQgc3RydWN0IHsKCVNyY1BvcnQgdWludDE2CglEc3RQb3J0IHVpbnQxNgoJUGF5bG9hZCBbXWJ5dGUKfQoKdmFyICgKCWVyclNob3J0SVAgICAgICA9IGVycm9ycy5OZXcoImlwOiBwYWNrZXQgdG9vIHNob3J0IikKCWVyckJhZFZlcnNpb24gICA9IGVycm9ycy5OZXcoImlwOiB1bmtub3duIHZlcnNpb24iKQoJZXJyTm90SVB2NCAgICAgID0gZXJyb3JzLk5ldygiaXA6IG5vdCBJUHY0IikKCWVyckJhZElITCAgICAgICA9IGVycm9ycy5OZXcoImlwOiBiYWQgaGVhZGVyIGxlbmd0aCIpCgllcnJTaG9ydElQdjYgICAgPSBlcnJvcnMuTmV3KCJpcDogaXB2NiBwYWNrZXQgdG9vIHNob3J0IikKCWVyckV4dFdhbGsgICAgICA9IGVycm9ycy5OZXcoImlwOiBjYW5ub3Qgd2FsayBleHRlbnNpb24gaGVhZGVycyIpCgllcnJOb25GaXJzdEZyYWcgPSBlcnJvcnMuTmV3KCJpcDogbm9uLWZpcnN0IGZyYWdtZW50LCBubyBMNCBoZWFkZXIiKQoJZXJyU2hvcnRUQ1AgICAgID0gZXJyb3JzLk5ldygidGNwOiBzZWdtZW50IHRvbyBzaG9ydCIpCgllcnJTaG9ydFVEUCAgICAgPSBlcnJvcnMuTmV3KCJ1ZHA6IGRhdGFncmFtIHRvbyBzaG9ydCIpCikKCi8vIFBhcnNlSVAgZGlzcGF0Y2hlcyBvbiB0aGUgdmVyc2lvbiBuaWJibGUgYW5kIHBhcnNlcyB2NCBvciB2Ni4KZnVuYyBQYXJzZUlQKGIgW11ieXRlKSAoKklQUGFja2V0LCBlcnJvcikgewoJaWYgbGVuKGIpIDwgMSB7CgkJcmV0dXJuIG5pbCwgZXJyU2hvcnRJUAoJfQoJc3dpdGNoIGJbMF0gPj4gNCB7CgljYXNlIDQ6CgkJcCwgZXJyIDo9IFBhcnNlSVB2NChiKQoJCWlmIGVyciAhPSBuaWwgewoJCQlyZXR1cm4gbmlsLCBlcnIKCQl9CgkJcmV0dXJuICZJUFBhY2tldHtWZXJzaW9uOiA0LCBTcmM6IHAuU3JjLCBEc3Q6IHAuRHN0LCBQcm90bzogcC5Qcm90bywgUGF5bG9hZDogcC5QYXlsb2FkfSwgbmlsCgljYXNlIDY6CgkJcCwgZXJyIDo9IFBhcnNlSVB2NihiKQoJCWlmIGVyciAhPSBuaWwgewoJCQlyZXR1cm4gbmlsLCBlcnIKCQl9CgkJcmV0dXJuICZJUFBhY2tldHtWZXJzaW9uOiA2LCBTcmM6IHAuU3JjLCBEc3Q6IHAuRHN0LCBQcm90bzogcC5Qcm90bywgUGF5bG9hZDogcC5QYXlsb2FkfSwgbmlsCglkZWZhdWx0OgoJCXJldHVybiBuaWwsIGVyckJhZFZlcnNpb24KCX0KfQoKLy8gUGFyc2VJUHY0IHBhcnNlcyBhbiBJUHY0IHBhY2tldC4gSXQgZG9lcyBub3QgdmVyaWZ5IGNoZWNrc3VtcwovLyAocGFja2V0cyBmcm9tIHRoZSBsb2NhbCBUVU4gYXJlIHRydXN0ZWQpLgpmdW5jIFBhcnNlSVB2NChiIFtdYnl0ZSkgKCpJUHY0UGFja2V0LCBlcnJvcikgewoJaWYgbGVuKGIpIDwgMjAgewoJCXJldHVybiBuaWwsIGVyclNob3J0SVAKCX0KCWlmIGJbMF0+PjQgIT0gNCB7CgkJcmV0dXJuIG5pbCwgZXJyTm90SVB2NAoJfQoJaWhsIDo9IGludChiWzBdJjB4MEYpICogNAoJaWYgaWhsIDwgMjAgfHwgbGVuKGIpIDwgaWhsIHsKCQlyZXR1cm4gbmlsLCBlcnJCYWRJSEwKCX0KCXRvdGFsIDo9IGludChiaW5hcnkuQmlnRW5kaWFuLlVpbnQxNihiWzI6NF0pKQoJaWYgdG90YWwgPiBsZW4oYikgewoJCXRvdGFsID0gbGVuKGIpCgl9CglpZiB0b3RhbCA8IGlobCB7CgkJcmV0dXJuIG5pbCwgZXJyQmFkSUhMCgl9CglyZXR1cm4gJklQdjRQYWNrZXR7CgkJU3JjOiAgICAgbmV0LklQKGJbMTI6MTZdKS5UbzQoKSwKCQlEc3Q6ICAgICBuZXQuSVAoYlsxNjoyMF0pLlRvNCgpLAoJCVByb3RvOiAgIGJbOV0sCgkJUGF5bG9hZDogYltpaGw6dG90YWxdLAoJCUlEOiAgICAgIGJpbmFyeS5CaWdFbmRpYW4uVWludDE2KGJbNDo2XSksCgkJVFRMOiAgICAgYls4XSwKCX0sIG5pbAp9CgovLyBQYXJzZUlQdjYgcGFyc2VzIGFuIElQdjYgcGFja2V0LCB3YWxraW5nIGV4dGVuc2lvbiBoZWFkZXJzIHRvIHRoZQovLyB1cHBlci1sYXllciBoZWFkZXIuIFJldHVybnMgZXJyTm9uRmlyc3RGcmFnIGZvciBub24tZmlyc3QgZnJhZ21lbnRzCi8vIGFuZCBlcnJFeHRXYWxrIGZvciBFU1Agb3IgdHJ1bmNhdGVkIGV4dGVuc2lvbiBoZWFkZXJzLgpmdW5jIFBhcnNlSVB2NihiIFtdYnl0ZSkgKCpJUHY2UGFja2V0LCBlcnJvcikgewoJaWYgbGVuKGIpIDwgNDAgewoJCXJldHVybiBuaWwsIGVyclNob3J0SVB2NgoJfQoJaWYgYlswXT4+NCAhPSA2IHsKCQlyZXR1cm4gbmlsLCBlcnJCYWRWZXJzaW9uCgl9CglwYXlsb2FkTGVuIDo9IGludChiaW5hcnkuQmlnRW5kaWFuLlVpbnQxNihiWzQ6Nl0pKQoJZW5kIDo9IDQwICsgcGF5bG9hZExlbgoJaWYgZW5kID4gbGVuKGIpIHsKCQllbmQgPSBsZW4oYikKCX0KCW5leHQgOj0gYls2XQoJb2ZmIDo9IDQwCglmb3IgaXNFeHRIZWFkZXIobmV4dCkgewoJCWlmIG9mZisyID4gZW5kIHsKCQkJcmV0dXJuIG5pbCwgZXJyRXh0V2FsawoJCX0KCQlzd2l0Y2ggbmV4dCB7CgkJY2FzZSBleHRGcmFnbWVudDoKCQkJaWYgb2ZmKzggPiBlbmQgewoJCQkJcmV0dXJuIG5pbCwgZXJyRXh0V2FsawoJCQl9CgkJCS8vIEZyYWdtZW50IG9mZnNldCBpcyBiaXRzIDMtMTUgb2YgYnl0ZXMgMi0zLgoJCQlmcmFnT2ZmIDo9IChiaW5hcnkuQmlnRW5kaWFuLlVpbnQxNihiW29mZisyOm9mZis0XSkgPj4gMykgJiAweDFGRkYKCQkJaWYgZnJhZ09mZiAhPSAwIHsKCQkJCXJldHVybiBuaWwsIGVyck5vbkZpcnN0RnJhZwoJCQl9CgkJCW5leHQgPSBiW29mZl0KCQkJb2ZmICs9IDgKCQljYXNlIGV4dEFIOgoJCQkvLyBBSCBsZW5ndGg6IChQYXlsb2FkTGVuKzIpKjQuCgkJCWhkckxlbiA6PSAoaW50KGJbb2ZmKzFdKSArIDIpICogNAoJCQlpZiBvZmYraGRyTGVuID4gZW5kIHsKCQkJCXJldHVybiBuaWwsIGVyckV4dFdhbGsKCQkJfQoJCQluZXh0ID0gYltvZmZdCgkJCW9mZiArPSBoZHJMZW4KCQlkZWZhdWx0OiAvLyBIb3AtYnktSG9wLCBSb3V0aW5nLCBEZXN0aW5hdGlvbiBPcHRpb25zCgkJCWhkckxlbiA6PSAoaW50KGJbb2ZmKzFdKSArIDEpICogOAoJCQlpZiBvZmYraGRyTGVuID4gZW5kIHsKCQkJCXJldHVybiBuaWwsIGVyckV4dFdhbGsKCQkJfQoJCQluZXh0ID0gYltvZmZdCgkJCW9mZiArPSBoZHJMZW4KCQl9Cgl9CglpZiBuZXh0ID09IGV4dEVTUCB7CgkJcmV0dXJuIG5pbCwgZXJyRXh0V2FsawoJfQoJcmV0dXJuICZJUHY2UGFja2V0ewoJCVNyYzogICAgIG5ldC5JUChiWzg6MjRdKS5UbzE2KCksCgkJRHN0OiAgICAgbmV0LklQKGJbMjQ6NDBdKS5UbzE2KCksCgkJUHJvdG86ICAgbmV4dCwKCQlQYXlsb2FkOiBiW29mZjplbmRdLAoJfSwgbmlsCn0KCmZ1bmMgaXNFeHRIZWFkZXIobmggdWludDgpIGJvb2wgewoJc3dpdGNoIG5oIHsKCWNhc2UgZXh0SG9wQnlIb3AsIGV4dFJvdXRpbmcsIGV4dEZyYWdtZW50LCBleHRBSCwgZXh0RGVzdE9wdHM6CgkJcmV0dXJuIHRydWUKCX0KCXJldHVybiBmYWxzZQp9CgovLyBQYXJzZVRDUCBwYXJzZXMgYSBUQ1Agc2VnbWVudCAoaGVhZGVyICsgcGF5bG9hZCkuCmZ1bmMgUGFyc2VUQ1AoYiBbXWJ5dGUpICgqVENQU2VnbWVudCwgZXJyb3IpIHsKCWlmIGxlbihiKSA8IDIwIHsKCQlyZXR1cm4gbmlsLCBlcnJTaG9ydFRDUAoJfQoJb2ZmIDo9IGludChiWzEyXT4+NCkgKiA0CglpZiBvZmYgPCAyMCB8fCBsZW4oYikgPCBvZmYgewoJCXJldHVybiBuaWwsIGVyclNob3J0VENQCgl9CglyZXR1cm4gJlRDUFNlZ21lbnR7CgkJU3JjUG9ydDogYmluYXJ5LkJpZ0VuZGlhbi5VaW50MTYoYlswOjJdKSwKCQlEc3RQb3J0OiBiaW5hcnkuQmlnRW5kaWFuLlVpbnQxNihiWzI6NF0pLAoJCVNlcTogICAgIGJpbmFyeS5CaWdFbmRpYW4uVWludDMyKGJbNDo4XSksCgkJQWNrOiAgICAgYmluYXJ5LkJpZ0VuZGlhbi5VaW50MzIoYls4OjEyXSksCgkJRmxhZ3M6ICAgYlsxM10gJiAweDNGLAoJCVBheWxvYWQ6IGJbb2ZmOl0sCgl9LCBuaWwKfQoKLy8gUGFyc2VVRFAgcGFyc2VzIGEgVURQIGRhdGFncmFtIChoZWFkZXIgKyBwYXlsb2FkKS4KZnVuYyBQYXJzZVVEUChiIFtdYnl0ZSkgKCpVRFBQYWNrZXQsIGVycm9yKSB7CglpZiBsZW4oYikgPCA4IHsKCQlyZXR1cm4gbmlsLCBlcnJTaG9ydFVEUAoJfQoJbGVuZ3RoIDo9IGludChiaW5hcnkuQmlnRW5kaWFuLlVpbnQxNihiWzQ6Nl0pKQoJaWYgbGVuZ3RoID4gbGVuKGIpIHsKCQlsZW5ndGggPSBsZW4oYikKCX0KCWlmIGxlbmd0aCA8IDggewoJCXJldHVybiBuaWwsIGVyclNob3J0VURQCgl9CglyZXR1cm4gJlVEUFBhY2tldHsKCQlTcmNQb3J0OiBiaW5hcnkuQmlnRW5kaWFuLlVpbnQxNihiWzA6Ml0pLAoJCURzdFBvcnQ6IGJpbmFyeS5CaWdFbmRpYW4uVWludDE2KGJbMjo0XSksCgkJUGF5bG9hZDogYls4Omxlbmd0aF0sCgl9LCBuaWwKfQoKLy8gY2hlY2tzdW0gY29tcHV0ZXMgdGhlIEludGVybmV0IGNoZWNrc3VtIChSRkMgMTA3MSkgb3ZlciBiLgovLyBJZiBiIGhhcyBvZGQgbGVuZ3RoIGl0IGlzIHBhZGRlZCB3aXRoIGEgemVybyBieXRlLgpmdW5jIGNoZWNrc3VtKGIgW11ieXRlKSB1aW50MTYgewoJdmFyIHN1bSB1aW50MzIKCWZvciBpIDo9IDA7IGkrMSA8IGxlbihiKTsgaSArPSAyIHsKCQlzdW0gKz0gdWludDMyKGJpbmFyeS5CaWdFbmRpYW4uVWludDE2KGJbaSA6IGkrMl0pKQoJfQoJaWYgbGVuKGIpJTIgPT0gMSB7CgkJc3VtICs9IHVpbnQzMihiW2xlbihiKS0xXSkgPDwgOAoJfQoJZm9yIHN1bSA+IDB4RkZGRiB7CgkJc3VtID0gKHN1bSA+PiAxNikgKyAoc3VtICYgMHhGRkZGKQoJfQoJcmV0dXJuIF51aW50MTYoc3VtKQp9CgovLyBwc2V1ZG9IZWFkZXIgYnVpbGRzIHRoZSBjaGVja3N1bSBwc2V1ZG8taGVhZGVyIGZvciBzcmMtPmRzdC4KLy8gdjQ6IHNyYyg0KStkc3QoNCkremVybygxKStwcm90bygxKStsZW4oMikuCi8vIHY2OiBzcmMoMTYpK2RzdCgxNikrbGVuKDQpK3plcm9zKDMpK3Byb3RvKDEpLgpmdW5jIHBzZXVkb0hlYWRlcihzcmMsIGRzdCBuZXQuSVAsIHByb3RvIHVpbnQ4LCBsZW5ndGggaW50KSBbXWJ5dGUgewoJaWYgc3JjNCA6PSBzcmMuVG80KCk7IHNyYzQgIT0gbmlsIHsKCQlwaCA6PSBtYWtlKFtdYnl0ZSwgMTIpCgkJY29weShwaFswOjRdLCBzcmM0KQoJCWNvcHkocGhbNDo4XSwgZHN0LlRvNCgpKQoJCXBoWzhdID0gMAoJCXBoWzldID0gcHJvdG8KCQliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQxNihwaFsxMDoxMl0sIHVpbnQxNihsZW5ndGgpKQoJCXJldHVybiBwaAoJfQoJcGggOj0gbWFrZShbXWJ5dGUsIDQwKQoJY29weShwaFswOjE2XSwgc3JjLlRvMTYoKSkKCWNvcHkocGhbMTY6MzJdLCBkc3QuVG8xNigpKQoJYmluYXJ5LkJpZ0VuZGlhbi5QdXRVaW50MzIocGhbMzI6MzZdLCB1aW50MzIobGVuZ3RoKSkKCXBoWzM5XSA9IHByb3RvCglyZXR1cm4gcGgKfQoKLy8gQnVpbGRJUHY0IGJ1aWxkcyBhbiBJUHY0IHBhY2tldCAobm8gb3B0aW9ucykgd2l0aCBhIGNvcnJlY3QgaGVhZGVyCi8vIGNoZWNrc3VtLiBwcm90byBpcyBQcm90b1RDUCBvciBQcm90b1VEUC4KZnVuYyBCdWlsZElQdjQoc3JjLCBkc3QgbmV0LklQLCBwcm90byB1aW50OCwgaWQgdWludDE2LCBwYXlsb2FkIFtdYnl0ZSkgW11ieXRlIHsKCW91dCA6PSBtYWtlKFtdYnl0ZSwgMjArbGVuKHBheWxvYWQpKQoJb3V0WzBdID0gMHg0NSAvLyB2ZXJzaW9uIDQsIElITCA1CglvdXRbMV0gPSAwICAgIC8vIERTQ1AvRUNOCgliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQxNihvdXRbMjo0XSwgdWludDE2KGxlbihvdXQpKSkKCWJpbmFyeS5CaWdFbmRpYW4uUHV0VWludDE2KG91dFs0OjZdLCBpZCkKCWJpbmFyeS5CaWdFbmRpYW4uUHV0VWludDE2KG91dFs2OjhdLCAweDQwMDApIC8vIERGCglvdXRbOF0gPSA2NCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvLyBUVEwKCW91dFs5XSA9IHByb3RvCgljb3B5KG91dFsxMjoxNl0sIHNyYy5UbzQoKSkKCWNvcHkob3V0WzE2OjIwXSwgZHN0LlRvNCgpKQoJYmluYXJ5LkJpZ0VuZGlhbi5QdXRVaW50MTYob3V0WzEwOjEyXSwgY2hlY2tzdW0ob3V0WzoyMF0pKQoJY29weShvdXRbMjA6XSwgcGF5bG9hZCkKCXJldHVybiBvdXQKfQoKLy8gQnVpbGRJUHY2IGJ1aWxkcyBhbiBJUHY2IHBhY2tldCAobm8gZXh0ZW5zaW9uIGhlYWRlcnMpIHdpdGggdGhlCi8vIGdpdmVuIG5leHQtaGVhZGVyIHByb3RvY29sLgpmdW5jIEJ1aWxkSVB2NihzcmMsIGRzdCBuZXQuSVAsIHByb3RvIHVpbnQ4LCBwYXlsb2FkIFtdYnl0ZSkgW11ieXRlIHsKCW91dCA6PSBtYWtlKFtdYnl0ZSwgNDArbGVuKHBheWxvYWQpKQoJb3V0WzBdID0gMHg2MCAvLyB2ZXJzaW9uIDYKCWJpbmFyeS5CaWdFbmRpYW4uUHV0VWludDE2KG91dFs0OjZdLCB1aW50MTYobGVuKHBheWxvYWQpKSkKCW91dFs2XSA9IHByb3RvCglvdXRbN10gPSA2NCAvLyBob3AgbGltaXQKCWNvcHkob3V0Wzg6MjRdLCBzcmMuVG8xNigpKQoJY29weShvdXRbMjQ6NDBdLCBkc3QuVG8xNigpKQoJY29weShvdXRbNDA6XSwgcGF5bG9hZCkKCXJldHVybiBvdXQKfQoKLy8gQnVpbGRJUCBidWlsZHMgYSB2NCBvciB2NiBwYWNrZXQgYmFzZWQgb24gdGhlIGFkZHJlc3MgZmFtaWx5IG9mIHNyYy4KLy8gcHJvdG8gaXMgdGhlIHVwcGVyLWxheWVyIHByb3RvY29sIChUQ1AvVURQKS4KZnVuYyBCdWlsZElQKHNyYywgZHN0IG5ldC5JUCwgcHJvdG8gdWludDgsIGlkIHVpbnQxNiwgcGF5bG9hZCBbXWJ5dGUpIFtdYnl0ZSB7CglpZiBzcmMuVG80KCkgIT0gbmlsIHsKCQlyZXR1cm4gQnVpbGRJUHY0KHNyYywgZHN0LCBwcm90bywgaWQsIHBheWxvYWQpCgl9CglyZXR1cm4gQnVpbGRJUHY2KHNyYywgZHN0LCBwcm90bywgcGF5bG9hZCkKfQoKLy8gQnVpbGRUQ1AgYnVpbGRzIGEgVENQIHNlZ21lbnQgKG5vIG9wdGlvbnMpIHdpdGggYSBjb3JyZWN0IGNoZWNrc3VtCi8vIG92ZXIgdGhlIHY0IG9yIHY2IHBzZXVkby1oZWFkZXIgKGNob3NlbiBieSBzcmMgZmFtaWx5KS4KZnVuYyBCdWlsZFRDUChzcmMsIGRzdCBuZXQuSVAsIHNyY1BvcnQsIGRzdFBvcnQgdWludDE2LCBzZXEsIGFjayB1aW50MzIsIGZsYWdzIHVpbnQ4LCBwYXlsb2FkIFtdYnl0ZSkgW11ieXRlIHsKCW91dCA6PSBtYWtlKFtdYnl0ZSwgMjArbGVuKHBheWxvYWQpKQoJYmluYXJ5LkJpZ0VuZGlhbi5QdXRVaW50MTYob3V0WzA6Ml0sIHNyY1BvcnQpCgliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQxNihvdXRbMjo0XSwgZHN0UG9ydCkKCWJpbmFyeS5CaWdFbmRpYW4uUHV0VWludDMyKG91dFs0OjhdLCBzZXEpCgliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQzMihvdXRbODoxMl0sIGFjaykKCW91dFsxMl0gPSAweDUwIC8vIGRhdGEgb2Zmc2V0IDUKCW91dFsxM10gPSBmbGFncwoJYmluYXJ5LkJpZ0VuZGlhbi5QdXRVaW50MTYob3V0WzE0OjE2XSwgNjU1MzUpIC8vIHdpbmRvdwoJY29weShvdXRbMjA6XSwgcGF5bG9hZCkKCS8vIENoZWNrc3VtIG92ZXIgcHNldWRvLWhlYWRlciArIHNlZ21lbnQgKHBheWxvYWQgbXVzdCBiZSBpbiBwbGFjZSBmaXJzdCkuCglwaCA6PSBwc2V1ZG9IZWFkZXIoc3JjLCBkc3QsIFByb3RvVENQLCBsZW4ob3V0KSkKCXN1bSA6PSBjaGVja3N1bShhcHBlbmQocGgsIG91dC4uLikpCgliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQxNihvdXRbMTY6MThdLCBzdW0pCglyZXR1cm4gb3V0Cn0KCi8vIEJ1aWxkVURQIGJ1aWxkcyBhIFVEUCBkYXRhZ3JhbSB3aXRoIGEgY29ycmVjdCBjaGVja3N1bSBvdmVyIHRoZQovLyB2NCBvciB2NiBwc2V1ZG8taGVhZGVyLiBBIHplcm8gY2hlY2tzdW0gaXMgdmFsaWQgZm9yIFVEUCBidXQgd2UKLy8gYWx3YXlzIGNvbXB1dGUgb25lIChzb21lIHN0YWNrcyBkcm9wIHplcm8tY2hlY2tzdW0gcGFja2V0cykuCmZ1bmMgQnVpbGRVRFAoc3JjLCBkc3QgbmV0LklQLCBzcmNQb3J0LCBkc3RQb3J0IHVpbnQxNiwgcGF5bG9hZCBbXWJ5dGUpIFtdYnl0ZSB7CglvdXQgOj0gbWFrZShbXWJ5dGUsIDgrbGVuKHBheWxvYWQpKQoJYmluYXJ5LkJpZ0VuZGlhbi5QdXRVaW50MTYob3V0WzA6Ml0sIHNyY1BvcnQpCgliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQxNihvdXRbMjo0XSwgZHN0UG9ydCkKCWJpbmFyeS5CaWdFbmRpYW4uUHV0VWludDE2KG91dFs0OjZdLCB1aW50MTYobGVuKG91dCkpKQoJY29weShvdXRbODpdLCBwYXlsb2FkKQoJcGggOj0gcHNldWRvSGVhZGVyKHNyYywgZHN0LCBQcm90b1VEUCwgbGVuKG91dCkpCglzdW0gOj0gY2hlY2tzdW0oYXBwZW5kKHBoLCBvdXQuLi4pKQoJaWYgc3VtID09IDAgewoJCXN1bSA9IDB4RkZGRiAvLyB0cmFuc21pdHRlZCB6ZXJvIG1lYW5zICJubyBjaGVja3N1bSI7IGF2b2lkIGl0Cgl9CgliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQxNihvdXRbNjo4XSwgc3VtKQoJcmV0dXJuIG91dAp9CgovLyBGb3VyVHVwbGUgaWRlbnRpZmllcyBhIFRVTi1zaWRlIGZsb3cuIElQcyBhcmUgc3RyaW5ncyBzbyB2NCBhbmQgdjYKLy8gc2hhcmUgb25lIGtleSB0eXBlLgp0eXBlIEZvdXJUdXBsZSBzdHJ1Y3QgewoJU3JjSVAgICBzdHJpbmcKCVNyY1BvcnQgdWludDE2CglEc3RJUCAgIHN0cmluZwoJRHN0UG9ydCB1aW50MTYKCVByb3RvICAgdWludDgKfQoKLy8gVHVwbGVPZiBidWlsZHMgYSBGb3VyVHVwbGUgZnJvbSBhIHBhcnNlZCBwYWNrZXQgYW5kIGl0cyBMNCBwb3J0cy4KZnVuYyBUdXBsZU9mKHAgKklQUGFja2V0LCBzcmNQb3J0LCBkc3RQb3J0IHVpbnQxNikgRm91clR1cGxlIHsKCXJldHVybiBGb3VyVHVwbGV7CgkJU3JjSVA6ICAgcC5TcmMuU3RyaW5nKCksCgkJU3JjUG9ydDogc3JjUG9ydCwKCQlEc3RJUDogICBwLkRzdC5TdHJpbmcoKSwKCQlEc3RQb3J0OiBkc3RQb3J0LAoJCVByb3RvOiAgIHAuUHJvdG8sCgl9Cn0K
+// IP packet parsing and building for the TUN forwarding engine.
+//
+// IPv4 + IPv6 dual stack (chan 2026-10-24 requirement: the Mist
+// production egress is VPS IPv6, so v6 routing is mandatory).
+// TCP and UDP headers are parsed; checksums are computed with the
+// IPv4 or IPv6 pseudo-header as appropriate.
+//
+// IPv6 extension headers are walked to find the upper-layer header
+// (Hop-by-Hop, Routing, Fragment, Destination Options, AH). ESP
+// cannot be walked and non-first fragments carry no L4 header;
+// both are dropped by the engine.
+package core
+
+import (
+	"encoding/binary"
+	"errors"
+	"net"
+)
+
+// IP protocol numbers (shared by v4 and v6 next-header field).
+const (
+	ProtoTCP    = 6
+	ProtoUDP    = 17
+	ProtoICMP   = 1
+	ProtoICMPv6 = 58
+)
+
+// IPv6 extension header types.
+const (
+	extHopByHop = 0
+	extRouting  = 43
+	extFragment = 44
+	extAH       = 51
+	extESP      = 50
+	extDestOpts = 60
+)
+
+// TCP flags.
+const (
+	TCPFin = 0x01
+	TCPSyn = 0x02
+	TCPRst = 0x04
+	TCPPsh = 0x08
+	TCPAck = 0x10
+)
+
+// IPPacket is a parsed IP packet, v4 or v6. Payload is the L4 segment
+// (TCP or UDP, including its header). The byte slice aliases the
+// original packet buffer; do not retain it past the current packet.
+type IPPacket struct {
+	Version int // 4 or 6
+	Src     net.IP
+	Dst     net.IP
+	Proto   uint8 // upper-layer protocol after extension walk
+	Payload []byte
+}
+
+// IPv4Packet is a parsed IPv4 packet (kept for direct v4 use).
+type IPv4Packet struct {
+	Src     net.IP // 4 bytes
+	Dst     net.IP // 4 bytes
+	Proto   uint8
+	Payload []byte
+	ID      uint16
+	TTL     uint8
+}
+
+// IPv6Packet is a parsed IPv6 packet (kept for direct v6 use).
+type IPv6Packet struct {
+	Src     net.IP // 16 bytes
+	Dst     net.IP // 16 bytes
+	Proto   uint8  // upper-layer protocol after extension walk
+	Payload []byte
+}
+
+// TCPSegment is a parsed TCP segment.
+type TCPSegment struct {
+	SrcPort uint16
+	DstPort uint16
+	Seq     uint32
+	Ack     uint32
+	Flags   uint8
+	Payload []byte
+}
+
+// UDPPacket is a parsed UDP datagram.
+type UDPPacket struct {
+	SrcPort uint16
+	DstPort uint16
+	Payload []byte
+}
+
+var (
+	errShortIP      = errors.New("ip: packet too short")
+	errBadVersion   = errors.New("ip: unknown version")
+	errNotIPv4      = errors.New("ip: not IPv4")
+	errBadIHL       = errors.New("ip: bad header length")
+	errShortIPv6    = errors.New("ip: ipv6 packet too short")
+	errExtWalk      = errors.New("ip: cannot walk extension headers")
+	errNonFirstFrag = errors.New("ip: non-first fragment, no L4 header")
+	errShortTCP     = errors.New("tcp: segment too short")
+	errShortUDP     = errors.New("udp: datagram too short")
+)
+
+// ParseIP dispatches on the version nibble and parses v4 or v6.
+func ParseIP(b []byte) (*IPPacket, error) {
+	if len(b) < 1 {
+		return nil, errShortIP
+	}
+	switch b[0] >> 4 {
+	case 4:
+		p, err := ParseIPv4(b)
+		if err != nil {
+			return nil, err
+		}
+		return &IPPacket{Version: 4, Src: p.Src, Dst: p.Dst, Proto: p.Proto, Payload: p.Payload}, nil
+	case 6:
+		p, err := ParseIPv6(b)
+		if err != nil {
+			return nil, err
+		}
+		return &IPPacket{Version: 6, Src: p.Src, Dst: p.Dst, Proto: p.Proto, Payload: p.Payload}, nil
+	default:
+		return nil, errBadVersion
+	}
+}
+
+// ParseIPv4 parses an IPv4 packet. It does not verify checksums
+// (packets from the local TUN are trusted).
+func ParseIPv4(b []byte) (*IPv4Packet, error) {
+	if len(b) < 20 {
+		return nil, errShortIP
+	}
+	if b[0]>>4 != 4 {
+		return nil, errNotIPv4
+	}
+	ihl := int(b[0]&0x0F) * 4
+	if ihl < 20 || len(b) < ihl {
+		return nil, errBadIHL
+	}
+	total := int(binary.BigEndian.Uint16(b[2:4]))
+	if total > len(b) {
+		total = len(b)
+	}
+	if total < ihl {
+		return nil, errBadIHL
+	}
+	return &IPv4Packet{
+		Src:     net.IP(b[12:16]).To4(),
+		Dst:     net.IP(b[16:20]).To4(),
+		Proto:   b[9],
+		Payload: b[ihl:total],
+		ID:      binary.BigEndian.Uint16(b[4:6]),
+		TTL:     b[8],
+	}, nil
+}
+
+// ParseIPv6 parses an IPv6 packet, walking extension headers to the
+// upper-layer header. Returns errNonFirstFrag for non-first fragments
+// and errExtWalk for ESP or truncated extension headers.
+func ParseIPv6(b []byte) (*IPv6Packet, error) {
+	if len(b) < 40 {
+		return nil, errShortIPv6
+	}
+	if b[0]>>4 != 6 {
+		return nil, errBadVersion
+	}
+	payloadLen := int(binary.BigEndian.Uint16(b[4:6]))
+	end := 40 + payloadLen
+	if end > len(b) {
+		end = len(b)
+	}
+	next := b[6]
+	off := 40
+	for isExtHeader(next) {
+		if off+2 > end {
+			return nil, errExtWalk
+		}
+		switch next {
+		case extFragment:
+			if off+8 > end {
+				return nil, errExtWalk
+			}
+			// Fragment offset is bits 3-15 of bytes 2-3.
+			fragOff := (binary.BigEndian.Uint16(b[off+2:off+4]) >> 3) & 0x1FFF
+			if fragOff != 0 {
+				return nil, errNonFirstFrag
+			}
+			next = b[off]
+			off += 8
+		case extAH:
+			// AH length: (PayloadLen+2)*4.
+			hdrLen := (int(b[off+1]) + 2) * 4
+			if off+hdrLen > end {
+				return nil, errExtWalk
+			}
+			next = b[off]
+			off += hdrLen
+		default: // Hop-by-Hop, Routing, Destination Options
+			hdrLen := (int(b[off+1]) + 1) * 8
+			if off+hdrLen > end {
+				return nil, errExtWalk
+			}
+			next = b[off]
+			off += hdrLen
+		}
+	}
+	if next == extESP {
+		return nil, errExtWalk
+	}
+	return &IPv6Packet{
+		Src:     net.IP(b[8:24]).To16(),
+		Dst:     net.IP(b[24:40]).To16(),
+		Proto:   next,
+		Payload: b[off:end],
+	}, nil
+}
+
+func isExtHeader(nh uint8) bool {
+	switch nh {
+	case extHopByHop, extRouting, extFragment, extAH, extDestOpts:
+		return true
+	}
+	return false
+}
+
+// ParseTCP parses a TCP segment (header + payload).
+func ParseTCP(b []byte) (*TCPSegment, error) {
+	if len(b) < 20 {
+		return nil, errShortTCP
+	}
+	off := int(b[12]>>4) * 4
+	if off < 20 || len(b) < off {
+		return nil, errShortTCP
+	}
+	return &TCPSegment{
+		SrcPort: binary.BigEndian.Uint16(b[0:2]),
+		DstPort: binary.BigEndian.Uint16(b[2:4]),
+		Seq:     binary.BigEndian.Uint32(b[4:8]),
+		Ack:     binary.BigEndian.Uint32(b[8:12]),
+		Flags:   b[13] & 0x3F,
+		Payload: b[off:],
+	}, nil
+}
+
+// ParseUDP parses a UDP datagram (header + payload).
+func ParseUDP(b []byte) (*UDPPacket, error) {
+	if len(b) < 8 {
+		return nil, errShortUDP
+	}
+	length := int(binary.BigEndian.Uint16(b[4:6]))
+	if length > len(b) {
+		length = len(b)
+	}
+	if length < 8 {
+		return nil, errShortUDP
+	}
+	return &UDPPacket{
+		SrcPort: binary.BigEndian.Uint16(b[0:2]),
+		DstPort: binary.BigEndian.Uint16(b[2:4]),
+		Payload: b[8:length],
+	}, nil
+}
+
+// checksum computes the Internet checksum (RFC 1071) over b.
+// If b has odd length it is padded with a zero byte.
+func checksum(b []byte) uint16 {
+	var sum uint32
+	for i := 0; i+1 < len(b); i += 2 {
+		sum += uint32(binary.BigEndian.Uint16(b[i : i+2]))
+	}
+	if len(b)%2 == 1 {
+		sum += uint32(b[len(b)-1]) << 8
+	}
+	for sum > 0xFFFF {
+		sum = (sum >> 16) + (sum & 0xFFFF)
+	}
+	return ^uint16(sum)
+}
+
+// pseudoHeader builds the checksum pseudo-header for src->dst.
+// v4: src(4)+dst(4)+zero(1)+proto(1)+len(2).
+// v6: src(16)+dst(16)+len(4)+zeros(3)+proto(1).
+func pseudoHeader(src, dst net.IP, proto uint8, length int) []byte {
+	if src4 := src.To4(); src4 != nil {
+		ph := make([]byte, 12)
+		copy(ph[0:4], src4)
+		copy(ph[4:8], dst.To4())
+		ph[8] = 0
+		ph[9] = proto
+		binary.BigEndian.PutUint16(ph[10:12], uint16(length))
+		return ph
+	}
+	ph := make([]byte, 40)
+	copy(ph[0:16], src.To16())
+	copy(ph[16:32], dst.To16())
+	binary.BigEndian.PutUint32(ph[32:36], uint32(length))
+	ph[39] = proto
+	return ph
+}
+
+// BuildIPv4 builds an IPv4 packet (no options) with a correct header
+// checksum. proto is ProtoTCP or ProtoUDP.
+func BuildIPv4(src, dst net.IP, proto uint8, id uint16, payload []byte) []byte {
+	out := make([]byte, 20+len(payload))
+	out[0] = 0x45 // version 4, IHL 5
+	out[1] = 0    // DSCP/ECN
+	binary.BigEndian.PutUint16(out[2:4], uint16(len(out)))
+	binary.BigEndian.PutUint16(out[4:6], id)
+	binary.BigEndian.PutUint16(out[6:8], 0x4000) // DF
+	out[8] = 64                                  // TTL
+	out[9] = proto
+	copy(out[12:16], src.To4())
+	copy(out[16:20], dst.To4())
+	binary.BigEndian.PutUint16(out[10:12], checksum(out[:20]))
+	copy(out[20:], payload)
+	return out
+}
+
+// BuildIPv6 builds an IPv6 packet (no extension headers) with the
+// given next-header protocol.
+func BuildIPv6(src, dst net.IP, proto uint8, payload []byte) []byte {
+	out := make([]byte, 40+len(payload))
+	out[0] = 0x60 // version 6
+	binary.BigEndian.PutUint16(out[4:6], uint16(len(payload)))
+	out[6] = proto
+	out[7] = 64 // hop limit
+	copy(out[8:24], src.To16())
+	copy(out[24:40], dst.To16())
+	copy(out[40:], payload)
+	return out
+}
+
+// BuildIP builds a v4 or v6 packet based on the address family of src.
+// proto is the upper-layer protocol (TCP/UDP).
+func BuildIP(src, dst net.IP, proto uint8, id uint16, payload []byte) []byte {
+	if src.To4() != nil {
+		return BuildIPv4(src, dst, proto, id, payload)
+	}
+	return BuildIPv6(src, dst, proto, payload)
+}
+
+// BuildTCP builds a TCP segment (no options) with a correct checksum
+// over the v4 or v6 pseudo-header (chosen by src family).
+func BuildTCP(src, dst net.IP, srcPort, dstPort uint16, seq, ack uint32, flags uint8, payload []byte) []byte {
+	out := make([]byte, 20+len(payload))
+	binary.BigEndian.PutUint16(out[0:2], srcPort)
+	binary.BigEndian.PutUint16(out[2:4], dstPort)
+	binary.BigEndian.PutUint32(out[4:8], seq)
+	binary.BigEndian.PutUint32(out[8:12], ack)
+	out[12] = 0x50 // data offset 5
+	out[13] = flags
+	binary.BigEndian.PutUint16(out[14:16], 65535) // window
+	copy(out[20:], payload)
+	// Checksum over pseudo-header + segment (payload must be in place first).
+	ph := pseudoHeader(src, dst, ProtoTCP, len(out))
+	sum := checksum(append(ph, out...))
+	binary.BigEndian.PutUint16(out[16:18], sum)
+	return out
+}
+
+// BuildUDP builds a UDP datagram with a correct checksum over the
+// v4 or v6 pseudo-header. A zero checksum is valid for UDP but we
+// always compute one (some stacks drop zero-checksum packets).
+func BuildUDP(src, dst net.IP, srcPort, dstPort uint16, payload []byte) []byte {
+	out := make([]byte, 8+len(payload))
+	binary.BigEndian.PutUint16(out[0:2], srcPort)
+	binary.BigEndian.PutUint16(out[2:4], dstPort)
+	binary.BigEndian.PutUint16(out[4:6], uint16(len(out)))
+	copy(out[8:], payload)
+	ph := pseudoHeader(src, dst, ProtoUDP, len(out))
+	sum := checksum(append(ph, out...))
+	if sum == 0 {
+		sum = 0xFFFF // transmitted zero means "no checksum"; avoid it
+	}
+	binary.BigEndian.PutUint16(out[6:8], sum)
+	return out
+}
+
+// FourTuple identifies a TUN-side flow. IPs are strings so v4 and v6
+// share one key type.
+type FourTuple struct {
+	SrcIP   string
+	SrcPort uint16
+	DstIP   string
+	DstPort uint16
+	Proto   uint8
+}
+
+// TupleOf builds a FourTuple from a parsed packet and its L4 ports.
+func TupleOf(p *IPPacket, srcPort, dstPort uint16) FourTuple {
+	return FourTuple{
+		SrcIP:   p.Src.String(),
+		SrcPort: srcPort,
+		DstIP:   p.Dst.String(),
+		DstPort: dstPort,
+		Proto:   p.Proto,
+	}
+}

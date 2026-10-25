@@ -1,1 +1,495 @@
-Ly8gVFVOIGZvcndhcmRpbmcgZW5naW5lOiBJUCBwYWNrZXRzIDwtPiBwcm94eSBwcm90b2NvbC4KLy8KLy8gRHVhbCBzdGFjayAoSVB2NCArIElQdjYpLiBBbGwgdHJhZmZpYyBnb2VzIHRocm91Z2ggdGhlIHR1bm5lbCBpbgovLyB0aGUgTVZQOyBzcGxpdCByb3V0aW5nIC8gZGlyZWN0IGJ5cGFzcyBpcyBQaGFzZSAzLgovLwovLyBUQ1AgbW9kZWw6IHRoZSBlbmdpbmUgdGVybWluYXRlcyBUQ1AgbG9jYWxseS4gSXQgYW5zd2VycyB0aGUgYXBwJ3MKLy8gU1lOIHdpdGggU1lOLUFDSyAoYWZ0ZXIgdGhlIHByb3h5IERpYWwgc3VjY2VlZHMpLCBmb3J3YXJkcyBwYXlsb2FkCi8vIG92ZXIgb25lIE1pc3Qgc3RyZWFtIHBlciBjb25uZWN0aW9uLCBhbmQgdHJhbnNsYXRlcyBzdHJlYW0gZGF0YQovLyBiYWNrIGludG8gVENQIHNlZ21lbnRzLiBJbi1vcmRlciBvbmx5IG9uIHRoZSBhcHAgc2lkZTogb3V0LW9mLW9yZGVyCi8vIG9yIGR1cGxpY2F0ZSBzZWdtZW50cyBhcmUgQUNLZWQgYnV0IGRyb3BwZWQgKHRoZSBsb2NhbCBzdGFjawovLyByZXRyYW5zbWl0czsgVFVOIGRlbGl2ZXJ5IGlzIGVmZmVjdGl2ZWx5IGxvc3NsZXNzKS4KLy8KLy8gVURQIG1vZGVsOiBlYWNoIGFwcCA0LXR1cGxlIG1hcHMgdG8gZGF0YWdyYW1zIG9uIHRoZSBzaGFyZWQgTWlzdAovLyBzZXNzaW9uLiBSZXNwb25zZXMgYXJlIHJvdXRlZCBiYWNrIGJ5IHRoZWlyIHNvdXJjZSBhZGRyZXNzLCB3aGljaAovLyB0aGUgcmVsYXkgZWNob2VzIGFzIHRoZSBvcmlnaW5hbCB0YXJnZXQuIFRoaXMgY292ZXJzIEROUyAoVURQIDUzKQovLyBvdmVyIHY0IGFuZCB2NiB3aXRoIG5vIHNwZWNpYWwgY2FzZS4KcGFja2FnZSBjb3JlCgppbXBvcnQgKAoJImNvbnRleHQiCgkiY3J5cHRvL3JhbmQiCgkiZW5jb2RpbmcvYmluYXJ5IgoJImZtdCIKCSJuZXQiCgkic3luYyIKCSJzeW5jL2F0b21pYyIKCSJ0aW1lIgopCgovLyBFbmdpbmVDb25maWcgd2lyZXMgdGhlIGVuZ2luZS4KdHlwZSBFbmdpbmVDb25maWcgc3RydWN0IHsKCVRVTiAgICBUVU5EZXZpY2UKCUNsaWVudCBQcm90b2NvbENsaWVudAoJU3RhdHMgIFN0YXRzQ29sbGVjdG9yIC8vIG9wdGlvbmFsOyBtYXkgYmUgbmlsCn0KCi8vIEVuZ2luZSBmb3J3YXJkcyBUVU4gcGFja2V0cyB0aHJvdWdoIGEgUHJvdG9jb2xDbGllbnQuCnR5cGUgRW5naW5lIHN0cnVjdCB7Cgl0dW4gICAgVFVORGV2aWNlCgljbGllbnQgUHJvdG9jb2xDbGllbnQKCWRnICAgICBEYXRhZ3JhbUNsaWVudCAvLyBuaWwgaWYgdGhlIGNsaWVudCBoYXMgbm8gZGF0YWdyYW0gc3VwcG9ydAoJc3RhdHMgIFN0YXRzQ29sbGVjdG9yCgoJbXUgICAgICAgIHN5bmMuTXV0ZXggLy8gZ3VhcmRzIHRhYmxlcyArIHR1biB3cml0ZXMKCXR1bk11ICAgICBzeW5jLk11dGV4IC8vIHNlcmlhbGl6ZXMgVFVOIHdyaXRlcwoJdGNwICAgICAgIG1hcFtGb3VyVHVwbGVdKnRjcENvbm4KCXBlbmRpbmcgICBtYXBbRm91clR1cGxlXWJvb2wKCXVkcCAgICAgICBtYXBbRm91clR1cGxlXSp1ZHBTZXNzaW9uCgl1ZHBCeURzdCAgbWFwW3N0cmluZ11Gb3VyVHVwbGUgLy8gZHN0SVA6ZHN0UG9ydCAtPiBhcHAgdHVwbGUgKHJldHVybiByb3V0aW5nKQoJaWQgICAgICAgIHVpbnQzMgoJdXBCeXRlcyAgIGF0b21pYy5VaW50NjQKCWRvd25CeXRlcyBhdG9taWMuVWludDY0Cglkb25lICAgICAgY2hhbiBzdHJ1Y3R7fQoJY2xvc2VkICAgIGF0b21pYy5Cb29sCn0KCnR5cGUgdGNwQ29ubiBzdHJ1Y3QgewoJdHVwbGUgICAgICBGb3VyVHVwbGUKCXN0cmVhbSAgICAgbmV0LkNvbm4KCWFwcFNlcSAgICAgdWludDMyIC8vIG5leHQgYnl0ZSBleHBlY3RlZCBmcm9tIHRoZSBhcHAKCW91clNlcSAgICAgdWludDMyIC8vIG5leHQgYnl0ZSB3ZSBzZW5kIHRvIHRoZSBhcHAKCWlzbiAgICAgICAgdWludDMyIC8vIG91ciBpbml0aWFsIHNlcXVlbmNlIG51bWJlciAoZm9yIFNZTi1BQ0sgcmV0cmFuc21pdHMpCglzeW5BY2tTZW50IGJvb2wKCWFwcEZpbiAgICAgYm9vbAoJb3VyRmluICAgICBib29sCgljcmVhdGVkICAgIHRpbWUuVGltZQp9Cgp0eXBlIHVkcFNlc3Npb24gc3RydWN0IHsKCXR1cGxlICAgRm91clR1cGxlCglsYXN0QWN0IHRpbWUuVGltZQp9CgovLyBOZXdFbmdpbmUgYnVpbGRzIGFuIGVuZ2luZS4gSWYgY2xpZW50IGltcGxlbWVudHMgRGF0YWdyYW1DbGllbnQsCi8vIHRoZSBVRFAgcGF0aCBpcyBlbmFibGVkOyBvdGhlcndpc2UgVURQIHBhY2tldHMgYXJlIGRyb3BwZWQuCmZ1bmMgTmV3RW5naW5lKGNmZyBFbmdpbmVDb25maWcpICpFbmdpbmUgewoJZSA6PSAmRW5naW5lewoJCXR1bjogICAgICBjZmcuVFVOLAoJCWNsaWVudDogICBjZmcuQ2xpZW50LAoJCXN0YXRzOiAgICBjZmcuU3RhdHMsCgkJdGNwOiAgICAgIG1ha2UobWFwW0ZvdXJUdXBsZV0qdGNwQ29ubiksCgkJcGVuZGluZzogIG1ha2UobWFwW0ZvdXJUdXBsZV1ib29sKSwKCQl1ZHA6ICAgICAgbWFrZShtYXBbRm91clR1cGxlXSp1ZHBTZXNzaW9uKSwKCQl1ZHBCeURzdDogbWFrZShtYXBbc3RyaW5nXUZvdXJUdXBsZSksCgkJZG9uZTogICAgIG1ha2UoY2hhbiBzdHJ1Y3R7fSksCgl9CglpZiBkZywgb2sgOj0gY2ZnLkNsaWVudC4oRGF0YWdyYW1DbGllbnQpOyBvayB7CgkJZS5kZyA9IGRnCgkJZGcuT25EYXRhZ3JhbShlLm9uRGF0YWdyYW0pCgl9CglyZXR1cm4gZQp9CgovLyBSdW4gcmVhZHMgcGFja2V0cyBmcm9tIHRoZSBUVU4gdW50aWwgY3R4IGlzIGRvbmUgb3IgdGhlIFRVTiBjbG9zZXMuCi8vIEl0IHJldHVybnMgd2hlbiB0aGUgZW5naW5lIGlzIGNsb3NlZC4KZnVuYyAoZSAqRW5naW5lKSBSdW4oY3R4IGNvbnRleHQuQ29udGV4dCkgZXJyb3IgewoJZ28gZS5zd2VlcGVyKGN0eCkKCWJ1ZiA6PSBtYWtlKFtdYnl0ZSwgNjU1MzUpCglmb3IgewoJCXNlbGVjdCB7CgkJY2FzZSA8LWN0eC5Eb25lKCk6CgkJCXJldHVybiBuaWwKCQljYXNlIDwtZS5kb25lOgoJCQlyZXR1cm4gbmlsCgkJZGVmYXVsdDoKCQl9CgkJbiwgZXJyIDo9IGUudHVuLlJlYWQoYnVmKQoJCWlmIGVyciAhPSBuaWwgewoJCQlpZiBlLmNsb3NlZC5Mb2FkKCkgewoJCQkJcmV0dXJuIG5pbAoJCQl9CgkJCXNlbGVjdCB7CgkJCWNhc2UgPC1jdHguRG9uZSgpOgoJCQkJcmV0dXJuIG5pbAoJCQljYXNlIDwtZS5kb25lOgoJCQkJcmV0dXJuIG5pbAoJCQlkZWZhdWx0OgoJCQkJLy8gVHJhbnNpZW50IHJlYWQgZXJyb3I6IGtlZXAgZ29pbmcuCgkJCQljb250aW51ZQoJCQl9CgkJfQoJCWlmIG4gPT0gMCB7CgkJCWNvbnRpbnVlCgkJfQoJCXBrdCA6PSBhcHBlbmQoW11ieXRlKG5pbCksIGJ1Zls6bl0uLi4pCgkJZS5oYW5kbGVQYWNrZXQoY3R4LCBwa3QpCgl9Cn0KCi8vIENsb3NlIHN0b3BzIHRoZSBlbmdpbmUgYW5kIHJlbGVhc2VzIGNvbm5lY3Rpb25zLgpmdW5jIChlICpFbmdpbmUpIENsb3NlKCkgZXJyb3IgewoJaWYgIWUuY2xvc2VkLkNvbXBhcmVBbmRTd2FwKGZhbHNlLCB0cnVlKSB7CgkJcmV0dXJuIG5pbAoJfQoJY2xvc2UoZS5kb25lKQoJZS5tdS5Mb2NrKCkKCWZvciBfLCBjIDo9IHJhbmdlIGUudGNwIHsKCQljLnN0cmVhbS5DbG9zZSgpCgl9CgllLnRjcCA9IG1ha2UobWFwW0ZvdXJUdXBsZV0qdGNwQ29ubikKCWUubXUuVW5sb2NrKCkKCXJldHVybiBlLnR1bi5DbG9zZSgpCn0KCi8vIFN0YXRzIHJldHVybnMgY3VtdWxhdGl2ZSB0cmFmZmljIGNvdW50ZXJzLgpmdW5jIChlICpFbmdpbmUpIFN0YXRzKCkgU3RhdHMgewoJcmV0dXJuIFN0YXRzewoJCVVwbG9hZEJ5dGVzOiAgIGUudXBCeXRlcy5Mb2FkKCksCgkJRG93bmxvYWRCeXRlczogZS5kb3duQnl0ZXMuTG9hZCgpLAoJCVVwZGF0ZWRBdDogICAgIHRpbWUuTm93KCksCgl9Cn0KCi8vIGhhbmRsZVBhY2tldCBwYXJzZXMgb25lIElQIHBhY2tldCBhbmQgZGlzcGF0Y2hlcyBieSBwcm90b2NvbC4KZnVuYyAoZSAqRW5naW5lKSBoYW5kbGVQYWNrZXQoY3R4IGNvbnRleHQuQ29udGV4dCwgcmF3IFtdYnl0ZSkgewoJcCwgZXJyIDo9IFBhcnNlSVAocmF3KQoJaWYgZXJyICE9IG5pbCB7CgkJLy8gRnJhZ21lbnRzLCBFU1AsIG5vbi1JUDogZHJvcHBlZCBpbiB0aGUgTVZQLgoJCXJldHVybgoJfQoJc3dpdGNoIHAuUHJvdG8gewoJY2FzZSBQcm90b1RDUDoKCQlzZWcsIGVyciA6PSBQYXJzZVRDUChwLlBheWxvYWQpCgkJaWYgZXJyICE9IG5pbCB7CgkJCXJldHVybgoJCX0KCQllLmhhbmRsZVRDUChjdHgsIHAsIHNlZykKCWNhc2UgUHJvdG9VRFA6CgkJZGcsIGVyciA6PSBQYXJzZVVEUChwLlBheWxvYWQpCgkJaWYgZXJyICE9IG5pbCB7CgkJCXJldHVybgoJCX0KCQllLmhhbmRsZVVEUChwLCBkZykKCWRlZmF1bHQ6CgkJLy8gSUNNUC9JQ01QdjYgYW5kIG90aGVyczogZHJvcHBlZCBpbiB0aGUgTVZQLgoJCXJldHVybgoJfQp9CgovLyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KLy8gVENQCi8vIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKZnVuYyAoZSAqRW5naW5lKSBoYW5kbGVUQ1AoY3R4IGNvbnRleHQuQ29udGV4dCwgcCAqSVBQYWNrZXQsIHNlZyAqVENQU2VnbWVudCkgewoJdHVwbGUgOj0gVHVwbGVPZihwLCBzZWcuU3JjUG9ydCwgc2VnLkRzdFBvcnQpCgoJZS5tdS5Mb2NrKCkKCWNvbm4sIG9rIDo9IGUudGNwW3R1cGxlXQoJcGVuZCA6PSBlLnBlbmRpbmdbdHVwbGVdCgllLm11LlVubG9jaygpCgoJLy8gUlNUIGZyb20gdGhlIGFwcDogdGVhciBkb3duLgoJaWYgc2VnLkZsYWdzJlRDUFJzdCAhPSAwIHsKCQllLmRyb3BUQ1AodHVwbGUpCgkJcmV0dXJuCgl9CgoJLy8gTmV3IGNvbm5lY3Rpb246IFNZTiB3aXRob3V0IEFDSy4KCWlmIHNlZy5GbGFncyZUQ1BTeW4gIT0gMCAmJiBzZWcuRmxhZ3MmVENQQWNrID09IDAgewoJCWlmIG9rIHsKCQkJLy8gUmV0cmFuc21pdHRlZCBTWU46IHJlc2VuZCBTWU4tQUNLLgoJCQllLnNlbmRUQ1BTWU5BQ0soY29ubikKCQkJcmV0dXJuCgkJfQoJCWlmIHBlbmQgewoJCQlyZXR1cm4gLy8gZGlhbCBhbHJlYWR5IGluIGZsaWdodDsgYXBwIHdpbGwgcmV0cmFuc21pdAoJCX0KCQllLm11LkxvY2soKQoJCWUucGVuZGluZ1t0dXBsZV0gPSB0cnVlCgkJZS5tdS5VbmxvY2soKQoJCWdvIGUuZGlhbFRDUChjdHgsIHAsIHR1cGxlLCBzZWcpCgkJcmV0dXJuCgl9CglpZiAhb2sgewoJCXJldHVybiAvLyBkYXRhIGZvciBhbiB1bmtub3duIGNvbm5lY3Rpb247IGRyb3AKCX0KCgllLm11LkxvY2soKQoJZGVmZXIgZS5tdS5VbmxvY2soKQoJaWYgc2VnLkZsYWdzJlRDUEFjayAhPSAwICYmIGxlbihzZWcuUGF5bG9hZCkgPT0gMCAmJiBzZWcuRmxhZ3MmVENQRmluID09IDAgewoJCS8vIFB1cmUgQUNLIChlLmcuIGZvciBvdXIgRklOKTogaWYgb3VyIEZJTiB3YXMgQUNLZWQsIGNsZWFuIHVwLgoJCWlmIGNvbm4ub3VyRmluICYmIHNlZy5BY2sgPT0gY29ubi5vdXJTZXEgewoJCQlkZWxldGUoZS50Y3AsIHR1cGxlKQoJCX0KCQlyZXR1cm4KCX0KCWlmIHNlZy5GbGFncyZUQ1BGaW4gIT0gMCB7CgkJLy8gQXBwIGhhbGYtY2xvc2VzOiBBQ0sgdGhlIEZJTiwgcHJvcGFnYXRlIHRvIHRoZSBzdHJlYW0uCgkJaWYgc2VnLlNlcSA9PSBjb25uLmFwcFNlcSB7CgkJCWNvbm4uYXBwU2VxKysgLy8gRklOIGNvbnN1bWVzIG9uZSBzZXF1ZW5jZSBudW1iZXIKCQkJY29ubi5hcHBGaW4gPSB0cnVlCgkJCWUuc2VuZFRDUFVubG9ja2VkKGNvbm4sIFRDUEFjaywgbmlsKQoJCQlpZiBjbG9zZXIsIG9rIDo9IGNvbm4uc3RyZWFtLihpbnRlcmZhY2V7IENsb3NlV3JpdGUoKSBlcnJvciB9KTsgb2sgewoJCQkJXyA9IGNsb3Nlci5DbG9zZVdyaXRlKCkKCQkJfQoJCX0KCQlyZXR1cm4KCX0KCWlmIGxlbihzZWcuUGF5bG9hZCkgPiAwIHsKCQlpZiBzZWcuU2VxICE9IGNvbm4uYXBwU2VxIHsKCQkJLy8gT3V0LW9mLW9yZGVyIG9yIGR1cGxpY2F0ZTogQUNLIGN1cnJlbnQgZXhwZWN0YXRpb24sIGRyb3AuCgkJCWUuc2VuZFRDUFVubG9ja2VkKGNvbm4sIFRDUEFjaywgbmlsKQoJCQlyZXR1cm4KCQl9CgkJcGF5bG9hZCA6PSBhcHBlbmQoW11ieXRlKG5pbCksIHNlZy5QYXlsb2FkLi4uKQoJCWNvbm4uYXBwU2VxICs9IHVpbnQzMihsZW4ocGF5bG9hZCkpCgkJZS5zZW5kVENQVW5sb2NrZWQoY29ubiwgVENQQWNrLCBuaWwpCgkJZ28gZnVuYygpIHsKCQkJaWYgXywgZXJyIDo9IGNvbm4uc3RyZWFtLldyaXRlKHBheWxvYWQpOyBlcnIgIT0gbmlsIHsKCQkJCWUuZHJvcFRDUCh0dXBsZSkKCQkJCXJldHVybgoJCQl9CgkJCWUudXBCeXRlcy5BZGQodWludDY0KGxlbihwYXlsb2FkKSkpCgkJfSgpCgl9Cn0KCi8vIGRpYWxUQ1Agb3BlbnMgdGhlIHByb3h5IHN0cmVhbSwgdGhlbiBhbnN3ZXJzIHRoZSBhcHAncyBTWU4uCmZ1bmMgKGUgKkVuZ2luZSkgZGlhbFRDUChjdHggY29udGV4dC5Db250ZXh0LCBwICpJUFBhY2tldCwgdHVwbGUgRm91clR1cGxlLCBzeW4gKlRDUFNlZ21lbnQpIHsKCWRlZmVyIGZ1bmMoKSB7CgkJZS5tdS5Mb2NrKCkKCQlkZWxldGUoZS5wZW5kaW5nLCB0dXBsZSkKCQllLm11LlVubG9jaygpCgl9KCkKCWRjdHgsIGNhbmNlbCA6PSBjb250ZXh0LldpdGhUaW1lb3V0KGN0eCwgMjAqdGltZS5TZWNvbmQpCglkZWZlciBjYW5jZWwoKQoJdGFyZ2V0IDo9IG5ldC5Kb2luSG9zdFBvcnQocC5Ec3QuU3RyaW5nKCksIGZtdC5TcHJpbnQodHVwbGUuRHN0UG9ydCkpCglzdHJlYW0sIGVyciA6PSBlLmNsaWVudC5EaWFsKGRjdHgsIHRhcmdldCkKCWlmIGVyciAhPSBuaWwgewoJCS8vIFByb3h5IGRpYWwgZmFpbGVkOiBSU1QgdGhlIGFwcCdzIGNvbm5lY3Rpb24gYXR0ZW1wdC4KCQllLnNlbmRSU1QocCwgdHVwbGUsIHN5bikKCQlyZXR1cm4KCX0KCXZhciBpc25CeXRlcyBbNF1ieXRlCglfLCBfID0gcmFuZC5SZWFkKGlzbkJ5dGVzWzpdKQoJaXNuIDo9IGJpbmFyeS5CaWdFbmRpYW4uVWludDMyKGlzbkJ5dGVzWzpdKQoJY29ubiA6PSAmdGNwQ29ubnsKCQl0dXBsZTogICB0dXBsZSwKCQlzdHJlYW06ICBzdHJlYW0sCgkJYXBwU2VxOiAgc3luLlNlcSArIDEsCgkJb3VyU2VxOiAgaXNuLAoJCWlzbjogICAgIGlzbiwKCQljcmVhdGVkOiB0aW1lLk5vdygpLAoJfQoJZS5tdS5Mb2NrKCkKCWUudGNwW3R1cGxlXSA9IGNvbm4KCWUubXUuVW5sb2NrKCkKCWUuc2VuZFRDUFNZTkFDSyhjb25uKQoJZ28gZS5wdW1wVENQKGNvbm4pCn0KCi8vIHB1bXBUQ1AgY29waWVzIHN0cmVhbSBkYXRhIGJhY2sgdG8gdGhlIGFwcCBhcyBUQ1Agc2VnbWVudHMuCmZ1bmMgKGUgKkVuZ2luZSkgcHVtcFRDUChjb25uICp0Y3BDb25uKSB7CglidWYgOj0gbWFrZShbXWJ5dGUsIDgxOTIpCglmb3IgewoJCW4sIGVyciA6PSBjb25uLnN0cmVhbS5SZWFkKGJ1ZikKCQlpZiBuID4gMCB7CgkJCWRhdGEgOj0gYXBwZW5kKFtdYnl0ZShuaWwpLCBidWZbOm5dLi4uKQoJCQllLm11LkxvY2soKQoJCQlpZiBfLCBvayA6PSBlLnRjcFtjb25uLnR1cGxlXTsgIW9rIHsKCQkJCWUubXUuVW5sb2NrKCkKCQkJCXJldHVybgoJCQl9CgkJCXNlcSA6PSBjb25uLm91clNlcQoJCQljb25uLm91clNlcSArPSB1aW50MzIobGVuKGRhdGEpKQoJCQlzZWcgOj0gQnVpbGRUQ1AoCgkJCQlhZGRyT2YoY29ubi50dXBsZS5Ec3RJUCksIGFkZHJPZihjb25uLnR1cGxlLlNyY0lQKSwKCQkJCWNvbm4udHVwbGUuRHN0UG9ydCwgY29ubi50dXBsZS5TcmNQb3J0LAoJCQkJc2VxLCBjb25uLmFwcFNlcSwgVENQUHNofFRDUEFjaywgZGF0YSwKCQkJKQoJCQllLndyaXRlVFVOTG9ja2VkKGNvbm4udHVwbGUsIHNlZykKCQkJZS5tdS5VbmxvY2soKQoJCQllLmRvd25CeXRlcy5BZGQodWludDY0KGxlbihkYXRhKSkpCgkJfQoJCWlmIGVyciAhPSBuaWwgewoJCQkvLyBTdHJlYW0gRU9GL2Vycm9yOiBGSU4gdGhlIGFwcCBzaWRlLCB0aGVuIGNsZWFuIHVwLgoJCQllLm11LkxvY2soKQoJCQlpZiBjLCBvayA6PSBlLnRjcFtjb25uLnR1cGxlXTsgb2sgJiYgIWMub3VyRmluIHsKCQkJCWMub3VyRmluID0gdHJ1ZQoJCQkJZS5zZW5kVENQVW5sb2NrZWQoYywgVENQRmlufFRDUEFjaywgbmlsKQoJCQl9CgkJCWRlbGV0ZShlLnRjcCwgY29ubi50dXBsZSkKCQkJZS5tdS5VbmxvY2soKQoJCQlyZXR1cm4KCQl9Cgl9Cn0KCi8vIHNlbmRUQ1BTWU5BQ0sgc2VuZHMgU1lOK0FDSy4gSWRlbXBvdGVudDogcmV0cmFuc21pdHRlZCBTWU5zCi8vIHJlLXNlbmQgdGhlIHNhbWUgU1lOLUFDSyAoc2VxPWlzbikgd2l0aG91dCBhZHZhbmNpbmcgb3VyU2VxLgpmdW5jIChlICpFbmdpbmUpIHNlbmRUQ1BTWU5BQ0soY29ubiAqdGNwQ29ubikgewoJZS5tdS5Mb2NrKCkKCWRlZmVyIGUubXUuVW5sb2NrKCkKCXNlZyA6PSBCdWlsZFRDUCgKCQlhZGRyT2YoY29ubi50dXBsZS5Ec3RJUCksIGFkZHJPZihjb25uLnR1cGxlLlNyY0lQKSwKCQljb25uLnR1cGxlLkRzdFBvcnQsIGNvbm4udHVwbGUuU3JjUG9ydCwKCQljb25uLmlzbiwgY29ubi5hcHBTZXEsIFRDUFN5bnxUQ1BBY2ssIG5pbCwKCSkKCWUud3JpdGVUVU5Mb2NrZWQoY29ubi50dXBsZSwgc2VnKQoJaWYgIWNvbm4uc3luQWNrU2VudCB7CgkJY29ubi5zeW5BY2tTZW50ID0gdHJ1ZQoJCWNvbm4ub3VyU2VxID0gY29ubi5pc24gKyAxCgl9Cn0KCi8vIHNlbmRUQ1BVbmxvY2tlZCBzZW5kcyBhIHNlZ21lbnQgZnJvbSB0aGUgcHJveHkgdG8gdGhlIGFwcC4KLy8gQ2FsbGVycyBob2xkIGUubXUuCmZ1bmMgKGUgKkVuZ2luZSkgc2VuZFRDUFVubG9ja2VkKGNvbm4gKnRjcENvbm4sIGZsYWdzIHVpbnQ4LCBwYXlsb2FkIFtdYnl0ZSkgewoJc2VnIDo9IEJ1aWxkVENQKAoJCWFkZHJPZihjb25uLnR1cGxlLkRzdElQKSwgYWRkck9mKGNvbm4udHVwbGUuU3JjSVApLAoJCWNvbm4udHVwbGUuRHN0UG9ydCwgY29ubi50dXBsZS5TcmNQb3J0LAoJCWNvbm4ub3VyU2VxLCBjb25uLmFwcFNlcSwgZmxhZ3MsIHBheWxvYWQsCgkpCgllLndyaXRlVFVOTG9ja2VkKGNvbm4udHVwbGUsIHNlZykKCWlmIGZsYWdzJlRDUEZpbiAhPSAwIHsKCQljb25uLm91clNlcSsrCgl9Cn0KCi8vIHNlbmRSU1QgcmVwbGllcyBSU1QgdG8gYSBmYWlsZWQgZGlhbCAoYXBwIHNpZGUgc2VlcyByZWZ1c2VkKS4KZnVuYyAoZSAqRW5naW5lKSBzZW5kUlNUKHAgKklQUGFja2V0LCB0dXBsZSBGb3VyVHVwbGUsIHN5biAqVENQU2VnbWVudCkgewoJc2VnIDo9IEJ1aWxkVENQKAoJCXAuRHN0LCBwLlNyYywgdHVwbGUuRHN0UG9ydCwgdHVwbGUuU3JjUG9ydCwKCQkwLCBzeW4uU2VxKzEsIFRDUFJzdHxUQ1BBY2ssIG5pbCwKCSkKCWUubXUuTG9jaygpCglkZWZlciBlLm11LlVubG9jaygpCgllLndyaXRlVFVOTG9ja2VkKHR1cGxlLCBzZWcpCn0KCi8vIGRyb3BUQ1AgY2xvc2VzIHRoZSBzdHJlYW0gYW5kIGZvcmdldHMgdGhlIGNvbm5lY3Rpb24uCmZ1bmMgKGUgKkVuZ2luZSkgZHJvcFRDUCh0dXBsZSBGb3VyVHVwbGUpIHsKCWUubXUuTG9jaygpCglkZWZlciBlLm11LlVubG9jaygpCglpZiBjLCBvayA6PSBlLnRjcFt0dXBsZV07IG9rIHsKCQljLnN0cmVhbS5DbG9zZSgpCgkJZGVsZXRlKGUudGNwLCB0dXBsZSkKCX0KfQoKLy8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCi8vIFVEUAovLyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCmZ1bmMgKGUgKkVuZ2luZSkgaGFuZGxlVURQKHAgKklQUGFja2V0LCBkZyAqVURQUGFja2V0KSB7CglpZiBlLmRnID09IG5pbCB7CgkJcmV0dXJuIC8vIGNsaWVudCBoYXMgbm8gZGF0YWdyYW0gc3VwcG9ydAoJfQoJdHVwbGUgOj0gVHVwbGVPZihwLCBkZy5TcmNQb3J0LCBkZy5Ec3RQb3J0KQoJZS5tdS5Mb2NrKCkKCWlmIF8sIG9rIDo9IGUudWRwW3R1cGxlXTsgIW9rIHsKCQllLnVkcFt0dXBsZV0gPSAmdWRwU2Vzc2lvbnt0dXBsZTogdHVwbGUsIGxhc3RBY3Q6IHRpbWUuTm93KCl9Cgl9CgllLnVkcEJ5RHN0W2RzdEtleShwLkRzdC5TdHJpbmcoKSwgZGcuRHN0UG9ydCldID0gdHVwbGUKCWUubXUuVW5sb2NrKCkKCXRhcmdldCA6PSBuZXQuSm9pbkhvc3RQb3J0KHAuRHN0LlN0cmluZygpLCBmbXQuU3ByaW50KGRnLkRzdFBvcnQpKQoJcGF5bG9hZCA6PSBhcHBlbmQoW11ieXRlKG5pbCksIGRnLlBheWxvYWQuLi4pCglnbyBmdW5jKCkgewoJCWlmIGVyciA6PSBlLmRnLlNlbmREYXRhZ3JhbSh0YXJnZXQsIHBheWxvYWQpOyBlcnIgIT0gbmlsIHsKCQkJcmV0dXJuCgkJfQoJCWUudXBCeXRlcy5BZGQodWludDY0KGxlbihwYXlsb2FkKSkpCgl9KCkKfQoKLy8gb25EYXRhZ3JhbSByb3V0ZXMgYSByZWxheSByZXNwb25zZSBiYWNrIHRvIHRoZSBhcHAncyBUVU4gcGFja2V0LgpmdW5jIChlICpFbmdpbmUpIG9uRGF0YWdyYW0oc3JjQWRkciBzdHJpbmcsIGRhdGEgW11ieXRlKSB7Cglob3N0LCBwb3J0U3RyLCBlcnIgOj0gbmV0LlNwbGl0SG9zdFBvcnQoc3JjQWRkcikKCWlmIGVyciAhPSBuaWwgewoJCXJldHVybgoJfQoJcG9ydCwgZXJyIDo9IG5ldC5Mb29rdXBQb3J0KCJ1ZHAiLCBwb3J0U3RyKQoJaWYgZXJyICE9IG5pbCB7CgkJcmV0dXJuCgl9CgllLm11LkxvY2soKQoJdHVwbGUsIG9rIDo9IGUudWRwQnlEc3RbZHN0S2V5KGhvc3QsIHVpbnQxNihwb3J0KSldCglpZiAhb2sgewoJCWUubXUuVW5sb2NrKCkKCQlyZXR1cm4KCX0KCWlmIHMsIG9rIDo9IGUudWRwW3R1cGxlXTsgb2sgewoJCXMubGFzdEFjdCA9IHRpbWUuTm93KCkKCX0KCWUubXUuVW5sb2NrKCkKCXNyY0lQIDo9IGFkZHJPZihob3N0KQoJZHN0SVAgOj0gYWRkck9mKHR1cGxlLlNyY0lQKQoJdWRwU2VnIDo9IEJ1aWxkVURQKHNyY0lQLCBkc3RJUCwgdWludDE2KHBvcnQpLCB0dXBsZS5TcmNQb3J0LCBkYXRhKQoJZS5tdS5Mb2NrKCkKCWUud3JpdGVUVU5Mb2NrZWQodHVwbGUsIHVkcFNlZykKCWUubXUuVW5sb2NrKCkKCWUuZG93bkJ5dGVzLkFkZCh1aW50NjQobGVuKGRhdGEpKSkKfQoKLy8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCi8vIEhlbHBlcnMKLy8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpmdW5jIGRzdEtleShpcCBzdHJpbmcsIHBvcnQgdWludDE2KSBzdHJpbmcgewoJcmV0dXJuIGlwICsgIjoiICsgZm10LlNwcmludChwb3J0KQp9CgpmdW5jIGFkZHJPZihzIHN0cmluZykgbmV0LklQIHsKCWlwIDo9IG5ldC5QYXJzZUlQKHMpCglpZiBpcCA9PSBuaWwgewoJCXJldHVybiBuZXQuSVB2NHplcm8KCX0KCXJldHVybiBpcAp9CgovLyB3cml0ZVRVTkxvY2tlZCB3cmFwcyBhIHNlZ21lbnQgaW4gYW4gSVAgcGFja2V0IGFuZCB3cml0ZXMgaXQgdG8gdGhlCi8vIFRVTi4gQ2FsbGVycyBob2xkIGUubXUgKHR1biB3cml0ZXMgYXJlIGFkZGl0aW9uYWxseSBzZXJpYWxpemVkKS4KZnVuYyAoZSAqRW5naW5lKSB3cml0ZVRVTkxvY2tlZCh0dXBsZSBGb3VyVHVwbGUsIHNlZ21lbnQgW11ieXRlKSB7Cgl2YXIgcHJvdG8gdWludDgKCWlmIHR1cGxlLlByb3RvID09IFByb3RvVENQIHsKCQlwcm90byA9IFByb3RvVENQCgl9IGVsc2UgewoJCXByb3RvID0gUHJvdG9VRFAKCX0KCXNyYyA6PSBhZGRyT2YodHVwbGUuRHN0SVApIC8vIHByb3h5IHNpZGU6IHNvdXJjZSBpcyB0aGUgcmVtb3RlCglkc3QgOj0gYWRkck9mKHR1cGxlLlNyY0lQKSAvLyBkZXN0aW5hdGlvbiBpcyB0aGUgYXBwCgllLmlkKysKCXBrdCA6PSBCdWlsZElQKHNyYywgZHN0LCBwcm90bywgdWludDE2KGUuaWQpLCBzZWdtZW50KQoJZS50dW5NdS5Mb2NrKCkKCV8sIF8gPSBlLnR1bi5Xcml0ZShwa3QpCgllLnR1bk11LlVubG9jaygpCn0KCi8vIHN3ZWVwZXIgcmVtb3ZlcyBpZGxlIGNvbm5lY3Rpb25zLgpmdW5jIChlICpFbmdpbmUpIHN3ZWVwZXIoY3R4IGNvbnRleHQuQ29udGV4dCkgewoJdCA6PSB0aW1lLk5ld1RpY2tlcigzMCAqIHRpbWUuU2Vjb25kKQoJZGVmZXIgdC5TdG9wKCkKCWZvciB7CgkJc2VsZWN0IHsKCQljYXNlIDwtY3R4LkRvbmUoKToKCQkJcmV0dXJuCgkJY2FzZSA8LWUuZG9uZToKCQkJcmV0dXJuCgkJY2FzZSBub3cgOj0gPC10LkM6CgkJCWUubXUuTG9jaygpCgkJCWZvciB0dXBsZSwgYyA6PSByYW5nZSBlLnRjcCB7CgkJCQlpZiBub3cuU3ViKGMuY3JlYXRlZCkgPiAxMCp0aW1lLk1pbnV0ZSB7CgkJCQkJYy5zdHJlYW0uQ2xvc2UoKQoJCQkJCWRlbGV0ZShlLnRjcCwgdHVwbGUpCgkJCQl9CgkJCX0KCQkJZm9yIHR1cGxlLCBzIDo9IHJhbmdlIGUudWRwIHsKCQkJCWlmIG5vdy5TdWIocy5sYXN0QWN0KSA+IDIqdGltZS5NaW51dGUgewoJCQkJCWRlbGV0ZShlLnVkcCwgdHVwbGUpCgkJCQl9CgkJCX0KCQkJZS5tdS5VbmxvY2soKQoJCX0KCX0KfQo=
+// TUN forwarding engine: IP packets <-> proxy protocol.
+//
+// Dual stack (IPv4 + IPv6). All traffic goes through the tunnel in
+// the MVP; split routing / direct bypass is Phase 3.
+//
+// TCP model: the engine terminates TCP locally. It answers the app's
+// SYN with SYN-ACK (after the proxy Dial succeeds), forwards payload
+// over one Mist stream per connection, and translates stream data
+// back into TCP segments. In-order only on the app side: out-of-order
+// or duplicate segments are ACKed but dropped (the local stack
+// retransmits; TUN delivery is effectively lossless).
+//
+// UDP model: each app 4-tuple maps to datagrams on the shared Mist
+// session. Responses are routed back by their source address, which
+// the relay echoes as the original target. This covers DNS (UDP 53)
+// over v4 and v6 with no special case.
+package core
+
+import (
+	"context"
+	"crypto/rand"
+	"encoding/binary"
+	"fmt"
+	"net"
+	"sync"
+	"sync/atomic"
+	"time"
+)
+
+// EngineConfig wires the engine.
+type EngineConfig struct {
+	TUN    TUNDevice
+	Client ProtocolClient
+	Stats  StatsCollector // optional; may be nil
+}
+
+// Engine forwards TUN packets through a ProtocolClient.
+type Engine struct {
+	tun    TUNDevice
+	client ProtocolClient
+	dg     DatagramClient // nil if the client has no datagram support
+	stats  StatsCollector
+
+	mu        sync.Mutex // guards tables + tun writes
+	tunMu     sync.Mutex // serializes TUN writes
+	tcp       map[FourTuple]*tcpConn
+	pending   map[FourTuple]bool
+	udp       map[FourTuple]*udpSession
+	udpByDst  map[string]FourTuple // dstIP:dstPort -> app tuple (return routing)
+	id        uint32
+	upBytes   atomic.Uint64
+	downBytes atomic.Uint64
+	done      chan struct{}
+	closed    atomic.Bool
+}
+
+type tcpConn struct {
+	tuple      FourTuple
+	stream     net.Conn
+	appSeq     uint32 // next byte expected from the app
+	ourSeq     uint32 // next byte we send to the app
+	isn        uint32 // our initial sequence number (for SYN-ACK retransmits)
+	synAckSent bool
+	appFin     bool
+	ourFin     bool
+	created    time.Time
+}
+
+type udpSession struct {
+	tuple   FourTuple
+	lastAct time.Time
+}
+
+// NewEngine builds an engine. If client implements DatagramClient,
+// the UDP path is enabled; otherwise UDP packets are dropped.
+func NewEngine(cfg EngineConfig) *Engine {
+	e := &Engine{
+		tun:      cfg.TUN,
+		client:   cfg.Client,
+		stats:    cfg.Stats,
+		tcp:      make(map[FourTuple]*tcpConn),
+		pending:  make(map[FourTuple]bool),
+		udp:      make(map[FourTuple]*udpSession),
+		udpByDst: make(map[string]FourTuple),
+		done:     make(chan struct{}),
+	}
+	if dg, ok := cfg.Client.(DatagramClient); ok {
+		e.dg = dg
+		dg.OnDatagram(e.onDatagram)
+	}
+	return e
+}
+
+// Run reads packets from the TUN until ctx is done or the TUN closes.
+// It returns when the engine is closed.
+func (e *Engine) Run(ctx context.Context) error {
+	go e.sweeper(ctx)
+	buf := make([]byte, 65535)
+	for {
+		select {
+		case <-ctx.Done():
+			return nil
+		case <-e.done:
+			return nil
+		default:
+		}
+		n, err := e.tun.Read(buf)
+		if err != nil {
+			if e.closed.Load() {
+				return nil
+			}
+			select {
+			case <-ctx.Done():
+				return nil
+			case <-e.done:
+				return nil
+			default:
+				// Transient read error: keep going.
+				continue
+			}
+		}
+		if n == 0 {
+			continue
+		}
+		pkt := append([]byte(nil), buf[:n]...)
+		e.handlePacket(ctx, pkt)
+	}
+}
+
+// Close stops the engine and releases connections.
+func (e *Engine) Close() error {
+	if !e.closed.CompareAndSwap(false, true) {
+		return nil
+	}
+	close(e.done)
+	e.mu.Lock()
+	for _, c := range e.tcp {
+		c.stream.Close()
+	}
+	e.tcp = make(map[FourTuple]*tcpConn)
+	e.mu.Unlock()
+	return e.tun.Close()
+}
+
+// Stats returns cumulative traffic counters.
+func (e *Engine) Stats() Stats {
+	return Stats{
+		UploadBytes:   e.upBytes.Load(),
+		DownloadBytes: e.downBytes.Load(),
+		UpdatedAt:     time.Now(),
+	}
+}
+
+// handlePacket parses one IP packet and dispatches by protocol.
+func (e *Engine) handlePacket(ctx context.Context, raw []byte) {
+	p, err := ParseIP(raw)
+	if err != nil {
+		// Fragments, ESP, non-IP: dropped in the MVP.
+		return
+	}
+	switch p.Proto {
+	case ProtoTCP:
+		seg, err := ParseTCP(p.Payload)
+		if err != nil {
+			return
+		}
+		e.handleTCP(ctx, p, seg)
+	case ProtoUDP:
+		dg, err := ParseUDP(p.Payload)
+		if err != nil {
+			return
+		}
+		e.handleUDP(p, dg)
+	default:
+		// ICMP/ICMPv6 and others: dropped in the MVP.
+		return
+	}
+}
+
+// ---------------------------------------------------------------------------
+// TCP
+// ---------------------------------------------------------------------------
+
+func (e *Engine) handleTCP(ctx context.Context, p *IPPacket, seg *TCPSegment) {
+	tuple := TupleOf(p, seg.SrcPort, seg.DstPort)
+
+	e.mu.Lock()
+	conn, ok := e.tcp[tuple]
+	pend := e.pending[tuple]
+	e.mu.Unlock()
+
+	// RST from the app: tear down.
+	if seg.Flags&TCPRst != 0 {
+		e.dropTCP(tuple)
+		return
+	}
+
+	// New connection: SYN without ACK.
+	if seg.Flags&TCPSyn != 0 && seg.Flags&TCPAck == 0 {
+		if ok {
+			// Retransmitted SYN: resend SYN-ACK.
+			e.sendTCPSYNACK(conn)
+			return
+		}
+		if pend {
+			return // dial already in flight; app will retransmit
+		}
+		e.mu.Lock()
+		e.pending[tuple] = true
+		e.mu.Unlock()
+		go e.dialTCP(ctx, p, tuple, seg)
+		return
+	}
+	if !ok {
+		return // data for an unknown connection; drop
+	}
+
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	if seg.Flags&TCPAck != 0 && len(seg.Payload) == 0 && seg.Flags&TCPFin == 0 {
+		// Pure ACK (e.g. for our FIN): if our FIN was ACKed, clean up.
+		if conn.ourFin && seg.Ack == conn.ourSeq {
+			delete(e.tcp, tuple)
+		}
+		return
+	}
+	if seg.Flags&TCPFin != 0 {
+		// App half-closes: ACK the FIN, propagate to the stream.
+		if seg.Seq == conn.appSeq {
+			conn.appSeq++ // FIN consumes one sequence number
+			conn.appFin = true
+			e.sendTCPUnlocked(conn, TCPAck, nil)
+			if closer, ok := conn.stream.(interface{ CloseWrite() error }); ok {
+				_ = closer.CloseWrite()
+			}
+		}
+		return
+	}
+	if len(seg.Payload) > 0 {
+		if seg.Seq != conn.appSeq {
+			// Out-of-order or duplicate: ACK current expectation, drop.
+			e.sendTCPUnlocked(conn, TCPAck, nil)
+			return
+		}
+		payload := append([]byte(nil), seg.Payload...)
+		conn.appSeq += uint32(len(payload))
+		e.sendTCPUnlocked(conn, TCPAck, nil)
+		go func() {
+			if _, err := conn.stream.Write(payload); err != nil {
+				e.dropTCP(tuple)
+				return
+			}
+			e.upBytes.Add(uint64(len(payload)))
+		}()
+	}
+}
+
+// dialTCP opens the proxy stream, then answers the app's SYN.
+func (e *Engine) dialTCP(ctx context.Context, p *IPPacket, tuple FourTuple, syn *TCPSegment) {
+	defer func() {
+		e.mu.Lock()
+		delete(e.pending, tuple)
+		e.mu.Unlock()
+	}()
+	dctx, cancel := context.WithTimeout(ctx, 20*time.Second)
+	defer cancel()
+	target := net.JoinHostPort(p.Dst.String(), fmt.Sprint(tuple.DstPort))
+	stream, err := e.client.Dial(dctx, target)
+	if err != nil {
+		// Proxy dial failed: RST the app's connection attempt.
+		e.sendRST(p, tuple, syn)
+		return
+	}
+	var isnBytes [4]byte
+	_, _ = rand.Read(isnBytes[:])
+	isn := binary.BigEndian.Uint32(isnBytes[:])
+	conn := &tcpConn{
+		tuple:   tuple,
+		stream:  stream,
+		appSeq:  syn.Seq + 1,
+		ourSeq:  isn,
+		isn:     isn,
+		created: time.Now(),
+	}
+	e.mu.Lock()
+	e.tcp[tuple] = conn
+	e.mu.Unlock()
+	e.sendTCPSYNACK(conn)
+	go e.pumpTCP(conn)
+}
+
+// pumpTCP copies stream data back to the app as TCP segments.
+func (e *Engine) pumpTCP(conn *tcpConn) {
+	buf := make([]byte, 8192)
+	for {
+		n, err := conn.stream.Read(buf)
+		if n > 0 {
+			data := append([]byte(nil), buf[:n]...)
+			e.mu.Lock()
+			if _, ok := e.tcp[conn.tuple]; !ok {
+				e.mu.Unlock()
+				return
+			}
+			seq := conn.ourSeq
+			conn.ourSeq += uint32(len(data))
+			seg := BuildTCP(
+				addrOf(conn.tuple.DstIP), addrOf(conn.tuple.SrcIP),
+				conn.tuple.DstPort, conn.tuple.SrcPort,
+				seq, conn.appSeq, TCPPsh|TCPAck, data,
+			)
+			e.writeTUNLocked(conn.tuple, seg)
+			e.mu.Unlock()
+			e.downBytes.Add(uint64(len(data)))
+		}
+		if err != nil {
+			// Stream EOF/error: FIN the app side, then clean up.
+			e.mu.Lock()
+			if c, ok := e.tcp[conn.tuple]; ok && !c.ourFin {
+				c.ourFin = true
+				e.sendTCPUnlocked(c, TCPFin|TCPAck, nil)
+			}
+			delete(e.tcp, conn.tuple)
+			e.mu.Unlock()
+			return
+		}
+	}
+}
+
+// sendTCPSYNACK sends SYN+ACK. Idempotent: retransmitted SYNs
+// re-send the same SYN-ACK (seq=isn) without advancing ourSeq.
+func (e *Engine) sendTCPSYNACK(conn *tcpConn) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	seg := BuildTCP(
+		addrOf(conn.tuple.DstIP), addrOf(conn.tuple.SrcIP),
+		conn.tuple.DstPort, conn.tuple.SrcPort,
+		conn.isn, conn.appSeq, TCPSyn|TCPAck, nil,
+	)
+	e.writeTUNLocked(conn.tuple, seg)
+	if !conn.synAckSent {
+		conn.synAckSent = true
+		conn.ourSeq = conn.isn + 1
+	}
+}
+
+// sendTCPUnlocked sends a segment from the proxy to the app.
+// Callers hold e.mu.
+func (e *Engine) sendTCPUnlocked(conn *tcpConn, flags uint8, payload []byte) {
+	seg := BuildTCP(
+		addrOf(conn.tuple.DstIP), addrOf(conn.tuple.SrcIP),
+		conn.tuple.DstPort, conn.tuple.SrcPort,
+		conn.ourSeq, conn.appSeq, flags, payload,
+	)
+	e.writeTUNLocked(conn.tuple, seg)
+	if flags&TCPFin != 0 {
+		conn.ourSeq++
+	}
+}
+
+// sendRST replies RST to a failed dial (app side sees refused).
+func (e *Engine) sendRST(p *IPPacket, tuple FourTuple, syn *TCPSegment) {
+	seg := BuildTCP(
+		p.Dst, p.Src, tuple.DstPort, tuple.SrcPort,
+		0, syn.Seq+1, TCPRst|TCPAck, nil,
+	)
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	e.writeTUNLocked(tuple, seg)
+}
+
+// dropTCP closes the stream and forgets the connection.
+func (e *Engine) dropTCP(tuple FourTuple) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	if c, ok := e.tcp[tuple]; ok {
+		c.stream.Close()
+		delete(e.tcp, tuple)
+	}
+}
+
+// ---------------------------------------------------------------------------
+// UDP
+// ---------------------------------------------------------------------------
+
+func (e *Engine) handleUDP(p *IPPacket, dg *UDPPacket) {
+	if e.dg == nil {
+		return // client has no datagram support
+	}
+	tuple := TupleOf(p, dg.SrcPort, dg.DstPort)
+	e.mu.Lock()
+	if _, ok := e.udp[tuple]; !ok {
+		e.udp[tuple] = &udpSession{tuple: tuple, lastAct: time.Now()}
+	}
+	e.udpByDst[dstKey(p.Dst.String(), dg.DstPort)] = tuple
+	e.mu.Unlock()
+	target := net.JoinHostPort(p.Dst.String(), fmt.Sprint(dg.DstPort))
+	payload := append([]byte(nil), dg.Payload...)
+	go func() {
+		if err := e.dg.SendDatagram(target, payload); err != nil {
+			return
+		}
+		e.upBytes.Add(uint64(len(payload)))
+	}()
+}
+
+// onDatagram routes a relay response back to the app's TUN packet.
+func (e *Engine) onDatagram(srcAddr string, data []byte) {
+	host, portStr, err := net.SplitHostPort(srcAddr)
+	if err != nil {
+		return
+	}
+	port, err := net.LookupPort("udp", portStr)
+	if err != nil {
+		return
+	}
+	e.mu.Lock()
+	tuple, ok := e.udpByDst[dstKey(host, uint16(port))]
+	if !ok {
+		e.mu.Unlock()
+		return
+	}
+	if s, ok := e.udp[tuple]; ok {
+		s.lastAct = time.Now()
+	}
+	e.mu.Unlock()
+	srcIP := addrOf(host)
+	dstIP := addrOf(tuple.SrcIP)
+	udpSeg := BuildUDP(srcIP, dstIP, uint16(port), tuple.SrcPort, data)
+	e.mu.Lock()
+	e.writeTUNLocked(tuple, udpSeg)
+	e.mu.Unlock()
+	e.downBytes.Add(uint64(len(data)))
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+func dstKey(ip string, port uint16) string {
+	return ip + ":" + fmt.Sprint(port)
+}
+
+func addrOf(s string) net.IP {
+	ip := net.ParseIP(s)
+	if ip == nil {
+		return net.IPv4zero
+	}
+	return ip
+}
+
+// writeTUNLocked wraps a segment in an IP packet and writes it to the
+// TUN. Callers hold e.mu (tun writes are additionally serialized).
+func (e *Engine) writeTUNLocked(tuple FourTuple, segment []byte) {
+	var proto uint8
+	if tuple.Proto == ProtoTCP {
+		proto = ProtoTCP
+	} else {
+		proto = ProtoUDP
+	}
+	src := addrOf(tuple.DstIP) // proxy side: source is the remote
+	dst := addrOf(tuple.SrcIP) // destination is the app
+	e.id++
+	pkt := BuildIP(src, dst, proto, uint16(e.id), segment)
+	e.tunMu.Lock()
+	_, _ = e.tun.Write(pkt)
+	e.tunMu.Unlock()
+}
+
+// sweeper removes idle connections.
+func (e *Engine) sweeper(ctx context.Context) {
+	t := time.NewTicker(30 * time.Second)
+	defer t.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-e.done:
+			return
+		case now := <-t.C:
+			e.mu.Lock()
+			for tuple, c := range e.tcp {
+				if now.Sub(c.created) > 10*time.Minute {
+					c.stream.Close()
+					delete(e.tcp, tuple)
+				}
+			}
+			for tuple, s := range e.udp {
+				if now.Sub(s.lastAct) > 2*time.Minute {
+					delete(e.udp, tuple)
+				}
+			}
+			e.mu.Unlock()
+		}
+	}
+}

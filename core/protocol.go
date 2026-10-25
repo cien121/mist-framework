@@ -1,1 +1,72 @@
-Ly8gUGFja2FnZSBjb3JlIGRlZmluZXMgdGhlIGluZGVwZW5kZW50IHByb3h5IGZyYW1ld29yayBpbnRlcmZhY2VzLgovLyBObyBYcmF5IGRlcGVuZGVuY3kuIE1pc3QgYW5kIEh5MiBhcmUgcGx1Z2lucy4KcGFja2FnZSBjb3JlCgppbXBvcnQgKAoJImNvbnRleHQiCgkiaW8iCgkibmV0IgoJInRpbWUiCikKCi8vIFByb3RvY29sQ2xpZW50IGlzIHRoZSB1bmlmaWVkIGludGVyZmFjZSBmb3IgcHJveHkgcHJvdG9jb2xzLgovLyBFYWNoIHByb3RvY29sIChNaXN0LCBIeTIpIGltcGxlbWVudHMgdGhpcy4KdHlwZSBQcm90b2NvbENsaWVudCBpbnRlcmZhY2UgewoJLy8gTmFtZSByZXR1cm5zIHRoZSBwcm90b2NvbCBuYW1lOiAibWlzdCIsICJoeTIiLCBldGMuCglOYW1lKCkgc3RyaW5nCgoJLy8gRGlhbCBlc3RhYmxpc2hlcyBhIGNvbm5lY3Rpb24gdG8gdGhlIHRhcmdldCB0aHJvdWdoIHRoZSBwcm94eS4KCS8vIGFkZHIgaXMgImhvc3Q6cG9ydCIuCglEaWFsKGN0eCBjb250ZXh0LkNvbnRleHQsIGFkZHIgc3RyaW5nKSAobmV0LkNvbm4sIGVycm9yKQoKCS8vIENsb3NlIHJlbGVhc2VzIGFsbCByZXNvdXJjZXMuCglDbG9zZSgpIGVycm9yCn0KCi8vIFBhY2tldENvbm4gaXMgYSBVRFAtbGlrZSBwYWNrZXQgY29ubmVjdGlvbiBmb3IgVFVOIGZvcndhcmRpbmcuCnR5cGUgUGFja2V0Q29ubiBpbnRlcmZhY2UgewoJaW8uUmVhZFdyaXRlQ2xvc2VyCgkvLyBSZWFkUGFja2V0IHJlYWRzIG9uZSBJUCBwYWNrZXQuCglSZWFkUGFja2V0KCkgKFtdYnl0ZSwgZXJyb3IpCgkvLyBXcml0ZVBhY2tldCB3cml0ZXMgb25lIElQIHBhY2tldC4KCVdyaXRlUGFja2V0KFtdYnl0ZSkgZXJyb3IKfQoKLy8gVFVORGV2aWNlIGFic3RyYWN0cyB0aGUgQW5kcm9pZCBUVU4gaW50ZXJmYWNlLgovLyBJbXBsZW1lbnRlZCBieSBLb3RsaW4gdmlhIGdvbW9iaWxlLgp0eXBlIFRVTkRldmljZSBpbnRlcmZhY2UgewoJLy8gUmVhZCByZWFkcyBvbmUgSVAgcGFja2V0IGZyb20gVFVOLgoJUmVhZChbXWJ5dGUpIChpbnQsIGVycm9yKQoJLy8gV3JpdGUgd3JpdGVzIG9uZSBJUCBwYWNrZXQgdG8gVFVOLgoJV3JpdGUoW11ieXRlKSAoaW50LCBlcnJvcikKCS8vIENsb3NlIGNsb3NlcyB0aGUgVFVOIGRldmljZS4KCUNsb3NlKCkgZXJyb3IKfQoKLy8gU3RhdHMgY29sbGVjdHMgdHJhZmZpYyBzdGF0aXN0aWNzLgp0eXBlIFN0YXRzIHN0cnVjdCB7CglVcGxvYWRCeXRlcyAgIHVpbnQ2NAoJRG93bmxvYWRCeXRlcyB1aW50NjQKCVVwbG9hZFJhdGUgICAgdWludDY0IC8vIGJ5dGVzL3NlYwoJRG93bmxvYWRSYXRlICB1aW50NjQgLy8gYnl0ZXMvc2VjCglVcGRhdGVkQXQgICAgIHRpbWUuVGltZQp9CgovLyBTdGF0c0NvbGxlY3RvciByZWNlaXZlcyB0cmFmZmljIHVwZGF0ZXMuCnR5cGUgU3RhdHNDb2xsZWN0b3IgaW50ZXJmYWNlIHsKCS8vIFJlcG9ydCB1cGxvYWRzIHRyYWZmaWMgc3RhdHMuCglSZXBvcnQocyBTdGF0cykKfQoKLy8gRGF0YWdyYW1DbGllbnQgaXMgYW4gb3B0aW9uYWwgUHJvdG9jb2xDbGllbnQgZXh0ZW5zaW9uIGZvcgovLyBjb25uZWN0aW9ubGVzcyBVRFAgcmVsYXkgKHVzZWQgYnkgdGhlIGVuZ2luZSdzIFVEUCBwYXRoKS4KLy8gU2VuZERhdGFncmFtIHNlbmRzIHBheWxvYWQgdG8gdGFyZ2V0ICgiaXA6cG9ydCIpOyBpbmJvdW5kIHJlbGF5Ci8vIGRhdGFncmFtcyBhcnJpdmUgdmlhIHRoZSBoYW5kbGVyIHNldCBieSBPbkRhdGFncmFtLCB3aXRoIHNyY0FkZHIKLy8gc2V0IHRvIHRoZSBvcmlnaW5hbCB0YXJnZXQgKCJpcDpwb3J0IikuCnR5cGUgRGF0YWdyYW1DbGllbnQgaW50ZXJmYWNlIHsKCVNlbmREYXRhZ3JhbSh0YXJnZXQgc3RyaW5nLCBkYXRhIFtdYnl0ZSkgZXJyb3IKCU9uRGF0YWdyYW0oaCBEYXRhZ3JhbUhhbmRsZXIpCn0KCi8vIERhdGFncmFtSGFuZGxlciByZWNlaXZlcyByZWxheSBkYXRhZ3JhbXMgKHNlZSBEYXRhZ3JhbUNsaWVudCkuCnR5cGUgRGF0YWdyYW1IYW5kbGVyIGZ1bmMoc3JjQWRkciBzdHJpbmcsIGRhdGEgW11ieXRlKQo=
+// Package core defines the independent proxy framework interfaces.
+// No Xray dependency. Mist and Hy2 are plugins.
+package core
+
+import (
+	"context"
+	"io"
+	"net"
+	"time"
+)
+
+// ProtocolClient is the unified interface for proxy protocols.
+// Each protocol (Mist, Hy2) implements this.
+type ProtocolClient interface {
+	// Name returns the protocol name: "mist", "hy2", etc.
+	Name() string
+
+	// Dial establishes a connection to the target through the proxy.
+	// addr is "host:port".
+	Dial(ctx context.Context, addr string) (net.Conn, error)
+
+	// Close releases all resources.
+	Close() error
+}
+
+// PacketConn is a UDP-like packet connection for TUN forwarding.
+type PacketConn interface {
+	io.ReadWriteCloser
+	// ReadPacket reads one IP packet.
+	ReadPacket() ([]byte, error)
+	// WritePacket writes one IP packet.
+	WritePacket([]byte) error
+}
+
+// TUNDevice abstracts the Android TUN interface.
+// Implemented by Kotlin via gomobile.
+type TUNDevice interface {
+	// Read reads one IP packet from TUN.
+	Read([]byte) (int, error)
+	// Write writes one IP packet to TUN.
+	Write([]byte) (int, error)
+	// Close closes the TUN device.
+	Close() error
+}
+
+// Stats collects traffic statistics.
+type Stats struct {
+	UploadBytes   uint64
+	DownloadBytes uint64
+	UploadRate    uint64 // bytes/sec
+	DownloadRate  uint64 // bytes/sec
+	UpdatedAt     time.Time
+}
+
+// StatsCollector receives traffic updates.
+type StatsCollector interface {
+	// Report uploads traffic stats.
+	Report(s Stats)
+}
+
+// DatagramClient is an optional ProtocolClient extension for
+// connectionless UDP relay (used by the engine's UDP path).
+// SendDatagram sends payload to target ("ip:port"); inbound relay
+// datagrams arrive via the handler set by OnDatagram, with srcAddr
+// set to the original target ("ip:port").
+type DatagramClient interface {
+	SendDatagram(target string, data []byte) error
+	OnDatagram(h DatagramHandler)
+}
+
+// DatagramHandler receives relay datagrams (see DatagramClient).
+type DatagramHandler func(srcAddr string, data []byte)

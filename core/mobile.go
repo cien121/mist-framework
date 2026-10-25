@@ -1,1 +1,216 @@
-Ly8gTW9iaWxlIGJpbmRpbmdzIGZvciBBbmRyb2lkIChnb21vYmlsZSBiaW5kKS4KLy8KLy8gVGhpcyBmaWxlIGlzIHRoZSBvbmx5IGdvbW9iaWxlIGVudHJ5IHBvaW50IGZvciB0aGUgaW5kZXBlbmRlbnQKLy8gZnJhbWV3b3JrLiBJdCB3cmFwcyBFbmdpbmUgKyBNaXN0VURQQ2xpZW50IGJlaGluZCBhIHNtYWxsIEFQSSB0aGF0Ci8vIHVzZXMgb25seSBnb21vYmlsZS1zdXBwb3J0ZWQgdHlwZXMgKG5vIGNvbnRleHQuQ29udGV4dCwgbm8KLy8gdW5leHBvcnRlZCB0eXBlcyBpbiBzaWduYXR1cmVzKToKLy8KLy8JTW9iaWxlRW5naW5lOiAgTmV3TW9iaWxlRW5naW5lKCkgLT4gU3RhcnQodHVuRmQsIG5vZGVVUkwpIC8gU3RvcCgpCi8vCVN0YXRzTGlzdGVuZXI6IE9uU3RhdHModXBsb2FkQnl0ZXMsIGRvd25sb2FkQnl0ZXMpIOKAlCBpbXBsZW1lbnRlZCBpbiBLb3RsaW4KLy8KLy8gSmF2YSBtYXBwaW5nIChnb21vYmlsZSBsb3dlckNhbWVsQ2FzZSBydWxlczsgdmVyaWZ5IGFnYWluc3QgdGhlCi8vIGdlbmVyYXRlZCBzb3VyY2VzIGFmdGVyIHRoZSBmaXJzdCBiaW5kKToKLy8KLy8JS290bGluOiBNb2JpbGVFbmdpbmUoKSAgICAgICAgICAgICAvLyBHbyBOZXdNb2JpbGVFbmdpbmUoKQovLwlLb3RsaW46IGVuZy5zdGFydChmZCwgbm9kZVVSTCkgICAgIC8vIEdvIFN0YXJ0OyB0aHJvd3Mgb24gZXJyb3IKLy8JS290bGluOiBlbmcuc3RvcCgpICAgICAgICAgICAgICAgICAvLyBHbyBTdG9wCi8vCUtvdGxpbjogZW5nLnNldFN0YXRzTGlzdGVuZXIobCkgICAgLy8gR28gU2V0U3RhdHNMaXN0ZW5lcgovLwlLb3RsaW46IGVuZy5nZXRVcGxvYWRCeXRlcygpICAgICAgIC8vIEdvIEdldFVwbG9hZEJ5dGVzCi8vCi8vIFRVTiBmZCBvd25lcnNoaXA6IEtvdGxpbiBwYXNzZXMgdGhlIGZkIGZyb20gUGFyY2VsRmlsZURlc2NyaXB0b3IKLy8gLmRldGFjaEZkKCkuIEdvIHRha2VzIG93bmVyc2hpcCB2aWEgb3MuTmV3RmlsZTsgRW5naW5lLkNsb3NlKCkKLy8gKGNhbGxlZCBmcm9tIFN0b3ApIGNsb3NlcyBpdC4gS290bGluIG11c3QgTk9UIGNsb3NlIGl0IGFmdGVyd2FyZHMuCi8vCi8vIFJvdXRpbmctbG9vcCBzdG9wZ2FwOiB0aGUgR28gcHJvY2VzcydzIG93biBVRFAgc29ja2V0IHRvIHRoZSBNaXN0Ci8vIHNlcnZlciBtdXN0IG5vdCBiZSByb3V0ZWQgYmFjayBpbnRvIHRoZSBUVU4uIE1pc3RVRFBDbGllbnQgZGlhbHMKLy8gd2l0aCBuZXQuTGlzdGVuVURQIGFuZCBoYXMgbm8gQW5kcm9pZCBwcm90ZWN0KCkgaG9vaywgc28gdGhlCi8vIEtvdGxpbiBzaWRlIGV4Y2x1ZGVzIHRoZSBhcHAgaXRzZWxmIHdpdGgKLy8gVnBuU2VydmljZS5CdWlsZGVyLmFkZERpc2FsbG93ZWRBcHBsaWNhdGlvbiAoc2VlIGFuZHJvaWQvUkVBRE1FKS4KLy8gVGhlIHByb3BlciBmaXgg4oCUIGEgUHJvdGVjdEhhbmRsZXIgY2FsbGJhY2sgcGx1bWJlZCBpbnRvIHRoZSBkaWFsCi8vIHBhdGgg4oCUIGlzIGZ1dHVyZSB3b3JrIGFuZCBuZWVkcyBjaGFuZ2VzIHRvIG1pc3RfdWRwLmdvL21pc3Rjb3JlLAovLyB3aGljaCBhcmUgaW50ZW50aW9uYWxseSB1bnRvdWNoZWQgaGVyZS4KcGFja2FnZSBjb3JlCgppbXBvcnQgKAoJImNvbnRleHQiCgkiZXJyb3JzIgoJIm9zIgoJInN5bmMiCgkidGltZSIKKQoKLy8gU3RhdHNMaXN0ZW5lciByZWNlaXZlcyBwZXJpb2RpYyB0cmFmZmljIGNvdW50ZXJzIGZyb20gdGhlIGVuZ2luZS4KLy8gSW1wbGVtZW50ZWQgaW4gS290bGluOyBjYWxsZWQgZnJvbSBhIEdvIGdvcm91dGluZSAoS290bGluIG11c3QgcG9zdAovLyB0byB0aGUgbWFpbiB0aHJlYWQgYmVmb3JlIHRvdWNoaW5nIFVJKS4KdHlwZSBTdGF0c0xpc3RlbmVyIGludGVyZmFjZSB7CglPblN0YXRzKHVwbG9hZEJ5dGVzIGludDY0LCBkb3dubG9hZEJ5dGVzIGludDY0KQp9CgovLyBmZFRVTiBhZGFwdHMgYW4gQW5kcm9pZCBUVU4gZmlsZSBkZXNjcmlwdG9yIHRvIFRVTkRldmljZS4KdHlwZSBmZFRVTiBzdHJ1Y3QgewoJZiAqb3MuRmlsZQp9CgpmdW5jICh0ICpmZFRVTikgUmVhZChiIFtdYnl0ZSkgKGludCwgZXJyb3IpIHsgcmV0dXJuIHQuZi5SZWFkKGIpIH0KCi8vIFdyaXRlIGxvb3BzIHVudGlsIHRoZSB3aG9sZSBwYWNrZXQgaXMgd3JpdHRlbjogYSBwYXJ0aWFsIFRVTiB3cml0ZQovLyB3b3VsZCBjb3JydXB0IHRoZSBwYWNrZXQgc3RyZWFtLgpmdW5jICh0ICpmZFRVTikgV3JpdGUoYiBbXWJ5dGUpIChpbnQsIGVycm9yKSB7Cgl0b3RhbCA6PSAwCglmb3IgdG90YWwgPCBsZW4oYikgewoJCW4sIGVyciA6PSB0LmYuV3JpdGUoYlt0b3RhbDpdKQoJCXRvdGFsICs9IG4KCQlpZiBlcnIgIT0gbmlsIHsKCQkJcmV0dXJuIHRvdGFsLCBlcnIKCQl9CgkJaWYgbiA9PSAwIHsKCQkJcmV0dXJuIHRvdGFsLCBlcnJvcnMuTmV3KCJtaXN0OiB0dW4gd3JpdGUgcmV0dXJuZWQgMCIpCgkJfQoJfQoJcmV0dXJuIHRvdGFsLCBuaWwKfQoKZnVuYyAodCAqZmRUVU4pIENsb3NlKCkgZXJyb3IgeyByZXR1cm4gdC5mLkNsb3NlKCkgfQoKLy8gTW9iaWxlRW5naW5lIGlzIHRoZSBnb21vYmlsZSBoYW5kbGUgZm9yIG9uZSBydW5uaW5nIHR1bm5lbC4KdHlwZSBNb2JpbGVFbmdpbmUgc3RydWN0IHsKCW11ICAgICAgIHN5bmMuTXV0ZXgKCWVuZ2luZSAgICpFbmdpbmUKCWNsaWVudCAgICpNaXN0VURQQ2xpZW50CgljYW5jZWwgICBjb250ZXh0LkNhbmNlbEZ1bmMKCXJ1bkRvbmUgIGNoYW4gc3RydWN0e30KCWxpc3RlbmVyIFN0YXRzTGlzdGVuZXIKCXJ1bm5pbmcgIGJvb2wKfQoKLy8gTmV3TW9iaWxlRW5naW5lIGNyZWF0ZXMgYSBzdG9wcGVkIGVuZ2luZSBoYW5kbGUuCmZ1bmMgTmV3TW9iaWxlRW5naW5lKCkgKk1vYmlsZUVuZ2luZSB7IHJldHVybiAmTW9iaWxlRW5naW5le30gfQoKLy8gU2V0U3RhdHNMaXN0ZW5lciByZWdpc3RlcnMgdGhlIEtvdGxpbiBzdGF0cyBjYWxsYmFjay4gTWF5IGJlIGNhbGxlZAovLyBiZWZvcmUgU3RhcnQ7IG1heSBiZSBuaWwgdG8gZGlzYWJsZSBjYWxsYmFja3MuCmZ1bmMgKG0gKk1vYmlsZUVuZ2luZSkgU2V0U3RhdHNMaXN0ZW5lcihsIFN0YXRzTGlzdGVuZXIpIHsKCW0ubXUuTG9jaygpCgltLmxpc3RlbmVyID0gbAoJbS5tdS5VbmxvY2soKQp9CgovLyBTdGFydCBidWlsZHMgYSBNaXN0IGNsaWVudCBmcm9tIGEgbWlzdDovLyBub2RlIGxpbmssIHdyYXBzIHR1bkZkIGFzCi8vIHRoZSBUVU4gZGV2aWNlLCBhbmQgc3RhcnRzIHRoZSBmb3J3YXJkaW5nIGVuZ2luZS4gdHVuRmQgb3duZXJzaGlwCi8vIG1vdmVzIHRvIEdvIChzZWUgcGFja2FnZSBkb2MpLiBSZXR1cm5zIGFuIGVycm9yIGlmIGFscmVhZHkgcnVubmluZwovLyBvciBpZiB0aGUgbm9kZSBsaW5rIGlzIGludmFsaWQuCmZ1bmMgKG0gKk1vYmlsZUVuZ2luZSkgU3RhcnQodHVuRmQgaW50LCBub2RlVVJMIHN0cmluZykgZXJyb3IgewoJbS5tdS5Mb2NrKCkKCWlmIG0ucnVubmluZyB7CgkJbS5tdS5VbmxvY2soKQoJCXJldHVybiBlcnJvcnMuTmV3KCJtaXN0OiBlbmdpbmUgYWxyZWFkeSBydW5uaW5nIikKCX0KCWNmZywgZXJyIDo9IFBhcnNlTWlzdFVSTChub2RlVVJMKQoJaWYgZXJyICE9IG5pbCB7CgkJbS5tdS5VbmxvY2soKQoJCXJldHVybiBlcnIKCX0KCWNsaWVudCwgZXJyIDo9IE5ld01pc3RVRFBDbGllbnQoKmNmZykKCWlmIGVyciAhPSBuaWwgewoJCW0ubXUuVW5sb2NrKCkKCQlyZXR1cm4gZXJyCgl9Cgl0dW4gOj0gJmZkVFVOe2Y6IG9zLk5ld0ZpbGUodWludHB0cih0dW5GZCksICJ0dW4iKX0KCWVuZ2luZSA6PSBOZXdFbmdpbmUoRW5naW5lQ29uZmlne1RVTjogdHVuLCBDbGllbnQ6IGNsaWVudH0pCgljdHgsIGNhbmNlbCA6PSBjb250ZXh0LldpdGhDYW5jZWwoY29udGV4dC5CYWNrZ3JvdW5kKCkpCgltLmVuZ2luZSA9IGVuZ2luZQoJbS5jbGllbnQgPSBjbGllbnQKCW0uY2FuY2VsID0gY2FuY2VsCgltLnJ1bkRvbmUgPSBtYWtlKGNoYW4gc3RydWN0e30pCgltLnJ1bm5pbmcgPSB0cnVlCgltLm11LlVubG9jaygpCgoJZ28gZnVuYygpIHsKCQlkZWZlciBjbG9zZShtLnJ1bkRvbmUpCgkJXyA9IGVuZ2luZS5SdW4oY3R4KQoJfSgpCglnbyBtLnN0YXRzTG9vcChjdHgsIGVuZ2luZSkKCXJldHVybiBuaWwKfQoKLy8gU3RvcCBjYW5jZWxzIHRoZSBlbmdpbmUsIGNsb3NlcyB0aGUgVFVOIGZkIGFuZCB0aGUgTWlzdCBjbGllbnQsIGFuZAovLyB3YWl0cyAobWF4IDVzKSBmb3IgdGhlIGVuZ2luZSBnb3JvdXRpbmUgdG8gZXhpdC4gU2FmZSB0byBjYWxsIHdoZW4KLy8gbm90IHJ1bm5pbmcuCmZ1bmMgKG0gKk1vYmlsZUVuZ2luZSkgU3RvcCgpIHsKCW0ubXUuTG9jaygpCglpZiAhbS5ydW5uaW5nIHsKCQltLm11LlVubG9jaygpCgkJcmV0dXJuCgl9CgllbmdpbmUsIGNsaWVudCwgY2FuY2VsLCBydW5Eb25lIDo9IG0uZW5naW5lLCBtLmNsaWVudCwgbS5jYW5jZWwsIG0ucnVuRG9uZQoJbS5lbmdpbmUsIG0uY2xpZW50LCBtLmNhbmNlbCA9IG5pbCwgbmlsLCBuaWwKCW0ucnVubmluZyA9IGZhbHNlCgltLm11LlVubG9jaygpCgoJaWYgY2FuY2VsICE9IG5pbCB7CgkJY2FuY2VsKCkKCX0KCWlmIGVuZ2luZSAhPSBuaWwgewoJCV8gPSBlbmdpbmUuQ2xvc2UoKSAvLyBhbHNvIGNsb3NlcyB0aGUgVFVOIGZkCgl9CglpZiBjbGllbnQgIT0gbmlsIHsKCQlfID0gY2xpZW50LkNsb3NlKCkKCX0KCWlmIHJ1bkRvbmUgIT0gbmlsIHsKCQlzZWxlY3QgewoJCWNhc2UgPC1ydW5Eb25lOgoJCWNhc2UgPC10aW1lLkFmdGVyKDUgKiB0aW1lLlNlY29uZCk6CgkJfQoJfQp9CgovLyBJc1J1bm5pbmcgcmVwb3J0cyB3aGV0aGVyIHRoZSBlbmdpbmUgaXMgdXAuCmZ1bmMgKG0gKk1vYmlsZUVuZ2luZSkgSXNSdW5uaW5nKCkgYm9vbCB7CgltLm11LkxvY2soKQoJZGVmZXIgbS5tdS5VbmxvY2soKQoJcmV0dXJuIG0ucnVubmluZwp9CgovLyBHZXRVcGxvYWRCeXRlcyByZXR1cm5zIGN1bXVsYXRpdmUgYnl0ZXMgc2VudCB0aHJvdWdoIHRoZSB0dW5uZWwuCmZ1bmMgKG0gKk1vYmlsZUVuZ2luZSkgR2V0VXBsb2FkQnl0ZXMoKSBpbnQ2NCB7CgltLm11LkxvY2soKQoJZSA6PSBtLmVuZ2luZQoJbS5tdS5VbmxvY2soKQoJaWYgZSA9PSBuaWwgewoJCXJldHVybiAwCgl9CglyZXR1cm4gaW50NjQoZS5TdGF0cygpLlVwbG9hZEJ5dGVzKQp9CgovLyBHZXREb3dubG9hZEJ5dGVzIHJldHVybnMgY3VtdWxhdGl2ZSBieXRlcyByZWNlaXZlZCB0aHJvdWdoIHRoZSB0dW5uZWwuCmZ1bmMgKG0gKk1vYmlsZUVuZ2luZSkgR2V0RG93bmxvYWRCeXRlcygpIGludDY0IHsKCW0ubXUuTG9jaygpCgllIDo9IG0uZW5naW5lCgltLm11LlVubG9jaygpCglpZiBlID09IG5pbCB7CgkJcmV0dXJuIDAKCX0KCXJldHVybiBpbnQ2NChlLlN0YXRzKCkuRG93bmxvYWRCeXRlcykKfQoKLy8gc3RhdHNMb29wIGZvcndhcmRzIGVuZ2luZSBjb3VudGVycyB0byB0aGUgS290bGluIGxpc3RlbmVyIG9uY2UgcGVyCi8vIHNlY29uZCB1bnRpbCBjdHggaXMgZG9uZS4gQSBuaWwgbGlzdGVuZXIgbWVhbnMgcG9sbGluZy1vbmx5IG1vZGUKLy8gKEtvdGxpbiByZWFkcyBHZXRVcGxvYWRCeXRlcy9HZXREb3dubG9hZEJ5dGVzIGluc3RlYWQpLgpmdW5jIChtICpNb2JpbGVFbmdpbmUpIHN0YXRzTG9vcChjdHggY29udGV4dC5Db250ZXh0LCBlbmdpbmUgKkVuZ2luZSkgewoJdCA6PSB0aW1lLk5ld1RpY2tlcih0aW1lLlNlY29uZCkKCWRlZmVyIHQuU3RvcCgpCglmb3IgewoJCXNlbGVjdCB7CgkJY2FzZSA8LWN0eC5Eb25lKCk6CgkJCXJldHVybgoJCWNhc2UgPC10LkM6CgkJCW0ubXUuTG9jaygpCgkJCWwgOj0gbS5saXN0ZW5lcgoJCQltLm11LlVubG9jaygpCgkJCWlmIGwgPT0gbmlsIHsKCQkJCWNvbnRpbnVlCgkJCX0KCQkJcyA6PSBlbmdpbmUuU3RhdHMoKQoJCQlsLk9uU3RhdHMoaW50NjQocy5VcGxvYWRCeXRlcyksIGludDY0KHMuRG93bmxvYWRCeXRlcykpCgkJfQoJfQp9Cg==
+// Mobile bindings for Android (gomobile bind).
+//
+// This file is the only gomobile entry point for the independent
+// framework. It wraps Engine + MistUDPClient behind a small API that
+// uses only gomobile-supported types (no context.Context, no
+// unexported types in signatures):
+//
+//	MobileEngine:  NewMobileEngine() -> Start(tunFd, nodeURL) / Stop()
+//	StatsListener: OnStats(uploadBytes, downloadBytes) — implemented in Kotlin
+//
+// Java mapping (gomobile lowerCamelCase rules; verify against the
+// generated sources after the first bind):
+//
+//	Kotlin: MobileEngine()             // Go NewMobileEngine()
+//	Kotlin: eng.start(fd, nodeURL)     // Go Start; throws on error
+//	Kotlin: eng.stop()                 // Go Stop
+//	Kotlin: eng.setStatsListener(l)    // Go SetStatsListener
+//	Kotlin: eng.getUploadBytes()       // Go GetUploadBytes
+//
+// TUN fd ownership: Kotlin passes the fd from ParcelFileDescriptor
+// .detachFd(). Go takes ownership via os.NewFile; Engine.Close()
+// (called from Stop) closes it. Kotlin must NOT close it afterwards.
+//
+// Routing-loop stopgap: the Go process's own UDP socket to the Mist
+// server must not be routed back into the TUN. MistUDPClient dials
+// with net.ListenUDP and has no Android protect() hook, so the
+// Kotlin side excludes the app itself with
+// VpnService.Builder.addDisallowedApplication (see android/README).
+// The proper fix — a ProtectHandler callback plumbed into the dial
+// path — is future work and needs changes to mist_udp.go/mistcore,
+// which are intentionally untouched here.
+package core
+
+import (
+	"context"
+	"errors"
+	"os"
+	"sync"
+	"time"
+)
+
+// StatsListener receives periodic traffic counters from the engine.
+// Implemented in Kotlin; called from a Go goroutine (Kotlin must post
+// to the main thread before touching UI).
+type StatsListener interface {
+	OnStats(uploadBytes int64, downloadBytes int64)
+}
+
+// fdTUN adapts an Android TUN file descriptor to TUNDevice.
+type fdTUN struct {
+	f *os.File
+}
+
+func (t *fdTUN) Read(b []byte) (int, error) { return t.f.Read(b) }
+
+// Write loops until the whole packet is written: a partial TUN write
+// would corrupt the packet stream.
+func (t *fdTUN) Write(b []byte) (int, error) {
+	total := 0
+	for total < len(b) {
+		n, err := t.f.Write(b[total:])
+		total += n
+		if err != nil {
+			return total, err
+		}
+		if n == 0 {
+			return total, errors.New("mist: tun write returned 0")
+		}
+	}
+	return total, nil
+}
+
+func (t *fdTUN) Close() error { return t.f.Close() }
+
+// MobileEngine is the gomobile handle for one running tunnel.
+type MobileEngine struct {
+	mu       sync.Mutex
+	engine   *Engine
+	client   *MistUDPClient
+	cancel   context.CancelFunc
+	runDone  chan struct{}
+	listener StatsListener
+	running  bool
+}
+
+// NewMobileEngine creates a stopped engine handle.
+func NewMobileEngine() *MobileEngine { return &MobileEngine{} }
+
+// SetStatsListener registers the Kotlin stats callback. May be called
+// before Start; may be nil to disable callbacks.
+func (m *MobileEngine) SetStatsListener(l StatsListener) {
+	m.mu.Lock()
+	m.listener = l
+	m.mu.Unlock()
+}
+
+// Start builds a Mist client from a mist:// node link, wraps tunFd as
+// the TUN device, and starts the forwarding engine. tunFd ownership
+// moves to Go (see package doc). Returns an error if already running
+// or if the node link is invalid.
+func (m *MobileEngine) Start(tunFd int, nodeURL string) error {
+	m.mu.Lock()
+	if m.running {
+		m.mu.Unlock()
+		return errors.New("mist: engine already running")
+	}
+	cfg, err := ParseMistURL(nodeURL)
+	if err != nil {
+		m.mu.Unlock()
+		return err
+	}
+	client, err := NewMistUDPClient(*cfg)
+	if err != nil {
+		m.mu.Unlock()
+		return err
+	}
+	tun := &fdTUN{f: os.NewFile(uintptr(tunFd), "tun")}
+	engine := NewEngine(EngineConfig{TUN: tun, Client: client})
+	ctx, cancel := context.WithCancel(context.Background())
+	m.engine = engine
+	m.client = client
+	m.cancel = cancel
+	m.runDone = make(chan struct{})
+	m.running = true
+	m.mu.Unlock()
+
+	go func() {
+		defer close(m.runDone)
+		_ = engine.Run(ctx)
+	}()
+	go m.statsLoop(ctx, engine)
+	return nil
+}
+
+// Stop cancels the engine, closes the TUN fd and the Mist client, and
+// waits (max 5s) for the engine goroutine to exit. Safe to call when
+// not running.
+func (m *MobileEngine) Stop() {
+	m.mu.Lock()
+	if !m.running {
+		m.mu.Unlock()
+		return
+	}
+	engine, client, cancel, runDone := m.engine, m.client, m.cancel, m.runDone
+	m.engine, m.client, m.cancel = nil, nil, nil
+	m.running = false
+	m.mu.Unlock()
+
+	if cancel != nil {
+		cancel()
+	}
+	if engine != nil {
+		_ = engine.Close() // also closes the TUN fd
+	}
+	if client != nil {
+		_ = client.Close()
+	}
+	if runDone != nil {
+		select {
+		case <-runDone:
+		case <-time.After(5 * time.Second):
+		}
+	}
+}
+
+// IsRunning reports whether the engine is up.
+func (m *MobileEngine) IsRunning() bool {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return m.running
+}
+
+// GetUploadBytes returns cumulative bytes sent through the tunnel.
+func (m *MobileEngine) GetUploadBytes() int64 {
+	m.mu.Lock()
+	e := m.engine
+	m.mu.Unlock()
+	if e == nil {
+		return 0
+	}
+	return int64(e.Stats().UploadBytes)
+}
+
+// GetDownloadBytes returns cumulative bytes received through the tunnel.
+func (m *MobileEngine) GetDownloadBytes() int64 {
+	m.mu.Lock()
+	e := m.engine
+	m.mu.Unlock()
+	if e == nil {
+		return 0
+	}
+	return int64(e.Stats().DownloadBytes)
+}
+
+// statsLoop forwards engine counters to the Kotlin listener once per
+// second until ctx is done. A nil listener means polling-only mode
+// (Kotlin reads GetUploadBytes/GetDownloadBytes instead).
+func (m *MobileEngine) statsLoop(ctx context.Context, engine *Engine) {
+	t := time.NewTicker(time.Second)
+	defer t.Stop()
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-t.C:
+			m.mu.Lock()
+			l := m.listener
+			m.mu.Unlock()
+			if l == nil {
+				continue
+			}
+			s := engine.Stats()
+			l.OnStats(int64(s.UploadBytes), int64(s.DownloadBytes))
+		}
+	}
+}
