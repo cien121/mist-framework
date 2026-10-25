@@ -35,11 +35,13 @@ import (
 	"log"
 	"net"
 	"net/url"
+	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
 
+	"golang.org/x/crypto/hkdf"
 	"mist/mistcore"
 )
 
@@ -49,10 +51,39 @@ type MistConfig struct {
 	ClientID string // 32 hex chars (16 bytes)
 	AuthKey  string // base64 std, 32 bytes
 	SNI      string // reserved for the TLS path; unused by UDP
+	// HopPortsBase/HopPortsLast define the port-hop range (inclusive),
+	// from the node link's ports=<base>-<last> parameter. Zero values
+	// mean no hopping: the client behaves exactly like before (single
+	// port, old DCID). Hopping is driven by the node link only; there
+	// is no in-band capability probe.
+	HopPortsBase int
+	HopPortsLast int
+	// HopIntervalSec is the hop window in seconds (node link hop=).
+	// Defaults to 30 when hopping is enabled; clamped to [10, 120].
+	HopIntervalSec int
+}
+
+// HopEnabled reports whether port hopping is configured for this node.
+func (cfg MistConfig) HopEnabled() bool {
+	return cfg.HopPortsBase > 0 && cfg.HopPortsLast >= cfg.HopPortsBase
+}
+
+// HopPortCount returns the number of ports in the hop range (0 if disabled).
+func (cfg MistConfig) HopPortCount() int {
+	if !cfg.HopEnabled() {
+		return 0
+	}
+	return cfg.HopPortsLast - cfg.HopPortsBase + 1
 }
 
 // ParseMistURL parses a mist:// node link:
-// mist://<cidHex>@<host>:<port>?key=<base64url>&sni=<domain>#<name>
+// mist://<cidHex>@<host>:<port>?key=<base64url>&sni=<domain>[&ports=<base>-<last>&hop=<sec>]#<name>
+//
+// The host may be a v4 literal, a bracketed v6 literal ([2001:db8::1]),
+// or a domain name. Server keeps the original "host:port" spelling
+// (brackets included): ResolvePeerAddrSafe's splitHostPort already
+// handles "[v6]:port", and stripping the brackets early would break
+// that input contract.
 func ParseMistURL(raw string) (*MistConfig, error) {
 	u, err := url.Parse(raw)
 	if err != nil {
@@ -72,6 +103,20 @@ func ParseMistURL(raw string) (*MistConfig, error) {
 	if host == "" {
 		return nil, fmt.Errorf("mist: missing host")
 	}
+	// Validate host:port spelling now (fail fast on malformed links).
+	// A v6 literal must parse as an IP; a domain is left for the
+	// resolver at Connect time (family preference + fallback live there).
+	hostPart, portStr, err := net.SplitHostPort(host)
+	if err != nil {
+		return nil, fmt.Errorf("mist: bad host:port %q: %w", host, err)
+	}
+	portNum, err := strconv.Atoi(portStr)
+	if err != nil || portNum < 1 || portNum > 65535 {
+		return nil, fmt.Errorf("mist: bad port %q", portStr)
+	}
+	if ip := net.ParseIP(hostPart); ip != nil && ip.To16() == nil {
+		return nil, fmt.Errorf("mist: bad IP literal %q", hostPart)
+	}
 	keyURL := u.Query().Get("key")
 	if keyURL == "" {
 		return nil, fmt.Errorf("mist: missing key")
@@ -88,11 +133,49 @@ func ParseMistURL(raw string) (*MistConfig, error) {
 	if err != nil || len(keyBytes) != 32 {
 		return nil, fmt.Errorf("mist: key must be 32 bytes base64")
 	}
+	// Port hopping (node link ports=<base>-<last>, hop=<sec>).
+	// No ports parameter = single-port mode, byte-identical to before.
+	hopBase, hopLast, hopInterval := 0, 0, 0
+	if portsStr := u.Query().Get("ports"); portsStr != "" {
+		parts := strings.Split(portsStr, "-")
+		if len(parts) != 2 {
+			return nil, fmt.Errorf("mist: bad ports %q, want <base>-<last>", portsStr)
+		}
+		base, err1 := strconv.Atoi(parts[0])
+		last, err2 := strconv.Atoi(parts[1])
+		if err1 != nil || err2 != nil || base < 1 || last < base || last > 65535 {
+			return nil, fmt.Errorf("mist: bad ports %q", portsStr)
+		}
+		if last-base+1 > 256 {
+			return nil, fmt.Errorf("mist: ports range %q exceeds 256 ports", portsStr)
+		}
+		hopBase, hopLast = base, last
+		hopInterval = 30
+		if hopStr := u.Query().Get("hop"); hopStr != "" {
+			h, err := strconv.Atoi(hopStr)
+			if err != nil {
+				return nil, fmt.Errorf("mist: bad hop %q", hopStr)
+			}
+			// Clamp to [10, 120] and log; never fail the link over it.
+			if h < 10 {
+				log.Printf("mist: hop %d clamped to 10", h)
+				h = 10
+			}
+			if h > 120 {
+				log.Printf("mist: hop %d clamped to 120", h)
+				h = 120
+			}
+			hopInterval = h
+		}
+	}
 	return &MistConfig{
-		Server:   host,
-		ClientID: strings.ToLower(cid),
-		AuthKey:  keyStd,
-		SNI:      u.Query().Get("sni"),
+		Server:         host,
+		ClientID:       strings.ToLower(cid),
+		AuthKey:        keyStd,
+		SNI:            u.Query().Get("sni"),
+		HopPortsBase:   hopBase,
+		HopPortsLast:   hopLast,
+		HopIntervalSec: hopInterval,
 	}, nil
 }
 
@@ -130,6 +213,24 @@ type MistUDPClient struct {
 	dgSent     atomic.Uint64
 	dgSendErrs atomic.Uint64
 	dgReceived atomic.Uint64
+	// lastInbound records the last successful UDP read (unix nano),
+	// any packet, decrypted or not. The hop fallback watch uses it:
+	// no inbound at all for 3s after a hop means the new port is dead
+	// (or the session is idle — the fallback is deliberately
+	// fail-safe toward the known-good base port either way).
+	lastInbound atomic.Int64
+	// Hop state (port hopping, §2). peerAddr is the current send
+	// destination; baseAddr is the handshake destination and the
+	// fallback target. rotateWait maps a DCID_ROTATE packet number to
+	// a channel closed when its ACK arrives. hopStopped is the sticky
+	// fallback latch: once tripped, this session never hops again.
+	peerAddr     *net.UDPAddr
+	baseAddr     *net.UDPAddr
+	hopActive    bool
+	rotateWait   map[uint32]chan struct{}
+	hopDegraded  atomic.Bool
+	hopFallbacks atomic.Uint64
+	hopStopped   atomic.Bool
 	// pumpLastIter records the last readPump loop iteration (unix
 	// nano). The watchdog uses it as a liveness signal: it refreshes
 	// at least every 500ms even on an idle session (read deadline),
@@ -204,10 +305,15 @@ func (c *MistUDPClient) Connect(ctx context.Context) error {
 	}
 	c.mu.Unlock()
 
-	udpAddr, err := mistcore.ResolvePeerAddrSafe(ctx, c.cfg.Server, c.codec)
+	// Resolve candidates, IPv6 first. A literal node address yields
+	// exactly one candidate (no family fallback, §3.5); a domain name
+	// yields v6-then-v4 candidates for handshake fallback.
+	candidates, err := mistcore.ResolvePeerAddrsSafe(ctx, c.cfg.Server, c.codec)
 	if err != nil {
 		return fmt.Errorf("mist: safety gate: %w", err)
 	}
+	hostPart, _, _ := net.SplitHostPort(c.cfg.Server)
+	isLiteral := net.ParseIP(hostPart) != nil
 	conn, err := net.ListenUDP("udp", nil)
 	if err != nil {
 		return fmt.Errorf("mist: listen: %w", err)
@@ -220,10 +326,28 @@ func (c *MistUDPClient) Connect(ctx context.Context) error {
 	// bursts without stressing phone memory.
 	_ = conn.SetReadBuffer(1 << 20)
 	_ = conn.SetWriteBuffer(1 << 20)
-	session, err := c.handshake(ctx, conn, udpAddr)
-	if err != nil {
+	// Handshake over candidates in order. Each candidate gets the
+	// usual retries (4 attempts x 1s read deadline); the family
+	// fallback therefore happens after the first candidate's retries
+	// are exhausted (<= 4s), not after a single 1s timeout. The
+	// fallback fires at most once: no ping-pong between families.
+	var session *mistcore.UDPSession
+	var usedAddr *net.UDPAddr
+	var hsErr error
+	for i, cand := range candidates {
+		session, hsErr = c.handshake(ctx, conn, cand)
+		if hsErr == nil {
+			usedAddr = cand
+			break
+		}
+		if isLiteral || i == len(candidates)-1 {
+			break
+		}
+		log.Printf("mist: handshake via %s failed (%v), trying next candidate", cand, hsErr)
+	}
+	if hsErr != nil {
 		conn.Close()
-		return err
+		return hsErr
 	}
 
 	c.mu.Lock()
@@ -238,10 +362,16 @@ func (c *MistUDPClient) Connect(ctx context.Context) error {
 		return nil
 	}
 	c.conn = conn
-	c.udpAddr = udpAddr
+	c.udpAddr = usedAddr
+	c.peerAddr = usedAddr
+	c.baseAddr = usedAddr
+	c.hopActive = c.cfg.HopEnabled()
 	c.session = session
 	c.sched = mistcore.NewUDPSendScheduler(session, mistcore.DirC2S, func(pkt []byte) error {
-		_, err := conn.WriteToUDP(pkt, udpAddr)
+		// Destination is resolved per packet, not captured: a port hop
+		// changes peerAddr mid-session, and the scheduler must follow.
+		// readPump deliberately still ignores the source address.
+		_, err := conn.WriteToUDP(pkt, c.currentPeerAddr())
 		return err
 	})
 	// Reliability callbacks (same pattern as mist-udp-test).
@@ -252,7 +382,7 @@ func (c *MistUDPClient) Connect(ctx context.Context) error {
 			c.ackSendErrs.Add(1)
 			return
 		}
-		n, err := conn.WriteToUDP(pkt, udpAddr)
+		n, err := conn.WriteToUDP(pkt, c.currentPeerAddr())
 		if err != nil || n < len(pkt) {
 			c.ackSendErrs.Add(1)
 			return
@@ -264,11 +394,216 @@ func (c *MistUDPClient) Connect(ctx context.Context) error {
 		return nil
 	}
 	c.sched.Start()
-	c.wg.Add(3)
+	c.wg.Add(4)
 	go c.readPump()
 	go c.tickLoop()
 	go c.watchdogLoop(readPumpWatchdogTick, readPumpWatchdogStale)
+	go c.hopLoop()
 	return nil
+}
+
+// currentPeerAddr returns the current send destination: the hop target
+// while hopping, otherwise the handshake address. Never nil after Connect.
+func (c *MistUDPClient) currentPeerAddr() *net.UDPAddr {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if c.peerAddr != nil {
+		return c.peerAddr
+	}
+	return c.udpAddr
+}
+
+// HopStats reports hop state for diagnostics: whether hopping is active
+// for this session, whether a rotation ever degraded (hopped with the
+// old DCID after 3 unacked DCID_ROTATE attempts), and how many times
+// the session fell back to the base port.
+func (c *MistUDPClient) HopStats() (active, degraded bool, fallbacks uint64) {
+	c.mu.Lock()
+	active = c.hopActive && !c.hopStopped.Load()
+	c.mu.Unlock()
+	return active, c.hopDegraded.Load(), c.hopFallbacks.Load()
+}
+
+// hopPortFor deterministically derives a hop destination port from the
+// session keys and the time window (§2.3): HKDF-SHA256 with salt =
+// session ID, ikm = k_c2s, info = "mist-hop/v1" + window (big-endian),
+// reduced mod the range size and offset by the base port. Both sides
+// could compute it, but the server is tolerant (it accepts any in-range
+// port with a valid DCID + AEAD), so the value only decides where the
+// client sends. Clock skew is harmless for the same reason.
+func hopPortFor(sessionID [16]byte, kC2S [32]byte, window uint32, base, count int) int {
+	info := make([]byte, 0, len("mist-hop/v1")+4)
+	info = append(info, []byte("mist-hop/v1")...)
+	var wb [4]byte
+	binary.BigEndian.PutUint32(wb[:], window)
+	info = append(info, wb[:]...)
+	kdf := hkdf.New(sha256.New, kC2S[:], sessionID[:], info)
+	var out [8]byte
+	if _, err := io.ReadFull(kdf, out[:]); err != nil {
+		return base
+	}
+	return base + int(binary.BigEndian.Uint64(out[:])%uint64(count))
+}
+
+// hopJitter returns a 0–2s jitter so clients do not all hop on the same
+// second (a synchronized hop is itself an observable feature).
+func hopJitter() time.Duration {
+	var b [2]byte
+	if _, err := rand.Read(b[:]); err != nil {
+		return 0
+	}
+	return time.Duration(binary.BigEndian.Uint16(b[:])%2000) * time.Millisecond
+}
+
+// hopLoop drives port hopping: at each window boundary (+ jitter) it
+// rotates the DCID and switches the destination port. It exits when
+// the client closes or when the sticky fallback latch trips.
+func (c *MistUDPClient) hopLoop() {
+	defer c.wg.Done()
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("mist: hopLoop panic (recovered): %v", r)
+		}
+	}()
+	c.mu.Lock()
+	active := c.hopActive
+	c.mu.Unlock()
+	if !active {
+		return
+	}
+	intervalSec := c.cfg.HopIntervalSec
+	if intervalSec <= 0 {
+		intervalSec = 30
+	}
+	interval := int64(intervalSec)
+	for {
+		now := time.Now().Unix()
+		nextBoundary := (now/interval + 1) * interval
+		wait := time.Until(time.Unix(nextBoundary, 0).Add(hopJitter()))
+		select {
+		case <-c.done:
+			return
+		case <-time.After(wait):
+		}
+		if c.hopStopped.Load() {
+			return
+		}
+		if !c.hopStep(intervalSec) {
+			return
+		}
+	}
+}
+
+// hopStep performs one hop: send DCID_ROTATE on the old port, wait for
+// its ACK (up to 3 attempts, 1s each), then switch port + DCID — or
+// switch port with the old DCID and mark degraded if the rotation
+// never got ACKed. Afterwards, 3s without any inbound packet falls
+// back to the base port and latches hopping off for this session.
+// Returns false when the session must stop hopping.
+func (c *MistUDPClient) hopStep(intervalSec int) bool {
+	c.mu.Lock()
+	session, conn := c.session, c.conn
+	c.mu.Unlock()
+	if session == nil || conn == nil {
+		return true
+	}
+	window := uint32(time.Now().Unix() / int64(intervalSec))
+	newPort := hopPortFor(session.SessionID, session.KeyC2S, window,
+		c.cfg.HopPortsBase, c.cfg.HopPortCount())
+	var newDCID [8]byte
+	if _, err := rand.Read(newDCID[:]); err != nil {
+		log.Printf("mist: hop DCID random failed: %v", err)
+		return true
+	}
+	frame := mistcore.EncodeDCIDRotateFrame(newDCID, window)
+	acked := false
+	for attempt := 0; attempt < 3 && !acked; attempt++ {
+		pkt, pn, err := session.SealTrackedPacket(mistcore.DirC2S, [][]byte{frame})
+		if err != nil {
+			log.Printf("mist: hop DCID_ROTATE seal failed: %v", err)
+			return true
+		}
+		ch := make(chan struct{})
+		c.mu.Lock()
+		if c.rotateWait == nil {
+			c.rotateWait = make(map[uint32]chan struct{})
+		}
+		c.rotateWait[pn] = ch
+		c.mu.Unlock()
+		if _, err := conn.WriteToUDP(pkt, c.currentPeerAddr()); err != nil {
+			c.removeRotateWait(pn)
+			continue
+		}
+		acked = c.waitRotateAck(ch, time.Second)
+		c.removeRotateWait(pn)
+	}
+	c.mu.Lock()
+	if acked {
+		session.RotateDCID(newDCID)
+	} else {
+		c.hopDegraded.Store(true)
+		log.Printf("mist: hop DCID_ROTATE unacked after 3 attempts, hopping with old DCID (degraded)")
+	}
+	cur := c.peerAddr
+	if cur == nil {
+		cur = c.udpAddr
+	}
+	c.peerAddr = &net.UDPAddr{IP: cur.IP, Port: newPort}
+	c.mu.Unlock()
+	log.Printf("mist: hopped to port %d (window %d, rotate acked=%v)", newPort, window, acked)
+
+	// Fallback watch: 3s with no inbound packet at all after the hop
+	// means the new port is unreachable (or the session is idle; the
+	// fallback is fail-safe toward the base port either way).
+	hopTime := time.Now().UnixNano()
+	select {
+	case <-c.done:
+		return true
+	case <-time.After(3 * time.Second):
+	}
+	if c.lastInbound.Load() <= hopTime {
+		c.mu.Lock()
+		c.peerAddr = c.baseAddr
+		c.mu.Unlock()
+		c.hopFallbacks.Add(1)
+		c.hopStopped.Store(true)
+		log.Printf("mist: hop fallback to base port (no inbound for 3s after hop)")
+		return false
+	}
+	return true
+}
+
+// waitRotateAck waits for a DCID_ROTATE ACK or a timeout.
+func (c *MistUDPClient) waitRotateAck(ch chan struct{}, timeout time.Duration) bool {
+	select {
+	case <-ch:
+		return true
+	case <-time.After(timeout):
+		return false
+	case <-c.done:
+		return false
+	}
+}
+
+// removeRotateWait drops a pending rotation wait without closing it
+// (the waiter already gave up; a late ACK just finds nothing).
+func (c *MistUDPClient) removeRotateWait(pn uint32) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	delete(c.rotateWait, pn)
+}
+
+// notifyRotateAcked closes the wait channels for newly ACKed packet
+// numbers (called from the ACK dispatch path).
+func (c *MistUDPClient) notifyRotateAcked(acked []uint32) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	for _, pn := range acked {
+		if ch, ok := c.rotateWait[pn]; ok {
+			delete(c.rotateWait, pn)
+			close(ch)
+		}
+	}
 }
 
 // readPumpWatchdogTick is how often the watchdog checks readPump
@@ -315,6 +650,15 @@ func (c *MistUDPClient) handshake(ctx context.Context, conn *net.UDPConn, udpAdd
 		authWire = append(authWire, nonce[:]...)
 		authWire = append(authWire, ciphertext...)
 		var dcid [8]byte
+		// F1: a fresh random DCID per attempt. The old code sent an
+		// all-zero DCID, which made the Initial key globally constant
+		// (RFC 9001 §5.2 derives it from the public salt + DCID) and
+		// the GCM nonce (IV xor packet number 0) identical across all
+		// clients. The server derives from the parsed DCID, so no
+		// format change is involved and old servers accept this.
+		if _, err := rand.Read(dcid[:]); err != nil {
+			return nil, err
+		}
 		initial, err := c.codec.SealInitial(authWire, dcid, scid, 0)
 		if err != nil {
 			return nil, err
@@ -420,6 +764,9 @@ func (c *MistUDPClient) readPump() {
 			// Now the exit is counted + logged above.
 			return
 		}
+		// Any inbound packet counts for the hop fallback watch, even
+		// one that later fails to decrypt.
+		c.lastInbound.Store(time.Now().UnixNano())
 		c.mu.Lock()
 		session := c.session
 		c.mu.Unlock()
@@ -514,7 +861,10 @@ func (c *MistUDPClient) dispatch(f mistcore.UDPFrame) {
 			session := c.session
 			c.mu.Unlock()
 			if session != nil {
-				session.Rel.ProcessAck(largest, ackDelay, ranges)
+				acked := session.Rel.ProcessAck(largest, ackDelay, ranges)
+				if len(acked) > 0 {
+					c.notifyRotateAcked(acked)
+				}
 			}
 		}
 	case mistcore.UDPFrameStream, mistcore.UDPFrameFin, mistcore.UDPFrameRst:
@@ -547,13 +897,13 @@ func (c *MistUDPClient) dispatch(f mistcore.UDPFrame) {
 		// Reply PONG (untracked: PONGs are never ACKed).
 		c.mu.Lock()
 		session, sched := c.session, c.sched
-		conn, udpAddr := c.conn, c.udpAddr
+		conn := c.conn
 		c.mu.Unlock()
 		if session != nil && conn != nil {
 			_ = sched // scheduler not used for untracked frames
 			pong := mistcore.EncodeUDPFrame(mistcore.UDPFramePong, 0, nil)
 			if pkt, err := session.SealPacketUntracked(mistcore.DirC2S, [][]byte{pong}); err == nil {
-				_, _ = conn.WriteToUDP(pkt, udpAddr)
+				_, _ = conn.WriteToUDP(pkt, c.currentPeerAddr())
 			}
 		}
 	}
