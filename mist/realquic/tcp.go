@@ -85,6 +85,11 @@ type TCPServer struct {
 	ephPub   [32]byte
 	ephPriv  [32]byte
 	sessions *sessionTable
+	// profile returns the currently issued profile for AUTH_OK. When
+	// built via Server.TCPServer() it is the QUIC server's
+	// IssuedProfile, so both legs issue the same profile; a standalone
+	// server issues from bootstrap. Nil means bootstrap.
+	profile func() Profile
 
 	mu sync.Mutex
 	ln net.Listener
@@ -106,6 +111,7 @@ func NewTCPServer(cfg TCPServerConfig) (*TCPServer, error) {
 		ephPub:   pub,
 		ephPriv:  priv,
 		sessions: newSessionTable(),
+		profile:  func() Profile { return newIssuedFrom(BootstrapProfile()) },
 	}
 	s.site = cfg.Site
 	if s.site == nil {
@@ -258,10 +264,18 @@ func (s *TCPServer) handleTCPAuth(bc *bufferedConn, fr Frame) PayloadCodec {
 		_, _ = bc.Write(s.visitorResponse())
 		return nil
 	}
+	// Q6, same envelope as the QUIC leg (see server.go). The TCP leg
+	// issues at AUTH; in-session pushes are a QUIC-leg control-stream
+	// mechanism in this step (the TCP leg carries one CONNECT per
+	// connection and has no server-initiated control stream yet).
+	issuedProfile := newIssuedFrom(BootstrapProfile())
+	if s.profile != nil {
+		issuedProfile = s.profile()
+	}
 	resp := authSuccess{
 		ServerEphPub: base64.StdEncoding.EncodeToString(s.ephPub[:]),
-		Profile:      nil,
-		ProfileNote:  "P1 Q6 deferred: profile envelope not in this step",
+		Profile:      &issuedProfile,
+		ProfileNote:  "Q6 profile envelope issued (P1 step A); all values provisional, D2 final values pending P2 baseline measurement",
 		SessionID:    base64.StdEncoding.EncodeToString(rec.id[:]),
 		ResumeToken:  base64.StdEncoding.EncodeToString(rec.resumeToken[:]),
 	}
@@ -383,6 +397,19 @@ type TCPClient struct {
 	mu      sync.Mutex
 	codec   PayloadCodec
 	session *sessionParams
+	// P1 step A (Q6): same per-server profile state as the QUIC
+	// client (see client.go). The TCP leg adopts at AUTH; it has no
+	// in-session push loop in this step.
+	profileStore  *ProfileStore
+	serverID      string
+	activeProfile Profile
+}
+
+// ActiveProfile returns the profile this TCP connection currently applies.
+func (c *TCPClient) ActiveProfile() Profile {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.activeProfile
 }
 
 // DialTCP dials addr and performs a uTLS Chrome-mimicry TLS 1.3
@@ -391,6 +418,12 @@ type TCPClient struct {
 // "realquic.test", exactly as the QUIC leg does. It must never be used
 // against a production endpoint, where a real CA certificate is required.
 func DialTCP(ctx context.Context, addr string, key []byte) (*TCPClient, error) {
+	return DialTCPWithProfileStore(ctx, addr, key, NewProfileStore(), testServerName)
+}
+
+// DialTCPWithProfileStore is DialTCP with an explicit profile store and
+// server identity (same semantics as DialPacketConnWithProfileStore).
+func DialTCPWithProfileStore(ctx context.Context, addr string, key []byte, store *ProfileStore, serverID string) (*TCPClient, error) {
 	d := &net.Dialer{}
 	raw, err := d.DialContext(ctx, "tcp", addr)
 	if err != nil {
@@ -405,7 +438,13 @@ func DialTCP(ctx context.Context, addr string, key []byte) (*TCPClient, error) {
 		_ = raw.Close()
 		return nil, err
 	}
-	return &TCPClient{key: key, conn: uconn, br: bufio.NewReader(uconn)}, nil
+	if store == nil {
+		store = NewProfileStore()
+	}
+	if serverID == "" {
+		serverID = testServerName
+	}
+	return &TCPClient{key: key, conn: uconn, br: bufio.NewReader(uconn), profileStore: store, serverID: serverID, activeProfile: store.ActiveFor(serverID)}, nil
 }
 
 // Close closes the TCP-leg connection.
@@ -478,6 +517,20 @@ func (c *TCPClient) Auth(ctx context.Context) error {
 		}
 	}
 	c.setSession(params)
+	// Q6: adopt the server-issued profile (same rule as the QUIC
+	// client). A missing/invalid envelope does not fail TCP AUTH.
+	if ok.Profile != nil {
+		if err := ok.Profile.Validate(); err == nil {
+			c.mu.Lock()
+			c.activeProfile = *ok.Profile
+			store := c.profileStore
+			serverID := c.serverID
+			c.mu.Unlock()
+			if store != nil {
+				store.Put(serverID, *ok.Profile)
+			}
+		}
+	}
 	return nil
 }
 

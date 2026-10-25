@@ -32,12 +32,39 @@
 // RESUME-based leg switching without a fresh AUTH). See session.go,
 // tcp.go and fallback.go.
 //
+// P1 step A adds the Q6 server-issued profile mechanism (see
+// profile.go, and the AUTH/push/receipt paths in server.go, client.go
+// and tcp.go): the AUTH success body on both legs carries the server's
+// issued profile envelope; the client stores profiles per server
+// (version-gated, no key material), starts from bootstrap on first
+// contact and from the server profile on later sessions; the server
+// rotates versions on a randomly picked delay inside a deployment
+// configured interval and can push the current profile to an
+// authenticated connection over a sealed custom stream, which the
+// client applies from the next window; a well-formed receipt whose
+// version differs from the connection's issued version downgrades the
+// connection to an ordinary HTTP/3 visitor (same H3 service, same
+// pre-AUTH custom-stream refusal, no distinctive error). No separate
+// envelope signature is added: authenticity rests on the Mode A
+// authenticated connection carrying the AUTH body.
+//
+// P1 step A explicitly does NOT execute (carried, stored, validated,
+// not applied — see profile.go header): the hopping window range
+// (hopping stays default-off), the downstream stagger delay range, and
+// the split-connection reuse caps (the split itself is P2); the Q3
+// shaping engine that will consume the shaping/steady fields; and
+// in-session pushes on the TCP leg (one CONNECT per connection, no
+// server-initiated control stream there yet). Downgrade is
+// receipt-driven only: absence of a receipt never downgrades, a
+// malformed receipt is ignored, and a receipt for any version ever
+// issued to the connection is compliant (receipts are asynchronous, so
+// judging an in-flight receipt against a just-moved latest version
+// would false-positive); only a version never issued to the connection
+// downgrades, and the downgrade is sticky until a fresh AUTH.
+//
 // Scope limits of this step, by design:
-//   - No profile envelope (Q6 is phase 2): the AUTH success body carries
-//     the server ephemeral public key plus an explicit placeholder noting
-//     the profile envelope is deferred to P1.
 //   - No port hopping (default off), no up/down split (deferred), no
-//     shaping, no measurement matrix (M2 timing in step 2 is preliminary
+//     shaping execution, no measurement matrix (M2 timing in step 2 is preliminary
 //     evidence only; the full M2 matrix — probe types x ports x address
 //     families — is a later step; step 5 proves the shared-handler
 //     coverage that matrix will probe).

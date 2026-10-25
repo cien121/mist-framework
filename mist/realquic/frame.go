@@ -52,6 +52,11 @@ const (
 	frameRegisterUDP byte = 0x14 // client -> server: register a UDP session
 	frameRegisterOK  byte = 0x15 // server -> client: session registered
 	frameRegisterErr byte = 0x16 // server -> client: registration failed (payload: message)
+	// P1 step A (Q6): profile control frames. Payloads are sealed by the
+	// session codec (in addition to QUIC encryption) and are only ever
+	// exchanged on an authenticated connection.
+	frameProfileUpdate  byte = 0x17 // server -> client: pushed Profile JSON (EncodeProfile)
+	frameProfileReceipt byte = 0x18 // client -> server: profileReceipt JSON (version ack)
 )
 
 // maxDataChunk bounds one DATA frame's payload, leaving headroom for the

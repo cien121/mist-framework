@@ -28,6 +28,20 @@ type ServerConfig struct {
 	Window     time.Duration
 	// Site, if nil, is the default static test site.
 	Site http.Handler
+	// Profile, if non-nil, is the operator-supplied base profile the
+	// server issues from (its version is ignored: the server is the
+	// version authority, first issued version is 1). If nil, the
+	// bootstrap profile is the base. The base must validate, or
+	// NewServer fails.
+	Profile *Profile
+	// RotationMin/RotationMax bound the server's profile rotation
+	// period: each rotation delay is picked uniformly at random inside
+	// [RotationMin, RotationMax] (deployment configuration, never a
+	// protocol constant). Zero/negative RotationMin disables rotation:
+	// the issued profile then changes only when the operator rotates it
+	// explicitly via RotateProfile.
+	RotationMin time.Duration
+	RotationMax time.Duration
 }
 
 // Server is a Mode A lab server: a real QUIC + HTTP/3 site whose AUTH
@@ -57,7 +71,21 @@ type Server struct {
 	mu        sync.Mutex
 	listeners []*quic.Listener
 	conns     map[*quic.Conn]struct{}
-	dropped   atomic.Int64 // datagrams dropped (unknown session or pre-AUTH)
+	// connStates parallels conns: per-connection Q6 state (issued
+	// profile version, last receipt, downgrade flag).
+	connStates map[*quic.Conn]*connState
+	dropped    atomic.Int64 // datagrams dropped (unknown session or pre-AUTH)
+	// profileMu guards issued; rotationMu-free: RotateProfile and
+	// IssuedProfile are the only writers/readers of issued.
+	profileMu   sync.Mutex
+	issued      Profile
+	rotationMin time.Duration
+	rotationMax time.Duration
+	// rotatorStop is closed by Close; the rotator goroutine (if any)
+	// exits on it. Guarded by rotatorOnce for start and stopOnce for close.
+	rotatorOnce sync.Once
+	rotatorStop chan struct{}
+	stopOnce    sync.Once
 }
 
 // defaultSite is the static test site content. It intentionally has no
@@ -78,19 +106,25 @@ func defaultSite() http.Handler {
 }
 
 // authSuccess is the AUTH success body. server_eph_pub is the server's
-// ephemeral X25519 public key (base64). profile is an explicit placeholder:
-// the Q6 profile envelope is P1 work and is deferred, not silently omitted.
+// ephemeral X25519 public key (base64). profile is the Q6 profile
+// envelope (P1 step A): the server's currently issued profile, carried
+// inside this AUTH response over the Mode A QUIC/TLS connection — the
+// connection itself is authenticated to the server's identity before
+// any profile is trusted, so no separate envelope signature is added
+// this step (see profile.go). profile_note states the provisional
+// status of the values; it is kept non-empty so the envelope is never
+// silently absent (an existing test asserts its presence).
 // session_id / resume_token (base64) are the step-5 resume identity:
 // the client keeps them to resume the same session on the TCP leg
 // without a full re-AUTH (design Q8). They are absent only if the
 // server could not create a record, in which case resume is unavailable
 // but the session keys themselves are still valid.
 type authSuccess struct {
-	ServerEphPub string      `json:"server_eph_pub"`
-	Profile      interface{} `json:"profile"`
-	ProfileNote  string      `json:"profile_note"`
-	SessionID    string      `json:"session_id,omitempty"`
-	ResumeToken  string      `json:"resume_token,omitempty"`
+	ServerEphPub string   `json:"server_eph_pub"`
+	Profile      *Profile `json:"profile"`
+	ProfileNote  string   `json:"profile_note"`
+	SessionID    string   `json:"session_id,omitempty"`
+	ResumeToken  string   `json:"resume_token,omitempty"`
 }
 
 // NewServer builds a server; it generates the server ephemeral keypair and
@@ -110,14 +144,30 @@ func NewServer(cfg ServerConfig) (*Server, error) {
 	// here — step 4 generated it and discarded it, which is why step 5
 	// must store it to derive session keys.
 	s := &Server{
-		verify:     newVerifier(cfg.Key, cfg.Window),
-		authHeader: cfg.AuthHeader,
-		authPath:   cfg.AuthPath,
-		ephPub:     pub,
-		ephPriv:    priv,
-		sessions:   newSessionTable(),
-		conns:      map[*quic.Conn]struct{}{},
+		verify:      newVerifier(cfg.Key, cfg.Window),
+		authHeader:  cfg.AuthHeader,
+		authPath:    cfg.AuthPath,
+		ephPub:      pub,
+		ephPriv:     priv,
+		sessions:    newSessionTable(),
+		conns:       map[*quic.Conn]struct{}{},
+		connStates:  map[*quic.Conn]*connState{},
+		rotationMin: cfg.RotationMin,
+		rotationMax: cfg.RotationMax,
+		rotatorStop: make(chan struct{}),
 	}
+	// Q6 issuance state: the base profile (operator-supplied or
+	// bootstrap) becomes the first issued profile, version 1. An
+	// invalid base fails server construction rather than issuing a
+	// profile clients would reject on receipt.
+	base := BootstrapProfile()
+	if cfg.Profile != nil {
+		base = *cfg.Profile
+	}
+	if err := base.Validate(); err != nil {
+		return nil, err
+	}
+	s.issued = newIssuedFrom(base)
 	if s.authHeader == "" {
 		s.authHeader = DefaultAuthHeader
 	}
@@ -129,6 +179,114 @@ func NewServer(cfg ServerConfig) (*Server, error) {
 		s.site = defaultSite()
 	}
 	return s, nil
+}
+
+// IssuedProfile returns a copy of the server's currently issued profile.
+func (s *Server) IssuedProfile() Profile {
+	s.profileMu.Lock()
+	defer s.profileMu.Unlock()
+	return s.issued
+}
+
+// RotateProfile issues a new profile version (same parameters, new
+// version and timestamp) and returns it. Rotation changes the version
+// clients must receipt; it does not retroactively invalidate existing
+// connections — those keep their per-connection issued version until
+// they receive a push (PushCurrentProfile) or re-AUTH.
+func (s *Server) RotateProfile() Profile {
+	s.profileMu.Lock()
+	defer s.profileMu.Unlock()
+	s.issued.Version++
+	s.issued.IssuedAt = time.Now().Unix()
+	return s.issued
+}
+
+// NextRotationDelay reports the delay until the next rotation, picked
+// uniformly at random inside the configured interval. It reports false
+// when rotation is not configured (see nextRotationDelay).
+func (s *Server) NextRotationDelay() (time.Duration, bool) {
+	return nextRotationDelay(s.rotationMin, s.rotationMax)
+}
+
+// startRotator launches the background rotation loop once, when the
+// server starts serving. Each cycle sleeps a freshly picked random
+// delay inside the configured interval, then rotates. An unconfigured
+// server starts no loop. The loop never touches sessions: rotation
+// only changes what new AUTHs receive and what pushes carry.
+func (s *Server) startRotator() {
+	s.rotatorOnce.Do(func() {
+		go func() {
+			for {
+				delay, ok := s.NextRotationDelay()
+				if !ok {
+					return
+				}
+				select {
+				case <-s.rotatorStop:
+					return
+				case <-time.After(delay):
+				}
+				s.RotateProfile()
+			}
+		}()
+	})
+}
+
+// PushCurrentProfile pushes the server's currently issued profile to
+// one authenticated connection over a server-initiated custom stream,
+// sealed under that connection's session codec (the encrypted control
+// flow of design Q6). On success it records the pushed version as that
+// connection's issued version (joining the set its receipts may
+// acknowledge). On any
+// failure the connection's session is untouched: the old profile stays
+// authoritative for that connection until its end, and no error reaches
+// the client — the returned error is for the operator only, and the
+// push may simply be retried later. A push to an unknown,
+// unauthenticated or downgraded connection fails without side effects.
+func (s *Server) PushCurrentProfile(qconn *quic.Conn) (Profile, error) {
+	issued := s.IssuedProfile()
+	s.mu.Lock()
+	st, ok := s.connStates[qconn]
+	s.mu.Unlock()
+	if !ok || st == nil || !st.isAuthed() || st.isDowngraded() {
+		return Profile{}, errors.New("realquic: cannot push profile to unknown, unauthenticated or downgraded connection")
+	}
+	codec := st.sessionCodec()
+	if codec == nil {
+		return Profile{}, errors.New("realquic: connection has no session codec")
+	}
+	encoded, err := EncodeProfile(issued)
+	if err != nil {
+		return Profile{}, err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	str, err := qconn.OpenStreamSync(ctx)
+	if err != nil {
+		return Profile{}, err
+	}
+	defer str.Close()
+	if err := WriteFrameCodec(str, frameProfileUpdate, encoded, codec); err != nil {
+		return Profile{}, err
+	}
+	// Only a delivered push moves the connection's issued version.
+	st.noteIssued(issued.Version)
+	return issued, nil
+}
+
+// ConnProfileState reports one connection's Q6 state for tests and
+// operators: the issued version (AUTH or last successful push), the
+// last receipted version and whether any receipt arrived, and whether
+// the connection has been downgraded. ok is false for unknown
+// connections.
+func (s *Server) ConnProfileState(qconn *quic.Conn) (issued, receipt uint64, receiptSeen, downgraded, ok bool) {
+	s.mu.Lock()
+	st, ok := s.connStates[qconn]
+	s.mu.Unlock()
+	if !ok || st == nil {
+		return 0, 0, false, false, false
+	}
+	return st.profileState()
 }
 
 // handlerFor is the per-connection HTTP/3 handler. On AUTH success it
@@ -158,10 +316,18 @@ func (s *Server) handlerFor(st *connState) http.Handler {
 						if rerr == nil && st != nil {
 							st.setSession(rec.serverCodec())
 						}
+						// Q6: this connection's issued version is
+						// recorded (see noteIssued/noteReceipt). It is
+						// recorded on the AUTH success path only, never
+						// on failure.
+						issued := s.IssuedProfile()
+						if st != nil {
+							st.noteIssued(issued.Version)
+						}
 						resp := authSuccess{
 							ServerEphPub: base64.StdEncoding.EncodeToString(s.ephPub[:]),
-							Profile:      nil,
-							ProfileNote:  "P1 Q6 deferred: profile envelope not in this step",
+							Profile:      &issued,
+							ProfileNote:  "Q6 profile envelope issued (P1 step A); all values provisional, D2 final values pending P2 baseline measurement",
 						}
 						if rerr == nil {
 							resp.SessionID = base64.StdEncoding.EncodeToString(rec.id[:])
@@ -218,6 +384,7 @@ func (s *Server) ServePacketConn(pc net.PacketConn) error {
 	if err != nil {
 		return err
 	}
+	s.startRotator()
 	s.mu.Lock()
 	s.listeners = append(s.listeners, ln)
 	s.mu.Unlock()
@@ -248,6 +415,7 @@ func (s *Server) ServePacketConns(pcs []net.PacketConn) error {
 	s.mu.Lock()
 	s.listeners = append(s.listeners, listeners...)
 	s.mu.Unlock()
+	s.startRotator()
 	errs := make(chan error, len(listeners))
 	for _, ln := range listeners {
 		go func(ln *quic.Listener) { errs <- s.serveListener(ln) }(ln)
@@ -265,12 +433,14 @@ func (s *Server) TCPServer() *TCPServer {
 		ephPub:   s.ephPub,
 		ephPriv:  s.ephPriv,
 		sessions: s.sessions,
+		profile:  s.IssuedProfile,
 	}
 }
 
 // Close stops all listeners and all tracked connections. It does not close
 // the PacketConns, which remain owned by the caller.
 func (s *Server) Close() error {
+	s.stopOnce.Do(func() { close(s.rotatorStop) })
 	s.mu.Lock()
 	listeners := s.listeners
 	s.listeners = nil
@@ -311,22 +481,92 @@ type connState struct {
 	authed   bool
 	codec    PayloadCodec // step-5 session codec; nil until AUTH installs it
 	sessions map[[16]byte]*udpSession
+	// Q6 per-connection state. issuedVersion is the latest profile
+	// version issued to this connection (set at AUTH, moved by a
+	// successful push). issuedSet is every version ever issued to this
+	// connection: receipts are judged against the set, not just the
+	// latest version, because receipts are asynchronous — a receipt
+	// for the previous version that was already in flight when a push
+	// landed must not false-positive as non-compliance. A receipt
+	// version outside the set (e.g. bootstrap 0, or another server's
+	// version) is what downgrades. receiptVersion/receiptSeen record
+	// the last well-formed receipt; downgraded is set when a receipt's
+	// version falls outside issuedSet, and is sticky until a fresh
+	// AUTH (setSession clears it).
+	issuedVersion  uint64
+	issuedSet      map[uint64]struct{}
+	receiptVersion uint64
+	receiptSeen    bool
+	downgraded     bool
 }
 
 func newConnState(qconn *quic.Conn) *connState {
-	return &connState{qconn: qconn, sessions: map[[16]byte]*udpSession{}}
+	return &connState{qconn: qconn, sessions: map[[16]byte]*udpSession{}, issuedSet: map[uint64]struct{}{}}
 }
 
 // setSession marks the connection authenticated and installs the session
 // codec derived from this AUTH. The two are set together, atomically:
 // there is no state in which a connection is authed but still speaking
 // the identity codec, and no state in which an unauthenticated
-// connection holds a session codec.
+// connection holds a session codec. A fresh AUTH also clears a prior
+// downgrade and its receipt record: re-AUTH is a new issuance.
 func (st *connState) setSession(codec PayloadCodec) {
 	st.mu.Lock()
 	st.authed = true
 	st.codec = codec
+	st.downgraded = false
+	st.receiptSeen = false
+	st.receiptVersion = 0
+	st.issuedSet = map[uint64]struct{}{}
 	st.mu.Unlock()
+}
+
+// noteIssued records a profile version issued to this connection
+// (AUTH or a successful push): it becomes the latest version and joins
+// the set of versions receipts may acknowledge.
+func (st *connState) noteIssued(v uint64) {
+	st.mu.Lock()
+	st.issuedVersion = v
+	if st.issuedSet == nil {
+		st.issuedSet = map[uint64]struct{}{}
+	}
+	st.issuedSet[v] = struct{}{}
+	st.mu.Unlock()
+}
+
+// noteReceipt records a well-formed receipt and applies the Q6
+// non-compliance rule: a receipt whose version was never issued to
+// this connection downgrades the connection to an ordinary HTTP/3
+// visitor (see isDowngraded). It reports whether the receipt was
+// compliant. Downgrade is sticky: a later compliant receipt does not
+// clear it (only a fresh AUTH does), so a client cannot receipt its
+// way out after demonstrating it is not applying issued profiles.
+// A malformed receipt never reaches this method (the caller drops it
+// silently), and the absence of a receipt never downgrades on its own:
+// receipt streams are best-effort, and treating a dropped receipt as
+// non-compliance would false-positive on ordinary loss.
+func (st *connState) noteReceipt(v uint64) bool {
+	st.mu.Lock()
+	defer st.mu.Unlock()
+	st.receiptSeen = true
+	st.receiptVersion = v
+	if _, ok := st.issuedSet[v]; !ok {
+		st.downgraded = true
+		return false
+	}
+	return true
+}
+
+func (st *connState) isDowngraded() bool {
+	st.mu.Lock()
+	defer st.mu.Unlock()
+	return st.downgraded
+}
+
+func (st *connState) profileState() (issued, receipt uint64, receiptSeen, downgraded, ok bool) {
+	st.mu.Lock()
+	defer st.mu.Unlock()
+	return st.issuedVersion, st.receiptVersion, st.receiptSeen, st.downgraded, true
 }
 
 func (st *connState) isAuthed() bool {
@@ -384,9 +624,13 @@ func (s *Server) serveConn(qconn *quic.Conn) {
 	defer func() {
 		s.mu.Lock()
 		delete(s.conns, qconn)
+		delete(s.connStates, qconn)
 		s.mu.Unlock()
 	}()
 	st := newConnState(qconn)
+	s.mu.Lock()
+	s.connStates[qconn] = st
+	s.mu.Unlock()
 	raw, err := (&http3.Server{Handler: s.handlerFor(st)}).NewRawServerConn(qconn)
 	if err != nil {
 		return
@@ -439,9 +683,13 @@ func (s *Server) dispatchStream(st *connState, raw *http3.RawServerConn, str *qu
 const errCodeNotAuthed quic.StreamErrorCode = 0x4D01
 
 // handleCustomStream serves one taken-over stream. The first frame decides
-// the stream's role; unknown frame types cancel the stream.
+// the stream's role; unknown frame types cancel the stream. A downgraded
+// connection is handled exactly like an unauthenticated one: its custom
+// streams are cancelled with the same code and its datagrams dropped,
+// while its HTTP/3 visitor requests keep being served normally — the
+// downgrade produces no distinctive error, status, or teardown.
 func (s *Server) handleCustomStream(st *connState, str *quic.Stream) {
-	if !st.isAuthed() {
+	if st.isDowngraded() || !st.isAuthed() {
 		str.CancelRead(errCodeNotAuthed)
 		str.CancelWrite(errCodeNotAuthed)
 		return
@@ -465,6 +713,17 @@ func (s *Server) handleCustomStream(st *connState, str *quic.Stream) {
 		s.handleConnect(str, fr, codec)
 	case frameRegisterUDP:
 		s.handleRegister(st, str, fr, codec)
+	case frameProfileReceipt:
+		// Receipt stream: record the version, then close normally
+		// whether compliant or not. A downgrade (if any) is silent:
+		// no error frame, no distinctive status — the connection
+		// simply stops getting Mist service on later streams while
+		// its H3 visitor traffic continues. A malformed receipt is
+		// dropped the same silent way and does not downgrade.
+		if rec, err := decodeProfileReceipt(fr.Payload); err == nil {
+			st.noteReceipt(rec.Version)
+		}
+		_ = str.Close()
 	default:
 		str.CancelRead(errCodeNotAuthed)
 		str.CancelWrite(errCodeNotAuthed)
@@ -597,7 +856,7 @@ func (s *Server) datagramLoop(ctx context.Context, st *connState) {
 			return
 		}
 		sid, payload, err := decodeDatagram(data)
-		if err != nil || !st.isAuthed() {
+		if err != nil || !st.isAuthed() || st.isDowngraded() {
 			s.dropped.Add(1)
 			continue
 		}

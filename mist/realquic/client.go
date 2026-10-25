@@ -34,6 +34,17 @@ type Client struct {
 	mu      sync.Mutex
 	codec   PayloadCodec
 	session *sessionParams
+	// P1 step A (Q6) profile state. activeProfile is the profile this
+	// connection shapes by (once the Q3 engine exists): bootstrap
+	// before the first AUTH, the server-issued profile after it, and
+	// the newest pushed profile after an in-session update. The store
+	// is shared across this client's sessions when the caller supplies
+	// one, so a later session starts from the server profile instead
+	// of bootstrap. No key material is ever stored here.
+	profileStore    *ProfileStore
+	serverID        string
+	activeProfile   Profile
+	profileLoopOnce sync.Once
 }
 
 // codecOrIdentity returns the session codec once AUTH installed it,
@@ -64,8 +75,146 @@ func (c *Client) sessionSnapshot() *sessionParams {
 	return c.session
 }
 
-// transportDead reports whether the QUIC connection is gone (context
-// cancelled). The fallback client uses it to decide a TCP-leg resume.
+// ActiveProfile returns the profile this connection currently applies
+// (bootstrap before AUTH, server-issued after AUTH, newest pushed
+// profile after an in-session update).
+func (c *Client) ActiveProfile() Profile {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.activeProfile
+}
+
+// ProfileStore returns the store this client records server profiles in
+// (nil only for clients built without one, which never happens through
+// the Dial constructors).
+func (c *Client) ProfileStore() *ProfileStore {
+	return c.profileStore
+}
+
+// adoptProfile installs a server-issued profile for this connection
+// unconditionally (after validation): AUTH is authoritative for its own
+// connection, even if the shared store already holds a newer version
+// from another connection. The store itself keeps the newest version
+// (ProfileStore.Put's gate), so later sessions still start from the
+// newest server profile. It reports whether a profile was adopted.
+func (c *Client) adoptProfile(p Profile) bool {
+	if err := p.Validate(); err != nil {
+		return false
+	}
+	c.mu.Lock()
+	c.activeProfile = p
+	store := c.profileStore
+	serverID := c.serverID
+	c.mu.Unlock()
+	if store != nil {
+		store.Put(serverID, p)
+	}
+	return true
+}
+
+// applyProfile installs a pushed profile only if it is valid and
+// strictly newer than the active profile. A stale, replayed or invalid
+// push is ignored silently: the session continues on the old profile
+// until it ends, and no error surfaces to the caller. It reports
+// whether the active profile changed.
+func (c *Client) applyProfile(p Profile) bool {
+	if err := p.Validate(); err != nil {
+		return false
+	}
+	c.mu.Lock()
+	cur := c.activeProfile
+	store := c.profileStore
+	serverID := c.serverID
+	if p.Version <= cur.Version {
+		c.mu.Unlock()
+		return false
+	}
+	c.activeProfile = p
+	c.mu.Unlock()
+	if store != nil {
+		store.Put(serverID, p)
+	}
+	return true
+}
+
+// SendProfileReceipt sends this connection's active profile version to
+// the server as a Q6 receipt on a dedicated custom stream, sealed under
+// the session codec. The server compares it against the connection's
+// issued versions; a version never issued to it downgrades the
+// connection to a visitor.
+// Receipt delivery is best-effort: a failure here does not fail AUTH or
+// the session (the absence of a receipt alone never downgrades).
+func (c *Client) SendProfileReceipt(ctx context.Context) error {
+	str, err := c.qconn.OpenStreamSync(ctx)
+	if err != nil {
+		return err
+	}
+	defer str.Close()
+	applyReadDeadline(str, ctx)
+	c.mu.Lock()
+	rec := profileReceipt{Version: c.activeProfile.Version, ServerID: c.serverID}
+	c.mu.Unlock()
+	payload, err := encodeProfileReceipt(rec)
+	if err != nil {
+		return err
+	}
+	return WriteFrameCodec(str, frameProfileReceipt, payload, c.codecOrIdentity())
+}
+
+// startProfileLoop starts the goroutine that accepts server-initiated
+// custom streams (profile pushes). It runs once per client, started on
+// the first successful AUTH. H3 request streams are client-opened and
+// never enter this loop; control/QPACK unidirectional streams are
+// handled by the H3 stack, not here.
+func (c *Client) startProfileLoop() {
+	c.profileLoopOnce.Do(func() {
+		go func() {
+			ctx := c.qconn.Context()
+			for {
+				str, err := c.qconn.AcceptStream(ctx)
+				if err != nil {
+					return
+				}
+				go c.handlePushedStream(str)
+			}
+		}()
+	})
+}
+
+// handlePushedStream serves one server-initiated stream. Only a
+// frameProfileUpdate frame is acted on: a valid, newer profile is
+// applied (effective from the next window — in this step, where no Q3
+// engine consumes profiles yet, "next window" means the next profile
+// application point, i.e. subsequent sessions and any later push
+// comparison; the in-flight session's already-started work is never
+// retroactively reshaped), and a receipt for the new version is sent
+// best-effort. Every failure mode — wrong first byte, bad frame,
+// undecodable or stale profile, receipt send failure — closes the
+// stream and leaves the session and its old profile untouched.
+func (c *Client) handlePushedStream(str *quic.Stream) {
+	defer str.Close()
+	var first [1]byte
+	if _, err := str.Peek(first[:]); err != nil {
+		return
+	}
+	if first[0] == 0x01 {
+		return // server-initiated H3 stream: not a push, ignore
+	}
+	fr, err := ReadFrameCodec(str, c.codecOrIdentity())
+	if err != nil || fr.Type != frameProfileUpdate {
+		return
+	}
+	p, err := DecodeProfile(fr.Payload)
+	if err != nil {
+		return
+	}
+	if !c.applyProfile(p) {
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	_ = c.SendProfileReceipt(ctx)
+}
 func (c *Client) transportDead() bool {
 	return c.qconn.Context().Err() != nil
 }
@@ -75,6 +224,16 @@ func (c *Client) transportDead() bool {
 // test certificate for "realquic.test". It must never be used against a
 // production endpoint.
 func DialPacketConn(ctx context.Context, pc net.PacketConn, remoteAddr net.Addr, key []byte) (*Client, error) {
+	return DialPacketConnWithProfileStore(ctx, pc, remoteAddr, key, NewProfileStore(), testServerName)
+}
+
+// DialPacketConnWithProfileStore is DialPacketConn with an explicit
+// profile store and server identity. Sharing one store across clients
+// is what makes "later sessions use the server profile" true: a client
+// dialled with a store that already holds a profile for serverID starts
+// from that profile instead of bootstrap, before its own AUTH. A nil
+// store gets a fresh one; an empty serverID defaults to testServerName.
+func DialPacketConnWithProfileStore(ctx context.Context, pc net.PacketConn, remoteAddr net.Addr, key []byte, store *ProfileStore, serverID string) (*Client, error) {
 	tlsConf := &tls.Config{
 		InsecureSkipVerify: true, // lab only: in-memory test certificate
 		NextProtos:         []string{"h3"},
@@ -86,12 +245,21 @@ func DialPacketConn(ctx context.Context, pc net.PacketConn, remoteAddr net.Addr,
 	if err != nil {
 		return nil, err
 	}
+	if store == nil {
+		store = NewProfileStore()
+	}
+	if serverID == "" {
+		serverID = testServerName
+	}
 	return &Client{
-		key:        key,
-		authHeader: DefaultAuthHeader,
-		authPath:   DefaultAuthPath,
-		qconn:      qconn,
-		h3:         (&http3.Transport{}).NewClientConn(qconn),
+		key:           key,
+		authHeader:    DefaultAuthHeader,
+		authPath:      DefaultAuthPath,
+		qconn:         qconn,
+		h3:            (&http3.Transport{}).NewClientConn(qconn),
+		profileStore:  store,
+		serverID:      serverID,
+		activeProfile: store.ActiveFor(serverID),
 	}, nil
 }
 
@@ -178,6 +346,17 @@ func (c *Client) Auth(ctx context.Context) (int, []byte, time.Duration, error) {
 		}
 	}
 	c.setSession(params)
+	// Q6: adopt the server-issued profile for this connection, start
+	// accepting in-session pushes, and receipt the issued version.
+	// A missing or invalid profile envelope does not fail AUTH — the
+	// session keys are already valid — but the connection then keeps
+	// its previous (bootstrap or stored) profile, and its receipt (if
+	// any) will name a version never issued to this connection.
+	if ok.Profile != nil {
+		c.adoptProfile(*ok.Profile)
+	}
+	c.startProfileLoop()
+	_ = c.SendProfileReceipt(ctx)
 	return status, body, latency, nil
 }
 
