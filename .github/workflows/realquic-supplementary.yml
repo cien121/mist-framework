@@ -1,0 +1,21 @@
+name: RealQUIC supplementary (standard form)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'mist/**'
+      - '.github/workflows/realquic-supplementary.yml'
+  workflow_dispatch:
+
+jobs:
+  standard-form:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26'
+      - name: Run standard-form supplementary test
+        working-directory: mist
+        run: go test -run TestStandardFormSupplementary -count=1 -v ./realquic/
