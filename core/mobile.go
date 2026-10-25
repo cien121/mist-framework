@@ -3,10 +3,10 @@
 // This file is the only gomobile entry point for the independent
 // framework. It wraps Engine + MistUDPClient behind a small API that
 // uses only gomobile-supported types (no context.Context, no
-// unexported types in signatures):
+// unexported types in signatures, no interfaces):
 //
 //	MobileEngine:  NewMobileEngine() -> Start(tunFd, nodeURL) / Stop()
-//	StatsListener: OnStats(uploadBytes, downloadBytes) — implemented in Kotlin
+//	              GetUploadBytes() / GetDownloadBytes() (polling)
 //
 // Java mapping (gomobile lowerCamelCase rules; verify against the
 // generated sources after the first bind):
@@ -14,7 +14,6 @@
 //	Kotlin: MobileEngine()             // Go NewMobileEngine()
 //	Kotlin: eng.start(fd, nodeURL)     // Go Start; throws on error
 //	Kotlin: eng.stop()                 // Go Stop
-//	Kotlin: eng.setStatsListener(l)    // Go SetStatsListener
 //	Kotlin: eng.getUploadBytes()       // Go GetUploadBytes
 //
 // TUN fd ownership: Kotlin passes the fd from ParcelFileDescriptor
@@ -39,12 +38,9 @@ import (
 	"time"
 )
 
-// StatsListener receives periodic traffic counters from the engine.
-// Implemented in Kotlin; called from a Go goroutine (Kotlin must post
-// to the main thread before touching UI).
-type StatsListener interface {
-	OnStats(uploadBytes int64, downloadBytes int64)
-}
+// Note: StatsListener interface removed for gomobile compatibility.
+// gomobile cannot bind interface types. Kotlin polls GetUploadBytes/
+// GetDownloadBytes instead of receiving callbacks.
 
 // fdTUN adapts an Android TUN file descriptor to TUNDevice.
 type fdTUN struct {
@@ -74,25 +70,16 @@ func (t *fdTUN) Close() error { return t.f.Close() }
 
 // MobileEngine is the gomobile handle for one running tunnel.
 type MobileEngine struct {
-	mu       sync.Mutex
-	engine   *Engine
-	client   *MistUDPClient
-	cancel   context.CancelFunc
-	runDone  chan struct{}
-	listener StatsListener
-	running  bool
+	mu      sync.Mutex
+	engine  *Engine
+	client  *MistUDPClient
+	cancel  context.CancelFunc
+	runDone chan struct{}
+	running bool
 }
 
 // NewMobileEngine creates a stopped engine handle.
 func NewMobileEngine() *MobileEngine { return &MobileEngine{} }
-
-// SetStatsListener registers the Kotlin stats callback. May be called
-// before Start; may be nil to disable callbacks.
-func (m *MobileEngine) SetStatsListener(l StatsListener) {
-	m.mu.Lock()
-	m.listener = l
-	m.mu.Unlock()
-}
 
 // Start builds a Mist client from a mist:// node link, wraps tunFd as
 // the TUN device, and starts the forwarding engine. tunFd ownership
@@ -115,7 +102,21 @@ func (m *MobileEngine) Start(tunFd int, nodeURL string) error {
 		return err
 	}
 	tun := &fdTUN{f: os.NewFile(uintptr(tunFd), "tun")}
-	engine := NewEngine(EngineConfig{TUN: tun, Client: client})
+	// Create engine directly (not via NewEngine) to avoid gomobile
+	// trying to bind EngineConfig which contains interface fields.
+	engine := &Engine{
+		tun:      tun,
+		client:   client,
+		tcp:      make(map[FourTuple]*tcpConn),
+		pending:  make(map[FourTuple]bool),
+		udp:      make(map[FourTuple]*udpSession),
+		udpByDst: make(map[string]FourTuple),
+		done:     make(chan struct{}),
+	}
+	if dg, ok := interface{}(client).(DatagramClient); ok {
+		engine.dg = dg
+		dg.OnDatagram(engine.onDatagram)
+	}
 	ctx, cancel := context.WithCancel(context.Background())
 	m.engine = engine
 	m.client = client
@@ -128,7 +129,6 @@ func (m *MobileEngine) Start(tunFd int, nodeURL string) error {
 		defer close(m.runDone)
 		_ = engine.Run(ctx)
 	}()
-	go m.statsLoop(ctx, engine)
 	return nil
 }
 
@@ -190,27 +190,4 @@ func (m *MobileEngine) GetDownloadBytes() int64 {
 		return 0
 	}
 	return int64(e.Stats().DownloadBytes)
-}
-
-// statsLoop forwards engine counters to the Kotlin listener once per
-// second until ctx is done. A nil listener means polling-only mode
-// (Kotlin reads GetUploadBytes/GetDownloadBytes instead).
-func (m *MobileEngine) statsLoop(ctx context.Context, engine *Engine) {
-	t := time.NewTicker(time.Second)
-	defer t.Stop()
-	for {
-		select {
-		case <-ctx.Done():
-			return
-		case <-t.C:
-			m.mu.Lock()
-			l := m.listener
-			m.mu.Unlock()
-			if l == nil {
-				continue
-			}
-			s := engine.Stats()
-			l.OnStats(int64(s.UploadBytes), int64(s.DownloadBytes))
-		}
-	}
 }
