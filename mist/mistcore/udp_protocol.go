@@ -1,1 +1,213 @@
-Ly8gUGFja2FnZSBtaXN0Y29yZTogTWlzdCBVRFAgZnJhbWUgcHJvdG9jb2wuCi8vCi8vIFVEUCB1c2VzIHdob2xlLXBhY2tldCBBRUFEIChvbmUgZW5jcnlwdGlvbiBwZXIgVURQIGRhdGFncmFtKSwgdW5saWtlIFRDUCdzCi8vIHBlci1mcmFtZSBlbmNyeXB0aW9uLiBGcmFtZSBoZWFkZXJzIGFyZSBOT1QgdmlzaWJsZSBvbiB0aGUgd2lyZS4KLy8KLy8gRnJhbWUgZm9ybWF0IChwbGFpbnRleHQsIGFmdGVyIGRlY3J5cHRpb24pOgovLyAgIFtMRU4oMildW1RZUEUoMSldW1NJRCgxKV1bUEFZTE9BRF0KLy8KLy8gVURQIGRhdGFncmFtOgovLyAgIFtRVUlDIHNob3J0IGhlYWRlciAoMTMpXVtBRUFEKGZyYW1lMXxmcmFtZTJ8Li4uKV0KCnBhY2thZ2UgbWlzdGNvcmUKCmltcG9ydCAoCgkiZW5jb2RpbmcvYmluYXJ5IgoJImVycm9ycyIKCSJ0aW1lIgopCgovLyBVRFAgZnJhbWUgdHlwZXMgKMKnNC4xKS4KY29uc3QgKAoJVURQRnJhbWVQYWRkaW5nICAgICAgID0gMHgwMAoJVURQRnJhbWVTdHJlYW0gICAgICAgID0gMHgwMQoJVURQRnJhbWVTeW4gICAgICAgICAgID0gMHgwMgoJVURQRnJhbWVGaW4gICAgICAgICAgID0gMHgwMwoJVURQRnJhbWVSc3QgICAgICAgICAgID0gMHgwNAoJVURQRnJhbWVBY2sgICAgICAgICAgID0gMHgwNQoJVURQRnJhbWVQaW5nICAgICAgICAgID0gMHgwNgoJVURQRnJhbWVQb25nICAgICAgICAgID0gMHgwNwoJVURQRnJhbWVEYXRhZ3JhbSAgICAgID0gMHgwOAoJVURQRnJhbWVQYXRoQ2hhbGxlbmdlID0gMHgwOQoJVURQRnJhbWVQYXRoUmVzcG9uc2UgID0gMHgwQQoJVURQRnJhbWVNaWdyYXRlICAgICAgID0gMHgwQgoJVURQRnJhbWVNYXhTdHJlYW1EYXRhID0gMHgwQwoJVURQRnJhbWVXaW5kb3dVcGRhdGUgID0gMHgwRAopCgovLyBVRFAgbGltaXRzICjCpzQuMSkuCmNvbnN0ICgKCS8vIE1heFVEUFBsYWludGV4dCBpcyB0aGUgbWF4IGRlY3J5cHRlZCBwYXlsb2FkIHBlciBVRFAgZGF0YWdyYW0uCgkvLyAxMzUwIChNVFUpIC0gMTMgKFFVSUMgaGVhZGVyKSAtIDE2IChBRUFEIHRhZykgPSAxMzIxLCByb3VuZGVkIHRvIDEzMDAuCglNYXhVRFBQbGFpbnRleHQgPSAxMzAwCgoJLy8gUVVJQ1Nob3J0SGVhZGVyTGVuIGlzIHRoZSBmaXhlZCBzaG9ydCBoZWFkZXIgc2l6ZS4KCVFVSUNTaG9ydEhlYWRlckxlbiA9IDEzCikKCi8vIFVEUEZyYW1lIGlzIGEgZGVjb2RlZCBNaXN0IFVEUCBmcmFtZS4KdHlwZSBVRFBGcmFtZSBzdHJ1Y3QgewoJVHlwZSAgICBieXRlCglTSUQgICAgIGJ5dGUKCVBheWxvYWQgW11ieXRlCn0KCi8vIEVuY29kZVVEUEZyYW1lIGVuY29kZXMgYSBzaW5nbGUgZnJhbWU6IFtMRU4oMildW1RZUEUoMSldW1NJRCgxKV1bUEFZTE9BRF0uCi8vIExFTiA9IDIgKyBsZW4oUEFZTE9BRCkgKGJ5dGVzIGFmdGVyIHRoZSBMRU4gZmllbGQgaXRzZWxmKS4KZnVuYyBFbmNvZGVVRFBGcmFtZShmcmFtZVR5cGUgYnl0ZSwgc2lkIGJ5dGUsIHBheWxvYWQgW11ieXRlKSBbXWJ5dGUgewoJLy8gTEVOKDIpICsgVFlQRSgxKSArIFNJRCgxKSArIFBBWUxPQUQKCW91dCA6PSBtYWtlKFtdYnl0ZSwgNCtsZW4ocGF5bG9hZCkpCgliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQxNihvdXRbMDpdLCB1aW50MTYoMitsZW4ocGF5bG9hZCkpKQoJb3V0WzJdID0gZnJhbWVUeXBlCglvdXRbM10gPSBzaWQKCWNvcHkob3V0WzQ6XSwgcGF5bG9hZCkKCXJldHVybiBvdXQKfQoKLy8gRGVjb2RlVURQRnJhbWVzIGRlY29kZXMgY29uY2F0ZW5hdGVkIGZyYW1lcyBmcm9tIGEgZGVjcnlwdGVkIHBheWxvYWQuCi8vIFJldHVybnMgdGhlIGxpc3Qgb2YgZnJhbWVzLgpmdW5jIERlY29kZVVEUEZyYW1lcyhwbGFpbnRleHQgW11ieXRlKSAoW11VRFBGcmFtZSwgZXJyb3IpIHsKCXZhciBmcmFtZXMgW11VRFBGcmFtZQoJb2ZmIDo9IDAKCWZvciBvZmYgPCBsZW4ocGxhaW50ZXh0KSB7CgkJaWYgb2ZmKzQgPiBsZW4ocGxhaW50ZXh0KSB7CgkJCXJldHVybiBuaWwsIGVycm9ycy5OZXcoInVkcDogZnJhbWUgaGVhZGVyIHRydW5jYXRlZCIpCgkJfQoJCWxlbmd0aCA6PSBpbnQoYmluYXJ5LkJpZ0VuZGlhbi5VaW50MTYocGxhaW50ZXh0W29mZjpdKSkKCQlmcmFtZVR5cGUgOj0gcGxhaW50ZXh0W29mZisyXQoJCXNpZCA6PSBwbGFpbnRleHRbb2ZmKzNdCgkJaWYgbGVuZ3RoIDwgMiB7CgkJCXJldHVybiBuaWwsIGVycm9ycy5OZXcoInVkcDogaW52YWxpZCBmcmFtZSBsZW5ndGgiKQoJCX0KCQlwYXlsb2FkTGVuIDo9IGxlbmd0aCAtIDIKCQlpZiBvZmYrNCtwYXlsb2FkTGVuID4gbGVuKHBsYWludGV4dCkgewoJCQlyZXR1cm4gbmlsLCBlcnJvcnMuTmV3KCJ1ZHA6IGZyYW1lIHBheWxvYWQgdHJ1bmNhdGVkIikKCQl9CgkJZnJhbWVzID0gYXBwZW5kKGZyYW1lcywgVURQRnJhbWV7CgkJCVR5cGU6ICAgIGZyYW1lVHlwZSwKCQkJU0lEOiAgICAgc2lkLAoJCQlQYXlsb2FkOiBwbGFpbnRleHRbb2ZmKzQgOiBvZmYrNCtwYXlsb2FkTGVuXSwKCQl9KQoJCW9mZiArPSA0ICsgcGF5bG9hZExlbgoJfQoJcmV0dXJuIGZyYW1lcywgbmlsCn0KCi8vIEVuY29kZVN0cmVhbUZyYW1lIGVuY29kZXMgYSBTVFJFQU0gZnJhbWU6IFtPRkZTRVQoOCldW0RBVEFdLgpmdW5jIEVuY29kZVN0cmVhbUZyYW1lKHNpZCBieXRlLCBvZmZzZXQgdWludDY0LCBkYXRhIFtdYnl0ZSkgW11ieXRlIHsKCXBheWxvYWQgOj0gbWFrZShbXWJ5dGUsIDgrbGVuKGRhdGEpKQoJYmluYXJ5LkJpZ0VuZGlhbi5QdXRVaW50NjQocGF5bG9hZFswOl0sIG9mZnNldCkKCWNvcHkocGF5bG9hZFs4Ol0sIGRhdGEpCglyZXR1cm4gRW5jb2RlVURQRnJhbWUoVURQRnJhbWVTdHJlYW0sIHNpZCwgcGF5bG9hZCkKfQoKLy8gRW5jb2RlRmluRnJhbWUgZW5jb2RlcyBhIEZJTiBmcmFtZTogW0ZJTkFMX1NJWkUoOCldLgpmdW5jIEVuY29kZUZpbkZyYW1lKHNpZCBieXRlLCBmaW5hbFNpemUgdWludDY0KSBbXWJ5dGUgewoJcGF5bG9hZCA6PSBtYWtlKFtdYnl0ZSwgOCkKCWJpbmFyeS5CaWdFbmRpYW4uUHV0VWludDY0KHBheWxvYWRbMDpdLCBmaW5hbFNpemUpCglyZXR1cm4gRW5jb2RlVURQRnJhbWUoVURQRnJhbWVGaW4sIHNpZCwgcGF5bG9hZCkKfQoKLy8gRW5jb2RlUGFkZGluZ0ZyYW1lIGVuY29kZXMgYSBQQURESU5HIGZyYW1lIHdpdGggdGhlIGdpdmVuIHRvdGFsIGZyYW1lIHNpemUuCi8vIFBlciDCpzQuMTogW0xFTigyKV1bVFlQRSgxKT0weDAwXVtTSUQoMSldW3plcm9zXSwgbWluaW11bSA0IGJ5dGVzLgpmdW5jIEVuY29kZVBhZGRpbmdGcmFtZShzaWQgYnl0ZSwgdG90YWxMZW4gaW50KSBbXWJ5dGUgewoJaWYgdG90YWxMZW4gPCA0IHsKCQl0b3RhbExlbiA9IDQKCX0KCXBheWxvYWRMZW4gOj0gdG90YWxMZW4gLSA0CglwYXlsb2FkIDo9IG1ha2UoW11ieXRlLCBwYXlsb2FkTGVuKSAvLyB6ZXJvcwoJcmV0dXJuIEVuY29kZVVEUEZyYW1lKFVEUEZyYW1lUGFkZGluZywgc2lkLCBwYXlsb2FkKQp9CgovLyBFbmNvZGVBY2tGcmFtZSBlbmNvZGVzIGFuIEFDSyBmcmFtZToKLy8gW0xBUkdFU1QoNCldW0FDS19ERUxBWV9NUygyKV1bUkFOR0VfTigxKV1bUkFOR0VfMSg4KV0uLi4KLy8gRWFjaCByYW5nZSBpcyBbc3RhcnQoNCldW2VuZCg0KV0gKGNsb3NlZCBpbnRlcnZhbCwgYmlnLWVuZGlhbikuCi8vIGFja0RlbGF5IGlzIGhvdyBsb25nIHRoZSBzZW5kZXIgaGVsZCB0aGlzIEFDSyBhZnRlciB0aGUgbGFyZ2VzdCBwYWNrZXQKLy8gYXJyaXZlZDsgdGhlIHBlZXIgc3VidHJhY3RzIGl0IGZyb20gaXRzIFJUVCBzYW1wbGVzLiBDYXBwZWQgYXQgNjU1MzVtcy4KZnVuYyBFbmNvZGVBY2tGcmFtZShzaWQgYnl0ZSwgbGFyZ2VzdCB1aW50MzIsIGFja0RlbGF5IHRpbWUuRHVyYXRpb24sIHJhbmdlcyBbXVsyXXVpbnQzMikgW11ieXRlIHsKCWlmIGxlbihyYW5nZXMpID4gOCB7CgkJcmFuZ2VzID0gcmFuZ2VzWzo4XQoJfQoJbXMgOj0gYWNrRGVsYXkuTWlsbGlzZWNvbmRzKCkKCWlmIG1zIDwgMCB7CgkJbXMgPSAwCgl9CglpZiBtcyA+IDB4RkZGRiB7CgkJbXMgPSAweEZGRkYKCX0KCXBheWxvYWQgOj0gbWFrZShbXWJ5dGUsIDQrMisxK2xlbihyYW5nZXMpKjgpCgliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQzMihwYXlsb2FkWzA6XSwgbGFyZ2VzdCkKCWJpbmFyeS5CaWdFbmRpYW4uUHV0VWludDE2KHBheWxvYWRbNDpdLCB1aW50MTYobXMpKQoJcGF5bG9hZFs2XSA9IGJ5dGUobGVuKHJhbmdlcykpCglvZmYgOj0gNwoJZm9yIF8sIHIgOj0gcmFuZ2UgcmFuZ2VzIHsKCQliaW5hcnkuQmlnRW5kaWFuLlB1dFVpbnQzMihwYXlsb2FkW29mZjpdLCByWzBdKQoJCWJpbmFyeS5CaWdFbmRpYW4uUHV0VWludDMyKHBheWxvYWRbb2ZmKzQ6XSwgclsxXSkKCQlvZmYgKz0gOAoJfQoJcmV0dXJuIEVuY29kZVVEUEZyYW1lKFVEUEZyYW1lQWNrLCBzaWQsIHBheWxvYWQpCn0KCi8vIERlY29kZUFja0ZyYW1lIGRlY29kZXMgYW4gQUNLIGZyYW1lIHBheWxvYWQuCi8vIFJldHVybnMgdGhlIHJlY2VpdmVyLXJlcG9ydGVkIGFja19kZWxheSBmb3IgUlRUIGNvcnJlY3Rpb24uCmZ1bmMgRGVjb2RlQWNrRnJhbWUocGF5bG9hZCBbXWJ5dGUpIChsYXJnZXN0IHVpbnQzMiwgYWNrRGVsYXkgdGltZS5EdXJhdGlvbiwgcmFuZ2VzIFtdWzJddWludDMyLCBlcnIgZXJyb3IpIHsKCWlmIGxlbihwYXlsb2FkKSA8IDcgewoJCXJldHVybiAwLCAwLCBuaWwsIGVycm9ycy5OZXcoInVkcDogYWNrIHBheWxvYWQgdG9vIHNob3J0IikKCX0KCWxhcmdlc3QgPSBiaW5hcnkuQmlnRW5kaWFuLlVpbnQzMihwYXlsb2FkWzA6XSkKCWFja0RlbGF5ID0gdGltZS5EdXJhdGlvbihiaW5hcnkuQmlnRW5kaWFuLlVpbnQxNihwYXlsb2FkWzQ6XSkpICogdGltZS5NaWxsaXNlY29uZAoJbiA6PSBpbnQocGF5bG9hZFs2XSkKCWlmIGxlbihwYXlsb2FkKSA8IDcrbio4IHsKCQlyZXR1cm4gMCwgMCwgbmlsLCBlcnJvcnMuTmV3KCJ1ZHA6IGFjayByYW5nZXMgdHJ1bmNhdGVkIikKCX0KCWZvciBpIDo9IDA7IGkgPCBuOyBpKysgewoJCXN0YXJ0IDo9IGJpbmFyeS5CaWdFbmRpYW4uVWludDMyKHBheWxvYWRbNytpKjg6XSkKCQllbmQgOj0gYmluYXJ5LkJpZ0VuZGlhbi5VaW50MzIocGF5bG9hZFs3K2kqOCs0Ol0pCgkJcmFuZ2VzID0gYXBwZW5kKHJhbmdlcywgWzJddWludDMye3N0YXJ0LCBlbmR9KQoJfQoJcmV0dXJuIGxhcmdlc3QsIGFja0RlbGF5LCByYW5nZXMsIG5pbAp9CgovLyBCdWlsZFNob3J0SGVhZGVyIGJ1aWxkcyBhIFFVSUMgc2hvcnQgaGVhZGVyICgxMyBieXRlcykuCi8vCi8vIEZvcm1hdCAowqczLjIpOgovLyAgIFswfDF8U3xSfFJ8S3xQIFBdW0RDSUQoOCldW1BhY2tldE51bSg0KV0KLy8gICBiaXQwPTAsIGJpdDE9MSAoc2hvcnQgaGVhZGVyKQovLyAgIFMgPSBzcGluIGJpdCAocmFuZG9tKQovLyAgIEsgPSBrZXkgcGhhc2UgKDApCi8vICAgUCBQID0gMGIxMSAoNC1ieXRlIHBhY2tldCBudW1iZXIpCi8vCi8vIEZvciBQaGFzZSAxIHNpbXBsaWZpZWQ6IG5vIGhlYWRlciBwcm90ZWN0aW9uIG1hc2sgKG1hc2sgPSAwKS4KLy8gUGhhc2UgMiB3aWxsIGltcGxlbWVudCBSRkMgOTAwMSDCpzUuNC40LgpmdW5jIEJ1aWxkU2hvcnRIZWFkZXIoZGNpZCBbOF1ieXRlLCBwYWNrZXROdW0gdWludDMyLCBzcGluQml0IGJvb2wpIFsxM11ieXRlIHsKCXZhciBoIFsxM11ieXRlCgkvLyBCeXRlIDA6IDB8MXxTfDB8MHwwfDF8MQoJLy8gICBiaXQwPTAsIGJpdDE9MSwgYml0Mj1TLCBiaXRzIDMtNCA9IFIgUiAoMCksIGJpdDU9SyAoMCksIGJpdHMgNi03ID0gUCBQICgwYjExKQoJaFswXSA9IDB4NDAgfCAweDAzIC8vIDBiMDEwMDAwMTEKCWlmIHNwaW5CaXQgewoJCWhbMF0gfD0gMHgyMCAvLyBzZXQgUyBiaXQgKGJpdCAyKQoJfQoJY29weShoWzE6XSwgZGNpZFs6XSkKCS8vIFBhY2tldCBudW1iZXIgKDQgYnl0ZXMsIGJpZy1lbmRpYW4pCgkvLyBTaW1wbGlmaWVkOiBubyBtYXNrIGFwcGxpZWQgaW4gUGhhc2UgMS4KCWJpbmFyeS5CaWdFbmRpYW4uUHV0VWludDMyKGhbOTpdLCBwYWNrZXROdW0pCglyZXR1cm4gaAp9CgovLyBQYXJzZVNob3J0SGVhZGVyIHBhcnNlcyBhIFFVSUMgc2hvcnQgaGVhZGVyLgovLyBSZXR1cm5zIGRjaWQsIHBhY2tldCBudW1iZXIsIGFuZCBzcGluIGJpdC4KLy8gRm9yIFBoYXNlIDEgc2ltcGxpZmllZDogbm8gaGVhZGVyIHByb3RlY3Rpb24gcmVtb3ZhbC4KZnVuYyBQYXJzZVNob3J0SGVhZGVyKGhlYWRlciBbXWJ5dGUpIChkY2lkIFs4XWJ5dGUsIHBhY2tldE51bSB1aW50MzIsIHNwaW5CaXQgYm9vbCwgZXJyIGVycm9yKSB7CglpZiBsZW4oaGVhZGVyKSA8IFFVSUNTaG9ydEhlYWRlckxlbiB7CgkJcmV0dXJuIGRjaWQsIDAsIGZhbHNlLCBlcnJvcnMuTmV3KCJ1ZHA6IHNob3J0IGhlYWRlciB0b28gc2hvcnQiKQoJfQoJLy8gQ2hlY2sgYml0czogYml0MD0wLCBiaXQxPTEKCWlmIGhlYWRlclswXSYweEMwICE9IDB4NDAgewoJCXJldHVybiBkY2lkLCAwLCBmYWxzZSwgZXJyb3JzLk5ldygidWRwOiBub3QgYSBzaG9ydCBoZWFkZXIiKQoJfQoJc3BpbkJpdCA9IGhlYWRlclswXSYweDIwICE9IDAKCWNvcHkoZGNpZFs6XSwgaGVhZGVyWzE6OV0pCgkvLyBTaW1wbGlmaWVkOiBubyBtYXNrIHJlbW92YWwgaW4gUGhhc2UgMS4KCXBhY2tldE51bSA9IGJpbmFyeS5CaWdFbmRpYW4uVWludDMyKGhlYWRlcls5OjEzXSkKCXJldHVybiBkY2lkLCBwYWNrZXROdW0sIHNwaW5CaXQsIG5pbAp9Cg==
+// Package mistcore: Mist UDP frame protocol.
+//
+// UDP uses whole-packet AEAD (one encryption per UDP datagram), unlike TCP's
+// per-frame encryption. Frame headers are NOT visible on the wire.
+//
+// Frame format (plaintext, after decryption):
+//   [LEN(2)][TYPE(1)][SID(1)][PAYLOAD]
+//
+// UDP datagram:
+//   [QUIC short header (13)][AEAD(frame1|frame2|...)]
+
+package mistcore
+
+import (
+	"encoding/binary"
+	"errors"
+	"time"
+)
+
+// UDP frame types (§4.1).
+const (
+	UDPFramePadding       = 0x00
+	UDPFrameStream        = 0x01
+	UDPFrameSyn           = 0x02
+	UDPFrameFin           = 0x03
+	UDPFrameRst           = 0x04
+	UDPFrameAck           = 0x05
+	UDPFramePing          = 0x06
+	UDPFramePong          = 0x07
+	UDPFrameDatagram      = 0x08
+	UDPFramePathChallenge = 0x09
+	UDPFramePathResponse  = 0x0A
+	UDPFrameMigrate       = 0x0B
+	UDPFrameMaxStreamData = 0x0C
+	UDPFrameWindowUpdate  = 0x0D
+)
+
+// UDP limits (§4.1).
+const (
+	// MaxUDPPlaintext is the max decrypted payload per UDP datagram.
+	// 1350 (MTU) - 13 (QUIC header) - 16 (AEAD tag) = 1321, rounded to 1300.
+	MaxUDPPlaintext = 1300
+
+	// QUICShortHeaderLen is the fixed short header size.
+	QUICShortHeaderLen = 13
+)
+
+// UDPFrame is a decoded Mist UDP frame.
+type UDPFrame struct {
+	Type    byte
+	SID     byte
+	Payload []byte
+}
+
+// EncodeUDPFrame encodes a single frame: [LEN(2)][TYPE(1)][SID(1)][PAYLOAD].
+// LEN = 2 + len(PAYLOAD) (bytes after the LEN field itself).
+func EncodeUDPFrame(frameType byte, sid byte, payload []byte) []byte {
+	// LEN(2) + TYPE(1) + SID(1) + PAYLOAD
+	out := make([]byte, 4+len(payload))
+	binary.BigEndian.PutUint16(out[0:], uint16(2+len(payload)))
+	out[2] = frameType
+	out[3] = sid
+	copy(out[4:], payload)
+	return out
+}
+
+// DecodeUDPFrames decodes concatenated frames from a decrypted payload.
+// Returns the list of frames.
+func DecodeUDPFrames(plaintext []byte) ([]UDPFrame, error) {
+	var frames []UDPFrame
+	off := 0
+	for off < len(plaintext) {
+		if off+4 > len(plaintext) {
+			return nil, errors.New("udp: frame header truncated")
+		}
+		length := int(binary.BigEndian.Uint16(plaintext[off:]))
+		frameType := plaintext[off+2]
+		sid := plaintext[off+3]
+		if length < 2 {
+			return nil, errors.New("udp: invalid frame length")
+		}
+		payloadLen := length - 2
+		if off+4+payloadLen > len(plaintext) {
+			return nil, errors.New("udp: frame payload truncated")
+		}
+		frames = append(frames, UDPFrame{
+			Type:    frameType,
+			SID:     sid,
+			Payload: plaintext[off+4 : off+4+payloadLen],
+		})
+		off += 4 + payloadLen
+	}
+	return frames, nil
+}
+
+// EncodeStreamFrame encodes a STREAM frame: [OFFSET(8)][DATA].
+func EncodeStreamFrame(sid byte, offset uint64, data []byte) []byte {
+	payload := make([]byte, 8+len(data))
+	binary.BigEndian.PutUint64(payload[0:], offset)
+	copy(payload[8:], data)
+	return EncodeUDPFrame(UDPFrameStream, sid, payload)
+}
+
+// EncodeFinFrame encodes a FIN frame: [FINAL_SIZE(8)].
+func EncodeFinFrame(sid byte, finalSize uint64) []byte {
+	payload := make([]byte, 8)
+	binary.BigEndian.PutUint64(payload[0:], finalSize)
+	return EncodeUDPFrame(UDPFrameFin, sid, payload)
+}
+
+// EncodePaddingFrame encodes a PADDING frame with the given total frame size.
+// Per §4.1: [LEN(2)][TYPE(1)=0x00][SID(1)][zeros], minimum 4 bytes.
+func EncodePaddingFrame(sid byte, totalLen int) []byte {
+	if totalLen < 4 {
+		totalLen = 4
+	}
+	payloadLen := totalLen - 4
+	payload := make([]byte, payloadLen) // zeros
+	return EncodeUDPFrame(UDPFramePadding, sid, payload)
+}
+
+// EncodeAckFrame encodes an ACK frame:
+// [LARGEST(4)][ACK_DELAY_MS(2)][RANGE_N(1)][RANGE_1(8)]...
+// Each range is [start(4)][end(4)] (closed interval, big-endian).
+// ackDelay is how long the sender held this ACK after the largest packet
+// arrived; the peer subtracts it from its RTT samples. Capped at 65535ms.
+func EncodeAckFrame(sid byte, largest uint32, ackDelay time.Duration, ranges [][2]uint32) []byte {
+	if len(ranges) > 8 {
+		ranges = ranges[:8]
+	}
+	ms := ackDelay.Milliseconds()
+	if ms < 0 {
+		ms = 0
+	}
+	if ms > 0xFFFF {
+		ms = 0xFFFF
+	}
+	payload := make([]byte, 4+2+1+len(ranges)*8)
+	binary.BigEndian.PutUint32(payload[0:], largest)
+	binary.BigEndian.PutUint16(payload[4:], uint16(ms))
+	payload[6] = byte(len(ranges))
+	off := 7
+	for _, r := range ranges {
+		binary.BigEndian.PutUint32(payload[off:], r[0])
+		binary.BigEndian.PutUint32(payload[off+4:], r[1])
+		off += 8
+	}
+	return EncodeUDPFrame(UDPFrameAck, sid, payload)
+}
+
+// DecodeAckFrame decodes an ACK frame payload.
+// Returns the receiver-reported ack_delay for RTT correction.
+func DecodeAckFrame(payload []byte) (largest uint32, ackDelay time.Duration, ranges [][2]uint32, err error) {
+	if len(payload) < 7 {
+		return 0, 0, nil, errors.New("udp: ack payload too short")
+	}
+	largest = binary.BigEndian.Uint32(payload[0:])
+	ackDelay = time.Duration(binary.BigEndian.Uint16(payload[4:])) * time.Millisecond
+	n := int(payload[6])
+	if len(payload) < 7+n*8 {
+		return 0, 0, nil, errors.New("udp: ack ranges truncated")
+	}
+	for i := 0; i < n; i++ {
+		start := binary.BigEndian.Uint32(payload[7+i*8:])
+		end := binary.BigEndian.Uint32(payload[7+i*8+4:])
+		ranges = append(ranges, [2]uint32{start, end})
+	}
+	return largest, ackDelay, ranges, nil
+}
+
+// BuildShortHeader builds a QUIC short header (13 bytes).
+//
+// Format (§3.2):
+//   [0|1|S|R|R|K|P P][DCID(8)][PacketNum(4)]
+//   bit0=0, bit1=1 (short header)
+//   S = spin bit (random)
+//   K = key phase (0)
+//   P P = 0b11 (4-byte packet number)
+//
+// For Phase 1 simplified: no header protection mask (mask = 0).
+// Phase 2 will implement RFC 9001 §5.4.4.
+func BuildShortHeader(dcid [8]byte, packetNum uint32, spinBit bool) [13]byte {
+	var h [13]byte
+	// Byte 0: 0|1|S|0|0|0|1|1
+	//   bit0=0, bit1=1, bit2=S, bits 3-4 = R R (0), bit5=K (0), bits 6-7 = P P (0b11)
+	h[0] = 0x40 | 0x03 // 0b01000011
+	if spinBit {
+		h[0] |= 0x20 // set S bit (bit 2)
+	}
+	copy(h[1:], dcid[:])
+	// Packet number (4 bytes, big-endian)
+	// Simplified: no mask applied in Phase 1.
+	binary.BigEndian.PutUint32(h[9:], packetNum)
+	return h
+}
+
+// ParseShortHeader parses a QUIC short header.
+// Returns dcid, packet number, and spin bit.
+// For Phase 1 simplified: no header protection removal.
+func ParseShortHeader(header []byte) (dcid [8]byte, packetNum uint32, spinBit bool, err error) {
+	if len(header) < QUICShortHeaderLen {
+		return dcid, 0, false, errors.New("udp: short header too short")
+	}
+	// Check bits: bit0=0, bit1=1
+	if header[0]&0xC0 != 0x40 {
+		return dcid, 0, false, errors.New("udp: not a short header")
+	}
+	spinBit = header[0]&0x20 != 0
+	copy(dcid[:], header[1:9])
+	// Simplified: no mask removal in Phase 1.
+	packetNum = binary.BigEndian.Uint32(header[9:13])
+	return dcid, packetNum, spinBit, nil
+}

@@ -1,1 +1,257 @@
-cGFja2FnZSBtaXN0Y29yZQoKaW1wb3J0ICgKCSJ0ZXN0aW5nIgoJInRpbWUiCikKCi8vIFRlc3RIZWFkZXJQcm90ZWN0Um91bmRUcmlwIHZlcmlmaWVzIG1hc2sgYXBwbHkvcmVtb3ZlIHJvdW5kLXRyaXAuCmZ1bmMgVGVzdEhlYWRlclByb3RlY3RSb3VuZFRyaXAodCAqdGVzdGluZy5UKSB7Cgl2YXIgaHBLZXkgWzMyXWJ5dGUKCWZvciBpIDo9IHJhbmdlIGhwS2V5IHsKCQlocEtleVtpXSA9IGJ5dGUoaSAqIDcpCgl9Cgl2YXIgZGNpZCBbOF1ieXRlCglmb3IgaSA6PSByYW5nZSBkY2lkIHsKCQlkY2lkW2ldID0gYnl0ZShpICsgMSkKCX0KCgkvLyBCdWlsZCBhIGhlYWRlciwgYXBwbHkgcHJvdGVjdGlvbiwgdGhlbiByZW1vdmUuCglvcmlnIDo9IEJ1aWxkU2hvcnRIZWFkZXIoZGNpZCwgNDIsIGZhbHNlKQoJLy8gRmFrZSBjaXBoZXJ0ZXh0IChuZWVkIDE2IGJ5dGVzIGZvciBzYW1wbGUpLgoJY2lwaGVydGV4dCA6PSBtYWtlKFtdYnl0ZSwgMzIpCglmb3IgaSA6PSByYW5nZSBjaXBoZXJ0ZXh0IHsKCQljaXBoZXJ0ZXh0W2ldID0gYnl0ZShpICogMykKCX0KCXNhbXBsZSA6PSBjaXBoZXJ0ZXh0WzoxNl0KCgltYXNrZWQgOj0gbWFrZShbXWJ5dGUsIGxlbihvcmlnKSkKCWNvcHkobWFza2VkLCBvcmlnWzpdKQoJaWYgZXJyIDo9IEFwcGx5SGVhZGVyUHJvdGVjdGlvbihtYXNrZWQsIGhwS2V5LCBzYW1wbGUpOyBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigiYXBwbHk6ICV2IiwgZXJyKQoJfQoJLy8gTWFza2VkIGhlYWRlciBzaG91bGQgZGlmZmVyIChwYWNrZXQgbnVtYmVyIG1hc2tlZCkuCglpZiBtYXNrZWRbOV0gPT0gb3JpZ1s5XSAmJiBtYXNrZWRbMTBdID09IG9yaWdbMTBdICYmIG1hc2tlZFsxMV0gPT0gb3JpZ1sxMV0gJiYgbWFza2VkWzEyXSA9PSBvcmlnWzEyXSB7CgkJdC5GYXRhbCgiaGVhZGVyIHByb3RlY3Rpb24gZGlkIG5vdCBjaGFuZ2UgcGFja2V0IG51bWJlciIpCgl9CgkvLyBTcGluIGJpdCAoYml0IDUpIHNob3VsZCBiZSB1bmNoYW5nZWQuCglpZiAobWFza2VkWzBdJjB4MjApICE9IChvcmlnWzBdJjB4MjApIHsKCQl0LkZhdGFsKCJzcGluIGJpdCB3YXMgbWFza2VkIChzaG91bGQgc3RheSkiKQoJfQoJLy8gUmVtb3ZlIHByb3RlY3Rpb24uCgl1bm1hc2tlZCA6PSBhcHBlbmQoW11ieXRlKG5pbCksIG1hc2tlZC4uLikKCWlmIGVyciA6PSBSZW1vdmVIZWFkZXJQcm90ZWN0aW9uKHVubWFza2VkLCBocEtleSwgc2FtcGxlKTsgZXJyICE9IG5pbCB7CgkJdC5GYXRhbGYoInJlbW92ZTogJXYiLCBlcnIpCgl9Cglmb3IgaSA6PSByYW5nZSBvcmlnIHsKCQlpZiB1bm1hc2tlZFtpXSAhPSBvcmlnW2ldIHsKCQkJdC5GYXRhbGYoInJvdW5kLXRyaXAgbWlzbWF0Y2ggYXQgYnl0ZSAlZCIsIGkpCgkJfQoJfQp9CgovLyBUZXN0SGVhZGVyUHJvdGVjdFNhbXBsZVJlcXVpcmVzMTZCeXRlcyB2ZXJpZmllcyBzYW1wbGUgbGVuZ3RoIGNoZWNrLgpmdW5jIFRlc3RIZWFkZXJQcm90ZWN0U2FtcGxlUmVxdWlyZXMxNkJ5dGVzKHQgKnRlc3RpbmcuVCkgewoJdmFyIGhwS2V5IFszMl1ieXRlCgloZHIgOj0gbWFrZShbXWJ5dGUsIFFVSUNTaG9ydEhlYWRlckxlbikKCXNob3J0IDo9IG1ha2UoW11ieXRlLCAxMCkgLy8gdG9vIHNob3J0CglpZiBlcnIgOj0gQXBwbHlIZWFkZXJQcm90ZWN0aW9uKGhkciwgaHBLZXksIHNob3J0KTsgZXJyID09IG5pbCB7CgkJdC5GYXRhbCgiZXhwZWN0ZWQgZXJyb3IgZm9yIHNob3J0IHNhbXBsZSIpCgl9Cn0KCi8vIFRlc3RTZXNzaW9uU2VhbE9wZW5XaXRoUHJvdGVjdGlvbiB2ZXJpZmllcyBlbmQtdG8tZW5kIHdpdGggaGVhZGVyIHByb3RlY3Rpb24uCmZ1bmMgVGVzdFNlc3Npb25TZWFsT3BlbldpdGhQcm90ZWN0aW9uKHQgKnRlc3RpbmcuVCkgewoJdmFyIHNpZCBbMTZdYnl0ZQoJdmFyIGtDMlMsIGtTMkMgWzMyXWJ5dGUKCWZvciBpIDo9IHJhbmdlIHNpZCB7CgkJc2lkW2ldID0gYnl0ZShpKQoJfQoJZm9yIGkgOj0gcmFuZ2Uga0MyUyB7CgkJa0MyU1tpXSA9IGJ5dGUoaSArIDEwKQoJCWtTMkNbaV0gPSBieXRlKGkgKyAyMCkKCX0KCXNlc3MgOj0gTmV3VURQU2Vzc2lvbihzaWQsIGtDMlMsIGtTMkMsIG5pbCwgbmlsKQoKCS8vIFNlYWwgYSBwYWNrZXQuCglwaW5nIDo9IEVuY29kZVVEUEZyYW1lKFVEUEZyYW1lUGluZywgMCwgW11ieXRlKCJoZWxsbyIpKQoJZGF0YWdyYW0sIGVyciA6PSBzZXNzLnNlYWxQYWNrZXRUcmFja2VkKERpckMyUywgW11bXWJ5dGV7cGluZ30pCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigic2VhbDogJXYiLCBlcnIpCgl9CgkvLyBUaGUgcGFja2V0IG51bWJlciBpbiB0aGUgZGF0YWdyYW0gc2hvdWxkIGJlIG1hc2tlZCAobm90IDApLgoJLy8gRmlyc3QgcGFja2V0OiByZWFsIG51bWJlciAwLCBtYXNrZWQgc2hvdWxkIGRpZmZlciAodW5sZXNzIG1hc2sgaGFwcGVucyB0byBiZSAwKS4KCS8vIFdlIGNhbid0IGFzc2VydCBpbmVxdWFsaXR5IHJlbGlhYmx5LCBidXQgd2UgY2FuIHZlcmlmeSBPcGVuUGFja2V0IHdvcmtzLgoKCS8vIE9wZW4gaXQgYmFjay4KCWZyYW1lcywgcGt0TnVtLCBlcnIgOj0gc2Vzcy5PcGVuUGFja2V0KERpckMyUywgZGF0YWdyYW0pCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigib3BlbjogJXYiLCBlcnIpCgl9CglpZiBwa3ROdW0gIT0gMCB7CgkJdC5GYXRhbGYoImV4cGVjdGVkIHBhY2tldCAwLCBnb3QgJWQiLCBwa3ROdW0pCgl9CglpZiBsZW4oZnJhbWVzKSAhPSAxIHx8IGZyYW1lc1swXS5UeXBlICE9IFVEUEZyYW1lUGluZyB7CgkJdC5GYXRhbGYoInVuZXhwZWN0ZWQgZnJhbWVzOiAlK3YiLCBmcmFtZXMpCgl9Cn0KCi8vIFRlc3RTbGlkaW5nV2luZG93QmFzaWMgdmVyaWZpZXMgbWFyay9kdXBsaWNhdGUgZGV0ZWN0aW9uLgpmdW5jIFRlc3RTbGlkaW5nV2luZG93QmFzaWModCAqdGVzdGluZy5UKSB7Cgl3IDo9IE5ld1NsaWRpbmdXaW5kb3coKQoJaWYgIXcuTWFyaygwKSB7CgkJdC5GYXRhbCgiZmlyc3QgbWFyaygwKSBzaG91bGQgYmUgbmV3IikKCX0KCWlmIHcuTWFyaygwKSB7CgkJdC5GYXRhbCgic2Vjb25kIG1hcmsoMCkgc2hvdWxkIGJlIGR1cGxpY2F0ZSIpCgl9CglpZiAhdy5NYXJrKDUpIHsKCQl0LkZhdGFsKCJtYXJrKDUpIHNob3VsZCBiZSBuZXciKQoJfQoJaWYgdy5MYXJnZXN0KCkgIT0gNSB7CgkJdC5GYXRhbGYoImxhcmdlc3QgPSAlZCwgd2FudCA1Iiwgdy5MYXJnZXN0KCkpCgl9CglyYW5nZXMgOj0gdy5SYW5nZXMoOCkKCWlmIGxlbihyYW5nZXMpICE9IDIgewoJCXQuRmF0YWxmKCJleHBlY3RlZCAyIHJhbmdlcywgZ290ICVkOiAldiIsIGxlbihyYW5nZXMpLCByYW5nZXMpCgl9CgkvLyBSYW5nZXMgb3JkZXJlZCBoaWdoIHRvIGxvdzogWzUsNV0sIFswLDBdLgoJaWYgcmFuZ2VzWzBdICE9IFsyXXVpbnQzMns1LCA1fSB8fCByYW5nZXNbMV0gIT0gWzJddWludDMyezAsIDB9IHsKCQl0LkZhdGFsZigidW5leHBlY3RlZCByYW5nZXM6ICV2IiwgcmFuZ2VzKQoJfQp9CgovLyBUZXN0U2xpZGluZ1dpbmRvd0NvbnRpZ3VvdXMgdmVyaWZpZXMgc2luZ2xlIHJhbmdlIGZvciBjb250aWd1b3VzIHBhY2tldHMuCmZ1bmMgVGVzdFNsaWRpbmdXaW5kb3dDb250aWd1b3VzKHQgKnRlc3RpbmcuVCkgewoJdyA6PSBOZXdTbGlkaW5nV2luZG93KCkKCWZvciBpIDo9IHVpbnQzMigwKTsgaSA8IDEwOyBpKysgewoJCXcuTWFyayhpKQoJfQoJcmFuZ2VzIDo9IHcuUmFuZ2VzKDgpCglpZiBsZW4ocmFuZ2VzKSAhPSAxIHsKCQl0LkZhdGFsZigiZXhwZWN0ZWQgMSByYW5nZSwgZ290ICV2IiwgcmFuZ2VzKQoJfQoJaWYgcmFuZ2VzWzBdICE9IFsyXXVpbnQzMnswLCA5fSB7CgkJdC5GYXRhbGYoInVuZXhwZWN0ZWQgcmFuZ2U6ICV2IiwgcmFuZ2VzWzBdKQoJfQp9CgovLyBUZXN0UmVsaWFiaWxpdHlBY2tGbG93IHZlcmlmaWVzIHNlbnTihpJhY2tlZCBmbG93LgpmdW5jIFRlc3RSZWxpYWJpbGl0eUFja0Zsb3codCAqdGVzdGluZy5UKSB7CgliYnJDdGwgOj0gTmV3QkJSQ29udHJvbGxlcigxMzUwKQoJcmVsIDo9IE5ld1VEUFJlbGlhYmlsaXR5KGJickN0bCkKCglmcmFtZXMgOj0gW11bXWJ5dGV7RW5jb2RlVURQRnJhbWUoVURQRnJhbWVQaW5nLCAwLCBuaWwpfQoJcmVsLlBhY2tldFNlbnQoMCwgZnJhbWVzLCAxMDApCglyZWwuUGFja2V0U2VudCgxLCBmcmFtZXMsIDEwMCkKCWlmIHJlbC5CeXRlc0luRmxpZ2h0KCkgIT0gMjAwIHsKCQl0LkZhdGFsZigiaW5mbGlnaHQgPSAlZCwgd2FudCAyMDAiLCByZWwuQnl0ZXNJbkZsaWdodCgpKQoJfQoKCS8vIEFjayBwYWNrZXQgMC4KCWlmICFyZWwuUGFja2V0QWNrZWQoMCwgNTAqdGltZS5NaWxsaXNlY29uZCkgewoJCXQuRmF0YWwoInBhY2tldCAwIHNob3VsZCBiZSBuZXdseSBhY2tlZCIpCgl9CglpZiByZWwuQnl0ZXNJbkZsaWdodCgpICE9IDEwMCB7CgkJdC5GYXRhbGYoImluZmxpZ2h0ID0gJWQsIHdhbnQgMTAwIiwgcmVsLkJ5dGVzSW5GbGlnaHQoKSkKCX0KCS8vIER1cGxpY2F0ZSBhY2sgc2hvdWxkIHJldHVybiBmYWxzZS4KCWlmIHJlbC5QYWNrZXRBY2tlZCgwLCA1MCp0aW1lLk1pbGxpc2Vjb25kKSB7CgkJdC5GYXRhbCgiZHVwbGljYXRlIGFjayBzaG91bGQgcmV0dXJuIGZhbHNlIikKCX0KfQoKLy8gVGVzdFJlbGlhYmlsaXR5RmFzdFJldHJhbnNtaXQgdmVyaWZpZXMgMy1kdXAtQUNLIHRyaWdnZXJzIHJldHJhbnNtaXQuCmZ1bmMgVGVzdFJlbGlhYmlsaXR5RmFzdFJldHJhbnNtaXQodCAqdGVzdGluZy5UKSB7CgliYnJDdGwgOj0gTmV3QkJSQ29udHJvbGxlcigxMzUwKQoJcmVsIDo9IE5ld1VEUFJlbGlhYmlsaXR5KGJickN0bCkKCgl2YXIgcmV0cmFuc21pdHRlZCBbXVtdYnl0ZQoJcmVsLk9uUmV0cmFuc21pdCA9IGZ1bmMoZnJhbWVzIFtdW11ieXRlKSBlcnJvciB7CgkJcmV0cmFuc21pdHRlZCA9IGZyYW1lcwoJCXJldHVybiBuaWwKCX0KCglmcmFtZXMgOj0gW11bXWJ5dGV7RW5jb2RlVURQRnJhbWUoVURQRnJhbWVQaW5nLCAwLCBuaWwpfQoJcmVsLlBhY2tldFNlbnQoMCwgZnJhbWVzLCAxMDApIC8vIHdpbGwgYmUgImxvc3QiCglyZWwuUGFja2V0U2VudCgxLCBmcmFtZXMsIDEwMCkKCXJlbC5QYWNrZXRTZW50KDIsIGZyYW1lcywgMTAwKQoJcmVsLlBhY2tldFNlbnQoMywgZnJhbWVzLCAxMDApCgoJLy8gQWNrIDEsMiwzIHdpdGhvdXQgYWNraW5nIDAg4oaSIDMgZHVwIEFDS3MgKGxhcmdlc3Qgc3RheXMgYXQgMykuCgkvLyBGaXJzdCBBQ0sgYWR2YW5jZXMgbGFyZ2VzdCB0byAxLgoJcmVsLlByb2Nlc3NBY2soMSwgMCwgW11bMl11aW50MzJ7ezEsIDF9fSkKCS8vIFRoZXNlIGRvbid0IGFkdmFuY2UgbGFyZ2VzdCBiZXlvbmQuLi4gYWN0dWFsbHkgbGFyZ2VzdCBnb2VzIDHihpIy4oaSMy4KCS8vIFRvIHNpbXVsYXRlIGR1cCBBQ0tzLCB3ZSBhY2sgdGhlIHNhbWUgbGFyZ2VzdCByZXBlYXRlZGx5LgoJLy8gU2ltcGxlcjogYWNrIHBhY2tldHMgMSwyLDMgaW4gYSB3YXkgdGhhdCBsYXJnZXN0IHN0YXlzLgoJLy8gTGV0J3MgZG86IGFjayB7MiwyfSwgezMsM30gZXRjLiBBY3R1YWxseSBQcm9jZXNzQWNrIHdpdGggbGFyZ2VzdD0zCgkvLyB0aHJlZSB0aW1lcyBjb3VudHMgYXMgZHVwLgoJcmVsLlByb2Nlc3NBY2soMywgMCwgW11bMl11aW50MzJ7ezEsIDN9fSkKCXJlbC5Qcm9jZXNzQWNrKDMsIDAsIFtdWzJddWludDMye3sxLCAzfX0pCglyZWwuUHJvY2Vzc0FjaygzLCAwLCBbXVsyXXVpbnQzMnt7MSwgM319KQoJcmVsLlByb2Nlc3NBY2soMywgMCwgW11bMl11aW50MzJ7ezEsIDN9fSkKCS8vIEZvdXJ0aCBkdXAgKDNyZCBjb3VudGVkKSBzaG91bGQgdHJpZ2dlciBmYXN0IHJldHJhbnNtaXQgb2YgcGFja2V0IDAuCglpZiBsZW4ocmV0cmFuc21pdHRlZCkgPT0gMCB7CgkJdC5GYXRhbCgiZXhwZWN0ZWQgZmFzdCByZXRyYW5zbWl0IGFmdGVyIDMgZHVwIEFDS3MiKQoJfQp9CgovLyBUZXN0QkJSQmFzaWMgdmVyaWZpZXMgQkJSIGNvbnRyb2xsZXIgYmFzaWMgb3BlcmF0aW9uLgpmdW5jIFRlc3RCQlJCYXNpYyh0ICp0ZXN0aW5nLlQpIHsKCWN0bCA6PSBOZXdCQlJDb250cm9sbGVyKDEzNTApCglpZiBjdGwuQ29uZ2VzdGlvbldpbmRvdygpIDw9IDAgewoJCXQuRmF0YWwoImNvbmdlc3Rpb24gd2luZG93IHNob3VsZCBiZSBwb3NpdGl2ZSIpCgl9CgkvLyBJbml0aWFsIHdpbmRvdzogMTAgcGFja2V0cyAqIDEzNTAgYnl0ZXMuCglpZiBnb3QgOj0gY3RsLkNvbmdlc3Rpb25XaW5kb3coKTsgZ290ICE9IDEwKjEzNTAgewoJCXQuRmF0YWxmKCJpbml0aWFsIGN3bmQgPSAlZCwgd2FudCAlZCIsIGdvdCwgMTAqMTM1MCkKCX0KCS8vIFBhY2luZyByYXRlIHNob3VsZCBiZSBwb3NpdGl2ZS4KCWlmIGN0bC5QYWNpbmdSYXRlKCkgPD0gMCB7CgkJdC5GYXRhbCgicGFjaW5nIHJhdGUgc2hvdWxkIGJlIHBvc2l0aXZlIikKCX0KCS8vIENhblNlbmQgd2l0aCBlbXB0eSBmbGlnaHQuCglpZiAhY3RsLkNhblNlbmQoMCkgewoJCXQuRmF0YWwoInNob3VsZCBiZSBhYmxlIHRvIHNlbmQgd2l0aCBlbXB0eSBmbGlnaHQiKQoJfQoJLy8gU2ltdWxhdGUgc2VuZGluZyBhbmQgYWNraW5nLgoJY3RsLk9uUGFja2V0U2VudCgwLCAxMzUwLCAwKQoJY3RsLk9uUGFja2V0QWNrZWQoMCwgMTM1MCwgMCwgNTAqdGltZS5NaWxsaXNlY29uZCkKCWlmIGN0bC5SVFRTdGF0cygpLlNtb290aGVkUlRUKCkgIT0gNTAqdGltZS5NaWxsaXNlY29uZCB7CgkJdC5GYXRhbGYoInNtb290aGVkIFJUVCA9ICV2LCB3YW50IDUwbXMiLCBjdGwuUlRUU3RhdHMoKS5TbW9vdGhlZFJUVCgpKQoJfQp9CgovLyBUZXN0UGFjZXJCYXNpYyB2ZXJpZmllcyBwYWNpbmcgZGVsYXlzLgpmdW5jIFRlc3RQYWNlckJhc2ljKHQgKnRlc3RpbmcuVCkgewoJcCA6PSBOZXdVRFBQYWNlcigxMDAwKSAvLyAxMDAwIGJ5dGVzL3NlYwoJLy8gRmlyc3QgcGFja2V0OiBubyBkZWxheSAobmV4dFNlbmRUaW1lIHN0YXJ0cyBhdCBub3cpLgoJaWYgZCA6PSBwLkRlbGF5KCk7IGQgPiAxMCp0aW1lLk1pbGxpc2Vjb25kIHsKCQl0LkZhdGFsZigiZmlyc3QgcGFja2V0IGRlbGF5ID0gJXYsIHdhbnQgfjAiLCBkKQoJfQoJcC5QYWNrZXRTZW50KDEwMDApIC8vIDEwMDAgYnl0ZXMgYXQgMTAwMCBCL3MgPSAxIHNlY29uZAoJaWYgZCA6PSBwLkRlbGF5KCk7IGQgPCA5MDAqdGltZS5NaWxsaXNlY29uZCB8fCBkID4gMTEwMCp0aW1lLk1pbGxpc2Vjb25kIHsKCQl0LkZhdGFsZigiZGVsYXkgYWZ0ZXIgMTAwMEIgPSAldiwgd2FudCB+MXMiLCBkKQoJfQp9CgovLyBUZXN0U3RyZWFtRmxvd0NvbnRyb2wgdmVyaWZpZXMgd2luZG93IGFjY291bnRpbmcuCmZ1bmMgVGVzdFN0cmVhbUZsb3dDb250cm9sKHQgKnRlc3RpbmcuVCkgewoJZmMgOj0gTmV3U3RyZWFtRmxvd0NvbnRyb2woKQoJaWYgZ290IDo9IGZjLkNhblNlbmQoMTAwMCk7IGdvdCAhPSAxMDAwIHsKCQl0LkZhdGFsZigiQ2FuU2VuZCA9ICVkLCB3YW50IDEwMDAiLCBnb3QpCgl9CglmYy5TZW50KDEwMDApCglpZiBnb3QgOj0gZmMuQ2FuU2VuZChVRFBTdHJlYW1XaW5kb3dJbml0aWFsKTsgZ290ICE9IFVEUFN0cmVhbVdpbmRvd0luaXRpYWwtMTAwMCB7CgkJdC5GYXRhbGYoIkNhblNlbmQgYWZ0ZXIgc2VudCA9ICVkIiwgZ290KQoJfQoJLy8gUmVjZWl2ZSBoYWxmIHdpbmRvdyDihpIgc2hvdWxkIHRyaWdnZXIgV0lORE9XX1VQREFURS4KCWhhbGYgOj0gdWludDY0KFVEUFN0cmVhbVdpbmRvd0luaXRpYWwgLyAyKQoJaWYgIWZjLlJlY2VpdmVkKGhhbGYpIHsKCQl0LkZhdGFsKCJzaG91bGQgdHJpZ2dlciBXSU5ET1dfVVBEQVRFIGF0IGhhbGYgd2luZG93IikKCX0KCW5ld1dpbiA6PSBmYy5XaW5kb3dVcGRhdGUoKQoJaWYgbmV3V2luICE9IGhhbGYrVURQU3RyZWFtV2luZG93SW5pdGlhbCB7CgkJdC5GYXRhbGYoIm5ldyB3aW5kb3cgPSAlZCIsIG5ld1dpbikKCX0KfQo=
+package mistcore
+
+import (
+	"testing"
+	"time"
+)
+
+// TestHeaderProtectRoundTrip verifies mask apply/remove round-trip.
+func TestHeaderProtectRoundTrip(t *testing.T) {
+	var hpKey [32]byte
+	for i := range hpKey {
+		hpKey[i] = byte(i * 7)
+	}
+	var dcid [8]byte
+	for i := range dcid {
+		dcid[i] = byte(i + 1)
+	}
+
+	// Build a header, apply protection, then remove.
+	orig := BuildShortHeader(dcid, 42, false)
+	// Fake ciphertext (need 16 bytes for sample).
+	ciphertext := make([]byte, 32)
+	for i := range ciphertext {
+		ciphertext[i] = byte(i * 3)
+	}
+	sample := ciphertext[:16]
+
+	masked := make([]byte, len(orig))
+	copy(masked, orig[:])
+	if err := ApplyHeaderProtection(masked, hpKey, sample); err != nil {
+		t.Fatalf("apply: %v", err)
+	}
+	// Masked header should differ (packet number masked).
+	if masked[9] == orig[9] && masked[10] == orig[10] && masked[11] == orig[11] && masked[12] == orig[12] {
+		t.Fatal("header protection did not change packet number")
+	}
+	// Spin bit (bit 5) should be unchanged.
+	if (masked[0]&0x20) != (orig[0]&0x20) {
+		t.Fatal("spin bit was masked (should stay)")
+	}
+	// Remove protection.
+	unmasked := append([]byte(nil), masked...)
+	if err := RemoveHeaderProtection(unmasked, hpKey, sample); err != nil {
+		t.Fatalf("remove: %v", err)
+	}
+	for i := range orig {
+		if unmasked[i] != orig[i] {
+			t.Fatalf("round-trip mismatch at byte %d", i)
+		}
+	}
+}
+
+// TestHeaderProtectSampleRequires16Bytes verifies sample length check.
+func TestHeaderProtectSampleRequires16Bytes(t *testing.T) {
+	var hpKey [32]byte
+	hdr := make([]byte, QUICShortHeaderLen)
+	short := make([]byte, 10) // too short
+	if err := ApplyHeaderProtection(hdr, hpKey, short); err == nil {
+		t.Fatal("expected error for short sample")
+	}
+}
+
+// TestSessionSealOpenWithProtection verifies end-to-end with header protection.
+func TestSessionSealOpenWithProtection(t *testing.T) {
+	var sid [16]byte
+	var kC2S, kS2C [32]byte
+	for i := range sid {
+		sid[i] = byte(i)
+	}
+	for i := range kC2S {
+		kC2S[i] = byte(i + 10)
+		kS2C[i] = byte(i + 20)
+	}
+	sess := NewUDPSession(sid, kC2S, kS2C, nil, nil)
+
+	// Seal a packet.
+	ping := EncodeUDPFrame(UDPFramePing, 0, []byte("hello"))
+	datagram, err := sess.sealPacketTracked(DirC2S, [][]byte{ping})
+	if err != nil {
+		t.Fatalf("seal: %v", err)
+	}
+	// The packet number in the datagram should be masked (not 0).
+	// First packet: real number 0, masked should differ (unless mask happens to be 0).
+	// We can't assert inequality reliably, but we can verify OpenPacket works.
+
+	// Open it back.
+	frames, pktNum, err := sess.OpenPacket(DirC2S, datagram)
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	if pktNum != 0 {
+		t.Fatalf("expected packet 0, got %d", pktNum)
+	}
+	if len(frames) != 1 || frames[0].Type != UDPFramePing {
+		t.Fatalf("unexpected frames: %+v", frames)
+	}
+}
+
+// TestSlidingWindowBasic verifies mark/duplicate detection.
+func TestSlidingWindowBasic(t *testing.T) {
+	w := NewSlidingWindow()
+	if !w.Mark(0) {
+		t.Fatal("first mark(0) should be new")
+	}
+	if w.Mark(0) {
+		t.Fatal("second mark(0) should be duplicate")
+	}
+	if !w.Mark(5) {
+		t.Fatal("mark(5) should be new")
+	}
+	if w.Largest() != 5 {
+		t.Fatalf("largest = %d, want 5", w.Largest())
+	}
+	ranges := w.Ranges(8)
+	if len(ranges) != 2 {
+		t.Fatalf("expected 2 ranges, got %d: %v", len(ranges), ranges)
+	}
+	// Ranges ordered high to low: [5,5], [0,0].
+	if ranges[0] != [2]uint32{5, 5} || ranges[1] != [2]uint32{0, 0} {
+		t.Fatalf("unexpected ranges: %v", ranges)
+	}
+}
+
+// TestSlidingWindowContiguous verifies single range for contiguous packets.
+func TestSlidingWindowContiguous(t *testing.T) {
+	w := NewSlidingWindow()
+	for i := uint32(0); i < 10; i++ {
+		w.Mark(i)
+	}
+	ranges := w.Ranges(8)
+	if len(ranges) != 1 {
+		t.Fatalf("expected 1 range, got %v", ranges)
+	}
+	if ranges[0] != [2]uint32{0, 9} {
+		t.Fatalf("unexpected range: %v", ranges[0])
+	}
+}
+
+// TestReliabilityAckFlow verifies sent→acked flow.
+func TestReliabilityAckFlow(t *testing.T) {
+	bbrCtl := NewBBRController(1350)
+	rel := NewUDPReliability(bbrCtl)
+
+	frames := [][]byte{EncodeUDPFrame(UDPFramePing, 0, nil)}
+	rel.PacketSent(0, frames, 100)
+	rel.PacketSent(1, frames, 100)
+	if rel.BytesInFlight() != 200 {
+		t.Fatalf("inflight = %d, want 200", rel.BytesInFlight())
+	}
+
+	// Ack packet 0.
+	if !rel.PacketAcked(0, 50*time.Millisecond) {
+		t.Fatal("packet 0 should be newly acked")
+	}
+	if rel.BytesInFlight() != 100 {
+		t.Fatalf("inflight = %d, want 100", rel.BytesInFlight())
+	}
+	// Duplicate ack should return false.
+	if rel.PacketAcked(0, 50*time.Millisecond) {
+		t.Fatal("duplicate ack should return false")
+	}
+}
+
+// TestReliabilityFastRetransmit verifies 3-dup-ACK triggers retransmit.
+func TestReliabilityFastRetransmit(t *testing.T) {
+	bbrCtl := NewBBRController(1350)
+	rel := NewUDPReliability(bbrCtl)
+
+	var retransmitted [][]byte
+	rel.OnRetransmit = func(frames [][]byte) error {
+		retransmitted = frames
+		return nil
+	}
+
+	frames := [][]byte{EncodeUDPFrame(UDPFramePing, 0, nil)}
+	rel.PacketSent(0, frames, 100) // will be "lost"
+	rel.PacketSent(1, frames, 100)
+	rel.PacketSent(2, frames, 100)
+	rel.PacketSent(3, frames, 100)
+
+	// Ack 1,2,3 without acking 0 → 3 dup ACKs (largest stays at 3).
+	// First ACK advances largest to 1.
+	rel.ProcessAck(1, 0, [][2]uint32{{1, 1}})
+	// These don't advance largest beyond... actually largest goes 1→2→3.
+	// To simulate dup ACKs, we ack the same largest repeatedly.
+	// Simpler: ack packets 1,2,3 in a way that largest stays.
+	// Let's do: ack {2,2}, {3,3} etc. Actually ProcessAck with largest=3
+	// three times counts as dup.
+	rel.ProcessAck(3, 0, [][2]uint32{{1, 3}})
+	rel.ProcessAck(3, 0, [][2]uint32{{1, 3}})
+	rel.ProcessAck(3, 0, [][2]uint32{{1, 3}})
+	rel.ProcessAck(3, 0, [][2]uint32{{1, 3}})
+	// Fourth dup (3rd counted) should trigger fast retransmit of packet 0.
+	if len(retransmitted) == 0 {
+		t.Fatal("expected fast retransmit after 3 dup ACKs")
+	}
+}
+
+// TestBBRBasic verifies BBR controller basic operation.
+func TestBBRBasic(t *testing.T) {
+	ctl := NewBBRController(1350)
+	if ctl.CongestionWindow() <= 0 {
+		t.Fatal("congestion window should be positive")
+	}
+	// Initial window: 10 packets * 1350 bytes.
+	if got := ctl.CongestionWindow(); got != 10*1350 {
+		t.Fatalf("initial cwnd = %d, want %d", got, 10*1350)
+	}
+	// Pacing rate should be positive.
+	if ctl.PacingRate() <= 0 {
+		t.Fatal("pacing rate should be positive")
+	}
+	// CanSend with empty flight.
+	if !ctl.CanSend(0) {
+		t.Fatal("should be able to send with empty flight")
+	}
+	// Simulate sending and acking.
+	ctl.OnPacketSent(0, 1350, 0)
+	ctl.OnPacketAcked(0, 1350, 0, 50*time.Millisecond)
+	if ctl.RTTStats().SmoothedRTT() != 50*time.Millisecond {
+		t.Fatalf("smoothed RTT = %v, want 50ms", ctl.RTTStats().SmoothedRTT())
+	}
+}
+
+// TestPacerBasic verifies pacing delays.
+func TestPacerBasic(t *testing.T) {
+	p := NewUDPPacer(1000) // 1000 bytes/sec
+	// First packet: no delay (nextSendTime starts at now).
+	if d := p.Delay(); d > 10*time.Millisecond {
+		t.Fatalf("first packet delay = %v, want ~0", d)
+	}
+	p.PacketSent(1000) // 1000 bytes at 1000 B/s = 1 second
+	if d := p.Delay(); d < 900*time.Millisecond || d > 1100*time.Millisecond {
+		t.Fatalf("delay after 1000B = %v, want ~1s", d)
+	}
+}
+
+// TestStreamFlowControl verifies window accounting.
+func TestStreamFlowControl(t *testing.T) {
+	fc := NewStreamFlowControl()
+	if got := fc.CanSend(1000); got != 1000 {
+		t.Fatalf("CanSend = %d, want 1000", got)
+	}
+	fc.Sent(1000)
+	if got := fc.CanSend(UDPStreamWindowInitial); got != UDPStreamWindowInitial-1000 {
+		t.Fatalf("CanSend after sent = %d", got)
+	}
+	// Receive half window → should trigger WINDOW_UPDATE.
+	half := uint64(UDPStreamWindowInitial / 2)
+	if !fc.Received(half) {
+		t.Fatal("should trigger WINDOW_UPDATE at half window")
+	}
+	newWin := fc.WindowUpdate()
+	if newWin != half+UDPStreamWindowInitial {
+		t.Fatalf("new window = %d", newWin)
+	}
+}

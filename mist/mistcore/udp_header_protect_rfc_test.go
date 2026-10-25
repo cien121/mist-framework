@@ -1,1 +1,111 @@
-cGFja2FnZSBtaXN0Y29yZQoKaW1wb3J0ICgKCSJieXRlcyIKCSJlbmNvZGluZy9iaW5hcnkiCgkiZW5jb2RpbmcvaGV4IgoJInRlc3RpbmciCikKCi8vIFJGQyA5MDAxIEFwcGVuZGl4IEEuNSB0ZXN0IHZlY3RvcnMgZm9yIENoYUNoYTIwLWJhc2VkIGhlYWRlciBwcm90ZWN0aW9uLgovLyBUaGVzZSBhcmUgdGhlIGF1dGhvcml0YXRpdmUgdmVjdG9ycyBmcm9tIHRoZSBSRkM7IGRvIG5vdCBtb2RpZnkuCi8vCi8vICAgaHAga2V5ICgzMiBieXRlcykgPSBIS0RGLUV4cGFuZC1MYWJlbChzZWNyZXQsICJxdWljIGhwIiwgIiIsIDMyKQovLyAgIHNhbXBsZSAoMTYgYnl0ZXMpID0gY2lwaGVydGV4dCB3aXRoIGZpcnN0IGJ5dGUgc2tpcHBlZAovLyAgIG1hc2sgICAoNSBieXRlcykgID0gZmlyc3QgNSBieXRlcyBvZiBDaGFDaGEyMCBrZXlzdHJlYW0KZnVuYyByZmNBNVZlY3RvcnModCAqdGVzdGluZy5UKSAoaHBLZXkgWzMyXWJ5dGUsIHNhbXBsZSBbXWJ5dGUsIHdhbnRNYXNrIFs1XWJ5dGUpIHsKCXQuSGVscGVyKCkKCWhwSGV4IDo9ICIyNWEyODJiOWU4MmYwNmYyMWY0ODg5MTdhNGZjOGYxYiIgKwoJCSI3MzU3MzY4NTYwODU5N2QwZWZjYjA3NmIwYWI3YTdhNCIKCXNhbXBsZUhleCA6PSAiNWU1Y2Q1NWM0MWY2OTA4MDU3NWQ3OTk5YzI1YTViZmIiCgltYXNrSGV4IDo9ICJhZWZlZmU3ZDAzIgoKCWhwQnl0ZXMsIGVyciA6PSBoZXguRGVjb2RlU3RyaW5nKGhwSGV4KQoJaWYgZXJyICE9IG5pbCB7CgkJdC5GYXRhbGYoImJhZCBocCBrZXkgaGV4OiAldiIsIGVycikKCX0KCWNvcHkoaHBLZXlbOl0sIGhwQnl0ZXMpCgoJc2FtcGxlLCBlcnIgPSBoZXguRGVjb2RlU3RyaW5nKHNhbXBsZUhleCkKCWlmIGVyciAhPSBuaWwgewoJCXQuRmF0YWxmKCJiYWQgc2FtcGxlIGhleDogJXYiLCBlcnIpCgl9CgltYXNrQnl0ZXMsIGVyciA6PSBoZXguRGVjb2RlU3RyaW5nKG1hc2tIZXgpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigiYmFkIG1hc2sgaGV4OiAldiIsIGVycikKCX0KCWNvcHkod2FudE1hc2tbOl0sIG1hc2tCeXRlcykKCXJldHVybiBocEtleSwgc2FtcGxlLCB3YW50TWFzawp9CgovLyBUZXN0SGVhZGVyUHJvdGVjdE1hc2tSRkM5MDAxQTUgdmVyaWZpZXMgaGVhZGVyUHJvdGVjdE1hc2sgYWdhaW5zdCB0aGUKLy8gUkZDIDkwMDEgQXBwZW5kaXggQS41IENoYUNoYTIwIHRlc3QgdmVjdG9yLgovLwovLyBUaGlzIGxvY2tzIGluIHRoZSBjb3VudGVyL25vbmNlIGRlcml2YXRpb24gdGhhdCB3YXMgY29ycmVjdGVkIGR1cmluZwovLyBkZXNpZ24gcmV2aWV3ICh0aGlyZCByb3VuZCk6Ci8vICAgY291bnRlciA9IGxpdHRsZS1lbmRpYW4gdWludDMyIG9mIHNhbXBsZVswOjRdCi8vICAgbm9uY2UgICA9IHNhbXBsZVs0OjE2XSAoMTIgYnl0ZXMpCi8vIEEgZml4ZWQgY291bnRlci9ub25jZSB3b3VsZCBtYWtlIHRoZSBtYXNrIGNvbnN0YW50IHBlciBkaXJlY3Rpb24gYW5kCi8vIHRoZSBwcm90ZWN0aW9uIGluZWZmZWN0aXZlOyB0aGlzIHRlc3Qgd291bGQgY2F0Y2ggdGhhdCByZWdyZXNzaW9uLgpmdW5jIFRlc3RIZWFkZXJQcm90ZWN0TWFza1JGQzkwMDFBNSh0ICp0ZXN0aW5nLlQpIHsKCWhwS2V5LCBzYW1wbGUsIHdhbnRNYXNrIDo9IHJmY0E1VmVjdG9ycyh0KQoKCWdvdE1hc2ssIGVyciA6PSBoZWFkZXJQcm90ZWN0TWFzayhocEtleSwgc2FtcGxlKQoJaWYgZXJyICE9IG5pbCB7CgkJdC5GYXRhbGYoImhlYWRlclByb3RlY3RNYXNrIGZhaWxlZDogJXYiLCBlcnIpCgl9CglpZiBnb3RNYXNrICE9IHdhbnRNYXNrIHsKCQl0LkZhdGFsZigibWFzayBtaXNtYXRjaDpcbiBnb3QgJXhcbndhbnQgJXgiLCBnb3RNYXNrLCB3YW50TWFzaykKCX0KfQoKLy8gVGVzdEhlYWRlclByb3RlY3RDb3VudGVyTm9uY2VEZXJpdmF0aW9uIGV4cGxpY2l0bHkgcGlucyB0aGUKLy8gY291bnRlci9ub25jZSBkZXJpdmF0aW9uIHJ1bGVzIGZyb20gUkZDIDkwMDEgwqc1LjQuNCwgaW5kZXBlbmRlbnQgb2YKLy8gdGhlIG1hc2sgZnVuY3Rpb24gaW1wbGVtZW50YXRpb24uCmZ1bmMgVGVzdEhlYWRlclByb3RlY3RDb3VudGVyTm9uY2VEZXJpdmF0aW9uKHQgKnRlc3RpbmcuVCkgewoJXywgc2FtcGxlLCBfIDo9IHJmY0E1VmVjdG9ycyh0KQoKCS8vIGNvdW50ZXIgPSBzYW1wbGVbMDo0XSBhcyBsaXR0bGUtZW5kaWFuIHVpbnQzMi4KCS8vIHNhbXBsZSBzdGFydHMgd2l0aCA1ZTVjZDU1YyAtPiAweDVjZDU1YzVlLgoJY291bnRlciA6PSBiaW5hcnkuTGl0dGxlRW5kaWFuLlVpbnQzMihzYW1wbGVbMDo0XSkKCWlmIGNvdW50ZXIgIT0gMHg1Y2Q1NWM1ZSB7CgkJdC5GYXRhbGYoImNvdW50ZXIgPSAlI3gsIHdhbnQgMHg1Y2Q1NWM1ZSIsIGNvdW50ZXIpCgl9CgoJLy8gbm9uY2UgPSBzYW1wbGVbNDoxNl0gKDEyIGJ5dGVzKS4KCW5vbmNlIDo9IHNhbXBsZVs0OjE2XQoJd2FudE5vbmNlLCBfIDo9IGhleC5EZWNvZGVTdHJpbmcoIjQxZjY5MDgwNTc1ZDc5OTljMjVhNWJmYiIpCglpZiAhYnl0ZXMuRXF1YWwobm9uY2UsIHdhbnROb25jZSkgewoJCXQuRmF0YWxmKCJub25jZSA9ICV4LCB3YW50ICV4Iiwgbm9uY2UsIHdhbnROb25jZSkKCX0KfQoKLy8gVGVzdEhlYWRlclByb3RlY3RSRkM5MDAxQTVGdWxsUGFja2V0IGFwcGxpZXMgdGhlIFJGQyBtYXNrIHRvIHRoZQovLyBSRkMncyB1bnByb3RlY3RlZCBzaG9ydCBoZWFkZXIgYW5kIGNoZWNrcyB0aGUgcHJvdGVjdGVkIHJlc3VsdC4KLy8KLy8gUkZDIEEuNTogdW5wcm90ZWN0ZWQgaGVhZGVyIDQyMDBiZmY0ICgzLWJ5dGUgcGFja2V0IG51bWJlciAwMGJmZjQpLAovLyBtYXNrIGFlZmVmZTdkMDMgLT4gcHJvdGVjdGVkIGhlYWRlciA0Y2ZlNDE4OS4KLy8gQnl0ZSAwOiAweDQyIF4gKDB4YWUgJiAweDFmKSA9IDB4NDIgXiAweDBlID0gMHg0YyAoc3BpbiBiaXQgdW50b3VjaGVkKS4KLy8gUE46IDAwYmZmNCBeIGZlZmU3ZCA9IGZlNDE4OS4KZnVuYyBUZXN0SGVhZGVyUHJvdGVjdFJGQzkwMDFBNUZ1bGxQYWNrZXQodCAqdGVzdGluZy5UKSB7CglocEtleSwgc2FtcGxlLCBfIDo9IHJmY0E1VmVjdG9ycyh0KQoKCXVucHJvdGVjdGVkLCBfIDo9IGhleC5EZWNvZGVTdHJpbmcoIjQyMDBiZmY0IikKCXByb3RlY3RlZCwgXyA6PSBoZXguRGVjb2RlU3RyaW5nKCI0Y2ZlNDE4OSIpCgoJLy8gQXBwbHkgbWFzayBtYW51YWxseSB0aGUgc2FtZSB3YXkgQXBwbHlIZWFkZXJQcm90ZWN0aW9uIGRvZXMgZm9yCgkvLyBzaG9ydCBoZWFkZXJzOiBsb3cgNSBiaXRzIG9mIGJ5dGUgMCwgdGhlbiBwYWNrZXQgbnVtYmVyIGJ5dGVzLgoJbWFzaywgZXJyIDo9IGhlYWRlclByb3RlY3RNYXNrKGhwS2V5LCBzYW1wbGUpCglpZiBlcnIgIT0gbmlsIHsKCQl0LkZhdGFsZigiaGVhZGVyUHJvdGVjdE1hc2sgZmFpbGVkOiAldiIsIGVycikKCX0KCWdvdCA6PSBtYWtlKFtdYnl0ZSwgNCkKCWNvcHkoZ290LCB1bnByb3RlY3RlZCkKCWdvdFswXSBePSBtYXNrWzBdICYgMHgxRgoJZm9yIGkgOj0gMDsgaSA8IDM7IGkrKyB7CgkJZ290WzEraV0gXj0gbWFza1sxK2ldCgl9CglpZiAhYnl0ZXMuRXF1YWwoZ290LCBwcm90ZWN0ZWQpIHsKCQl0LkZhdGFsZigicHJvdGVjdGVkIGhlYWRlciBtaXNtYXRjaDpcbiBnb3QgJXhcbndhbnQgJXgiLCBnb3QsIHByb3RlY3RlZCkKCX0KfQo=
+package mistcore
+
+import (
+	"bytes"
+	"encoding/binary"
+	"encoding/hex"
+	"testing"
+)
+
+// RFC 9001 Appendix A.5 test vectors for ChaCha20-based header protection.
+// These are the authoritative vectors from the RFC; do not modify.
+//
+//   hp key (32 bytes) = HKDF-Expand-Label(secret, "quic hp", "", 32)
+//   sample (16 bytes) = ciphertext with first byte skipped
+//   mask   (5 bytes)  = first 5 bytes of ChaCha20 keystream
+func rfcA5Vectors(t *testing.T) (hpKey [32]byte, sample []byte, wantMask [5]byte) {
+	t.Helper()
+	hpHex := "25a282b9e82f06f21f488917a4fc8f1b" +
+		"73573685608597d0efcb076b0ab7a7a4"
+	sampleHex := "5e5cd55c41f69080575d7999c25a5bfb"
+	maskHex := "aefefe7d03"
+
+	hpBytes, err := hex.DecodeString(hpHex)
+	if err != nil {
+		t.Fatalf("bad hp key hex: %v", err)
+	}
+	copy(hpKey[:], hpBytes)
+
+	sample, err = hex.DecodeString(sampleHex)
+	if err != nil {
+		t.Fatalf("bad sample hex: %v", err)
+	}
+	maskBytes, err := hex.DecodeString(maskHex)
+	if err != nil {
+		t.Fatalf("bad mask hex: %v", err)
+	}
+	copy(wantMask[:], maskBytes)
+	return hpKey, sample, wantMask
+}
+
+// TestHeaderProtectMaskRFC9001A5 verifies headerProtectMask against the
+// RFC 9001 Appendix A.5 ChaCha20 test vector.
+//
+// This locks in the counter/nonce derivation that was corrected during
+// design review (third round):
+//   counter = little-endian uint32 of sample[0:4]
+//   nonce   = sample[4:16] (12 bytes)
+// A fixed counter/nonce would make the mask constant per direction and
+// the protection ineffective; this test would catch that regression.
+func TestHeaderProtectMaskRFC9001A5(t *testing.T) {
+	hpKey, sample, wantMask := rfcA5Vectors(t)
+
+	gotMask, err := headerProtectMask(hpKey, sample)
+	if err != nil {
+		t.Fatalf("headerProtectMask failed: %v", err)
+	}
+	if gotMask != wantMask {
+		t.Fatalf("mask mismatch:\n got %x\nwant %x", gotMask, wantMask)
+	}
+}
+
+// TestHeaderProtectCounterNonceDerivation explicitly pins the
+// counter/nonce derivation rules from RFC 9001 §5.4.4, independent of
+// the mask function implementation.
+func TestHeaderProtectCounterNonceDerivation(t *testing.T) {
+	_, sample, _ := rfcA5Vectors(t)
+
+	// counter = sample[0:4] as little-endian uint32.
+	// sample starts with 5e5cd55c -> 0x5cd55c5e.
+	counter := binary.LittleEndian.Uint32(sample[0:4])
+	if counter != 0x5cd55c5e {
+		t.Fatalf("counter = %#x, want 0x5cd55c5e", counter)
+	}
+
+	// nonce = sample[4:16] (12 bytes).
+	nonce := sample[4:16]
+	wantNonce, _ := hex.DecodeString("41f69080575d7999c25a5bfb")
+	if !bytes.Equal(nonce, wantNonce) {
+		t.Fatalf("nonce = %x, want %x", nonce, wantNonce)
+	}
+}
+
+// TestHeaderProtectRFC9001A5FullPacket applies the RFC mask to the
+// RFC's unprotected short header and checks the protected result.
+//
+// RFC A.5: unprotected header 4200bff4 (3-byte packet number 00bff4),
+// mask aefefe7d03 -> protected header 4cfe4189.
+// Byte 0: 0x42 ^ (0xae & 0x1f) = 0x42 ^ 0x0e = 0x4c (spin bit untouched).
+// PN: 00bff4 ^ fefe7d = fe4189.
+func TestHeaderProtectRFC9001A5FullPacket(t *testing.T) {
+	hpKey, sample, _ := rfcA5Vectors(t)
+
+	unprotected, _ := hex.DecodeString("4200bff4")
+	protected, _ := hex.DecodeString("4cfe4189")
+
+	// Apply mask manually the same way ApplyHeaderProtection does for
+	// short headers: low 5 bits of byte 0, then packet number bytes.
+	mask, err := headerProtectMask(hpKey, sample)
+	if err != nil {
+		t.Fatalf("headerProtectMask failed: %v", err)
+	}
+	got := make([]byte, 4)
+	copy(got, unprotected)
+	got[0] ^= mask[0] & 0x1F
+	for i := 0; i < 3; i++ {
+		got[1+i] ^= mask[1+i]
+	}
+	if !bytes.Equal(got, protected) {
+		t.Fatalf("protected header mismatch:\n got %x\nwant %x", got, protected)
+	}
+}

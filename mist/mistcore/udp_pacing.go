@@ -1,1 +1,79 @@
-Ly8gUGFja2FnZSBtaXN0Y29yZTogTWlzdCBVRFAgcGFja2V0IHBhY2luZy4KLy8KLy8gSW1wbGVtZW50cyBwYWNlZCBzZW5kaW5nIHBlciBVRFAtREVTSUdOLm1kIMKnNy4zICh1c2VyIGV4cGxpY2l0bHkgcmVxdWVzdGVkOgovLyAicmVmZXJlbmNlIEh5MidzIHBhY2tldCBzZW5kaW5nIHNwZWVkIikuCi8vCi8vIFRoZSBCQlIgY29udHJvbGxlciAodWRwX2Jici5nbykgaGFzIGJ1aWx0LWluIHBhY2luZyB2aWEgUGFjaW5nUmF0ZSgpLgovLyBUaGlzIGZpbGUgcHJvdmlkZXMgYSBzdGFuZGFsb25lIHBhY2VyIGZvciB1c2UgYnkgdGhlIHJlbGlhYmlsaXR5IGxheWVyCi8vIHdoZW4gQkJSIGlzIG5vdCB5ZXQgYWN0aXZlIChlLmcuLCBiZWZvcmUgZmlyc3QgUlRUIHNhbXBsZSksIG9yIGZvcgovLyB0ZXN0aW5nLiBUaGUgcGFjZXIgZW5mb3JjZXMgdW5pZm9ybSBpbnRlci1wYWNrZXQgZ2FwczoKLy8KLy8gICBpbnRlcnZhbCA9IHBhY2tldF9zaXplIC8gcGFjaW5nX3JhdGUKLy8KLy8gcmF0aGVyIHRoYW4gYnVyc3R5IHNlbmRzLgpwYWNrYWdlIG1pc3Rjb3JlCgppbXBvcnQgKAoJInN5bmMiCgkidGltZSIKKQoKLy8gVURQUGFjZXIgZW5mb3JjZXMgcGFjZWQgcGFja2V0IHRyYW5zbWlzc2lvbi4KdHlwZSBVRFBQYWNlciBzdHJ1Y3QgewoJbXUgc3luYy5NdXRleAoJLy8gcGFjaW5nUmF0ZSBpcyBieXRlcyBwZXIgc2Vjb25kLgoJcGFjaW5nUmF0ZSBmbG9hdDY0CgkvLyBuZXh0U2VuZFRpbWUgaXMgdGhlIGVhcmxpZXN0IHRpbWUgdGhlIG5leHQgcGFja2V0IG1heSBnbyBvdXQuCgluZXh0U2VuZFRpbWUgdGltZS5UaW1lCn0KCi8vIE5ld1VEUFBhY2VyIGNyZWF0ZXMgYSBwYWNlciB3aXRoIHRoZSBnaXZlbiBpbml0aWFsIHJhdGUgKGJ5dGVzL3NlYykuCi8vIElmIHJhdGUgPD0gMCwgcGFjaW5nIGlzIGRpc2FibGVkIChzZW5kcyBpbW1lZGlhdGVseSkuCmZ1bmMgTmV3VURQUGFjZXIoaW5pdGlhbFJhdGUgZmxvYXQ2NCkgKlVEUFBhY2VyIHsKCXJldHVybiAmVURQUGFjZXJ7CgkJcGFjaW5nUmF0ZTogICBpbml0aWFsUmF0ZSwKCQluZXh0U2VuZFRpbWU6IHRpbWUuTm93KCksCgl9Cn0KCi8vIFNldFJhdGUgdXBkYXRlcyB0aGUgcGFjaW5nIHJhdGUgKGJ5dGVzL3NlYyksIHR5cGljYWxseSBmcm9tIEJCUi5QYWNpbmdSYXRlKCkuCmZ1bmMgKHAgKlVEUFBhY2VyKSBTZXRSYXRlKGJ5dGVzUGVyU2VjIGZsb2F0NjQpIHsKCXAubXUuTG9jaygpCglkZWZlciBwLm11LlVubG9jaygpCglwLnBhY2luZ1JhdGUgPSBieXRlc1BlclNlYwp9CgovLyBQYWNrZXRTZW50IHJlY29yZHMgdGhhdCBhIHBhY2tldCBvZiB0aGUgZ2l2ZW4gc2l6ZSB3YXMgc2VudCwKLy8gYWR2YW5jaW5nIHRoZSBuZXh0IGFsbG93ZWQgc2VuZCB0aW1lLgpmdW5jIChwICpVRFBQYWNlcikgUGFja2V0U2VudChzaXplIGludCkgewoJcC5tdS5Mb2NrKCkKCWRlZmVyIHAubXUuVW5sb2NrKCkKCWlmIHAucGFjaW5nUmF0ZSA8PSAwIHsKCQlyZXR1cm4KCX0KCWludGVydmFsIDo9IHRpbWUuRHVyYXRpb24oZmxvYXQ2NChzaXplKSAvIHAucGFjaW5nUmF0ZSAqIGZsb2F0NjQodGltZS5TZWNvbmQpKQoJbm93IDo9IHRpbWUuTm93KCkKCWlmIHAubmV4dFNlbmRUaW1lLkJlZm9yZShub3cpIHsKCQlwLm5leHRTZW5kVGltZSA9IG5vdwoJfQoJcC5uZXh0U2VuZFRpbWUgPSBwLm5leHRTZW5kVGltZS5BZGQoaW50ZXJ2YWwpCn0KCi8vIERlbGF5IHJldHVybnMgaG93IGxvbmcgdG8gd2FpdCBiZWZvcmUgc2VuZGluZyB0aGUgbmV4dCBwYWNrZXQuCi8vIFJldHVybnMgMCBpZiBzZW5kaW5nIGlzIGFsbG93ZWQgaW1tZWRpYXRlbHkuCmZ1bmMgKHAgKlVEUFBhY2VyKSBEZWxheSgpIHRpbWUuRHVyYXRpb24gewoJcC5tdS5Mb2NrKCkKCWRlZmVyIHAubXUuVW5sb2NrKCkKCWQgOj0gdGltZS5VbnRpbChwLm5leHRTZW5kVGltZSkKCWlmIGQgPCAwIHsKCQlyZXR1cm4gMAoJfQoJcmV0dXJuIGQKfQoKLy8gV2FpdCBibG9ja3MgdW50aWwgcGFjaW5nIGFsbG93cyB0aGUgbmV4dCBzZW5kLgpmdW5jIChwICpVRFBQYWNlcikgV2FpdCgpIHsKCWlmIGQgOj0gcC5EZWxheSgpOyBkID4gMCB7CgkJdGltZS5TbGVlcChkKQoJfQp9Cg==
+// Package mistcore: Mist UDP packet pacing.
+//
+// Implements paced sending per UDP-DESIGN.md §7.3 (user explicitly requested:
+// "reference Hy2's packet sending speed").
+//
+// The BBR controller (udp_bbr.go) has built-in pacing via PacingRate().
+// This file provides a standalone pacer for use by the reliability layer
+// when BBR is not yet active (e.g., before first RTT sample), or for
+// testing. The pacer enforces uniform inter-packet gaps:
+//
+//   interval = packet_size / pacing_rate
+//
+// rather than bursty sends.
+package mistcore
+
+import (
+	"sync"
+	"time"
+)
+
+// UDPPacer enforces paced packet transmission.
+type UDPPacer struct {
+	mu sync.Mutex
+	// pacingRate is bytes per second.
+	pacingRate float64
+	// nextSendTime is the earliest time the next packet may go out.
+	nextSendTime time.Time
+}
+
+// NewUDPPacer creates a pacer with the given initial rate (bytes/sec).
+// If rate <= 0, pacing is disabled (sends immediately).
+func NewUDPPacer(initialRate float64) *UDPPacer {
+	return &UDPPacer{
+		pacingRate:   initialRate,
+		nextSendTime: time.Now(),
+	}
+}
+
+// SetRate updates the pacing rate (bytes/sec), typically from BBR.PacingRate().
+func (p *UDPPacer) SetRate(bytesPerSec float64) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	p.pacingRate = bytesPerSec
+}
+
+// PacketSent records that a packet of the given size was sent,
+// advancing the next allowed send time.
+func (p *UDPPacer) PacketSent(size int) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	if p.pacingRate <= 0 {
+		return
+	}
+	interval := time.Duration(float64(size) / p.pacingRate * float64(time.Second))
+	now := time.Now()
+	if p.nextSendTime.Before(now) {
+		p.nextSendTime = now
+	}
+	p.nextSendTime = p.nextSendTime.Add(interval)
+}
+
+// Delay returns how long to wait before sending the next packet.
+// Returns 0 if sending is allowed immediately.
+func (p *UDPPacer) Delay() time.Duration {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	d := time.Until(p.nextSendTime)
+	if d < 0 {
+		return 0
+	}
+	return d
+}
+
+// Wait blocks until pacing allows the next send.
+func (p *UDPPacer) Wait() {
+	if d := p.Delay(); d > 0 {
+		time.Sleep(d)
+	}
+}
