@@ -400,7 +400,7 @@ func (c *MistUDPClient) dispatch(f mistcore.UDPFrame) {
 		h := c.dgH
 		c.mu.Unlock()
 		if h != nil {
-			h(fmt.Sprintf("%s:%d", net.IP(addr).String(), port), data)
+			h(datagramSourceAddr(addr, port), data)
 		}
 	case mistcore.UDPFramePing:
 		// Reply PONG (untracked: PONGs are never ACKed).
@@ -416,6 +416,17 @@ func (c *MistUDPClient) dispatch(f mistcore.UDPFrame) {
 			}
 		}
 	}
+}
+
+// datagramSourceAddr formats a relay response source address for the
+// engine's onDatagram, which parses it with net.SplitHostPort.
+// net.JoinHostPort brackets IPv6 literals; the previous
+// fmt.Sprintf("%s:%d") produced unbracketed IPv6 like
+// "2001:4860:4860::8888:53", which SplitHostPort rejects with
+// "too many colons" — every IPv6 datagram response was dropped
+// before it could reach the TUN.
+func datagramSourceAddr(addr []byte, port uint16) string {
+	return net.JoinHostPort(net.IP(addr).String(), fmt.Sprint(port))
 }
 
 // OnDatagram sets the handler for inbound relay datagrams.

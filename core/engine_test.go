@@ -407,3 +407,184 @@ func TestEngineTCPChunking(t *testing.T) {
 		t.Fatalf("unexpected tun write errors: %d", e.Stats().TunWriteErrors)
 	}
 }
+
+// TestDatagramSourceAddr locks the dispatch -> onDatagram address
+// contract: the relay response source address must survive
+// net.SplitHostPort, for v4 and v6 alike. The old
+// fmt.Sprintf("%s:%d") formatting produced unbracketed IPv6
+// ("2001:4860:4860::8888:53"), which SplitHostPort rejects with
+// "too many colons" and drops the response before it reaches TUN.
+func TestDatagramSourceAddr(t *testing.T) {
+	v6 := datagramSourceAddr(net.ParseIP("2001:4860:4860::8888"), 53)
+	if v6 != "[2001:4860:4860::8888]:53" {
+		t.Fatalf("bad v6 source addr: %q", v6)
+	}
+	if _, _, err := net.SplitHostPort(v6); err != nil {
+		t.Fatalf("SplitHostPort rejects v6 source addr %q: %v", v6, err)
+	}
+	v4 := datagramSourceAddr(net.ParseIP("8.8.8.8"), 53)
+	if v4 != "8.8.8.8:53" {
+		t.Fatalf("bad v4 source addr: %q", v4)
+	}
+	if _, _, err := net.SplitHostPort(v4); err != nil {
+		t.Fatalf("SplitHostPort rejects v4 source addr %q: %v", v4, err)
+	}
+}
+
+// sendUDPQuery injects one app UDP packet into the engine's TUN.
+func sendUDPQuery(t *testing.T, tun *mockTUN, appIP, dstIP net.IP, srcPort, dstPort uint16, payload []byte) {
+	t.Helper()
+	seg := BuildUDP(appIP, dstIP, srcPort, dstPort, payload)
+	if appIP.To4() != nil {
+		tun.readCh <- BuildIPv4(appIP, dstIP, ProtoUDP, 1, seg)
+	} else {
+		tun.readCh <- BuildIPv6(appIP, dstIP, ProtoUDP, seg)
+	}
+}
+
+// collectUDPReturns reads n return packets from the TUN and maps
+// each payload to the destination (app) port it was delivered to.
+func collectUDPReturns(t *testing.T, tun *mockTUN, n int) map[string]uint16 {
+	t.Helper()
+	out := make(map[string]uint16)
+	deadline := time.Now().Add(3 * time.Second)
+	for len(out) < n {
+		select {
+		case pkt := <-tun.writeCh:
+			p, err := ParseIP(pkt)
+			if err != nil {
+				t.Fatalf("parse return: %v", err)
+			}
+			dg, err := ParseUDP(p.Payload)
+			if err != nil {
+				t.Fatalf("parse return udp: %v", err)
+			}
+			out[string(dg.Payload)] = dg.DstPort
+		case <-time.After(time.Until(deadline)):
+			t.Fatalf("only %d/%d returns", len(out), n)
+		}
+	}
+	return out
+}
+
+func waitDatagrams(t *testing.T, cli *mockClient, n int) {
+	t.Helper()
+	waitFor(t, "datagram forwards", func() bool {
+		cli.mu.Lock()
+		defer cli.mu.Unlock()
+		return len(cli.dgSent) == n
+	})
+}
+
+// TestEngineDNSConcurrentV4: two apps query the same DNS server
+// concurrently. Responses must land on the querying app's own source
+// port, matched by DNS transaction ID — not both on the last
+// querier's port, which the old dst-only return map did.
+func TestEngineDNSConcurrentV4(t *testing.T) {
+	tun := newMockTUN()
+	cli := &mockClient{}
+	e := NewEngine(EngineConfig{TUN: tun, Client: cli})
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go e.Run(ctx)
+
+	appIP := net.ParseIP("10.0.0.2")
+	dnsIP := net.ParseIP("8.8.8.8")
+	q1 := append([]byte{0x12, 0x34}, []byte("query-one")...)
+	q2 := append([]byte{0xab, 0xcd}, []byte("query-two")...)
+	sendUDPQuery(t, tun, appIP, dnsIP, 12345, 53, q1)
+	sendUDPQuery(t, tun, appIP, dnsIP, 23456, 53, q2)
+	waitDatagrams(t, cli, 2)
+
+	// Responses in reverse order: the second query's answer first.
+	r2 := append([]byte{0xab, 0xcd}, []byte("resp-two")...)
+	r1 := append([]byte{0x12, 0x34}, []byte("resp-one")...)
+	cli.emitDatagram("8.8.8.8:53", r2)
+	cli.emitDatagram("8.8.8.8:53", r1)
+
+	got := collectUDPReturns(t, tun, 2)
+	if got[string(r2)] != 23456 {
+		t.Fatalf("resp-two delivered to port %d, want 23456", got[string(r2)])
+	}
+	if got[string(r1)] != 12345 {
+		t.Fatalf("resp-one delivered to port %d, want 12345 (cross-wired)", got[string(r1)])
+	}
+}
+
+// TestEngineDNSConcurrentV6: same disambiguation over IPv6, with
+// the response source address in the exact form the fixed dispatch
+// emits (bracketed via datagramSourceAddr).
+func TestEngineDNSConcurrentV6(t *testing.T) {
+	tun := newMockTUN()
+	cli := &mockClient{}
+	e := NewEngine(EngineConfig{TUN: tun, Client: cli})
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go e.Run(ctx)
+
+	appIP := net.ParseIP("fd00::2")
+	dnsIP := net.ParseIP("2001:4860:4860::8888")
+	q1 := append([]byte{0x00, 0x01}, []byte("v6-query-one")...)
+	q2 := append([]byte{0x00, 0x02}, []byte("v6-query-two")...)
+	sendUDPQuery(t, tun, appIP, dnsIP, 12345, 53, q1)
+	sendUDPQuery(t, tun, appIP, dnsIP, 23456, 53, q2)
+	waitDatagrams(t, cli, 2)
+
+	src := datagramSourceAddr(dnsIP, 53)
+	r2 := append([]byte{0x00, 0x02}, []byte("v6-resp-two")...)
+	r1 := append([]byte{0x00, 0x01}, []byte("v6-resp-one")...)
+	cli.emitDatagram(src, r2)
+	cli.emitDatagram(src, r1)
+
+	got := collectUDPReturns(t, tun, 2)
+	if got[string(r2)] != 23456 {
+		t.Fatalf("v6-resp-two delivered to port %d, want 23456", got[string(r2)])
+	}
+	if got[string(r1)] != 12345 {
+		t.Fatalf("v6-resp-one delivered to port %d, want 12345 (cross-wired)", got[string(r1)])
+	}
+}
+
+// TestEngineDNSConcurrentParallel: N concurrent queries from
+// distinct source ports with distinct transaction IDs, all to the
+// same server, answered out of order. Every response must reach
+// its own querier.
+func TestEngineDNSConcurrentParallel(t *testing.T) {
+	const n = 8
+	tun := newMockTUN()
+	cli := &mockClient{}
+	e := NewEngine(EngineConfig{TUN: tun, Client: cli})
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go e.Run(ctx)
+
+	appIP := net.ParseIP("10.0.0.2")
+	dnsIP := net.ParseIP("8.8.8.8")
+	var wg sync.WaitGroup
+	for i := 0; i < n; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			txID := uint16(0x1000 + i)
+			q := append([]byte{byte(txID >> 8), byte(txID)}, []byte("q")...)
+			sendUDPQuery(t, tun, appIP, dnsIP, uint16(30000+i), 53, q)
+		}(i)
+	}
+	wg.Wait()
+	waitDatagrams(t, cli, n)
+
+	for i := n - 1; i >= 0; i-- {
+		txID := uint16(0x1000 + i)
+		r := append([]byte{byte(txID >> 8), byte(txID)}, []byte("r")...)
+		cli.emitDatagram("8.8.8.8:53", r)
+	}
+
+	got := collectUDPReturns(t, tun, n)
+	for i := 0; i < n; i++ {
+		txID := uint16(0x1000 + i)
+		payload := string(append([]byte{byte(txID >> 8), byte(txID)}, []byte("r")...))
+		if got[payload] != uint16(30000+i) {
+			t.Fatalf("response %d delivered to port %d, want %d", i, got[payload], 30000+i)
+		}
+	}
+}

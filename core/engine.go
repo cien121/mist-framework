@@ -42,12 +42,24 @@ type Engine struct {
 	dg     DatagramClient // nil if the client has no datagram support
 	stats  StatsCollector
 
-	mu        sync.Mutex // guards tables + tun writes
-	tunMu     sync.Mutex // serializes TUN writes
-	tcp       map[FourTuple]*tcpConn
-	pending   map[FourTuple]bool
-	udp       map[FourTuple]*udpSession
-	udpByDst  map[string]FourTuple // dstIP:dstPort -> app tuple (return routing)
+	mu      sync.Mutex // guards tables + tun writes
+	tunMu   sync.Mutex // serializes TUN writes
+	tcp     map[FourTuple]*tcpConn
+	pending map[FourTuple]bool
+	udp     map[FourTuple]*udpSession
+	// udpByDst lists app tuples per dstIP:dstPort, most recent last.
+	// A single tuple per destination used to be assumed; concurrent
+	// queries to the same server (e.g. two apps asking 8.8.8.8:53)
+	// overwrote each other and responses went to the wrong source
+	// port. The list preserves every session; DNS traffic is further
+	// disambiguated by transaction ID in udpByDNS.
+	udpByDst map[string][]FourTuple // dstIP:dstPort -> app tuples (return routing)
+	// udpByDNS maps one DNS exchange to its app tuple, keyed by
+	// destination + transaction ID (payload bytes 0-1). A relay
+	// response carries only the original destination, so the
+	// transaction ID is the only way to tell concurrent queries to
+	// the same server apart.
+	udpByDNS  map[string]FourTuple // dstIP:dstPort|txID -> app tuple
 	id        uint32
 	upBytes   atomic.Uint64
 	downBytes atomic.Uint64
@@ -86,7 +98,8 @@ func NewEngine(cfg EngineConfig) *Engine {
 		tcp:      make(map[FourTuple]*tcpConn),
 		pending:  make(map[FourTuple]bool),
 		udp:      make(map[FourTuple]*udpSession),
-		udpByDst: make(map[string]FourTuple),
+		udpByDst: make(map[string][]FourTuple),
+		udpByDNS: make(map[string]FourTuple),
 		done:     make(chan struct{}),
 	}
 	if dg, ok := cfg.Client.(DatagramClient); ok {
@@ -418,7 +431,12 @@ func (e *Engine) handleUDP(p *IPPacket, dg *UDPPacket) {
 	if _, ok := e.udp[tuple]; !ok {
 		e.udp[tuple] = &udpSession{tuple: tuple, lastAct: time.Now()}
 	}
-	e.udpByDst[dstKey(p.Dst.String(), dg.DstPort)] = tuple
+	dst := dstKey(p.Dst.String(), dg.DstPort)
+	e.udpByDst[dst] = appendTuple(e.udpByDst[dst], tuple)
+	if dg.DstPort == 53 && len(dg.Payload) >= 2 {
+		txID := binary.BigEndian.Uint16(dg.Payload[:2])
+		e.udpByDNS[dnsKey(p.Dst.String(), dg.DstPort, txID)] = tuple
+	}
 	e.mu.Unlock()
 	target := net.JoinHostPort(p.Dst.String(), fmt.Sprint(dg.DstPort))
 	payload := append([]byte(nil), dg.Payload...)
@@ -441,7 +459,24 @@ func (e *Engine) onDatagram(srcAddr string, data []byte) {
 		return
 	}
 	e.mu.Lock()
-	tuple, ok := e.udpByDst[dstKey(host, uint16(port))]
+	var tuple FourTuple
+	var ok bool
+	// DNS first: the transaction ID tells concurrent queries to
+	// the same server apart. Anything else falls back to the most
+	// recent session for this destination (the old overwrite
+	// semantics), which stays correct while only one session is
+	// live per destination.
+	if port == 53 && len(data) >= 2 {
+		txID := binary.BigEndian.Uint16(data[:2])
+		if t, hit := e.udpByDNS[dnsKey(host, uint16(port), txID)]; hit {
+			tuple, ok = t, true
+		}
+	}
+	if !ok {
+		if list := e.udpByDst[dstKey(host, uint16(port))]; len(list) > 0 {
+			tuple, ok = list[len(list)-1], true
+		}
+	}
 	if !ok {
 		e.mu.Unlock()
 		return
@@ -465,6 +500,47 @@ func (e *Engine) onDatagram(srcAddr string, data []byte) {
 
 func dstKey(ip string, port uint16) string {
 	return ip + ":" + fmt.Sprint(port)
+}
+
+// dnsKey identifies one DNS exchange for return routing.
+func dnsKey(ip string, port uint16, txID uint16) string {
+	return dstKey(ip, port) + "|" + fmt.Sprintf("%04x", txID)
+}
+
+// appendTuple adds tuple to the per-destination list, most recent
+// last, without duplicates: a repeat query from the same tuple just
+// refreshes its recency.
+func appendTuple(list []FourTuple, tuple FourTuple) []FourTuple {
+	out := list[:0]
+	for _, t := range list {
+		if t != tuple {
+			out = append(out, t)
+		}
+	}
+	return append(out, tuple)
+}
+
+// removeUDPTupleLocked drops tuple from every return-routing index.
+// Callers hold e.mu (currently only the sweeper).
+func (e *Engine) removeUDPTupleLocked(tuple FourTuple) {
+	for dst, list := range e.udpByDst {
+		kept := list[:0]
+		for _, t := range list {
+			if t != tuple {
+				kept = append(kept, t)
+			}
+		}
+		if len(kept) == 0 {
+			delete(e.udpByDst, dst)
+		} else {
+			e.udpByDst[dst] = kept
+		}
+	}
+	for key, t := range e.udpByDNS {
+		if t == tuple {
+			delete(e.udpByDNS, key)
+		}
+	}
 }
 
 func addrOf(s string) net.IP {
@@ -523,6 +599,7 @@ func (e *Engine) sweeper(ctx context.Context) {
 			for tuple, s := range e.udp {
 				if now.Sub(s.lastAct) > 2*time.Minute {
 					delete(e.udp, tuple)
+					e.removeUDPTupleLocked(tuple)
 				}
 			}
 			e.mu.Unlock()
@@ -540,7 +617,8 @@ func NewEngineForMobile(tun TUNDevice, client *MistUDPClient) *Engine {
 		tcp:      make(map[FourTuple]*tcpConn),
 		pending:  make(map[FourTuple]bool),
 		udp:      make(map[FourTuple]*udpSession),
-		udpByDst: make(map[string]FourTuple),
+		udpByDst: make(map[string][]FourTuple),
+		udpByDNS: make(map[string]FourTuple),
 		done:     make(chan struct{}),
 	}
 	if dg, ok := interface{}(client).(DatagramClient); ok {
