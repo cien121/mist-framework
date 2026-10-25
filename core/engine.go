@@ -171,6 +171,9 @@ func (e *Engine) Stats() Stats {
 	if as, ok := e.client.(AckStatser); ok {
 		s.AcksSent, s.AckSendErrors = as.AckStats()
 	}
+	if ds, ok := e.client.(DatagramStatser); ok {
+		s.DatagramsSent, s.DatagramsSendErrors, s.DatagramsReceived = ds.DatagramStats()
+	}
 	return s
 }
 

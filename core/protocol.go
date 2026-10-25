@@ -45,14 +45,17 @@ type TUNDevice interface {
 
 // Stats collects traffic statistics.
 type Stats struct {
-	UploadBytes    uint64
-	DownloadBytes  uint64
-	UploadRate     uint64 // bytes/sec
-	DownloadRate   uint64 // bytes/sec
-	TunWriteErrors uint64 // failed/short TUN writes (return-path health)
-	AcksSent       uint64 // ACK packets transmitted by the client
-	AckSendErrors  uint64 // ACK seal/write failures on the client
-	UpdatedAt      time.Time
+	UploadBytes         uint64
+	DownloadBytes       uint64
+	UploadRate          uint64 // bytes/sec
+	DownloadRate        uint64 // bytes/sec
+	TunWriteErrors      uint64 // failed/short TUN writes (return-path health)
+	AcksSent            uint64 // ACK packets transmitted by the client
+	AckSendErrors       uint64 // ACK seal/write failures on the client
+	DatagramsSent       uint64 // UDP relay datagrams sent successfully
+	DatagramsSendErrors uint64 // UDP relay datagram send failures
+	DatagramsReceived   uint64 // UDP relay datagrams received
+	UpdatedAt           time.Time
 }
 
 // StatsCollector receives traffic updates.
@@ -65,6 +68,13 @@ type StatsCollector interface {
 // transmission counts (used by the engine to surface them in Stats).
 type AckStatser interface {
 	AckStats() (sent, errs uint64)
+}
+
+// DatagramStatser is an optional ProtocolClient extension reporting
+// UDP relay datagram counts (used by the engine to surface them in
+// Stats).
+type DatagramStatser interface {
+	DatagramStats() (sent, sendErrs, received uint64)
 }
 
 // DatagramClient is an optional ProtocolClient extension for

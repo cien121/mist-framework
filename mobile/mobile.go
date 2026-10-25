@@ -7,6 +7,10 @@
 //
 //	MobileEngine:  NewMobileEngine() -> Start(tunFd, nodeURL) / Stop()
 //	              GetUploadBytes() / GetDownloadBytes() (polling)
+//	              FetchEgressIP(checkURL, timeoutSec) -> egress IP body
+//	              GetTunWriteErrors() / GetAcksSent() / GetAckSendErrors()
+//	              GetDatagramsSent() / GetDatagramsSendErrors()
+//	              GetDatagramsReceived() (diagnostics polling)
 //	Ping:         Ping(nodeURL, timeoutSec) -> handshake ms (static)
 //
 // Java mapping (gomobile lowerCamelCase rules; verify against the
@@ -16,6 +20,13 @@
 //	Kotlin: eng.start(fd, nodeURL)     // Go Start; throws on error
 //	Kotlin: eng.stop()                 // Go Stop
 //	Kotlin: eng.getUploadBytes()       // Go GetUploadBytes
+//	Kotlin: eng.fetchEgressIP(url, 10) // Go FetchEgressIP; throws on error
+//	Kotlin: eng.getTunWriteErrors()    // Go GetTunWriteErrors
+//	Kotlin: eng.getAcksSent()          // Go GetAcksSent
+//	Kotlin: eng.getAckSendErrors()     // Go GetAckSendErrors
+//	Kotlin: eng.getDatagramsSent()     // Go GetDatagramsSent
+//	Kotlin: eng.getDatagramsSendErrors() // Go GetDatagramsSendErrors
+//	Kotlin: eng.getDatagramsReceived() // Go GetDatagramsReceived
 //	Kotlin: Mobile.ping(url, 5)        // Go Ping; throws on error
 //
 // TUN fd ownership: Kotlin passes the fd from ParcelFileDescriptor
@@ -34,11 +45,19 @@ package mobile
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
-	"github.com/cien121/mist-framework/core"
+	"fmt"
+	"io"
+	"net"
+	"net/http"
+	"net/url"
 	"os"
+	"strings"
 	"sync"
 	"time"
+
+	"github.com/cien121/mist-framework/core"
 )
 
 // Note: StatsListener interface removed for gomobile compatibility.
@@ -182,6 +201,159 @@ func (m *MobileEngine) GetDownloadBytes() int64 {
 		return 0
 	}
 	return int64(e.Stats().DownloadBytes)
+}
+
+// engineStats returns the engine's current Stats, or false when the
+// engine is not running. Shared by the diagnostic getters below.
+func (m *MobileEngine) engineStats() (core.Stats, bool) {
+	m.mu.Lock()
+	e := m.engine
+	m.mu.Unlock()
+	if e == nil {
+		return core.Stats{}, false
+	}
+	return e.Stats(), true
+}
+
+// GetTunWriteErrors returns cumulative failed/short TUN writes.
+// A nonzero value while download bytes move means the engine
+// received data but could not hand it to the app.
+func (m *MobileEngine) GetTunWriteErrors() int64 {
+	if s, ok := m.engineStats(); ok {
+		return int64(s.TunWriteErrors)
+	}
+	return 0
+}
+
+// GetAcksSent returns cumulative ACK packets transmitted by the client.
+func (m *MobileEngine) GetAcksSent() int64 {
+	if s, ok := m.engineStats(); ok {
+		return int64(s.AcksSent)
+	}
+	return 0
+}
+
+// GetAckSendErrors returns cumulative ACK seal/write failures.
+func (m *MobileEngine) GetAckSendErrors() int64 {
+	if s, ok := m.engineStats(); ok {
+		return int64(s.AckSendErrors)
+	}
+	return 0
+}
+
+// GetDatagramsSent returns cumulative UDP relay datagrams sent.
+func (m *MobileEngine) GetDatagramsSent() int64 {
+	if s, ok := m.engineStats(); ok {
+		return int64(s.DatagramsSent)
+	}
+	return 0
+}
+
+// GetDatagramsSendErrors returns cumulative UDP relay datagram
+// send failures.
+func (m *MobileEngine) GetDatagramsSendErrors() int64 {
+	if s, ok := m.engineStats(); ok {
+		return int64(s.DatagramsSendErrors)
+	}
+	return 0
+}
+
+// GetDatagramsReceived returns cumulative UDP relay datagrams received.
+func (m *MobileEngine) GetDatagramsReceived() int64 {
+	if s, ok := m.engineStats(); ok {
+		return int64(s.DatagramsReceived)
+	}
+	return 0
+}
+
+// FetchEgressIP fetches checkURL (https) through the running tunnel's
+// Mist client and returns the response body, e.g. the egress IP as
+// seen by the check service. It dials a fresh Mist stream (not the
+// TUN) and performs TLS + HTTP GET over it, so it proves the egress
+// path independently of the tunnel's DNS path and of the old
+// SOCKS-based exit check. The engine must be running; otherwise it
+// returns an error. The check URL is supplied by the caller (no
+// single service is hardcoded). timeoutSec caps the whole request
+// (<=0 = 10s default, capped at 30s). Only https URLs are accepted
+// and redirects are not followed.
+func (m *MobileEngine) FetchEgressIP(checkURL string, timeoutSec int) (string, error) {
+	if timeoutSec <= 0 {
+		timeoutSec = 10
+	}
+	if timeoutSec > 30 {
+		timeoutSec = 30
+	}
+	hostPort, sniHost, err := parseEgressTarget(checkURL)
+	if err != nil {
+		return "", err
+	}
+	m.mu.Lock()
+	client := m.client
+	running := m.running
+	m.mu.Unlock()
+	if !running || client == nil {
+		return "", errors.New("mist: engine not running")
+	}
+	tr := &http.Transport{
+		DialTLSContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+			raw, err := client.Dial(ctx, hostPort)
+			if err != nil {
+				return nil, err
+			}
+			tc := tls.Client(raw, &tls.Config{ServerName: sniHost})
+			if err := tc.HandshakeContext(ctx); err != nil {
+				_ = raw.Close()
+				return nil, err
+			}
+			return tc, nil
+		},
+		// Plain HTTP/1.1 over the Mist stream: no HTTP/2
+		// negotiation surprises on a custom dialer, no proxy.
+		ForceAttemptHTTP2: false,
+		TLSNextProto:      map[string]func(authority string, c *tls.Conn) http.RoundTripper{},
+	}
+	hc := &http.Client{
+		Transport: tr,
+		Timeout:   time.Duration(timeoutSec) * time.Second,
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
+	resp, err := hc.Get(checkURL)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("mist: egress check status %s", resp.Status)
+	}
+	body, err := io.ReadAll(io.LimitReader(resp.Body, 65536))
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(string(body)), nil
+}
+
+// parseEgressTarget splits an https check URL into the Mist dial
+// target (host:port, default 443) and the TLS SNI host. It rejects
+// non-https URLs and URLs without a host.
+func parseEgressTarget(checkURL string) (hostPort, sniHost string, err error) {
+	u, err := url.Parse(checkURL)
+	if err != nil {
+		return "", "", err
+	}
+	if u.Scheme != "https" {
+		return "", "", fmt.Errorf("mist: egress URL must be https: %s", checkURL)
+	}
+	host := u.Hostname()
+	if host == "" {
+		return "", "", fmt.Errorf("mist: egress URL missing host: %s", checkURL)
+	}
+	port := u.Port()
+	if port == "" {
+		port = "443"
+	}
+	return net.JoinHostPort(host, port), host, nil
 }
 
 // Ping measures real Mist UDP handshake latency for a mist:// node link.

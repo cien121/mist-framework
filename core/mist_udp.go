@@ -119,6 +119,15 @@ type MistUDPClient struct {
 	// sent ACKs" apart from "server never processed them".
 	acksSent    atomic.Uint64
 	ackSendErrs atomic.Uint64
+	// dgSent/dgSendErrs/dgReceived count UDP relay datagrams:
+	// successfully sent, send failures, and inbound arrivals.
+	// Exposed via DatagramStats so a dead DNS path can tell
+	// "client never sent" apart from "server never answered".
+	// Send failures are counted, never silently swallowed; the
+	// returned error is unchanged.
+	dgSent     atomic.Uint64
+	dgSendErrs atomic.Uint64
+	dgReceived atomic.Uint64
 }
 
 // NewMistUDPClient parses cfg and prepares (but does not connect) a client.
@@ -151,6 +160,14 @@ func (c *MistUDPClient) Name() string { return "mist" }
 // so Engine.Stats can surface it for return-path diagnosis.
 func (c *MistUDPClient) AckStats() (sent, errs uint64) {
 	return c.acksSent.Load(), c.ackSendErrs.Load()
+}
+
+// DatagramStats reports UDP relay datagram counts: successfully
+// sent, send failures, and inbound datagrams received. It implements
+// DatagramStatser so Engine.Stats can surface it for DNS-path
+// diagnosis.
+func (c *MistUDPClient) DatagramStats() (sent, sendErrs, received uint64) {
+	return c.dgSent.Load(), c.dgSendErrs.Load(), c.dgReceived.Load()
 }
 
 // Connect performs the Mist UDP handshake. Safe to call repeatedly;
@@ -396,6 +413,10 @@ func (c *MistUDPClient) dispatch(f mistcore.UDPFrame) {
 		if err != nil {
 			return
 		}
+		// Count the arrival once, even if no handler is set: a
+		// missing handler is itself a diagnosis ("server answered,
+		// engine never routed it").
+		c.dgReceived.Add(1)
 		c.mu.Lock()
 		h := c.dgH
 		c.mu.Unlock()
@@ -437,17 +458,22 @@ func (c *MistUDPClient) OnDatagram(h DatagramHandler) {
 }
 
 // SendDatagram sends a UDP relay datagram to target ("ip:port").
+// Send failures are counted in dgSendErrs (and successes in
+// dgSent); the returned error is unchanged.
 func (c *MistUDPClient) SendDatagram(target string, data []byte) error {
 	host, portStr, err := net.SplitHostPort(target)
 	if err != nil {
+		c.dgSendErrs.Add(1)
 		return err
 	}
 	port, err := net.LookupPort("udp", portStr)
 	if err != nil {
+		c.dgSendErrs.Add(1)
 		return err
 	}
 	ip := net.ParseIP(host)
 	if ip == nil {
+		c.dgSendErrs.Add(1)
 		return fmt.Errorf("mist: datagram target must be an IP: %s", host)
 	}
 	var atyp byte
@@ -463,9 +489,15 @@ func (c *MistUDPClient) SendDatagram(target string, data []byte) error {
 	sched := c.sched
 	c.mu.Unlock()
 	if sched == nil {
+		c.dgSendErrs.Add(1)
 		return errors.New("mist: not connected")
 	}
-	return sched.Write([][]byte{frame})
+	if err := sched.Write([][]byte{frame}); err != nil {
+		c.dgSendErrs.Add(1)
+		return err
+	}
+	c.dgSent.Add(1)
+	return nil
 }
 
 // Dial implements ProtocolClient: open a Mist stream to addr ("host:port").
