@@ -55,12 +55,14 @@ type mockClient struct {
 	dialed   []string
 	dgSent   []dgRecord
 	dgH      DatagramHandler
+	dgTH     DatagramTaggedHandler
 	dialFunc func(addr string) (net.Conn, error)
 }
 
 type dgRecord struct {
 	target string
 	data   []byte
+	tag    uint8
 }
 
 func (c *mockClient) Name() string { return "mock" }
@@ -89,9 +91,13 @@ func (c *mockClient) Dial(ctx context.Context, addr string) (net.Conn, error) {
 func (c *mockClient) Close() error { return nil }
 
 func (c *mockClient) SendDatagram(target string, data []byte) error {
+	return c.SendDatagramTagged(target, 0, data)
+}
+
+func (c *mockClient) SendDatagramTagged(target string, tag uint8, data []byte) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	c.dgSent = append(c.dgSent, dgRecord{target, append([]byte(nil), data...)})
+	c.dgSent = append(c.dgSent, dgRecord{target, append([]byte(nil), data...), tag})
 	return nil
 }
 
@@ -101,11 +107,26 @@ func (c *mockClient) OnDatagram(h DatagramHandler) {
 	c.dgH = h
 }
 
-func (c *mockClient) emitDatagram(srcAddr string, data []byte) {
+// OnDatagramTagged records the tagged handler; emitDatagram (the
+// old-server path) delivers to it with tag 0, so existing tests
+// keep their semantics while the engine registers the tagged path.
+func (c *mockClient) OnDatagramTagged(h DatagramTaggedHandler) {
 	c.mu.Lock()
-	h := c.dgH
+	defer c.mu.Unlock()
+	c.dgTH = h
+}
+
+func (c *mockClient) emitDatagram(srcAddr string, data []byte) {
+	c.emitDatagramTagged(srcAddr, 0, data)
+}
+
+func (c *mockClient) emitDatagramTagged(srcAddr string, tag uint8, data []byte) {
+	c.mu.Lock()
+	th, h := c.dgTH, c.dgH
 	c.mu.Unlock()
-	if h != nil {
+	if th != nil {
+		th(srcAddr, tag, data)
+	} else if h != nil {
 		h(srcAddr, data)
 	}
 }

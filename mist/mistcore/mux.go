@@ -97,6 +97,60 @@ func DecodeDatagram(p []byte) (atyp byte, addr []byte, port uint16, data []byte,
 	return atyp, addr, port, p[hdrLen+2 : hdrLen+2+dl], nil
 }
 
+// Datagram session tag (frame-payload tail, SPEC 9.4 extension).
+//
+// The same-target UDP cross-talk fix ("串线修复") tags each app
+// session's datagrams without touching the session or frame layers:
+// the sender appends a 3-byte tail AFTER the datagram data:
+// [0x4D, 0x54, tag] ("MT" + 1 tag byte). The receiver (server or
+// peer) must echo the tail on the response so the client can route
+// it to the right session; a response without a valid tail is
+// untagged and falls back to the old routing (DNS txID, then most
+// recent session for the destination).
+//
+// tag 0 is special: it is NEVER sent on the wire (tag 0 ==
+// untagged, byte-identical to the old EncodeDatagram output), so
+// old servers/clients that ignore the tail keep working, and old
+// DecodeDatagram keeps returning exactly the data (it already
+// ignores anything after the declared data length).
+const (
+	datagramTagMagic0 = 0x4D // 'M'
+	datagramTagMagic1 = 0x54 // 'T'
+)
+
+// EncodeDatagramTagged builds a datagram payload with a session tag
+// tail. tag == 0 produces output identical to EncodeDatagram.
+func EncodeDatagramTagged(atyp byte, addr []byte, port uint16, data []byte, tag uint8) []byte {
+	out := EncodeDatagram(atyp, addr, port, data)
+	if tag == 0 {
+		return out
+	}
+	return append(out, datagramTagMagic0, datagramTagMagic1, tag)
+}
+
+// DecodeDatagramTagged parses a datagram payload and its tag tail.
+// It first parses exactly like DecodeDatagram; if the bytes after
+// the declared data are exactly 3 bytes [0x4D, 0x54, tag], tag is
+// that third byte. Any other trailing content (wrong magic, wrong
+// length, or none at all) yields tag 0 and is otherwise ignored, so
+// old untagged frames and stray tails never misroute.
+func DecodeDatagramTagged(p []byte) (atyp byte, addr []byte, port uint16, data []byte, tag uint8, err error) {
+	atyp, addr, port, data, err = DecodeDatagram(p)
+	if err != nil {
+		return 0, nil, 0, nil, 0, err
+	}
+	hdrLen := 1 + len(addr) + 2
+	if atyp == ATypDomain {
+		hdrLen++
+	}
+	dl := int(binary.BigEndian.Uint16(p[hdrLen : hdrLen+2]))
+	rest := p[hdrLen+2+dl:]
+	if len(rest) == 3 && rest[0] == datagramTagMagic0 && rest[1] == datagramTagMagic1 {
+		tag = rest[2]
+	}
+	return atyp, addr, port, data, tag, nil
+}
+
 // BuildResumeMsg builds a RESUME control payload (SPEC 10.2).
 func BuildResumeMsg(connID [16]byte, tok [32]byte, newEpoch uint32) []byte {
 	out := make([]byte, 0, 57)

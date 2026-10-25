@@ -57,6 +57,8 @@ type Stats struct {
 	DatagramsReceived   uint64 // UDP relay datagrams received
 	ReadPumpDeaths      uint64 // readPump exits + watchdog stalls (session-dead signal)
 	StreamPendingResets uint64 // streams reset by the reorder-buffer cap
+	DirectUploadBytes   uint64 // bytes sent on direct (non-tunnel) paths
+	DirectDownloadBytes uint64 // bytes received on direct (non-tunnel) paths
 	UpdatedAt           time.Time
 }
 
@@ -92,10 +94,25 @@ type HealthStatser interface {
 // SendDatagram sends payload to target ("ip:port"); inbound relay
 // datagrams arrive via the handler set by OnDatagram, with srcAddr
 // set to the original target ("ip:port").
+//
+// Tagged variants carry the frame-payload session tag (see
+// mistcore.EncodeDatagramTagged): SendDatagram is exactly
+// SendDatagramTagged with tag 0, and OnDatagram is the tag-0 view
+// of OnDatagramTagged. The engine registers the tagged handler so
+// same-target sessions stay separate; untagged responses (tag 0,
+// e.g. from an old server) still arrive and fall back to the old
+// routing.
 type DatagramClient interface {
 	SendDatagram(target string, data []byte) error
+	SendDatagramTagged(target string, tag uint8, data []byte) error
 	OnDatagram(h DatagramHandler)
+	OnDatagramTagged(h DatagramTaggedHandler)
 }
 
 // DatagramHandler receives relay datagrams (see DatagramClient).
 type DatagramHandler func(srcAddr string, data []byte)
+
+// DatagramTaggedHandler receives relay datagrams with their
+// session tag: tag != 0 routes by tag only, tag == 0 is untagged
+// (old-server response) and falls back to the old routing.
+type DatagramTaggedHandler func(srcAddr string, tag uint8, data []byte)

@@ -1,7 +1,11 @@
 // TUN forwarding engine: IP packets <-> proxy protocol.
 //
-// Dual stack (IPv4 + IPv6). All traffic goes through the tunnel in
-// the MVP; split routing / direct bypass is Phase 3.
+// Dual stack (IPv4 + IPv6). By default all traffic goes through the
+// tunnel; with SplitEnabled, domestic/private traffic bypasses it
+// directly (see split.go for the domain-driven decision mechanism —
+// v1 has no CN CIDR table). DNS port-53 traffic is intercepted for
+// ad blocking (always, when AdblockEnabled) and for domestic local
+// resolution (only when SplitEnabled), before the tunnel path.
 //
 // TCP model: the engine terminates TCP locally. It answers the app's
 // SYN with SYN-ACK (after the proxy Dial succeeds), forwards payload
@@ -11,9 +15,11 @@
 // retransmits; TUN delivery is effectively lossless).
 //
 // UDP model: each app 4-tuple maps to datagrams on the shared Mist
-// session. Responses are routed back by their source address, which
-// the relay echoes as the original target. This covers DNS (UDP 53)
-// over v4 and v6 with no special case.
+// session. Responses are routed back by their session tag when
+// present (tag != 0, frame-payload tail), by DNS transaction ID for
+// untagged DNS, and by most-recent-session for other untagged
+// traffic. This covers DNS (UDP 53) over v4 and v6 with no
+// special case beyond the interception above.
 package core
 
 import (
@@ -33,6 +39,19 @@ type EngineConfig struct {
 	TUN    TUNDevice
 	Client ProtocolClient
 	Stats  StatsCollector // optional; may be nil
+	// SplitEnabled turns on split routing (domestic/private direct,
+	// rest via tunnel; see split.go). Zero value is off (all tunnel),
+	// the safe default; the mobile layer enables it by default.
+	SplitEnabled bool
+	// AdblockEnabled turns on DNS-layer ad blocking (see split.go).
+	// It is independent of SplitEnabled: with split off, ads are
+	// still blocked before the tunnel. Zero value is off; the
+	// mobile layer enables it by default.
+	AdblockEnabled bool
+	// LocalDNS is the comma-separated local resolver list for
+	// domestic DNS (see split.go). Empty means the default
+	// domestic public resolvers.
+	LocalDNS string
 }
 
 // Engine forwards TUN packets through a ProtocolClient.
@@ -60,6 +79,29 @@ type Engine struct {
 	// transaction ID is the only way to tell concurrent queries to
 	// the same server apart.
 	udpByDNS map[string]FourTuple // dstIP:dstPort|txID -> app tuple
+	// udpByTag maps a datagram session tag to its app tuple. Tags
+	// are allocated 1..255, skipping in-use values; tag 0 is never
+	// sent and never appears here. A tagged response routes by tag
+	// ONLY (no fallback), so two sockets to the same target can
+	// never cross-wire. The sweeper clears the entry when it drops
+	// the tuple (see removeUDPTupleLocked).
+	udpByTag map[uint8]FourTuple // tag -> app tuple
+	// Split / DNS / adblock state (see split.go). splitEnabled and
+	// adblockEnabled are atomic so the mobile layer can toggle them
+	// on a live engine; learnedIPs and localDNS have their own
+	// mutexes so the data path never takes e.mu for them (no lock
+	// ordering with the session tables).
+	splitEnabled   atomic.Bool
+	adblockEnabled atomic.Bool
+	learnedMu      sync.Mutex
+	learnedIPs     map[string]time.Time // domestic-resolved IP -> expiry
+	localDNSMu     sync.RWMutex
+	localDNS       []string
+	// localDNSDial dials a local resolver. It defaults to
+	// net.DialTimeout; tests override it with an in-memory pipe so
+	// the local-resolution path is testable without real UDP
+	// sockets (whose replies this sandbox's proxy drops).
+	localDNSDial func(network, address string, timeout time.Duration) (net.Conn, error)
 	// udpSem bounds in-flight UDP send goroutines (see handleUDP).
 	// Without it a wedged session piles up one blocked goroutine
 	// per app datagram — thousands of stacks plus scheduler
@@ -70,6 +112,11 @@ type Engine struct {
 	id        atomic.Uint32 // IP IDs; atomic so TUN writes need not hold e.mu
 	upBytes   atomic.Uint64
 	downBytes atomic.Uint64
+	// directUp/directDown count bytes on direct (non-tunnel) paths
+	// (TCP direct dials and direct UDP), surfaced as
+	// Stats.DirectUploadBytes/DirectDownloadBytes.
+	directUp   atomic.Uint64
+	directDown atomic.Uint64
 	// tunWriteErrs counts failed/short TUN writes (was silently
 	// swallowed before; a nonzero count is the first thing to check
 	// when return traffic stalls).
@@ -81,6 +128,7 @@ type Engine struct {
 type tcpConn struct {
 	tuple      FourTuple
 	stream     net.Conn
+	direct     bool   // true when stream is a direct dial, not a Mist stream
 	appSeq     uint32 // next byte expected from the app
 	ourSeq     uint32 // next byte we send to the app
 	isn        uint32 // our initial sequence number (for SYN-ACK retransmits)
@@ -156,8 +204,11 @@ type tcpWriteItem struct {
 }
 
 type udpSession struct {
-	tuple   FourTuple
-	lastAct time.Time
+	tuple      FourTuple
+	lastAct    time.Time
+	tag        uint8        // 0 = untagged/direct; 1..255 = tunnel session tag
+	directConn *net.UDPConn // non-nil for direct UDP sessions
+	direct     bool         // true when this session bypasses the tunnel
 }
 
 // maxInFlightUDPSends bounds concurrent UDP send goroutines.
@@ -167,20 +218,26 @@ const maxInFlightUDPSends = 512
 // the UDP path is enabled; otherwise UDP packets are dropped.
 func NewEngine(cfg EngineConfig) *Engine {
 	e := &Engine{
-		tun:      cfg.TUN,
-		client:   cfg.Client,
-		stats:    cfg.Stats,
-		tcp:      make(map[FourTuple]*tcpConn),
-		pending:  make(map[FourTuple]bool),
-		udp:      make(map[FourTuple]*udpSession),
-		udpByDst: make(map[string][]FourTuple),
-		udpByDNS: make(map[string]FourTuple),
-		udpSem:   make(chan struct{}, maxInFlightUDPSends),
-		done:     make(chan struct{}),
+		tun:          cfg.TUN,
+		client:       cfg.Client,
+		stats:        cfg.Stats,
+		tcp:          make(map[FourTuple]*tcpConn),
+		pending:      make(map[FourTuple]bool),
+		udp:          make(map[FourTuple]*udpSession),
+		udpByDst:     make(map[string][]FourTuple),
+		udpByDNS:     make(map[string]FourTuple),
+		udpByTag:     make(map[uint8]FourTuple),
+		learnedIPs:   make(map[string]time.Time),
+		localDNS:     parseLocalDNSServers(cfg.LocalDNS),
+		localDNSDial: net.DialTimeout,
+		udpSem:       make(chan struct{}, maxInFlightUDPSends),
+		done:         make(chan struct{}),
 	}
+	e.splitEnabled.Store(cfg.SplitEnabled)
+	e.adblockEnabled.Store(cfg.AdblockEnabled)
 	if dg, ok := cfg.Client.(DatagramClient); ok {
 		e.dg = dg
-		dg.OnDatagram(e.onDatagram)
+		dg.OnDatagramTagged(e.onDatagramTagged)
 	}
 	return e
 }
@@ -241,10 +298,19 @@ func (e *Engine) Close() error {
 	for _, c := range e.tcp {
 		conns = append(conns, c)
 	}
+	var directConns []*net.UDPConn
+	for _, s := range e.udp {
+		if s.directConn != nil {
+			directConns = append(directConns, s.directConn)
+		}
+	}
 	e.mu.Unlock()
 	for _, c := range conns {
 		c.stream.Close()
 		stopTCPWriterLocked(c)
+	}
+	for _, dc := range directConns {
+		dc.Close()
 	}
 	e.mu.Lock()
 	e.tcp = make(map[FourTuple]*tcpConn)
@@ -255,10 +321,12 @@ func (e *Engine) Close() error {
 // Stats returns cumulative traffic counters.
 func (e *Engine) Stats() Stats {
 	s := Stats{
-		UploadBytes:    e.upBytes.Load(),
-		DownloadBytes:  e.downBytes.Load(),
-		TunWriteErrors: e.tunWriteErrs.Load(),
-		UpdatedAt:      time.Now(),
+		UploadBytes:         e.upBytes.Load(),
+		DownloadBytes:       e.downBytes.Load(),
+		DirectUploadBytes:   e.directUp.Load(),
+		DirectDownloadBytes: e.directDown.Load(),
+		TunWriteErrors:      e.tunWriteErrs.Load(),
+		UpdatedAt:           time.Now(),
 	}
 	if as, ok := e.client.(AckStatser); ok {
 		s.AcksSent, s.AckSendErrors = as.AckStats()
@@ -506,11 +574,28 @@ func (e *Engine) dialTCP(ctx context.Context, p *IPPacket, tuple FourTuple, syn 
 	dctx, cancel := context.WithTimeout(ctx, 20*time.Second)
 	defer cancel()
 	target := net.JoinHostPort(p.Dst.String(), fmt.Sprint(tuple.DstPort))
-	stream, err := e.client.Dial(dctx, target)
-	if err != nil {
-		// Proxy dial failed: RST the app's connection attempt.
-		e.sendRST(p, tuple, syn)
-		return
+	// Split routing (see split.go): a direct destination is dialed
+	// with a plain Go socket first. That socket belongs to the
+	// Weave process, which is excluded from its own VPN via
+	// addDisallowedApplication, so it bypasses the TUN by UID and
+	// cannot loop back into the engine — no protect() hook needed.
+	// A direct-dial failure falls back to the tunnel (fail-closed
+	// to the tunnel, never fail-open to a refused connection).
+	var stream net.Conn
+	var direct bool
+	if e.shouldDirect(p.Dst.String()) {
+		if s, err := net.DialTimeout("tcp", target, 20*time.Second); err == nil {
+			stream, direct = s, true
+		}
+	}
+	if stream == nil {
+		s, err := e.client.Dial(dctx, target)
+		if err != nil {
+			// Proxy dial failed: RST the app's connection attempt.
+			e.sendRST(p, tuple, syn)
+			return
+		}
+		stream = s
 	}
 	var isnBytes [4]byte
 	_, _ = rand.Read(isnBytes[:])
@@ -522,6 +607,7 @@ func (e *Engine) dialTCP(ctx context.Context, p *IPPacket, tuple FourTuple, syn 
 	conn := &tcpConn{
 		tuple:     tuple,
 		stream:    stream,
+		direct:    direct,
 		appSeq:    syn.Seq + 1,
 		ourSeq:    isn,
 		isn:       isn,
@@ -610,7 +696,11 @@ func (e *Engine) tcpWriter(conn *tcpConn) {
 			e.dropTCP(conn.tuple)
 			return
 		}
-		e.upBytes.Add(uint64(len(item.payload)))
+		if conn.direct {
+			e.directUp.Add(uint64(len(item.payload)))
+		} else {
+			e.upBytes.Add(uint64(len(item.payload)))
+		}
 	}
 }
 
@@ -657,7 +747,11 @@ func (e *Engine) pumpTCP(conn *tcpConn) {
 			if !e.sendDownload(conn, data) {
 				return // connection gone
 			}
-			e.downBytes.Add(uint64(len(data)))
+			if conn.direct {
+				e.directDown.Add(uint64(len(data)))
+			} else {
+				e.downBytes.Add(uint64(len(data)))
+			}
 		}
 		if err != nil {
 			e.onStreamEOF(conn)
@@ -857,12 +951,103 @@ func (e *Engine) dropTCP(tuple FourTuple) {
 // ---------------------------------------------------------------------------
 
 func (e *Engine) handleUDP(p *IPPacket, dg *UDPPacket) {
-	if e.dg == nil {
-		return // client has no datagram support
-	}
 	if e.closed.Load() {
 		return
 	}
+	tuple := TupleOf(p, dg.SrcPort, dg.DstPort)
+	// DNS interception (port 53), in order: adblock first, then
+	// domestic local resolution when split is on. Neither needs
+	// the tunnel client, so both run before the dg == nil check.
+	if dg.DstPort == 53 {
+		// Adblock: independent of SplitEnabled — with split off,
+		// ads are still blocked before the tunnel.
+		if e.adblockEnabled.Load() {
+			if name, _, _, err := parseDNSQuestion(dg.Payload); err == nil && isAdblockDomain(name) {
+				if resp, ok := buildAdblockResponse(dg.Payload); ok {
+					e.writeDNSResponse(tuple, p, dg, resp)
+					return
+				}
+				// Unparseable query: fall through to the tunnel.
+			}
+		}
+		// Domestic local resolution: the response bytes are
+		// returned verbatim and their A/AAAA addresses are
+		// learned for split routing. Local resolution runs in a
+		// goroutine so a slow resolver never stalls the Run loop;
+		// on failure the query falls back to the tunnel.
+		if e.splitEnabled.Load() {
+			if name, _, _, err := parseDNSQuestion(dg.Payload); err == nil && isDomesticDomain(name) {
+				query := append([]byte(nil), dg.Payload...)
+				go e.resolveDomesticDNS(tuple, p, dg, query)
+				return
+			}
+		}
+	}
+	// Direct UDP (non-DNS, or DNS that was not intercepted): one
+	// DialUDP conn per tuple + a return read loop, with sweeper
+	// lifetime. No tunnel client needed.
+	if e.shouldDirect(p.Dst.String()) {
+		e.handleUDPDirect(p, dg, tuple)
+		return
+	}
+	if e.dg == nil {
+		return // client has no datagram support
+	}
+	e.sendUDPTunnel(tuple, p, dg)
+}
+
+// resolveDomesticDNS resolves one domestic query locally and writes
+// the verbatim response back to the TUN (learning its addresses).
+// On any local failure it falls back to the tagged tunnel path,
+// so a dead local resolver degrades to tunnel DNS, never to a
+// dropped query.
+func (e *Engine) resolveDomesticDNS(tuple FourTuple, p *IPPacket, dg *UDPPacket, query []byte) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("mist: domestic DNS panic (recovered): %v", r)
+		}
+	}()
+	resp, err := e.resolveViaLocalDNS(query)
+	if err != nil {
+		if e.dg != nil {
+			e.sendUDPTunnel(tuple, p, dg)
+		}
+		return
+	}
+	e.learnFromDNSResponse(resp)
+	e.writeDNSResponse(tuple, p, dg, resp)
+}
+
+// writeDNSResponse writes a DNS answer back to the app's TUN packet.
+// The source address is the DNS IP the app originally queried (so
+// the app accepts it as the answer to its query); txID and question
+// are whatever the response bytes already carry (verbatim for local
+// resolution, preserved by construction for adblock).
+func (e *Engine) writeDNSResponse(tuple FourTuple, p *IPPacket, dg *UDPPacket, resp []byte) {
+	seg := BuildUDP(addrOf(p.Dst.String()), addrOf(tuple.SrcIP), dg.DstPort, dg.SrcPort, resp)
+	e.writeTUNLocked(tuple, seg)
+}
+
+// allocTagLocked returns a free session tag (1..255, skipping
+// in-use values). Caller holds e.mu. When all 255 are in use it
+// returns 0: the datagram goes untagged and falls back to the old
+// routing rather than hijacking a live session's tag.
+func (e *Engine) allocTagLocked() uint8 {
+	for tag := uint8(1); ; tag++ {
+		if _, taken := e.udpByTag[tag]; !taken {
+			return tag
+		}
+		if tag == 255 {
+			return 0
+		}
+	}
+}
+
+// sendUDPTunnel registers (or reuses) the tunnel session for tuple
+// — allocating its tag on first use — and sends the datagram with
+// that tag. Bound by udpSem like the old path: excess datagrams
+// are dropped, never queued forever.
+func (e *Engine) sendUDPTunnel(tuple FourTuple, p *IPPacket, dg *UDPPacket) {
 	// Bound in-flight send goroutines: without this a wedged
 	// session piles up one blocked goroutine per app datagram
 	// (chatty UDP apps retry hard), and thousands of stacks plus
@@ -874,10 +1059,27 @@ func (e *Engine) handleUDP(p *IPPacket, dg *UDPPacket) {
 	default:
 		return
 	}
-	tuple := TupleOf(p, dg.SrcPort, dg.DstPort)
 	e.mu.Lock()
-	if _, ok := e.udp[tuple]; !ok {
-		e.udp[tuple] = &udpSession{tuple: tuple, lastAct: time.Now()}
+	sess, ok := e.udp[tuple]
+	if !ok {
+		sess = &udpSession{tuple: tuple, lastAct: time.Now(), tag: e.allocTagLocked()}
+		e.udp[tuple] = sess
+		if sess.tag != 0 {
+			e.udpByTag[sess.tag] = tuple
+		}
+	} else if sess.direct {
+		// A tuple that went direct earlier is now tunnelling
+		// (e.g. learned IP expired): drop the direct conn and
+		// convert the session to a tagged tunnel session.
+		if sess.directConn != nil {
+			sess.directConn.Close()
+			sess.directConn = nil
+		}
+		sess.direct = false
+		sess.tag = e.allocTagLocked()
+		if sess.tag != 0 {
+			e.udpByTag[sess.tag] = tuple
+		}
 	}
 	dst := dstKey(p.Dst.String(), dg.DstPort)
 	e.udpByDst[dst] = appendTuple(e.udpByDst[dst], tuple)
@@ -885,6 +1087,7 @@ func (e *Engine) handleUDP(p *IPPacket, dg *UDPPacket) {
 		txID := binary.BigEndian.Uint16(dg.Payload[:2])
 		e.udpByDNS[dnsKey(p.Dst.String(), dg.DstPort, txID)] = tuple
 	}
+	tag := sess.tag
 	e.mu.Unlock()
 	target := net.JoinHostPort(p.Dst.String(), fmt.Sprint(dg.DstPort))
 	payload := append([]byte(nil), dg.Payload...)
@@ -895,53 +1098,161 @@ func (e *Engine) handleUDP(p *IPPacket, dg *UDPPacket) {
 			}
 			<-e.udpSem
 		}()
-		if err := e.dg.SendDatagram(target, payload); err != nil {
+		if err := e.dg.SendDatagramTagged(target, tag, payload); err != nil {
 			return
 		}
 		e.upBytes.Add(uint64(len(payload)))
 	}()
 }
 
-// onDatagram routes a relay response back to the app's TUN packet.
+// handleUDPDirect sends one datagram on a direct UDP conn for the
+// tuple, creating the conn and its return read loop on first use.
+// A direct-dial failure falls back to the tunnel (fail-closed to
+// the tunnel), mirroring the TCP direct path.
+func (e *Engine) handleUDPDirect(p *IPPacket, dg *UDPPacket, tuple FourTuple) {
+	e.mu.Lock()
+	sess, ok := e.udp[tuple]
+	if ok && sess.directConn != nil {
+		sess.lastAct = time.Now()
+		conn := sess.directConn
+		e.mu.Unlock()
+		if _, err := conn.Write(dg.Payload); err == nil {
+			e.directUp.Add(uint64(len(dg.Payload)))
+		}
+		return
+	}
+	// Convert a previous tunnel session for this tuple to direct
+	// (learned IP appeared after the first packet): free its tag
+	// so no later tagged response can land on a direct session.
+	if ok && sess.tag != 0 {
+		delete(e.udpByTag, sess.tag)
+		sess.tag = 0
+	}
+	conn, err := net.DialUDP("udp", nil, &net.UDPAddr{IP: p.Dst, Port: int(dg.DstPort)})
+	if err != nil {
+		e.mu.Unlock()
+		if e.dg != nil {
+			e.sendUDPTunnel(tuple, p, dg)
+		}
+		return
+	}
+	if !ok {
+		sess = &udpSession{tuple: tuple}
+		e.udp[tuple] = sess
+	}
+	sess.lastAct = time.Now()
+	sess.direct = true
+	sess.directConn = conn
+	e.mu.Unlock()
+	go e.directUDPReadLoop(sess, tuple)
+	if _, err := conn.Write(dg.Payload); err == nil {
+		e.directUp.Add(uint64(len(dg.Payload)))
+	}
+}
+
+// directUDPReadLoop copies direct-UDP return packets back to the
+// TUN until the conn errors or the sweeper closes it. It exits
+// quietly on error; the sweeper reaps the session entry.
+func (e *Engine) directUDPReadLoop(sess *udpSession, tuple FourTuple) {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("mist: direct udp read panic (recovered): %v", r)
+		}
+	}()
+	buf := make([]byte, 65535)
+	for {
+		n, err := sess.directConn.Read(buf)
+		if err != nil {
+			return
+		}
+		data := append([]byte(nil), buf[:n]...)
+		seg := BuildUDP(addrOf(tuple.DstIP), addrOf(tuple.SrcIP), tuple.DstPort, tuple.SrcPort, data)
+		e.writeTUNLocked(tuple, seg)
+		e.directDown.Add(uint64(len(data)))
+		e.mu.Lock()
+		if s, ok := e.udp[tuple]; ok && s == sess {
+			s.lastAct = time.Now()
+		}
+		e.mu.Unlock()
+	}
+}
+
+// onDatagram is the legacy untagged entry point, kept for callers
+// that still use DatagramHandler: it is exactly onDatagramTagged
+// with tag 0.
 func (e *Engine) onDatagram(srcAddr string, data []byte) {
-	host, portStr, err := net.SplitHostPort(srcAddr)
-	if err != nil {
-		return
-	}
-	port, err := net.LookupPort("udp", portStr)
-	if err != nil {
-		return
-	}
+	e.onDatagramTagged(srcAddr, 0, data)
+}
+
+// onDatagramTagged routes a relay response back to the app's TUN
+// packet. tag != 0 routes by udpByTag ONLY: a miss is dropped,
+// never fallen back, or two same-target sessions would cross-wire
+// again through the fallback. tag == 0 is the old path: DNS first
+// (transaction ID), then most-recent session for the destination.
+func (e *Engine) onDatagramTagged(srcAddr string, tag uint8, data []byte) {
 	e.mu.Lock()
 	var tuple FourTuple
 	var ok bool
-	// DNS first: the transaction ID tells concurrent queries to
-	// the same server apart. Anything else falls back to the most
-	// recent session for this destination (the old overwrite
-	// semantics), which stays correct while only one session is
-	// live per destination.
-	if port == 53 && len(data) >= 2 {
-		txID := binary.BigEndian.Uint16(data[:2])
-		if t, hit := e.udpByDNS[dnsKey(host, uint16(port), txID)]; hit {
+	srcPort := uint16(0)
+	if tag != 0 {
+		if t, hit := e.udpByTag[tag]; hit {
 			tuple, ok = t, true
 		}
-	}
-	if !ok {
-		if list := e.udpByDst[dstKey(host, uint16(port))]; len(list) > 0 {
-			tuple, ok = list[len(list)-1], true
+		if !ok {
+			// Tagged response for an unknown/expired session:
+			// drop, never fall back to another session.
+			e.mu.Unlock()
+			return
 		}
-	}
-	if !ok {
-		e.mu.Unlock()
-		return
+		// Return segment ports come from the session: the relay
+		// source address is the original target, which equals
+		// the session destination, but the session is authoritative.
+		srcPort = tuple.DstPort
+	} else {
+		host, portStr, err := net.SplitHostPort(srcAddr)
+		if err != nil {
+			e.mu.Unlock()
+			return
+		}
+		port, err := net.LookupPort("udp", portStr)
+		if err != nil {
+			e.mu.Unlock()
+			return
+		}
+		// DNS first: the transaction ID tells concurrent queries to
+		// the same server apart. Anything else falls back to the most
+		// recent session for this destination (the old overwrite
+		// semantics), which stays correct while only one session is
+		// live per destination.
+		if port == 53 && len(data) >= 2 {
+			txID := binary.BigEndian.Uint16(data[:2])
+			if t, hit := e.udpByDNS[dnsKey(host, uint16(port), txID)]; hit {
+				tuple, ok = t, true
+			}
+		}
+		if !ok {
+			if list := e.udpByDst[dstKey(host, uint16(port))]; len(list) > 0 {
+				tuple, ok = list[len(list)-1], true
+			}
+		}
+		if !ok {
+			e.mu.Unlock()
+			return
+		}
+		srcPort = uint16(port)
+		// The relay source host is the original target; it must
+		// equal the session destination in the normal case. Use
+		// the session destination for the return source so a
+		// mismatched relay address cannot redirect the packet.
+		_ = host
 	}
 	if s, ok := e.udp[tuple]; ok {
 		s.lastAct = time.Now()
 	}
 	e.mu.Unlock()
-	srcIP := addrOf(host)
+	srcIP := addrOf(tuple.DstIP)
 	dstIP := addrOf(tuple.SrcIP)
-	udpSeg := BuildUDP(srcIP, dstIP, uint16(port), tuple.SrcPort, data)
+	udpSeg := BuildUDP(srcIP, dstIP, srcPort, tuple.SrcPort, data)
 	e.mu.Lock()
 	e.writeTUNLocked(tuple, udpSeg)
 	e.mu.Unlock()
@@ -975,7 +1286,10 @@ func appendTuple(list []FourTuple, tuple FourTuple) []FourTuple {
 }
 
 // removeUDPTupleLocked drops tuple from every return-routing index.
-// Callers hold e.mu (currently only the sweeper).
+// Callers hold e.mu (currently only the sweeper). Tag entries are
+// cleared here too, so a later tagged response for a reaped session
+// is dropped by onDatagramTagged instead of landing on a recycled
+// tuple.
 func (e *Engine) removeUDPTupleLocked(tuple FourTuple) {
 	for dst, list := range e.udpByDst {
 		kept := list[:0]
@@ -993,6 +1307,11 @@ func (e *Engine) removeUDPTupleLocked(tuple FourTuple) {
 	for key, t := range e.udpByDNS {
 		if t == tuple {
 			delete(e.udpByDNS, key)
+		}
+	}
+	for tag, t := range e.udpByTag {
+		if t == tuple {
+			delete(e.udpByTag, tag)
 		}
 	}
 }
@@ -1052,6 +1371,7 @@ func (e *Engine) sweeper(ctx context.Context) {
 		case now := <-t.C:
 			e.mu.Lock()
 			var idle []*tcpConn
+			var directConns []*net.UDPConn
 			for tuple, c := range e.tcp {
 				// Idle-based, not age-based: a long-lived but
 				// active connection (persistent app session) must
@@ -1066,6 +1386,9 @@ func (e *Engine) sweeper(ctx context.Context) {
 				if now.Sub(s.lastAct) > 2*time.Minute {
 					delete(e.udp, tuple)
 					e.removeUDPTupleLocked(tuple)
+					if s.directConn != nil {
+						directConns = append(directConns, s.directConn)
+					}
 				}
 			}
 			e.mu.Unlock()
@@ -1074,6 +1397,9 @@ func (e *Engine) sweeper(ctx context.Context) {
 				c.stream.Close()
 				stopTCPWriterLocked(c)
 			}
+			for _, dc := range directConns {
+				dc.Close()
+			}
 		}
 	}
 }
@@ -1081,21 +1407,38 @@ func (e *Engine) sweeper(ctx context.Context) {
 // NewEngineForMobile creates an engine for gomobile binding.
 // It accepts concrete *MistUDPClient instead of ProtocolClient interface,
 // so gomobile does not need to bind the interface types.
+// Split/adblock default off here (the zero EngineConfig); the mobile
+// layer enables both by default via NewEngineForMobileWithConfig.
 func NewEngineForMobile(tun TUNDevice, client *MistUDPClient) *Engine {
+	return NewEngineForMobileWithConfig(tun, client, EngineConfig{})
+}
+
+// NewEngineForMobileWithConfig is NewEngineForMobile with an
+// EngineConfig: the mobile layer passes SplitEnabled/AdblockEnabled
+// (both true by default) and LocalDNS through it at Start time.
+// Live toggles afterwards go through Engine.SetSplitEnabled,
+// SetAdblockEnabled and SetLocalDNS.
+func NewEngineForMobileWithConfig(tun TUNDevice, client *MistUDPClient, cfg EngineConfig) *Engine {
 	e := &Engine{
-		tun:      tun,
-		client:   client,
-		tcp:      make(map[FourTuple]*tcpConn),
-		pending:  make(map[FourTuple]bool),
-		udp:      make(map[FourTuple]*udpSession),
-		udpByDst: make(map[string][]FourTuple),
-		udpByDNS: make(map[string]FourTuple),
-		udpSem:   make(chan struct{}, maxInFlightUDPSends),
-		done:     make(chan struct{}),
+		tun:          tun,
+		client:       client,
+		tcp:          make(map[FourTuple]*tcpConn),
+		pending:      make(map[FourTuple]bool),
+		udp:          make(map[FourTuple]*udpSession),
+		udpByDst:     make(map[string][]FourTuple),
+		udpByDNS:     make(map[string]FourTuple),
+		udpByTag:     make(map[uint8]FourTuple),
+		learnedIPs:   make(map[string]time.Time),
+		localDNS:     parseLocalDNSServers(cfg.LocalDNS),
+		localDNSDial: net.DialTimeout,
+		udpSem:       make(chan struct{}, maxInFlightUDPSends),
+		done:         make(chan struct{}),
 	}
+	e.splitEnabled.Store(cfg.SplitEnabled)
+	e.adblockEnabled.Store(cfg.AdblockEnabled)
 	if dg, ok := interface{}(client).(DatagramClient); ok {
 		e.dg = dg
-		dg.OnDatagram(e.onDatagram)
+		dg.OnDatagramTagged(e.onDatagramTagged)
 	}
 	return e
 }

@@ -111,6 +111,7 @@ type MistUDPClient struct {
 	nextSID byte
 	streams map[byte]*mistStreamConn
 	dgH     DatagramHandler
+	dgTH    DatagramTaggedHandler
 	closed  bool
 	done    chan struct{}
 	wg      sync.WaitGroup
@@ -524,7 +525,7 @@ func (c *MistUDPClient) dispatch(f mistcore.UDPFrame) {
 			st.deliver(f)
 		}
 	case mistcore.UDPFrameDatagram:
-		_, addr, port, data, err := mistcore.DecodeDatagram(f.Payload)
+		_, addr, port, data, tag, err := mistcore.DecodeDatagramTagged(f.Payload)
 		if err != nil {
 			return
 		}
@@ -533,9 +534,13 @@ func (c *MistUDPClient) dispatch(f mistcore.UDPFrame) {
 		// engine never routed it").
 		c.dgReceived.Add(1)
 		c.mu.Lock()
-		h := c.dgH
+		h, th := c.dgH, c.dgTH
 		c.mu.Unlock()
-		if h != nil {
+		// Tagged handler wins when set (the engine registers it);
+		// otherwise the legacy handler gets every datagram.
+		if th != nil {
+			th(datagramSourceAddr(addr, port), tag, data)
+		} else if h != nil {
 			h(datagramSourceAddr(addr, port), data)
 		}
 	case mistcore.UDPFramePing:
@@ -572,10 +577,26 @@ func (c *MistUDPClient) OnDatagram(h DatagramHandler) {
 	c.dgH = h
 }
 
+// OnDatagramTagged sets the handler for inbound relay datagrams
+// with their session tag. When set, dispatch calls it instead of
+// the legacy handler (see dispatch).
+func (c *MistUDPClient) OnDatagramTagged(h DatagramTaggedHandler) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.dgTH = h
+}
+
 // SendDatagram sends a UDP relay datagram to target ("ip:port").
-// Send failures are counted in dgSendErrs (and successes in
-// dgSent); the returned error is unchanged.
+// It is SendDatagramTagged with tag 0 (untagged, old wire format).
 func (c *MistUDPClient) SendDatagram(target string, data []byte) error {
+	return c.SendDatagramTagged(target, 0, data)
+}
+
+// SendDatagramTagged sends a UDP relay datagram to target ("ip:port")
+// with a session tag tail (tag 0 = untagged). Send failures are
+// counted in dgSendErrs (and successes in dgSent); the returned
+// error is unchanged.
+func (c *MistUDPClient) SendDatagramTagged(target string, tag uint8, data []byte) error {
 	host, portStr, err := net.SplitHostPort(target)
 	if err != nil {
 		c.dgSendErrs.Add(1)
@@ -598,7 +619,7 @@ func (c *MistUDPClient) SendDatagram(target string, data []byte) error {
 	} else {
 		atyp, addr = mistcore.ATypIPv6, []byte(ip.To16())
 	}
-	dg := mistcore.EncodeDatagram(atyp, addr, uint16(port), data)
+	dg := mistcore.EncodeDatagramTagged(atyp, addr, uint16(port), data, tag)
 	frame := mistcore.EncodeUDPFrame(mistcore.UDPFrameDatagram, 0, dg)
 	c.mu.Lock()
 	sched := c.sched

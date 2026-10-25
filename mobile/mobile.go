@@ -11,6 +11,10 @@
 //	              GetTunWriteErrors() / GetAcksSent() / GetAckSendErrors()
 //	              GetDatagramsSent() / GetDatagramsSendErrors()
 //	              GetDatagramsReceived() (diagnostics polling)
+//	              SetSplitEnabled() / SetAdblockEnabled() / SetLocalDNS()
+//	              (split + adblock default on; live toggles apply to a
+//	              running engine atomically)
+//	              GetDirectUploadBytes() / GetDirectDownloadBytes()
 //	Ping:         Ping(nodeURL, timeoutSec) -> handshake ms (static)
 //
 // Java mapping (gomobile lowerCamelCase rules; verify against the
@@ -27,6 +31,11 @@
 //	Kotlin: eng.getDatagramsSent()     // Go GetDatagramsSent
 //	Kotlin: eng.getDatagramsSendErrors() // Go GetDatagramsSendErrors
 //	Kotlin: eng.getDatagramsReceived() // Go GetDatagramsReceived
+//	Kotlin: eng.setSplitEnabled(true)  // Go SetSplitEnabled
+//	Kotlin: eng.setAdblockEnabled(true) // Go SetAdblockEnabled
+//	Kotlin: eng.setLocalDNS("223.5.5.5") // Go SetLocalDNS
+//	Kotlin: eng.getDirectUploadBytes() // Go GetDirectUploadBytes
+//	Kotlin: eng.getDirectDownloadBytes() // Go GetDirectDownloadBytes
 //	Kotlin: Mobile.ping(url, 5)        // Go Ping; throws on error
 //
 // TUN fd ownership: Kotlin passes the fd from ParcelFileDescriptor
@@ -99,10 +108,19 @@ type MobileEngine struct {
 	cancel  context.CancelFunc
 	runDone chan struct{}
 	running bool
+	// Split/adblock defaults: both on. Start passes them to the
+	// engine as EngineConfig; the setters below update both the
+	// stored value (for a later Start) and a live engine.
+	splitEnabled   bool
+	adblockEnabled bool
+	localDNS       string // comma-separated; "" = default domestic public DNS
 }
 
-// NewMobileEngine creates a stopped engine handle.
-func NewMobileEngine() *MobileEngine { return &MobileEngine{} }
+// NewMobileEngine creates a stopped engine handle with split
+// routing and DNS ad blocking both enabled by default.
+func NewMobileEngine() *MobileEngine {
+	return &MobileEngine{splitEnabled: true, adblockEnabled: true}
+}
 
 // Start builds a Mist client from a mist:// node link, wraps tunFd as
 // the TUN device, and starts the forwarding engine. tunFd ownership
@@ -125,10 +143,18 @@ func (m *MobileEngine) Start(tunFd int, nodeURL string) error {
 		return err
 	}
 	tun := &fdTUN{f: os.NewFile(uintptr(tunFd), "tun")}
-	// Use core.NewEngineForMobile (concrete *core.MistUDPClient) instead of
-	// NewEngine (ProtocolClient interface) to keep gomobile from
-	// trying to bind the interface types.
-	engine := core.NewEngineForMobile(tun, client)
+	// Use core.NewEngineForMobileWithConfig (concrete
+	// *core.MistUDPClient) instead of NewEngine (ProtocolClient
+	// interface) to keep gomobile from trying to bind the
+	// interface types. Split + adblock default on (see
+	// NewMobileEngine); SetSplitEnabled/SetAdblockEnabled/
+	// SetLocalDNS called before Start are honored here, and
+	// afterwards they update the live engine atomically.
+	engine := core.NewEngineForMobileWithConfig(tun, client, core.EngineConfig{
+		SplitEnabled:   m.splitEnabled,
+		AdblockEnabled: m.adblockEnabled,
+		LocalDNS:       m.localDNS,
+	})
 	ctx, cancel := context.WithCancel(context.Background())
 	m.engine = engine
 	m.client = client
@@ -212,6 +238,65 @@ func (m *MobileEngine) GetDownloadBytes() int64 {
 		return 0
 	}
 	return int64(e.Stats().DownloadBytes)
+}
+
+// SetSplitEnabled toggles split routing (domestic/private direct,
+// rest via tunnel). It updates the stored default and, when the
+// engine is running, the live engine atomically.
+func (m *MobileEngine) SetSplitEnabled(enabled bool) {
+	m.mu.Lock()
+	m.splitEnabled = enabled
+	e := m.engine
+	m.mu.Unlock()
+	if e != nil {
+		e.SetSplitEnabled(enabled)
+	}
+}
+
+// SetAdblockEnabled toggles DNS-layer ad blocking. It updates the
+// stored default and, when the engine is running, the live engine
+// atomically. Ad blocking is independent of split routing: with
+// split off, ads are still blocked before the tunnel.
+func (m *MobileEngine) SetAdblockEnabled(enabled bool) {
+	m.mu.Lock()
+	m.adblockEnabled = enabled
+	e := m.engine
+	m.mu.Unlock()
+	if e != nil {
+		e.SetAdblockEnabled(enabled)
+	}
+}
+
+// SetLocalDNS replaces the local resolvers used for domestic DNS
+// (comma-separated IPs/hosts; empty restores the default domestic
+// public DNS). It updates the stored value and, when the engine is
+// running, the live engine atomically.
+func (m *MobileEngine) SetLocalDNS(servers string) {
+	m.mu.Lock()
+	m.localDNS = servers
+	e := m.engine
+	m.mu.Unlock()
+	if e != nil {
+		e.SetLocalDNS(servers)
+	}
+}
+
+// GetDirectUploadBytes returns cumulative bytes sent on direct
+// (non-tunnel) paths: direct TCP dials and direct UDP.
+func (m *MobileEngine) GetDirectUploadBytes() int64 {
+	if s, ok := m.engineStats(); ok {
+		return int64(s.DirectUploadBytes)
+	}
+	return 0
+}
+
+// GetDirectDownloadBytes returns cumulative bytes received on
+// direct (non-tunnel) paths.
+func (m *MobileEngine) GetDirectDownloadBytes() int64 {
+	if s, ok := m.engineStats(); ok {
+		return int64(s.DirectDownloadBytes)
+	}
+	return 0
 }
 
 // engineStats returns the engine's current Stats, or false when the
