@@ -32,6 +32,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/url"
 	"strings"
@@ -128,6 +129,21 @@ type MistUDPClient struct {
 	dgSent     atomic.Uint64
 	dgSendErrs atomic.Uint64
 	dgReceived atomic.Uint64
+	// pumpLastIter records the last readPump loop iteration (unix
+	// nano). The watchdog uses it as a liveness signal: it refreshes
+	// at least every 500ms even on an idle session (read deadline),
+	// so a stale value means readPump died or wedged — not idleness.
+	pumpLastIter atomic.Int64
+	// pumpDeaths counts readPump exits and watchdog-detected stalls.
+	// A nonzero count with zero traffic is the first signal that the
+	// session is dead while the UI still shows "connected".
+	pumpDeaths atomic.Uint64
+	// pumpDead marks a watchdog episode already counted, so a dead
+	// pump logs once instead of every watchdog tick.
+	pumpDead atomic.Bool
+	// pendingRSTs counts streams reset because their out-of-order
+	// reorder buffer exceeded the cap (see maxStreamPending*).
+	pendingRSTs atomic.Uint64
 }
 
 // NewMistUDPClient parses cfg and prepares (but does not connect) a client.
@@ -168,6 +184,13 @@ func (c *MistUDPClient) AckStats() (sent, errs uint64) {
 // diagnosis.
 func (c *MistUDPClient) DatagramStats() (sent, sendErrs, received uint64) {
 	return c.dgSent.Load(), c.dgSendErrs.Load(), c.dgReceived.Load()
+}
+
+// HealthStats reports readPump deaths (exits + watchdog-detected
+// stalls) and streams reset by the reorder-buffer cap. It implements
+// HealthStatser so Engine.Stats can surface it for diagnosis.
+func (c *MistUDPClient) HealthStats() (readPumpDeaths, streamPendingResets uint64) {
+	return c.pumpDeaths.Load(), c.pendingRSTs.Load()
 }
 
 // Connect performs the Mist UDP handshake. Safe to call repeatedly;
@@ -240,11 +263,21 @@ func (c *MistUDPClient) Connect(ctx context.Context) error {
 		return nil
 	}
 	c.sched.Start()
-	c.wg.Add(2)
+	c.wg.Add(3)
 	go c.readPump()
 	go c.tickLoop()
+	go c.watchdogLoop(readPumpWatchdogTick, readPumpWatchdogStale)
 	return nil
 }
+
+// readPumpWatchdogTick is how often the watchdog checks readPump
+// liveness; readPumpWatchdogStale is how long without an iteration
+// counts as stalled (readPump iterates at least every 500ms even
+// when idle, so 2s is far outside normal scheduling jitter).
+const (
+	readPumpWatchdogTick  = time.Second
+	readPumpWatchdogStale = 2 * time.Second
+)
 
 // handshake runs Initial + AUTH + AUTH_OK and returns a live session.
 func (c *MistUDPClient) handshake(ctx context.Context, conn *net.UDPConn, udpAddr *net.UDPAddr) (*mistcore.UDPSession, error) {
@@ -336,10 +369,33 @@ func (c *MistUDPClient) handshake(ctx context.Context, conn *net.UDPConn, udpAdd
 }
 
 // readPump decrypts incoming datagrams and dispatches frames.
+//
+// A panic here used to kill the whole app process (Go panics are
+// process-fatal, and this runs under JNI): recover converts it to a
+// log + counted death instead, so the session degrades to a
+// diagnosable stall rather than a crash. An unexpected exit (not via
+// Close) is counted in pumpDeaths: it is the first signal when the
+// tunnel stops passing traffic while the UI still shows "connected".
+// The watchdog (below) covers the wedged-but-not-exited case.
 func (c *MistUDPClient) readPump() {
 	defer c.wg.Done()
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("mist: readPump panic (recovered): %v", r)
+		}
+		select {
+		case <-c.done:
+			// Normal stop via Close.
+		default:
+			c.pumpDeaths.Add(1)
+			log.Printf("mist: readPump died unexpectedly (deaths=%d)", c.pumpDeaths.Load())
+		}
+	}()
 	buf := make([]byte, 65535)
 	for {
+		// Liveness heartbeat for the watchdog: refreshes at least
+		// every 500ms even on an idle session (read deadline).
+		c.pumpLastIter.Store(time.Now().UnixNano())
 		c.mu.Lock()
 		conn := c.conn
 		c.mu.Unlock()
@@ -357,6 +413,10 @@ func (c *MistUDPClient) readPump() {
 			if ne, ok := err.(net.Error); ok && ne.Timeout() {
 				continue
 			}
+			// Non-timeout UDP error (e.g. socket closed by the
+			// OS, ICMP hard error): the old code returned here
+			// silently and inbound traffic stopped forever.
+			// Now the exit is counted + logged above.
 			return
 		}
 		c.mu.Lock()
@@ -382,6 +442,11 @@ func (c *MistUDPClient) readPump() {
 // tickLoop flushes ACKs and scans RTOs every 10ms (server does the same).
 func (c *MistUDPClient) tickLoop() {
 	defer c.wg.Done()
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("mist: tickLoop panic (recovered): %v", r)
+		}
+	}()
 	t := time.NewTicker(10 * time.Millisecond)
 	defer t.Stop()
 	for {
@@ -394,6 +459,45 @@ func (c *MistUDPClient) tickLoop() {
 			c.mu.Unlock()
 			if session != nil {
 				session.Tick()
+			}
+		}
+	}
+}
+
+// watchdogLoop watches readPump liveness: if readPump has not
+// iterated for longer than stale, it counts one death episode and
+// logs. It fires once per episode (pumpDead) so a dead pump does not
+// spam the log every tick, and it clears when iterations resume
+// (e.g. a transient stall that recovered). It deliberately does NOT
+// restart readPump: restarting would race the old pump on the same
+// socket; a counted stall is for the UI layer to surface and for
+// reconnect to recover from. tick/stale are parameters so tests can
+// use short values; production passes readPumpWatchdogTick/Stale.
+func (c *MistUDPClient) watchdogLoop(tick, stale time.Duration) {
+	defer c.wg.Done()
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("mist: watchdog panic (recovered): %v", r)
+		}
+	}()
+	t := time.NewTicker(tick)
+	defer t.Stop()
+	for {
+		select {
+		case <-c.done:
+			return
+		case <-t.C:
+			last := c.pumpLastIter.Load()
+			if last == 0 {
+				continue // readPump has not started yet
+			}
+			if idle := time.Since(time.Unix(0, last)); idle > stale {
+				if !c.pumpDead.Swap(true) {
+					c.pumpDeaths.Add(1)
+					log.Printf("mist: readPump stalled (no iteration for %v, deaths=%d)", idle, c.pumpDeaths.Load())
+				}
+			} else {
+				c.pumpDead.Store(false)
 			}
 		}
 	}
@@ -622,7 +726,22 @@ func (c *MistUDPClient) Close() error {
 	if conn != nil {
 		conn.Close()
 	}
-	c.wg.Wait()
+	// Bounded wait: Stop is called from the app's teardown path
+	// (which may run on the UI thread), so Close must never block
+	// forever on a wedged goroutine. 5s mirrors Mobile.Stop's
+	// runDone bound; a timeout is logged and Close still returns —
+	// the leaked goroutine holds no socket (conn is closed above)
+	// and exits on its next deadline/error check.
+	waitDone := make(chan struct{})
+	go func() {
+		c.wg.Wait()
+		close(waitDone)
+	}()
+	select {
+	case <-waitDone:
+	case <-time.After(5 * time.Second):
+		log.Printf("mist: client close timed out waiting for goroutines")
+	}
 	return nil
 }
 
@@ -638,12 +757,20 @@ type mistStreamConn struct {
 	sid    byte
 	remote string
 
-	mu       sync.Mutex
-	cond     *sync.Cond
-	buf      []byte            // contiguous bytes ready to read
-	pending  map[uint64][]byte // out-of-order chunks by offset
-	nextRead uint64            // next offset to deliver
-	writeOff uint64
+	mu      sync.Mutex
+	cond    *sync.Cond
+	buf     []byte            // contiguous bytes ready to read
+	pending map[uint64][]byte // out-of-order chunks by offset
+	// pendingBytes is the total bytes held in pending; pendingSince
+	// is when the current gap opened (first out-of-order chunk for
+	// it). Both are guarded by mu. A gap that never fills used to
+	// grow pending without bound (the peer keeps sending while the
+	// missing chunk's retransmit never arrives on a wedged session),
+	// eating phone memory until GC starvation froze the app.
+	pendingBytes int
+	pendingSince time.Time
+	nextRead     uint64 // next offset to deliver
+	writeOff     uint64
 	// writeMu serializes Write end to end: offset load, frame send,
 	// offset store. It is deliberately separate from mu: mu guards the
 	// read side (cond waits on it), so holding mu across a blocking
@@ -668,16 +795,38 @@ func newMistStreamConn(c *MistUDPClient, sid byte, remote string) *mistStreamCon
 	return st
 }
 
+// maxStreamPendingBytes caps one stream's out-of-order reorder
+// buffer; maxStreamPendingAge caps how long a gap may stay open.
+// Either trip resets the stream (see deliver). 16MB is deliberately
+// generous: at 140 Mbps a single ~300ms RTO gap legitimately holds
+// ~5MB, so a small cap would kill healthy high-speed streams on
+// every loss; but an unbounded buffer on a truly wedged session is
+// what ate memory until the app froze. The 5s age trip catches gaps
+// whose retransmits never arrive even at low rates. Resetting (not
+// silently dropping chunks) is the only safe response: dropping a
+// pending chunk would leave a permanent hole in the byte stream
+// (the datagram was already ACKed, so the peer will not resend it),
+// corrupting everything after it; RST fails the connection fast so
+// the app can retry instead.
+const (
+	maxStreamPendingBytes = 16 << 20
+	maxStreamPendingAge   = 5 * time.Second
+)
+
+var errPendingOverflow = errors.New("mist: stream reorder buffer overflow")
+
 // deliver routes one frame into the reorder buffer.
 func (st *mistStreamConn) deliver(f mistcore.UDPFrame) {
 	st.mu.Lock()
-	defer st.mu.Unlock()
 	if st.closed {
+		st.mu.Unlock()
 		return
 	}
+	needReset := false
 	switch f.Type {
 	case mistcore.UDPFrameStream:
 		if len(f.Payload) < 8 {
+			st.mu.Unlock()
 			return
 		}
 		off := binary.BigEndian.Uint64(f.Payload[:8])
@@ -686,6 +835,7 @@ func (st *mistStreamConn) deliver(f mistcore.UDPFrame) {
 			// Retransmit overlap: trim already-delivered prefix.
 			skip := st.nextRead - off
 			if skip >= uint64(len(data)) {
+				st.mu.Unlock()
 				return
 			}
 			data = data[skip:]
@@ -701,12 +851,28 @@ func (st *mistStreamConn) deliver(f mistcore.UDPFrame) {
 					break
 				}
 				delete(st.pending, st.nextRead)
+				st.pendingBytes -= len(chunk)
 				st.buf = append(st.buf, chunk...)
 				st.nextRead += uint64(len(chunk))
 			}
+			if len(st.pending) == 0 {
+				st.pendingSince = time.Time{}
+			}
 		} else {
 			if _, ok := st.pending[off]; !ok {
+				if len(st.pending) == 0 {
+					st.pendingSince = time.Now()
+				}
 				st.pending[off] = data
+				st.pendingBytes += len(data)
+				// Cap trip: fail the stream fast instead of
+				// eating memory forever on a wedged session.
+				if st.pendingBytes > maxStreamPendingBytes ||
+					time.Since(st.pendingSince) > maxStreamPendingAge {
+					st.err = errPendingOverflow
+					st.closed = true
+					needReset = true
+				}
 			}
 		}
 		st.cond.Broadcast()
@@ -716,6 +882,30 @@ func (st *mistStreamConn) deliver(f mistcore.UDPFrame) {
 	case mistcore.UDPFrameRst:
 		st.err = errors.New("mist: stream reset")
 		st.cond.Broadcast()
+	}
+	st.mu.Unlock()
+	if needReset {
+		st.c.resetStream(st)
+	}
+}
+
+// resetStream removes a stream from the client table, counts the
+// reset, and best-effort sends an RST frame (non-blocking: deliver
+// runs on readPump, which must never stall on a full scheduler
+// queue). Called after deliver already marked the stream closed
+// under st.mu, so this only handles the client-table side.
+func (c *MistUDPClient) resetStream(st *mistStreamConn) {
+	c.mu.Lock()
+	sched := c.sched
+	if _, ok := c.streams[st.sid]; ok {
+		delete(c.streams, st.sid)
+	}
+	c.mu.Unlock()
+	c.pendingRSTs.Add(1)
+	log.Printf("mist: stream %d reset (reorder buffer overflow, resets=%d)", st.sid, c.pendingRSTs.Load())
+	if sched != nil {
+		rst := mistcore.EncodeUDPFrame(mistcore.UDPFrameRst, st.sid, nil)
+		_ = sched.TryWrite([][]byte{rst})
 	}
 }
 
@@ -838,11 +1028,34 @@ func (st *mistStreamConn) Write(b []byte) (int, error) {
 }
 
 // Close implements net.Conn: send FIN, free the SID.
+//
+// It NEVER blocks: both waits the old code could hit are removed.
+//   - writeMu: taken with TryLock. A Write wedged in scheduler
+//     Write (full queue on a stalled session) used to hold writeMu
+//     forever, so Close blocked forever — and the engine calls
+//     Close while holding e.mu, wedging the whole tunnel and,
+//     through the app's teardown path, the UI thread.
+//     When TryLock fails the SID is still freed and readers still
+//     unblocked below; only the best-effort FIN is skipped, and the
+//     peer times the stream out.
+//   - scheduler queue: the FIN goes through TryWrite, which drops
+//     (rather than waits) when the queue is full. The local SID is
+//     freed regardless of FIN delivery.
+//
+// Close also unblocks pending Reads with errClosed: the old code
+// left a blocked Read waiting forever (closed set, but neither err
+// nor eof), leaking the pumpTCP goroutine per closed connection.
 func (st *mistStreamConn) Close() error {
-	// Serialize against in-flight Writes so the FIN offset covers all
-	// data already handed to Write; otherwise FIN could overtake
-	// pending frames and the peer would discard them.
-	st.writeMu.Lock()
+	if !st.writeMu.TryLock() {
+		// Wedged writer: free the SID and unblock readers now,
+		// without waiting for the in-flight Write. The FIN is
+		// best-effort and skipped; the peer times out.
+		st.markClosed(errClosed)
+		st.c.mu.Lock()
+		delete(st.c.streams, st.sid)
+		st.c.mu.Unlock()
+		return nil
+	}
 	defer st.writeMu.Unlock()
 	st.mu.Lock()
 	if st.closed {
@@ -850,8 +1063,12 @@ func (st *mistStreamConn) Close() error {
 		return nil
 	}
 	st.closed = true
+	if st.err == nil {
+		st.err = errClosed
+	}
 	off := st.writeOff
 	st.mu.Unlock()
+	st.cond.Broadcast()
 	c := st.c
 	c.mu.Lock()
 	sched := c.sched
@@ -859,9 +1076,8 @@ func (st *mistStreamConn) Close() error {
 	c.mu.Unlock()
 	if sched != nil {
 		fin := mistcore.EncodeFinFrame(st.sid, off)
-		_ = sched.Write([][]byte{fin})
+		_ = sched.TryWrite([][]byte{fin})
 	}
-	st.cond.Broadcast()
 	return nil
 }
 
