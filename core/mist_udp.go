@@ -36,6 +36,7 @@ import (
 	"net/url"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"mist/mistcore"
@@ -112,6 +113,12 @@ type MistUDPClient struct {
 	closed  bool
 	done    chan struct{}
 	wg      sync.WaitGroup
+	// acksSent/ackSendErrs count ACK packets transmitted from the
+	// OnAckNeeded callback (success vs seal/write failure). Exposed
+	// via AckStats so a stalled return path can tell "client never
+	// sent ACKs" apart from "server never processed them".
+	acksSent    atomic.Uint64
+	ackSendErrs atomic.Uint64
 }
 
 // NewMistUDPClient parses cfg and prepares (but does not connect) a client.
@@ -138,6 +145,13 @@ func NewMistUDPClient(cfg MistConfig) (*MistUDPClient, error) {
 
 // Name implements ProtocolClient.
 func (c *MistUDPClient) Name() string { return "mist" }
+
+// AckStats reports ACK packets sent from the OnAckNeeded callback
+// (sent) and seal/write failures (errs). It implements AckStatser
+// so Engine.Stats can surface it for return-path diagnosis.
+func (c *MistUDPClient) AckStats() (sent, errs uint64) {
+	return c.acksSent.Load(), c.ackSendErrs.Load()
+}
 
 // Connect performs the Mist UDP handshake. Safe to call repeatedly;
 // subsequent calls return the existing session.
@@ -186,9 +200,15 @@ func (c *MistUDPClient) Connect(ctx context.Context) error {
 		ack := mistcore.EncodeAckFrame(0, largest, ackDelay, ranges)
 		pkt, err := session.SealPacketUntracked(mistcore.DirC2S, [][]byte{ack})
 		if err != nil {
+			c.ackSendErrs.Add(1)
 			return
 		}
-		_, _ = conn.WriteToUDP(pkt, udpAddr)
+		n, err := conn.WriteToUDP(pkt, udpAddr)
+		if err != nil || n < len(pkt) {
+			c.ackSendErrs.Add(1)
+			return
+		}
+		c.acksSent.Add(1)
 	}
 	session.Rel.OnRetransmit = func(frames [][]byte) error {
 		c.sched.WriteRetransmitChunked(frames)

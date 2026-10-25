@@ -50,6 +50,8 @@ type Stats struct {
 	UploadRate     uint64 // bytes/sec
 	DownloadRate   uint64 // bytes/sec
 	TunWriteErrors uint64 // failed/short TUN writes (return-path health)
+	AcksSent       uint64 // ACK packets transmitted by the client
+	AckSendErrors  uint64 // ACK seal/write failures on the client
 	UpdatedAt      time.Time
 }
 
@@ -57,6 +59,12 @@ type Stats struct {
 type StatsCollector interface {
 	// Report uploads traffic stats.
 	Report(s Stats)
+}
+
+// AckStatser is an optional ProtocolClient extension reporting ACK
+// transmission counts (used by the engine to surface them in Stats).
+type AckStatser interface {
+	AckStats() (sent, errs uint64)
 }
 
 // DatagramClient is an optional ProtocolClient extension for

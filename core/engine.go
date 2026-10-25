@@ -149,12 +149,16 @@ func (e *Engine) Close() error {
 
 // Stats returns cumulative traffic counters.
 func (e *Engine) Stats() Stats {
-	return Stats{
+	s := Stats{
 		UploadBytes:    e.upBytes.Load(),
 		DownloadBytes:  e.downBytes.Load(),
 		TunWriteErrors: e.tunWriteErrs.Load(),
 		UpdatedAt:      time.Now(),
 	}
+	if as, ok := e.client.(AckStatser); ok {
+		s.AcksSent, s.AckSendErrors = as.AckStats()
+	}
+	return s
 }
 
 // handlePacket parses one IP packet and dispatches by protocol.
