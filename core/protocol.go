@@ -45,11 +45,12 @@ type TUNDevice interface {
 
 // Stats collects traffic statistics.
 type Stats struct {
-	UploadBytes   uint64
-	DownloadBytes uint64
-	UploadRate    uint64 // bytes/sec
-	DownloadRate  uint64 // bytes/sec
-	UpdatedAt     time.Time
+	UploadBytes    uint64
+	DownloadBytes  uint64
+	UploadRate     uint64 // bytes/sec
+	DownloadRate   uint64 // bytes/sec
+	TunWriteErrors uint64 // failed/short TUN writes (return-path health)
+	UpdatedAt      time.Time
 }
 
 // StatsCollector receives traffic updates.

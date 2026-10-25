@@ -310,3 +310,100 @@ func TestEngineTCPSYN(t *testing.T) {
 		}
 	}
 }
+
+// TestEngineTCPChunking is the regression test for the 1.0.33
+// return-path failure: one 5000-byte server reply must arrive as
+// several IP packets each within the TUN MTU (1400), with contiguous
+// sequence numbers, not as one oversized DF packet.
+func TestEngineTCPChunking(t *testing.T) {
+	tun := newMockTUN()
+	srvCh := make(chan net.Conn, 1)
+	cli := &mockClient{
+		dialFunc: func(addr string) (net.Conn, error) {
+			cli, srv := net.Pipe()
+			srvCh <- srv
+			return cli, nil
+		},
+	}
+	e := NewEngine(EngineConfig{TUN: tun, Client: cli})
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	go e.Run(ctx)
+
+	appIP := net.ParseIP("10.0.0.2")
+	dstIP := net.ParseIP("1.2.3.4")
+	syn := BuildTCP(appIP, dstIP, 40000, 443, 1000, 0, TCPSyn, nil)
+	tun.readCh <- BuildIPv4(appIP, dstIP, ProtoTCP, 1, syn)
+
+	var synAck []byte
+	select {
+	case synAck = <-tun.writeCh:
+	case <-time.After(3 * time.Second):
+		t.Fatal("no SYN-ACK")
+	}
+	p, err := ParseIP(synAck)
+	if err != nil {
+		t.Fatalf("parse synack: %v", err)
+	}
+	seg, err := ParseTCP(p.Payload)
+	if err != nil {
+		t.Fatalf("parse synack tcp: %v", err)
+	}
+	ack := BuildTCP(appIP, dstIP, 40000, 443, 1001, seg.Seq+1, TCPAck, nil)
+	tun.readCh <- BuildIPv4(appIP, dstIP, ProtoTCP, 2, ack)
+
+	var srv net.Conn
+	select {
+	case srv = <-srvCh:
+	case <-time.After(3 * time.Second):
+		t.Fatal("dial never happened")
+	}
+	big := make([]byte, 5000)
+	for i := range big {
+		big[i] = byte(i % 251)
+	}
+	go func() {
+		_, _ = srv.Write(big)
+	}()
+
+	var got []byte
+	var wantSeq uint32
+	first := true
+	deadline := time.Now().Add(3 * time.Second)
+	for len(got) < len(big) {
+		select {
+		case out := <-tun.writeCh:
+			if len(out) > 1400 {
+				t.Fatalf("oversized TUN packet: %d bytes", len(out))
+			}
+			pp, err := ParseIP(out)
+			if err != nil {
+				t.Fatalf("parse seg: %v", err)
+			}
+			ss, err := ParseTCP(pp.Payload)
+			if err != nil {
+				t.Fatalf("parse tcp: %v", err)
+			}
+			if len(ss.Payload) == 0 {
+				continue // engine ACK for app segments
+			}
+			if first {
+				wantSeq = ss.Seq
+				first = false
+			}
+			if ss.Seq != wantSeq {
+				t.Fatalf("seq gap: got %d want %d", ss.Seq, wantSeq)
+			}
+			wantSeq += uint32(len(ss.Payload))
+			got = append(got, ss.Payload...)
+		case <-time.After(time.Until(deadline)):
+			t.Fatalf("only %d/%d bytes arrived", len(got), len(big))
+		}
+	}
+	if string(got) != string(big) {
+		t.Fatal("reassembled payload mismatch")
+	}
+	if e.Stats().TunWriteErrors != 0 {
+		t.Fatalf("unexpected tun write errors: %d", e.Stats().TunWriteErrors)
+	}
+}

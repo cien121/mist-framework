@@ -21,6 +21,7 @@ import (
 	"crypto/rand"
 	"encoding/binary"
 	"fmt"
+	"log"
 	"net"
 	"sync"
 	"sync/atomic"
@@ -50,8 +51,12 @@ type Engine struct {
 	id        uint32
 	upBytes   atomic.Uint64
 	downBytes atomic.Uint64
-	done      chan struct{}
-	closed    atomic.Bool
+	// tunWriteErrs counts failed/short TUN writes (was silently
+	// swallowed before; a nonzero count is the first thing to check
+	// when return traffic stalls).
+	tunWriteErrs atomic.Uint64
+	done         chan struct{}
+	closed       atomic.Bool
 }
 
 type tcpConn struct {
@@ -145,9 +150,10 @@ func (e *Engine) Close() error {
 // Stats returns cumulative traffic counters.
 func (e *Engine) Stats() Stats {
 	return Stats{
-		UploadBytes:   e.upBytes.Load(),
-		DownloadBytes: e.downBytes.Load(),
-		UpdatedAt:     time.Now(),
+		UploadBytes:    e.upBytes.Load(),
+		DownloadBytes:  e.downBytes.Load(),
+		TunWriteErrors: e.tunWriteErrs.Load(),
+		UpdatedAt:      time.Now(),
 	}
 }
 
@@ -289,7 +295,16 @@ func (e *Engine) dialTCP(ctx context.Context, p *IPPacket, tuple FourTuple, syn 
 	go e.pumpTCP(conn)
 }
 
-// pumpTCP copies stream data back to the app as TCP segments.
+// maxTCPSegmentPayload caps one return segment's payload so the
+// resulting IP packet stays under the TUN MTU (Weave sets 1400):
+// 1200 + 20 (TCP) + 20/40 (IPv4/IPv6) <= 1260/1280. A single Read of
+// up to 8192 bytes must never become one 8232-byte DF packet: the
+// phone stack drops oversized DF packets, which was the 1.0.33
+// return-path failure (SYN-ACKs arrived, bulk TCP data did not).
+const maxTCPSegmentPayload = 1200
+
+// pumpTCP copies stream data back to the app as TCP segments,
+// chunked to maxTCPSegmentPayload with contiguous sequence numbers.
 func (e *Engine) pumpTCP(conn *tcpConn) {
 	buf := make([]byte, 8192)
 	for {
@@ -302,13 +317,21 @@ func (e *Engine) pumpTCP(conn *tcpConn) {
 				return
 			}
 			seq := conn.ourSeq
-			conn.ourSeq += uint32(len(data))
-			seg := BuildTCP(
-				addrOf(conn.tuple.DstIP), addrOf(conn.tuple.SrcIP),
-				conn.tuple.DstPort, conn.tuple.SrcPort,
-				seq, conn.appSeq, TCPPsh|TCPAck, data,
-			)
-			e.writeTUNLocked(conn.tuple, seg)
+			for off := 0; off < len(data); {
+				chunk := len(data) - off
+				if chunk > maxTCPSegmentPayload {
+					chunk = maxTCPSegmentPayload
+				}
+				seg := BuildTCP(
+					addrOf(conn.tuple.DstIP), addrOf(conn.tuple.SrcIP),
+					conn.tuple.DstPort, conn.tuple.SrcPort,
+					seq, conn.appSeq, TCPPsh|TCPAck, data[off:off+chunk],
+				)
+				e.writeTUNLocked(conn.tuple, seg)
+				seq += uint32(chunk)
+				off += chunk
+			}
+			conn.ourSeq = seq
 			e.mu.Unlock()
 			e.downBytes.Add(uint64(len(data)))
 		}
@@ -450,6 +473,9 @@ func addrOf(s string) net.IP {
 
 // writeTUNLocked wraps a segment in an IP packet and writes it to the
 // TUN. Callers hold e.mu (tun writes are additionally serialized).
+// Write failures and short writes are counted (and logged, throttled)
+// instead of silently swallowed: a nonzero TunWriteErrors is the
+// first signal when return traffic stalls.
 func (e *Engine) writeTUNLocked(tuple FourTuple, segment []byte) {
 	var proto uint8
 	if tuple.Proto == ProtoTCP {
@@ -462,8 +488,14 @@ func (e *Engine) writeTUNLocked(tuple FourTuple, segment []byte) {
 	e.id++
 	pkt := BuildIP(src, dst, proto, uint16(e.id), segment)
 	e.tunMu.Lock()
-	_, _ = e.tun.Write(pkt)
+	n, err := e.tun.Write(pkt)
 	e.tunMu.Unlock()
+	if err != nil || n != len(pkt) {
+		c := e.tunWriteErrs.Add(1)
+		if c <= 10 || c%100 == 0 {
+			log.Printf("mist: tun write failed: n=%d len=%d err=%v (count=%d)", n, len(pkt), err, c)
+		}
+	}
 }
 
 // sweeper removes idle connections.
