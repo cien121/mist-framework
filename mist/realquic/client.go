@@ -4,6 +4,8 @@ import (
 	"context"
 	"crypto/rand"
 	"crypto/tls"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"io"
 	"net"
@@ -13,7 +15,6 @@ import (
 
 	"github.com/quic-go/quic-go"
 	"github.com/quic-go/quic-go/http3"
-	"golang.org/x/crypto/curve25519"
 )
 
 // Client is a lab client over one shared QUIC connection. It speaks
@@ -25,6 +26,48 @@ type Client struct {
 	authPath   string
 	qconn      *quic.Conn
 	h3         *http3.ClientConn
+
+	// Step-5 session state, installed by Auth on success only.
+	// codec is nil until then (identity behaviour for pre-AUTH
+	// frames, which the server refuses anyway); session holds the
+	// resume identity for the TCP leg.
+	mu      sync.Mutex
+	codec   PayloadCodec
+	session *sessionParams
+}
+
+// codecOrIdentity returns the session codec once AUTH installed it,
+// and the identity codec before that.
+func (c *Client) codecOrIdentity() PayloadCodec {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if c.codec != nil {
+		return c.codec
+	}
+	return IdentityCodec{}
+}
+
+// setSession installs the session keys after a successful AUTH. It is
+// only called on the success path; a failed AUTH never touches it, so
+// a failed re-AUTH cannot downgrade an established session.
+func (c *Client) setSession(p *sessionParams) {
+	c.mu.Lock()
+	c.session = p
+	c.codec = p.clientCodec()
+	c.mu.Unlock()
+}
+
+// sessionSnapshot returns the current session params, or nil.
+func (c *Client) sessionSnapshot() *sessionParams {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.session
+}
+
+// transportDead reports whether the QUIC connection is gone (context
+// cancelled). The fallback client uses it to decide a TCP-leg resume.
+func (c *Client) transportDead() bool {
+	return c.qconn.Context().Err() != nil
 }
 
 // DialPacketConn dials over pc to remoteAddr (net.PacketConn abstraction).
@@ -60,16 +103,14 @@ func (c *Client) Close() error {
 // freshToken builds a one-use AUTH token with a fresh nonce and a fresh
 // client ephemeral keypair.
 func (c *Client) freshToken() (string, error) {
-	var priv, pub [32]byte
-	var nonce16 [16]byte
-	if _, err := rand.Read(priv[:]); err != nil {
-		return "", err
-	}
-	if _, err := rand.Read(nonce16[:]); err != nil {
-		return "", err
-	}
-	curve25519.ScalarBaseMult(&pub, &priv)
-	return MakeToken(c.key, pub, time.Now(), nonce16), nil
+	token, _, _, err := freshTokenForKey(c.key)
+	return token, err
+}
+
+// freshTokenWithKeys is freshToken plus the ephemeral keypair behind it,
+// which Auth needs to derive the session keys.
+func (c *Client) freshTokenWithKeys() (string, [32]byte, [32]byte, error) {
+	return freshTokenForKey(c.key)
 }
 
 // Request performs one HTTP/3 request on the shared connection and returns
@@ -94,12 +135,50 @@ func (c *Client) Request(ctx context.Context, method, path, token string) (int, 
 }
 
 // Auth sends a fresh-token AUTH request and returns status, body, latency.
+// On success only, it derives the step-5 session keys from the client's
+// ephemeral private key and the server ephemeral public key in the
+// response body, and installs the session codec plus the resume
+// identity. On any failure (non-200, unparsable body, bad server key)
+// the previous session state is left untouched.
 func (c *Client) Auth(ctx context.Context) (int, []byte, time.Duration, error) {
-	token, err := c.freshToken()
+	token, priv, pub, err := c.freshTokenWithKeys()
 	if err != nil {
 		return 0, nil, 0, err
 	}
-	return c.Request(ctx, http.MethodPost, c.authPath, token)
+	status, body, latency, err := c.Request(ctx, http.MethodPost, c.authPath, token)
+	if err != nil || status != http.StatusOK {
+		return status, body, latency, err
+	}
+	var ok authSuccess
+	if err := json.Unmarshal(body, &ok); err != nil {
+		return status, body, latency, err
+	}
+	decoded, err := base64.StdEncoding.DecodeString(ok.ServerEphPub)
+	if err != nil || len(decoded) != 32 {
+		return status, body, latency, errors.New("realquic: AUTH success body has no valid server_eph_pub")
+	}
+	var serverPub [32]byte
+	copy(serverPub[:], decoded)
+	shared, err := deriveShared(priv, serverPub)
+	if err != nil {
+		return status, body, latency, err
+	}
+	c2s, s2c, err := deriveDirectionKeys(shared, pub, serverPub)
+	if err != nil {
+		return status, body, latency, err
+	}
+	params := &sessionParams{c2s: c2s, s2c: s2c}
+	if ok.SessionID != "" && ok.ResumeToken != "" {
+		sid, err1 := base64.StdEncoding.DecodeString(ok.SessionID)
+		tok, err2 := base64.StdEncoding.DecodeString(ok.ResumeToken)
+		if err1 == nil && err2 == nil && len(sid) == 16 && len(tok) == 32 {
+			copy(params.id[:], sid)
+			copy(params.resumeToken[:], tok)
+			params.hasResume = true
+		}
+	}
+	c.setSession(params)
+	return status, body, latency, nil
 }
 
 // Get performs a plain visitor GET (no AUTH) on the shared connection.
@@ -132,12 +211,13 @@ func (c *Client) Connect(ctx context.Context, target string) (*ConnectStream, er
 		_ = str.Close()
 		return nil, err
 	}
-	if err := WriteFrame(str, frameConnect, payload); err != nil {
+	codec := c.codecOrIdentity()
+	if err := WriteFrameCodec(str, frameConnect, payload, codec); err != nil {
 		_ = str.Close()
 		return nil, err
 	}
 	for {
-		fr, err := ReadFrame(str)
+		fr, err := ReadFrameCodec(str, codec)
 		if err != nil {
 			_ = str.Close()
 			return nil, err
@@ -145,7 +225,7 @@ func (c *Client) Connect(ctx context.Context, target string) (*ConnectStream, er
 		switch fr.Type {
 		case frameConnectOK:
 			clearReadDeadline(str)
-			return &ConnectStream{str: str}, nil
+			return &ConnectStream{rw: str, codec: codec, closeFn: str.Close}, nil
 		case frameConnectErr:
 			_ = str.Close()
 			return nil, errors.New("realquic: connect refused: " + string(fr.Payload))
@@ -172,10 +252,11 @@ func (c *Client) RegisterUDP(ctx context.Context, sid [16]byte, target string) e
 	if err != nil {
 		return err
 	}
-	if err := WriteFrame(str, frameRegisterUDP, payload); err != nil {
+	codec := c.codecOrIdentity()
+	if err := WriteFrameCodec(str, frameRegisterUDP, payload, codec); err != nil {
 		return err
 	}
-	fr, err := ReadFrame(str)
+	fr, err := ReadFrameCodec(str, codec)
 	if err != nil {
 		return err
 	}
@@ -190,20 +271,37 @@ func (c *Client) RegisterUDP(ctx context.Context, sid [16]byte, target string) e
 }
 
 // SendDatagram sends one UDP-relay datagram tagged with sid. Delivery is
-// not guaranteed (RFC 9221 datagrams are not retransmitted).
+// not guaranteed (RFC 9221 datagrams are not retransmitted). The payload
+// portion is sealed under the session codec once AUTH installed it; the
+// session ID routing header stays in the clear.
 func (c *Client) SendDatagram(sid [16]byte, payload []byte) error {
-	return c.qconn.SendDatagram(encodeDatagram(sid, payload))
+	// codecOrIdentity is the identity codec pre-AUTH (a no-op seal)
+	// and the session codec after AUTH, so one code path covers both.
+	sealed, err := c.codecOrIdentity().Seal(payload)
+	if err != nil {
+		return err
+	}
+	return c.qconn.SendDatagram(encodeDatagram(sid, sealed))
 }
 
 // ReceiveDatagram receives one UDP-relay datagram and splits it into its
 // session ID and payload. Unknown sessions never produce a datagram here:
-// the server drops them instead of routing them anywhere.
+// the server drops them instead of routing them anywhere. A payload that
+// fails AEAD open is returned as an error, never delivered.
 func (c *Client) ReceiveDatagram(ctx context.Context) ([16]byte, []byte, error) {
 	data, err := c.qconn.ReceiveDatagram(ctx)
 	if err != nil {
 		return [16]byte{}, nil, err
 	}
-	return decodeDatagram(data)
+	sid, payload, err := decodeDatagram(data)
+	if err != nil {
+		return [16]byte{}, nil, err
+	}
+	opened, err := c.codecOrIdentity().Open(payload)
+	if err != nil {
+		return [16]byte{}, nil, err
+	}
+	return sid, opened, nil
 }
 
 func applyReadDeadline(str *quic.Stream, ctx context.Context) {
@@ -218,10 +316,18 @@ func clearReadDeadline(str *quic.Stream) {
 
 // ConnectStream is one CONNECT relay: Write sends framed DATA, Read
 // returns relayed DATA bytes (buffering a frame's leftover across calls).
-// Close closes the write side; the read side ends when the server closes
-// the stream (e.g. the TCP target closed).
+// Close closes the underlying stream/connection; the read side ends when
+// the server closes the stream (e.g. the TCP target closed).
+//
+// The relay is transport-generic: rw is a QUIC stream on the QUIC leg
+// and the buffered TLS connection on the TCP leg, and codec is the
+// session codec installed by AUTH (identity pre-AUTH, which the server
+// refuses anyway). The TCP leg reuses this exact type so the two legs
+// cannot drift apart in framing behaviour.
 type ConnectStream struct {
-	str *quic.Stream
+	rw      io.ReadWriter
+	codec   PayloadCodec
+	closeFn func() error
 
 	mu  sync.Mutex
 	buf []byte
@@ -232,12 +338,16 @@ func (cs *ConnectStream) Write(p []byte) (int, error) {
 	total := len(p)
 	cs.mu.Lock()
 	defer cs.mu.Unlock()
+	codec := cs.codec
+	if codec == nil {
+		codec = IdentityCodec{}
+	}
 	for len(p) > 0 {
 		n := len(p)
 		if n > maxDataChunk {
 			n = maxDataChunk
 		}
-		if err := WriteFrame(cs.str, frameData, p[:n]); err != nil {
+		if err := WriteFrameCodec(cs.rw, frameData, p[:n], codec); err != nil {
 			return 0, err
 		}
 		p = p[n:]
@@ -250,8 +360,12 @@ func (cs *ConnectStream) Write(p []byte) (int, error) {
 func (cs *ConnectStream) Read(p []byte) (int, error) {
 	cs.mu.Lock()
 	defer cs.mu.Unlock()
+	codec := cs.codec
+	if codec == nil {
+		codec = IdentityCodec{}
+	}
 	for len(cs.buf) == 0 {
-		fr, err := ReadFrame(cs.str)
+		fr, err := ReadFrameCodec(cs.rw, codec)
 		if err != nil {
 			return 0, err
 		}
@@ -265,7 +379,10 @@ func (cs *ConnectStream) Read(p []byte) (int, error) {
 	return n, nil
 }
 
-// Close closes the write side of the stream.
+// Close closes the underlying stream (QUIC leg) or connection (TCP leg).
 func (cs *ConnectStream) Close() error {
-	return cs.str.Close()
+	if cs.closeFn != nil {
+		return cs.closeFn()
+	}
+	return nil
 }

@@ -78,13 +78,22 @@ func newVerifier(key []byte, window time.Duration) *verifier {
 // can never poison the cache, and a successful token replayed later fails
 // on the nonce check and falls through to the visitor path.
 func (v *verifier) Verify(token string, now time.Time) bool {
+	_, ok := v.VerifyToken(token, now)
+	return ok
+}
+
+// VerifyToken is Verify plus the client's ephemeral public key, returned
+// only on full success. The public key is untrusted until verification
+// passes: callers must never derive session keys from it on the failure
+// path. Step 5 uses it for the X25519 session-key derivation (Q2.2).
+func (v *verifier) VerifyToken(token string, now time.Time) ([32]byte, bool) {
 	raw, err := base64.RawURLEncoding.DecodeString(token)
 	if err != nil || len(raw) != authTokenLen || raw[0] != authVersion {
 		// Dummy work on the same shape as the real path.
 		zero := make([]byte, 57)
 		dummy := authMAC(v.key, append([]byte("mist-realquic-auth-v1"), zero...))
 		hmac.Equal(dummy, make([]byte, 32))
-		return false
+		return [32]byte{}, false
 	}
 	want := authMAC(v.key, append([]byte("mist-realquic-auth-v1"), raw[:57]...))
 	hmacOK := hmac.Equal(want, raw[57:])
@@ -102,7 +111,9 @@ func (v *verifier) Verify(token string, now time.Time) bool {
 	_, replayed := v.nonces[nonceKey]
 	if hmacOK && windowOK && !replayed {
 		v.nonces[nonceKey] = ts.Add(v.window)
-		return true
+		var pub [32]byte
+		copy(pub[:], raw[25:57])
+		return pub, true
 	}
-	return false
+	return [32]byte{}, false
 }

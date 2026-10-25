@@ -49,11 +49,15 @@ type Server struct {
 	authPath   string
 	site       http.Handler
 	ephPub     [32]byte
+	ephPriv    [32]byte
+	// sessions is server-level (not per-connection) so a session
+	// established on the QUIC leg can be resumed on the TCP leg.
+	sessions *sessionTable
 
-	mu       sync.Mutex
-	listener *quic.Listener
-	conns    map[*quic.Conn]struct{}
-	dropped  atomic.Int64 // datagrams dropped (unknown session or pre-AUTH)
+	mu        sync.Mutex
+	listeners []*quic.Listener
+	conns     map[*quic.Conn]struct{}
+	dropped   atomic.Int64 // datagrams dropped (unknown session or pre-AUTH)
 }
 
 // defaultSite is the static test site content. It intentionally has no
@@ -76,10 +80,17 @@ func defaultSite() http.Handler {
 // authSuccess is the AUTH success body. server_eph_pub is the server's
 // ephemeral X25519 public key (base64). profile is an explicit placeholder:
 // the Q6 profile envelope is P1 work and is deferred, not silently omitted.
+// session_id / resume_token (base64) are the step-5 resume identity:
+// the client keeps them to resume the same session on the TCP leg
+// without a full re-AUTH (design Q8). They are absent only if the
+// server could not create a record, in which case resume is unavailable
+// but the session keys themselves are still valid.
 type authSuccess struct {
 	ServerEphPub string      `json:"server_eph_pub"`
 	Profile      interface{} `json:"profile"`
 	ProfileNote  string      `json:"profile_note"`
+	SessionID    string      `json:"session_id,omitempty"`
+	ResumeToken  string      `json:"resume_token,omitempty"`
 }
 
 // NewServer builds a server; it generates the server ephemeral keypair and
@@ -93,11 +104,18 @@ func NewServer(cfg ServerConfig) (*Server, error) {
 		return nil, err
 	}
 	curve25519.ScalarBaseMult(&pub, &priv)
+	// Note: the server ephemeral pair is per-server-instance in this
+	// step (step 4 behaviour, kept); per-connection rotation is a
+	// follow-up, not a step-5 requirement. The private half is retained
+	// here — step 4 generated it and discarded it, which is why step 5
+	// must store it to derive session keys.
 	s := &Server{
 		verify:     newVerifier(cfg.Key, cfg.Window),
 		authHeader: cfg.AuthHeader,
 		authPath:   cfg.AuthPath,
 		ephPub:     pub,
+		ephPriv:    priv,
+		sessions:   newSessionTable(),
 		conns:      map[*quic.Conn]struct{}{},
 	}
 	if s.authHeader == "" {
@@ -123,20 +141,39 @@ func (s *Server) handlerFor(st *connState) http.Handler {
 			// HMAC, window, nonce cache) and, on any failure, fall
 			// through to the site handler. Nothing here logs the
 			// token, and no failure produces a distinctive status,
-			// body, or teardown.
-			if s.verify.Verify(r.Header.Get(s.authHeader), time.Now()) {
-				if st != nil {
-					st.setAuthed()
+			// body, or teardown. On success only, derive the step-5
+			// session keys from the verified client ephemeral public
+			// key and the server ephemeral private key, and install
+			// the session codec on this connection: from here on,
+			// custom frames and datagram payloads on this connection
+			// are sealed under the session keys. A derivation failure
+			// is treated like an AUTH failure (visitor path), never
+			// as a distinctive error.
+			if clientPub, ok := s.verify.VerifyToken(r.Header.Get(s.authHeader), time.Now()); ok {
+				shared, derr := deriveShared(s.ephPriv, clientPub)
+				if derr == nil {
+					c2s, s2c, kerr := deriveDirectionKeys(shared, clientPub, s.ephPub)
+					if kerr == nil {
+						rec, rerr := s.sessions.newRecord(c2s, s2c)
+						if rerr == nil && st != nil {
+							st.setSession(rec.serverCodec())
+						}
+						resp := authSuccess{
+							ServerEphPub: base64.StdEncoding.EncodeToString(s.ephPub[:]),
+							Profile:      nil,
+							ProfileNote:  "P1 Q6 deferred: profile envelope not in this step",
+						}
+						if rerr == nil {
+							resp.SessionID = base64.StdEncoding.EncodeToString(rec.id[:])
+							resp.ResumeToken = base64.StdEncoding.EncodeToString(rec.resumeToken[:])
+						}
+						body, _ := json.Marshal(resp)
+						w.Header().Set("Content-Type", "application/json")
+						w.WriteHeader(http.StatusOK)
+						_, _ = w.Write(body)
+						return
+					}
 				}
-				body, _ := json.Marshal(authSuccess{
-					ServerEphPub: base64.StdEncoding.EncodeToString(s.ephPub[:]),
-					Profile:      nil,
-					ProfileNote:  "P1 Q6 deferred: profile envelope not in this step",
-				})
-				w.Header().Set("Content-Type", "application/json")
-				w.WriteHeader(http.StatusOK)
-				_, _ = w.Write(body)
-				return
 			}
 		}
 		s.site.ServeHTTP(w, r)
@@ -149,22 +186,21 @@ func (s *Server) handlerFor(st *connState) http.Handler {
 // memory at this point; ALPN is "h3" only. Datagrams (RFC 9221) are
 // enabled on the QUIC connection: they carry Mist UDP relay, not H3
 // datagrams, and are handled at the quic.Conn level.
-func (s *Server) ServePacketConn(pc net.PacketConn) error {
+// listenPacketConn builds one QUIC listener over pc. The certificate is
+// generated in memory; ALPN is "h3" only.
+func (s *Server) listenPacketConn(pc net.PacketConn) (*quic.Listener, error) {
 	cert, err := generateTestCertificate()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	tlsConf := &tls.Config{
 		Certificates: []tls.Certificate{cert},
 		NextProtos:   []string{"h3"},
 	}
-	ln, err := quic.Listen(pc, tlsConf, &quic.Config{EnableDatagrams: true})
-	if err != nil {
-		return err
-	}
-	s.mu.Lock()
-	s.listener = ln
-	s.mu.Unlock()
+	return quic.Listen(pc, tlsConf, &quic.Config{EnableDatagrams: true})
+}
+
+func (s *Server) serveListener(ln *quic.Listener) error {
 	for {
 		qconn, err := ln.Accept(context.Background())
 		if err != nil {
@@ -177,12 +213,67 @@ func (s *Server) ServePacketConn(pc net.PacketConn) error {
 	}
 }
 
-// Close stops the listener and all tracked connections. It does not close
-// the PacketConn, which remains owned by the caller.
+func (s *Server) ServePacketConn(pc net.PacketConn) error {
+	ln, err := s.listenPacketConn(pc)
+	if err != nil {
+		return err
+	}
+	s.mu.Lock()
+	s.listeners = append(s.listeners, ln)
+	s.mu.Unlock()
+	return s.serveListener(ln)
+}
+
+// ServePacketConns is the step-5 Q7 form: one server over many
+// PacketConns (many ports, and in a capable environment both address
+// families), all sharing this Server's verifier, site handler, ephemeral
+// keys and session table — hence the same QUIC stack logic and the same
+// HTTP/3 application on every port/family. There is no per-port or
+// per-family special case anywhere in the handler: an unauthenticated
+// prober gets the same site response from every instance, which is what
+// the Q7 coverage test proves. It blocks until the first listener's
+// Accept loop returns an error (e.g. Close).
+func (s *Server) ServePacketConns(pcs []net.PacketConn) error {
+	var listeners []*quic.Listener
+	for _, pc := range pcs {
+		ln, err := s.listenPacketConn(pc)
+		if err != nil {
+			for _, done := range listeners {
+				_ = done.Close()
+			}
+			return err
+		}
+		listeners = append(listeners, ln)
+	}
+	s.mu.Lock()
+	s.listeners = append(s.listeners, listeners...)
+	s.mu.Unlock()
+	errs := make(chan error, len(listeners))
+	for _, ln := range listeners {
+		go func(ln *quic.Listener) { errs <- s.serveListener(ln) }(ln)
+	}
+	return <-errs
+}
+
+// TCPServer returns a TCP-leg server sharing this server's verifier
+// (including its nonce cache, so a token cannot be replayed across
+// legs), site handler, ephemeral keys and session table. See tcp.go.
+func (s *Server) TCPServer() *TCPServer {
+	return &TCPServer{
+		verify:   s.verify,
+		site:     s.site,
+		ephPub:   s.ephPub,
+		ephPriv:  s.ephPriv,
+		sessions: s.sessions,
+	}
+}
+
+// Close stops all listeners and all tracked connections. It does not close
+// the PacketConns, which remain owned by the caller.
 func (s *Server) Close() error {
 	s.mu.Lock()
-	ln := s.listener
-	s.listener = nil
+	listeners := s.listeners
+	s.listeners = nil
 	conns := make([]*quic.Conn, 0, len(s.conns))
 	for c := range s.conns {
 		conns = append(conns, c)
@@ -191,10 +282,13 @@ func (s *Server) Close() error {
 	for _, c := range conns {
 		_ = c.CloseWithError(0, "server closed")
 	}
-	if ln == nil {
-		return nil
+	var err error
+	for _, ln := range listeners {
+		if cerr := ln.Close(); cerr != nil && err == nil {
+			err = cerr
+		}
 	}
-	return ln.Close()
+	return err
 }
 
 // DroppedDatagrams counts datagrams dropped because their session was
@@ -215,6 +309,7 @@ type connState struct {
 
 	mu       sync.Mutex
 	authed   bool
+	codec    PayloadCodec // step-5 session codec; nil until AUTH installs it
 	sessions map[[16]byte]*udpSession
 }
 
@@ -222,9 +317,15 @@ func newConnState(qconn *quic.Conn) *connState {
 	return &connState{qconn: qconn, sessions: map[[16]byte]*udpSession{}}
 }
 
-func (st *connState) setAuthed() {
+// setSession marks the connection authenticated and installs the session
+// codec derived from this AUTH. The two are set together, atomically:
+// there is no state in which a connection is authed but still speaking
+// the identity codec, and no state in which an unauthenticated
+// connection holds a session codec.
+func (st *connState) setSession(codec PayloadCodec) {
 	st.mu.Lock()
 	st.authed = true
+	st.codec = codec
 	st.mu.Unlock()
 }
 
@@ -232,6 +333,12 @@ func (st *connState) isAuthed() bool {
 	st.mu.Lock()
 	defer st.mu.Unlock()
 	return st.authed
+}
+
+func (st *connState) sessionCodec() PayloadCodec {
+	st.mu.Lock()
+	defer st.mu.Unlock()
+	return st.codec
 }
 
 func (st *connState) putSession(s *udpSession) (old *udpSession) {
@@ -339,7 +446,15 @@ func (s *Server) handleCustomStream(st *connState, str *quic.Stream) {
 		str.CancelWrite(errCodeNotAuthed)
 		return
 	}
-	fr, err := ReadFrame(str)
+	// Fail closed: an authed connection without a session codec is a
+	// bug, and must not fall back to speaking plaintext frames.
+	codec := st.sessionCodec()
+	if codec == nil {
+		str.CancelRead(errCodeNotAuthed)
+		str.CancelWrite(errCodeNotAuthed)
+		return
+	}
+	fr, err := ReadFrameCodec(str, codec)
 	if err != nil {
 		str.CancelRead(errCodeNotAuthed)
 		str.CancelWrite(errCodeNotAuthed)
@@ -347,9 +462,9 @@ func (s *Server) handleCustomStream(st *connState, str *quic.Stream) {
 	}
 	switch fr.Type {
 	case frameConnect:
-		s.handleConnect(str, fr)
+		s.handleConnect(str, fr, codec)
 	case frameRegisterUDP:
-		s.handleRegister(st, str, fr)
+		s.handleRegister(st, str, fr, codec)
 	default:
 		str.CancelRead(errCodeNotAuthed)
 		str.CancelWrite(errCodeNotAuthed)
@@ -360,20 +475,20 @@ func (s *Server) handleCustomStream(st *connState, str *quic.Stream) {
 // both directions until either side ends. The stream's lifecycle is the
 // dial's lifecycle: stream EOF closes the TCP write side, TCP EOF closes
 // the stream write side.
-func (s *Server) handleConnect(str *quic.Stream, fr Frame) {
+func (s *Server) handleConnect(str *quic.Stream, fr Frame, codec PayloadCodec) {
 	target, err := decodeTarget(fr.Payload)
 	if err != nil {
-		_ = WriteFrame(str, frameConnectErr, []byte(err.Error()))
+		_ = WriteFrameCodec(str, frameConnectErr, []byte(err.Error()), codec)
 		_ = str.Close()
 		return
 	}
 	tcp, err := net.DialTimeout("tcp", target, 5*time.Second)
 	if err != nil {
-		_ = WriteFrame(str, frameConnectErr, []byte(err.Error()))
+		_ = WriteFrameCodec(str, frameConnectErr, []byte(err.Error()), codec)
 		_ = str.Close()
 		return
 	}
-	if err := WriteFrame(str, frameConnectOK, nil); err != nil {
+	if err := WriteFrameCodec(str, frameConnectOK, nil, codec); err != nil {
 		_ = tcp.Close()
 		return
 	}
@@ -384,7 +499,7 @@ func (s *Server) handleConnect(str *quic.Stream, fr Frame) {
 		for {
 			n, err := tcp.Read(buf)
 			if n > 0 {
-				if werr := WriteFrame(str, frameData, buf[:n]); werr != nil {
+				if werr := WriteFrameCodec(str, frameData, buf[:n], codec); werr != nil {
 					return
 				}
 			}
@@ -395,7 +510,7 @@ func (s *Server) handleConnect(str *quic.Stream, fr Frame) {
 	}()
 	// Stream -> TCP pump on this goroutine.
 	for {
-		fr, err := ReadFrame(str)
+		fr, err := ReadFrameCodec(str, codec)
 		if err != nil {
 			break
 		}
@@ -417,16 +532,16 @@ func (s *Server) handleConnect(str *quic.Stream, fr Frame) {
 // handleRegister registers a UDP session and acknowledges it, then closes
 // the stream: the session itself persists in connState and keeps relaying
 // datagrams until the connection closes.
-func (s *Server) handleRegister(st *connState, str *quic.Stream, fr Frame) {
+func (s *Server) handleRegister(st *connState, str *quic.Stream, fr Frame, codec PayloadCodec) {
 	sid, target, err := decodeUDPRegistration(fr.Payload)
 	if err != nil {
-		_ = WriteFrame(str, frameRegisterErr, []byte(err.Error()))
+		_ = WriteFrameCodec(str, frameRegisterErr, []byte(err.Error()), codec)
 		_ = str.Close()
 		return
 	}
 	udp, err := net.DialTimeout("udp", target, 5*time.Second)
 	if err != nil {
-		_ = WriteFrame(str, frameRegisterErr, []byte(err.Error()))
+		_ = WriteFrameCodec(str, frameRegisterErr, []byte(err.Error()), codec)
 		_ = str.Close()
 		return
 	}
@@ -435,7 +550,7 @@ func (s *Server) handleRegister(st *connState, str *quic.Stream, fr Frame) {
 		_ = old.conn.Close()
 	}
 	go s.udpPump(st, sess)
-	if err := WriteFrame(str, frameRegisterOK, nil); err != nil {
+	if err := WriteFrameCodec(str, frameRegisterOK, nil, codec); err != nil {
 		_ = udp.Close()
 		return
 	}
@@ -450,7 +565,19 @@ func (s *Server) udpPump(st *connState, sess *udpSession) {
 	for {
 		n, err := sess.conn.Read(buf)
 		if n > 0 {
-			if serr := st.qconn.SendDatagram(encodeDatagram(sess.sid, buf[:n])); serr != nil {
+			// Datagram payloads are sealed like frame payloads; the
+			// 16-byte session ID routing header stays in the clear
+			// (it is the routing key, not content). A missing codec
+			// ends the pump rather than sending plaintext.
+			codec := st.sessionCodec()
+			if codec == nil {
+				return
+			}
+			sealed, serr := codec.Seal(buf[:n])
+			if serr != nil {
+				return
+			}
+			if serr := st.qconn.SendDatagram(encodeDatagram(sess.sid, sealed)); serr != nil {
 				return
 			}
 		}
@@ -479,7 +606,19 @@ func (s *Server) datagramLoop(ctx context.Context, st *connState) {
 			s.dropped.Add(1)
 			continue
 		}
-		if _, err := sess.conn.Write(payload); err != nil {
+		codec := st.sessionCodec()
+		if codec == nil {
+			s.dropped.Add(1)
+			continue
+		}
+		// An AEAD failure here is a drop, never a plaintext forward
+		// and never a route to another session.
+		opened, err := codec.Open(payload)
+		if err != nil {
+			s.dropped.Add(1)
+			continue
+		}
+		if _, err := sess.conn.Write(opened); err != nil {
 			s.dropped.Add(1)
 		}
 	}

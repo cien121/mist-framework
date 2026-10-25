@@ -27,38 +27,63 @@ type memPacketConn struct {
 	remote   memAddr
 	closed   bool
 	readDead time.Time
+	// wake is closed (and replaced) by every SetReadDeadline, so a
+	// ReadFrom blocked without a deadline wakes and re-evaluates the
+	// new deadline — the PacketConn contract a real UDPConn honours
+	// and quic-go's Transport.Close relies on. Without it, a dial
+	// timeout over a mem pair deadlocks: Transport.Close waits for
+	// its listen loop, which waits forever on a blocked receive that
+	// no deadline change can interrupt.
+	wake chan struct{}
 }
 
 // NewMemPair returns a connected pair: first is the client side, second is
 // the server side. Dial the server side's LocalAddr from the client side.
 func NewMemPair() (net.PacketConn, net.PacketConn) {
-	a := &memPacketConn{recv: make(chan memPacket, 1024), local: memAddr{"mem-client"}, remote: memAddr{"mem-server"}}
-	b := &memPacketConn{recv: make(chan memPacket, 1024), local: memAddr{"mem-server"}, remote: memAddr{"mem-client"}}
+	a := &memPacketConn{recv: make(chan memPacket, 1024), local: memAddr{"mem-client"}, remote: memAddr{"mem-server"}, wake: make(chan struct{})}
+	b := &memPacketConn{recv: make(chan memPacket, 1024), local: memAddr{"mem-server"}, remote: memAddr{"mem-client"}, wake: make(chan struct{})}
 	a.peer, b.peer = b, a
 	return a, b
 }
 
 func (c *memPacketConn) ReadFrom(p []byte) (int, net.Addr, error) {
-	c.mu.Lock()
-	dead := c.readDead
-	c.mu.Unlock()
-	if dead.IsZero() {
-		pkt, ok := <-c.recv
-		if !ok {
+	for {
+		c.mu.Lock()
+		dead := c.readDead
+		wake := c.wake
+		closed := c.closed
+		c.mu.Unlock()
+		if closed {
+			// Checked first: after Close both recv and wake are
+			// closed, and a wake-only loop would spin forever.
 			return 0, nil, net.ErrClosed
 		}
-		return copy(p, pkt.b), c.remote, nil
-	}
-	timer := time.NewTimer(time.Until(dead))
-	defer timer.Stop()
-	select {
-	case pkt, ok := <-c.recv:
-		if !ok {
-			return 0, nil, net.ErrClosed
+		var timerCh <-chan time.Time
+		var timer *time.Timer
+		if !dead.IsZero() {
+			timer = time.NewTimer(time.Until(dead))
+			timerCh = timer.C
 		}
-		return copy(p, pkt.b), c.remote, nil
-	case <-timer.C:
-		return 0, nil, os.ErrDeadlineExceeded
+		select {
+		case pkt, ok := <-c.recv:
+			if timer != nil {
+				timer.Stop()
+			}
+			if !ok {
+				return 0, nil, net.ErrClosed
+			}
+			return copy(p, pkt.b), c.remote, nil
+		case <-timerCh:
+			return 0, nil, os.ErrDeadlineExceeded
+		case <-wake:
+			// Deadline changed (or connection closed): re-evaluate.
+			// A close also closes recv, so the next iteration ends
+			// via the recv branch; a future deadline just waits again.
+			if timer != nil {
+				timer.Stop()
+			}
+			continue
+		}
 	}
 }
 
@@ -81,6 +106,7 @@ func (c *memPacketConn) Close() error {
 	if !c.closed {
 		c.closed = true
 		close(c.recv)
+		close(c.wake)
 	}
 	return nil
 }
@@ -91,6 +117,10 @@ func (c *memPacketConn) SetDeadline(t time.Time) error { return c.SetReadDeadlin
 func (c *memPacketConn) SetReadDeadline(t time.Time) error {
 	c.mu.Lock()
 	c.readDead = t
+	if !c.closed {
+		close(c.wake)
+		c.wake = make(chan struct{})
+	}
 	c.mu.Unlock()
 	return nil
 }

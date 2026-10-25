@@ -32,14 +32,15 @@ import (
 //     exactly LEN payload bytes. No field is ever inferred from a length
 //     byte, and no payload content can change the frame boundary.
 //
-// Step-5 layering (session keys), reserved here, not implemented:
-//   - Frame payloads pass through a PayloadCodec. This step uses the
-//     identity codec: the payload on the wire is the plaintext, protected
-//     only by QUIC's own encryption. Step 5 plugs a session-key AEAD
-//     codec in here; the outer [MAGIC][TYPE][LEN] structure does not
-//     change, only the payload bytes between LEN and the next frame do.
-//     DATA writes are chunked to maxDataChunk (32 KiB) so a future AEAD
-//     tag still fits comfortably inside the uint16 LEN field.
+// Step-5 layering (session keys), implemented in session.go:
+//   - Frame payloads pass through a PayloadCodec. Before AUTH the
+//     identity codec is used (the server refuses pre-AUTH custom
+//     streams anyway); after AUTH both sides install the session-key
+//     AEAD codec (SessionCodec), and the outer [MAGIC][TYPE][LEN]
+//     structure does not change, only the payload bytes between LEN
+//     and the next frame do. DATA writes are chunked to maxDataChunk
+//     (32 KiB) so the AEAD overhead (24-byte nonce + 16-byte tag)
+//     still fits comfortably inside the uint16 LEN field.
 const frameMagic byte = 0x4D // 'M'; constant, never 0x01
 
 // Custom frame types. None is 0x01 (H3 HEADERS).
@@ -60,9 +61,9 @@ const maxDataChunk = 32 * 1024
 // maxFramePayload is the largest payload a single frame may carry.
 const maxFramePayload = 65535
 
-// PayloadCodec transforms a frame payload. IdentityCodec is this step's
-// codec; step 5 replaces it with a session-key AEAD codec without changing
-// the frame structure.
+// PayloadCodec transforms a frame payload. IdentityCodec is the pre-AUTH
+// codec; SessionCodec (session.go) is the post-AUTH session-key AEAD
+// codec. Swapping codecs never changes the frame structure.
 type PayloadCodec interface {
 	Seal(payload []byte) ([]byte, error)
 	Open(payload []byte) ([]byte, error)
@@ -180,8 +181,9 @@ func decodeUDPRegistration(p []byte) ([16]byte, string, error) {
 }
 
 // encodeDatagram builds a QUIC datagram body: [sessionID(16)][payload].
-// The session ID is the routing key only; payload encryption is step 5's
-// codec layer, applied to the payload portion, not to the routing header.
+// The session ID is the routing key only; payload encryption is the
+// step-5 codec layer, applied to the payload portion, not to the routing
+// header (callers seal/open the payload portion around this encoding).
 func encodeDatagram(sid [16]byte, payload []byte) []byte {
 	out := make([]byte, 16+len(payload))
 	copy(out[:16], sid[:])
