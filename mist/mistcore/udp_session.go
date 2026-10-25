@@ -52,6 +52,19 @@ type UDPSession struct {
 	CreatedAt  time.Time
 	LastActive time.Time
 
+	// Signature hardening (F4/F5) state, guarded by mu:
+	// currentDCID is the DCID placed in short headers. It starts as
+	// SessionID8 and changes only via RotateDCID (port hop). The HP
+	// keys above are NEVER re-derived on rotation: they stay bound to
+	// the original SessionID8, and the AEAD nonce always uses
+	// SessionID8 too, so rotation changes only the lookup key, never
+	// key material. dcidAliases keeps retired DCIDs for a 60s grace
+	// window so in-flight packets addressed to the old DCID still land.
+	currentDCID  [8]byte
+	dcidAliases  map[[8]byte]time.Time
+	spinBit      bool
+	lastSpinFlip time.Time
+
 	mu sync.Mutex
 }
 
@@ -67,17 +80,19 @@ func NewUDPSession(sessionID [16]byte, keyC2S, keyS2C [32]byte, remoteAddr *net.
 	bbrCtl := NewBBRController(1350) // §8.4 MTU
 	rel := NewUDPReliability(bbrCtl)
 	return &UDPSession{
-		SessionID:  sessionID,
-		KeyC2S:     keyC2S,
-		KeyS2C:     keyS2C,
-		HPKeyC2S:   hpC2S,
-		HPKeyS2C:   hpS2C,
-		RemoteAddr: remoteAddr,
-		Codec:      codec,
-		BBR:        bbrCtl,
-		Rel:        rel,
-		CreatedAt:  now,
-		LastActive: now,
+		SessionID:   sessionID,
+		KeyC2S:      keyC2S,
+		KeyS2C:      keyS2C,
+		HPKeyC2S:    hpC2S,
+		HPKeyS2C:    hpS2C,
+		RemoteAddr:  remoteAddr,
+		Codec:       codec,
+		BBR:         bbrCtl,
+		Rel:         rel,
+		CreatedAt:   now,
+		LastActive:  now,
+		currentDCID: sid8,
+		dcidAliases: make(map[[8]byte]time.Time),
 	}
 }
 
@@ -96,7 +111,57 @@ func (s *UDPSession) NextPacketNum(dir uint32) uint32 {
 	return n
 }
 
-// SessionID8 returns the first 8 bytes of the session ID (for DCID and nonce).
+// PeekPacketNum returns the next packet number for the given direction
+// WITHOUT consuming it. The scheduler uses it to estimate the sealed
+// size (the header length depends on the packet number, F3). The
+// estimate can go stale only if another goroutine seals exactly across
+// the 65536 boundary between peek and seal; production self-corrects
+// via the token adjustment in trySend, so this is a benign race.
+func (s *UDPSession) PeekPacketNum(dir uint32) uint32 {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if dir == DirC2S {
+		return s.nextPktNumC2S
+	}
+	return s.nextPktNumS2C
+}
+
+// CurrentDCID returns the DCID currently placed in short headers.
+func (s *UDPSession) CurrentDCID() [8]byte {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.currentDCID
+}
+
+// RotateDCID switches the short-header DCID to newDCID (F5) and keeps
+// the old DCID as an alias for 60s. HP keys and the nonce input are
+// deliberately untouched: they stay bound to the original SessionID8.
+func (s *UDPSession) RotateDCID(newDCID [8]byte) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if newDCID != s.currentDCID {
+		if s.dcidAliases == nil {
+			s.dcidAliases = make(map[[8]byte]time.Time)
+		}
+		s.dcidAliases[s.currentDCID] = time.Now().Add(60 * time.Second)
+	}
+	s.currentDCID = newDCID
+}
+
+// acceptDCIDLocked reports whether dcid is the current DCID or an
+// unexpired alias. Caller must hold s.mu. Expired aliases are pruned.
+func (s *UDPSession) acceptDCIDLocked(dcid [8]byte) bool {
+	if dcid == s.currentDCID {
+		return true
+	}
+	if exp, ok := s.dcidAliases[dcid]; ok {
+		if time.Now().Before(exp) {
+			return true
+		}
+		delete(s.dcidAliases, dcid)
+	}
+	return false
+}
 func (s *UDPSession) SessionID8() [8]byte {
 	var out [8]byte
 	copy(out[:], s.SessionID[:8])
@@ -152,7 +217,8 @@ func (s *UDPSession) FlushAck() {
 //
 // (The public SealPacket wrapper was removed; use the scheduler.)
 func (s *UDPSession) sealPacketTracked(dir uint32, frames [][]byte) ([]byte, error) {
-	return s.sealPacket(dir, frames, true)
+	pkt, _, err := s.sealPacketNum(dir, frames, true)
+	return pkt, err
 }
 
 // SealPacketUntracked encrypts frames into a UDP datagram without
@@ -162,17 +228,26 @@ func (s *UDPSession) sealPacketTracked(dir uint32, frames [][]byte) ([]byte, err
 // tracking them would leak sentPackets entries, inflate bytesInFlight,
 // and cause spurious RTO retransmissions of ACKs.
 func (s *UDPSession) SealPacketUntracked(dir uint32, frames [][]byte) ([]byte, error) {
-	return s.sealPacket(dir, frames, false)
+	pkt, _, err := s.sealPacketNum(dir, frames, false)
+	return pkt, err
 }
 
-func (s *UDPSession) sealPacket(dir uint32, frames [][]byte, track bool) ([]byte, error) {
+// SealTrackedPacket seals frames on the tracked path and returns the
+// packet number used, so a caller can await that packet's ACK (the
+// port-hop DCID_ROTATE handshake). Data traffic must still go through
+// the scheduler; this is the control-frame escape hatch only.
+func (s *UDPSession) SealTrackedPacket(dir uint32, frames [][]byte) ([]byte, uint32, error) {
+	return s.sealPacketNum(dir, frames, true)
+}
+
+func (s *UDPSession) sealPacketNum(dir uint32, frames [][]byte, track bool) ([]byte, uint32, error) {
 	// Concatenate frames.
 	var plaintext []byte
 	for _, f := range frames {
 		plaintext = append(plaintext, f...)
 	}
 	if len(plaintext) > MaxUDPPlaintext {
-		return nil, errors.New("udp: plaintext exceeds max")
+		return nil, 0, errors.New("udp: plaintext exceeds max")
 	}
 
 	// Get packet number (real, pre-mask).
@@ -189,27 +264,51 @@ func (s *UDPSession) sealPacket(dir uint32, frames [][]byte, track bool) ([]byte
 		hpKey = s.HPKeyS2C
 	}
 
-	// Build QUIC short header (AAD uses UNMASKED header, §4.2).
-	dcid := s.SessionID8()
-	header := BuildShortHeader(dcid, pktNum, false)
+	// F4 spin: flip once per RTT estimate (SRTT from the reliability
+	// layer, no new clock source). SRTT is read BEFORE taking s.mu
+	// to keep the lock order (rel.mu is never taken under s.mu).
+	// Until the first RTT sample arrives, spin stays at its initial 0.
+	var srtt time.Duration
+	if s.Rel != nil {
+		srtt = s.Rel.SRTT()
+	}
+	now := time.Now()
+	s.mu.Lock()
+	if s.lastSpinFlip.IsZero() {
+		s.lastSpinFlip = now
+	} else if srtt > 0 && now.Sub(s.lastSpinFlip) >= srtt {
+		s.spinBit = !s.spinBit
+		s.lastSpinFlip = now
+	}
+	spin := s.spinBit
+	dcid := s.currentDCID
+	s.mu.Unlock()
 
-	// Build nonce (pre-mask real packet number, §4.2).
-	nonce := UDPNonce(dcid, dir, pktNum)
+	// Build QUIC short header (AAD uses UNMASKED header, §4.2).
+	// The header DCID is the (possibly rotated) current DCID, but the
+	// AEAD nonce below always uses SessionID8: rotation must never
+	// change nonce inputs, or in-flight packets would fail to decrypt.
+	header := BuildShortHeader(dcid, pktNum, spin)
+
+	// Build nonce (pre-mask real packet number, §4.2) from the
+	// session ID, NOT the header DCID (F5 coupling rule).
+	nonce := UDPNonce(s.SessionID8(), dir, pktNum)
 
 	// Encrypt.
-	ciphertext, err := UDPSeal(key, nonce, plaintext, header[:])
+	ciphertext, err := UDPSeal(key, nonce, plaintext, header)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	// Header protection: sample = first 16 bytes of ciphertext.
+	// Header protection: sample = first 16 bytes of ciphertext
+	// (= ciphertext start, F3).
 	if len(ciphertext) < 16 {
-		return nil, errors.New("udp: ciphertext too short for header protection sample")
+		return nil, 0, errors.New("udp: ciphertext too short for header protection sample")
 	}
 	sample := ciphertext[:16]
-	hdr := header[:] // copy to mutable slice
+	hdr := header // mutable copy (header is a fresh slice already)
 	if err := ApplyHeaderProtection(hdr, hpKey, sample); err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	// Assemble datagram: masked header + ciphertext.
@@ -229,21 +328,27 @@ func (s *UDPSession) sealPacket(dir uint32, frames [][]byte, track bool) ([]byte
 		}
 	}
 
-	return datagram, nil
+	return datagram, pktNum, nil
 }
 
 // OpenPacket decrypts a UDP datagram and returns the frames.
 //
 // Steps:
-//  1. Extract header protection sample from ciphertext (datagram[13:29]).
+//  1. Try both short-header lengths (11, then 13). The receiver cannot
+//     know the length before unmasking (the PP bits are masked), so it
+//     tries each candidate's ciphertext-start sample and lets the DCID
+//     check + AEAD decide. A wrong candidate fails the DCID check
+//     (garbage DCID) before AEAD is ever attempted.
 //  2. Remove header protection mask → real header with real packet number.
-//  3. Parse real header (get DCID, packet number).
-//  4. Build nonce from REAL (unmasked) packet number (§4.2).
+//  3. Parse real header (get DCID, packet number). DCID must be the
+//     current DCID or an unexpired rotation alias (F5).
+//  4. Build nonce from SessionID8 (NOT the header DCID) and the REAL
+//     (unmasked) packet number (§4.2, F5 coupling rule).
 //  5. AEAD decrypt with direction key, AAD = unmasked header.
 //  6. Decode frames from plaintext.
-//  7. Reliability: mark packet received (may trigger ACK).
+//  7. Reliability: mark packet received (may trigger ACK via callback).
 func (s *UDPSession) OpenPacket(dir uint32, datagram []byte) ([]UDPFrame, uint32, error) {
-	if len(datagram) < QUICShortHeaderLen+16 {
+	if len(datagram) < QUICShortHeaderLenMin+16 {
 		return nil, 0, errors.New("udp: datagram too short")
 	}
 
@@ -255,31 +360,6 @@ func (s *UDPSession) OpenPacket(dir uint32, datagram []byte) ([]UDPFrame, uint32
 		hpKey = s.HPKeyS2C
 	}
 
-	// Extract sample BEFORE unmasking (sample is from ciphertext).
-	sample, err := HeaderProtectSample(datagram)
-	if err != nil {
-		return nil, 0, err
-	}
-
-	// Copy header and remove protection to get real packet number.
-	var hdrBuf [QUICShortHeaderLen]byte
-	copy(hdrBuf[:], datagram[:QUICShortHeaderLen])
-	if err := RemoveHeaderProtection(hdrBuf[:], hpKey, sample); err != nil {
-		return nil, 0, err
-	}
-
-	// Parse unmasked header.
-	dcid, pktNum, _, err := ParseShortHeader(hdrBuf[:])
-	if err != nil {
-		return nil, 0, err
-	}
-
-	// Verify DCID matches session (first 8 bytes of session ID).
-	expectedDCID := s.SessionID8()
-	if dcid != expectedDCID {
-		return nil, 0, errors.New("udp: DCID mismatch")
-	}
-
 	// Select key.
 	var key *[32]byte
 	if dir == DirC2S {
@@ -288,30 +368,73 @@ func (s *UDPSession) OpenPacket(dir uint32, datagram []byte) ([]UDPFrame, uint32
 		key = &s.KeyS2C
 	}
 
-	// Build nonce with REAL (unmasked) packet number.
-	// AAD is the UNMASKED header (§4.2).
-	nonce := UDPNonce(dcid, dir, pktNum)
+	var lastErr error
+	for _, hlen := range []int{QUICShortHeaderLenMin, QUICShortHeaderLen} {
+		if len(datagram) < hlen+16 {
+			continue
+		}
+		// Extract sample BEFORE unmasking (sample is from ciphertext start).
+		sample, err := HeaderProtectSample(datagram, hlen)
+		if err != nil {
+			lastErr = err
+			continue
+		}
 
-	// Decrypt.
-	ciphertext := datagram[QUICShortHeaderLen:]
-	plaintext, err := UDPOpen(key, nonce, ciphertext, hdrBuf[:])
-	if err != nil {
-		return nil, 0, err
+		// Copy header and remove protection to get real packet number.
+		hdrBuf := make([]byte, hlen)
+		copy(hdrBuf, datagram[:hlen])
+		if err := RemoveHeaderProtection(hdrBuf, hpKey, sample); err != nil {
+			lastErr = err
+			continue
+		}
+
+		// Parse unmasked header.
+		dcid, pktNum, _, err := ParseShortHeader(hdrBuf)
+		if err != nil {
+			lastErr = err
+			continue
+		}
+
+		// Verify DCID: current DCID or an unexpired rotation alias.
+		s.mu.Lock()
+		ok := s.acceptDCIDLocked(dcid)
+		s.mu.Unlock()
+		if !ok {
+			lastErr = errors.New("udp: DCID mismatch")
+			continue
+		}
+
+		// Build nonce with SessionID8 (not the header DCID) and the
+		// REAL (unmasked) packet number. AAD is the UNMASKED header.
+		nonce := UDPNonce(s.SessionID8(), dir, pktNum)
+
+		// Decrypt.
+		ciphertext := datagram[hlen:]
+		plaintext, err := UDPOpen(key, nonce, ciphertext, hdrBuf)
+		if err != nil {
+			lastErr = err
+			continue
+		}
+
+		// AEAD passed, so this candidate is the real one; a framing
+		// error here is genuine, not a wrong-candidate artifact.
+		frames, err := DecodeUDPFrames(plaintext)
+		if err != nil {
+			return nil, 0, err
+		}
+
+		// Reliability: mark received (may trigger ACK via callback).
+		if s.Rel != nil {
+			s.Rel.PacketReceived(pktNum)
+		}
+
+		s.Touch()
+		return frames, pktNum, nil
 	}
-
-	// Decode frames.
-	frames, err := DecodeUDPFrames(plaintext)
-	if err != nil {
-		return nil, 0, err
+	if lastErr != nil {
+		return nil, 0, lastErr
 	}
-
-	// Reliability: mark received (may trigger ACK via callback).
-	if s.Rel != nil {
-		s.Rel.PacketReceived(pktNum)
-	}
-
-	s.Touch()
-	return frames, pktNum, nil
+	return nil, 0, errors.New("udp: no short header candidate decrypted")
 }
 
 // ---------------------------------------------------------------------------

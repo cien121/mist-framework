@@ -33,6 +33,12 @@ const (
 	UDPFrameMigrate       = 0x0B
 	UDPFrameMaxStreamData = 0x0C
 	UDPFrameWindowUpdate  = 0x0D
+	// UDPFrameDCIDRotate rotates the short-header DCID alongside a port
+	// hop (signature hardening F5). Payload: [NEW_DCID(8)][WINDOW(4, BE)].
+	// It travels inside the AEAD ciphertext, so the rotation signal
+	// itself is invisible to passive DPI; only the new DCID (an
+	// unrelated random value) appears on the wire afterwards.
+	UDPFrameDCIDRotate = 0x0E
 )
 
 // UDP limits (§4.1).
@@ -41,9 +47,22 @@ const (
 	// 1350 (MTU) - 13 (QUIC header) - 16 (AEAD tag) = 1321, rounded to 1300.
 	MaxUDPPlaintext = 1300
 
-	// QUICShortHeaderLen is the fixed short header size.
-	QUICShortHeaderLen = 13
+	// QUICShortHeaderLen is the MAX short header size (4-byte packet
+	// number form). The 2-byte form is QUICShortHeaderLenMin (11).
+	// Variable packet-number length (signature hardening F3):
+	// packet number < 65536 uses 2 bytes, otherwise 4 bytes.
+	QUICShortHeaderLen    = 13
+	QUICShortHeaderLenMin = 11
 )
+
+// ShortHeaderLen returns the short header length for a packet number
+// (F3): 11 bytes below 65536, 13 bytes at and above.
+func ShortHeaderLen(packetNum uint32) int {
+	if packetNum < 65536 {
+		return QUICShortHeaderLenMin
+	}
+	return QUICShortHeaderLen
+}
 
 // UDPFrame is a decoded Mist UDP frame.
 type UDPFrame struct {
@@ -168,46 +187,85 @@ func DecodeAckFrame(payload []byte) (largest uint32, ackDelay time.Duration, ran
 	return largest, ackDelay, ranges, nil
 }
 
-// BuildShortHeader builds a QUIC short header (13 bytes).
+// EncodeDCIDRotateFrame encodes a DCID_ROTATE frame (F5):
+// [NEW_DCID(8)][WINDOW(4, big-endian)]. SID is always 0 (control).
+func EncodeDCIDRotateFrame(newDCID [8]byte, window uint32) []byte {
+	payload := make([]byte, 12)
+	copy(payload[0:8], newDCID[:])
+	binary.BigEndian.PutUint32(payload[8:12], window)
+	return EncodeUDPFrame(UDPFrameDCIDRotate, 0, payload)
+}
+
+// DecodeDCIDRotateFrame decodes a DCID_ROTATE frame payload.
+func DecodeDCIDRotateFrame(payload []byte) (newDCID [8]byte, window uint32, err error) {
+	if len(payload) != 12 {
+		return newDCID, 0, errors.New("udp: DCID_ROTATE payload must be 12 bytes")
+	}
+	copy(newDCID[:], payload[0:8])
+	window = binary.BigEndian.Uint32(payload[8:12])
+	return newDCID, window, nil
+}
+
+// BuildShortHeader builds a QUIC short header (F3, variable length).
 //
 // Format (§3.2):
-//   [0|1|S|R|R|K|P P][DCID(8)][PacketNum(4)]
-//   bit0=0, bit1=1 (short header)
-//   S = spin bit (random)
-//   K = key phase (0)
-//   P P = 0b11 (4-byte packet number)
 //
-// For Phase 1 simplified: no header protection mask (mask = 0).
-// Phase 2 will implement RFC 9001 §5.4.4.
-func BuildShortHeader(dcid [8]byte, packetNum uint32, spinBit bool) [13]byte {
-	var h [13]byte
-	// Byte 0: 0|1|S|0|0|0|1|1
-	//   bit0=0, bit1=1, bit2=S, bits 3-4 = R R (0), bit5=K (0), bits 6-7 = P P (0b11)
-	h[0] = 0x40 | 0x03 // 0b01000011
+//	[0|1|S|R|R|K|P P][DCID(8)][PacketNum(2 or 4)]
+//	bit0=0, bit1=1 (short header)
+//	S = spin bit (F4: flipped once per RTT estimate, not random)
+//	K = key phase (0)
+//	P P = 0b01 (2-byte packet number, packetNum < 65536)
+//	      0b11 (4-byte packet number, packetNum >= 65536)
+//
+// The 1-byte form is deliberately unused: under loss, reconstructing
+// a 1-byte packet number is ambiguous, and saving 1 byte is not worth it.
+func BuildShortHeader(dcid [8]byte, packetNum uint32, spinBit bool) []byte {
+	pnLen := 2
+	pp := byte(0x01)
+	if packetNum >= 65536 {
+		pnLen = 4
+		pp = 0x03
+	}
+	h := make([]byte, 1+8+pnLen)
+	// Byte 0: 0|1|S|0|0|0|P|P
+	h[0] = 0x40 | pp
 	if spinBit {
 		h[0] |= 0x20 // set S bit (bit 2)
 	}
 	copy(h[1:], dcid[:])
-	// Packet number (4 bytes, big-endian)
-	// Simplified: no mask applied in Phase 1.
-	binary.BigEndian.PutUint32(h[9:], packetNum)
+	if pnLen == 2 {
+		binary.BigEndian.PutUint16(h[9:], uint16(packetNum))
+	} else {
+		binary.BigEndian.PutUint32(h[9:], packetNum)
+	}
 	return h
 }
 
-// ParseShortHeader parses a QUIC short header.
-// Returns dcid, packet number, and spin bit.
-// For Phase 1 simplified: no header protection removal.
+// ParseShortHeader parses a QUIC short header of either length.
+// Returns dcid, packet number, and spin bit. The PP bits must agree
+// with the supplied header length; anything else is rejected (this
+// also rejects the unused 1-byte and 3-byte forms).
 func ParseShortHeader(header []byte) (dcid [8]byte, packetNum uint32, spinBit bool, err error) {
-	if len(header) < QUICShortHeaderLen {
-		return dcid, 0, false, errors.New("udp: short header too short")
+	if len(header) != QUICShortHeaderLenMin && len(header) != QUICShortHeaderLen {
+		return dcid, 0, false, errors.New("udp: short header length must be 11 or 13")
 	}
 	// Check bits: bit0=0, bit1=1
 	if header[0]&0xC0 != 0x40 {
 		return dcid, 0, false, errors.New("udp: not a short header")
 	}
 	spinBit = header[0]&0x20 != 0
+	pp := header[0] & 0x03
+	if len(header) == QUICShortHeaderLenMin {
+		if pp != 0x01 {
+			return dcid, 0, false, errors.New("udp: 11-byte header must use 2-byte packet number")
+		}
+		packetNum = uint32(binary.BigEndian.Uint16(header[9:11]))
+	} else {
+		if pp != 0x03 {
+			return dcid, 0, false, errors.New("udp: 13-byte header must use 4-byte packet number")
+		}
+		packetNum = binary.BigEndian.Uint32(header[9:13])
+	}
 	copy(dcid[:], header[1:9])
-	// Simplified: no mask removal in Phase 1.
-	packetNum = binary.BigEndian.Uint32(header[9:13])
 	return dcid, packetNum, spinBit, nil
 }
