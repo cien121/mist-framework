@@ -1,0 +1,21 @@
+name: RealQUIC full suite
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'mist/**'
+      - '.github/workflows/realquic-full.yml'
+  workflow_dispatch:
+
+jobs:
+  full:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26'
+      - name: Run full realquic suite
+        working-directory: mist
+        run: go test -count=1 ./realquic/
