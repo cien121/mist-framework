@@ -493,3 +493,23 @@ func (e *Engine) sweeper(ctx context.Context) {
 		}
 	}
 }
+
+// NewEngineForMobile creates an engine for gomobile binding.
+// It accepts concrete *MistUDPClient instead of ProtocolClient interface,
+// so gomobile does not need to bind the interface types.
+func NewEngineForMobile(tun TUNDevice, client *MistUDPClient) *Engine {
+	e := &Engine{
+		tun:      tun,
+		client:   client,
+		tcp:      make(map[FourTuple]*tcpConn),
+		pending:  make(map[FourTuple]bool),
+		udp:      make(map[FourTuple]*udpSession),
+		udpByDst: make(map[string]FourTuple),
+		done:     make(chan struct{}),
+	}
+	if dg, ok := interface{}(client).(DatagramClient); ok {
+		e.dg = dg
+		dg.OnDatagram(e.onDatagram)
+	}
+	return e
+}
