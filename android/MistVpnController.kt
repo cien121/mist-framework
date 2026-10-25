@@ -1,1 +1,107 @@
-cGFja2FnZSBjb20uY2hhbi5taXN0CgppbXBvcnQgYW5kcm9pZC5jb250ZW50LkNvbnRleHQKaW1wb3J0IGFuZHJvaWQuY29udGVudC5JbnRlbnQKaW1wb3J0IGFuZHJvaWQubmV0LlZwblNlcnZpY2UKaW1wb3J0IGFuZHJvaWQub3MuQnVpbGQKCi8qKgogKiBVSS1mYWNpbmcgQVBJIGZvciB0aGUgTWlzdCBWUE4gc2VydmljZS4gV2VhdmUgKG9yIGFueSBhcHAgZW1iZWRkaW5nCiAqIHRoZSBmcmFtZXdvcmsgQUFSKSBvbmx5IHRhbGtzIHRvIHRoaXMgb2JqZWN0LCBuZXZlciB0byB0aGUgc2VydmljZQogKiBvciB0byBnb21vYmlsZSBjbGFzc2VzIGRpcmVjdGx5LgogKgogKiBUeXBpY2FsIGZsb3cgZnJvbSBhIGNvbm5lY3QgYnV0dG9uIChtdXN0IHJ1biBpbiB0aGUgZm9yZWdyb3VuZCDigJQKICogQW5kcm9pZCAxMisgZm9yYmlkcyBiYWNrZ3JvdW5kIGZvcmVncm91bmQtc2VydmljZSBzdGFydHMpOgogKiAgIDEuIGlmICghTWlzdFZwbkNvbnRyb2xsZXIuaXNQcmVwYXJlZChjdHgpKSB7CiAqICAgICAgICBzdGFydEFjdGl2aXR5Rm9yUmVzdWx0KE1pc3RWcG5Db250cm9sbGVyLnByZXBhcmVJbnRlbnQoY3R4KSwgUkVRKQogKiAgICAgICAgLy8gb24gUkVTVUxUX09LIC0+IHN0ZXAgMgogKiAgICAgIH0KICogICAyLiBNaXN0VnBuQ29udHJvbGxlci5zdGFydChjdHgsIG1pc3ROb2RlVXJsKQogKiAgIDMuIE9ic2VydmUgTWlzdFZwbkNvbnRyb2xsZXIub25TdGF0ZUNoYW5nZWQgLyB1cGxvYWRCeXRlcyAvCiAqICAgICAgZG93bmxvYWRCeXRlcyB0byByZW5kZXIgc3RhdHVzIGFuZCB0cmFmZmljLgogKiAgIDQuIE1pc3RWcG5Db250cm9sbGVyLnN0b3AoY3R4KSB0byBkaXNjb25uZWN0LgogKgogKiBTdGF0ZSBhbmQgc3RhdHMgYXJlIHBsYWluIEBWb2xhdGlsZSBmaWVsZHMgKG5vIEFuZHJvaWRYCiAqIGRlcGVuZGVuY3kpOiB0aGUgVUkgcG9sbHMgdGhlbSBvciBzZXRzIG9uU3RhdGVDaGFuZ2VkLiBTdGF0cwogKiBjYWxsYmFja3MgYXJyaXZlIGZyb20gYSBHbyBnb3JvdXRpbmUgdmlhIHRoZSBzZXJ2aWNlOyBvblN0YXRlQ2hhbmdlZAogKiBpcyBpbnZva2VkIG9uIHdoYXRldmVyIHRocmVhZCBzZXQgdGhlIHN0YXRlLCBzbyBwb3N0IHRvIHRoZSBtYWluCiAqIHRocmVhZCBiZWZvcmUgdG91Y2hpbmcgdmlld3MuCiAqLwpvYmplY3QgTWlzdFZwbkNvbnRyb2xsZXIgewoKICAgIGVudW0gY2xhc3MgU3RhdGUgeyBESVNDT05ORUNURUQsIENPTk5FQ1RJTkcsIENPTk5FQ1RFRCwgRVJST1IgfQoKICAgIEBWb2xhdGlsZSB2YXIgc3RhdGU6IFN0YXRlID0gU3RhdGUuRElTQ09OTkVDVEVECiAgICAgICAgcHJpdmF0ZSBzZXQKCiAgICBAVm9sYXRpbGUgdmFyIGVycm9yTWVzc2FnZTogU3RyaW5nPyA9IG51bGwKICAgICAgICBwcml2YXRlIHNldAoKICAgIEBWb2xhdGlsZSB2YXIgdXBsb2FkQnl0ZXM6IExvbmcgPSAwCiAgICAgICAgcHJpdmF0ZSBzZXQKCiAgICBAVm9sYXRpbGUgdmFyIGRvd25sb2FkQnl0ZXM6IExvbmcgPSAwCiAgICAgICAgcHJpdmF0ZSBzZXQKCiAgICAvKiogSW52b2tlZCBvbiBzdGF0ZSBjaGFuZ2U7IG1heSBiZSBjYWxsZWQgb2ZmIHRoZSBtYWluIHRocmVhZC4gKi8KICAgIHZhciBvblN0YXRlQ2hhbmdlZDogKChTdGF0ZSkgLT4gVW5pdCk/ID0gbnVsbAoKICAgIGZ1biBzZXRTdGF0ZShzOiBTdGF0ZSkgewogICAgICAgIHN0YXRlID0gcwogICAgICAgIGlmIChzICE9IFN0YXRlLkVSUk9SKSBlcnJvck1lc3NhZ2UgPSBudWxsCiAgICAgICAgb25TdGF0ZUNoYW5nZWQ/Lmludm9rZShzKQogICAgfQoKICAgIGZ1biBzZXRFcnJvcihtc2c6IFN0cmluZykgewogICAgICAgIGVycm9yTWVzc2FnZSA9IG1zZwogICAgICAgIHNldFN0YXRlKFN0YXRlLkVSUk9SKQogICAgfQoKICAgIGZ1biB1cGRhdGVTdGF0cyh1cDogTG9uZywgZG93bjogTG9uZykgewogICAgICAgIHVwbG9hZEJ5dGVzID0gdXAKICAgICAgICBkb3dubG9hZEJ5dGVzID0gZG93bgogICAgfQoKICAgIC8qKiBUcnVlIHdoZW4gVlBOIHBlcm1pc3Npb24gaXMgYWxyZWFkeSBncmFudGVkLiAqLwogICAgZnVuIGlzUHJlcGFyZWQoY29udGV4dDogQ29udGV4dCk6IEJvb2xlYW4gPSBWcG5TZXJ2aWNlLnByZXBhcmUoY29udGV4dCkgPT0gbnVsbAoKICAgIC8qKgogICAgICogSW50ZW50IHRvIHJlcXVlc3QgVlBOIHBlcm1pc3Npb24sIG9yIG51bGwgd2hlbiBhbHJlYWR5IGdyYW50ZWQuCiAgICAgKiBMYXVuY2ggd2l0aCBzdGFydEFjdGl2aXR5Rm9yUmVzdWx0OyBwcm9jZWVkIG9uIFJFU1VMVF9PSy4KICAgICAqLwogICAgZnVuIHByZXBhcmVJbnRlbnQoY29udGV4dDogQ29udGV4dCk6IEludGVudD8gPSBWcG5TZXJ2aWNlLnByZXBhcmUoY29udGV4dCkKCiAgICAvKioKICAgICAqIENvbm5lY3Qgd2l0aCBhIG1pc3Q6Ly8gbm9kZSBsaW5rLCBlLmcuCiAgICAgKiBtaXN0Oi8vPGNpZEhleD5APGhvc3Q+Ojxwb3J0Pj9rZXk9PGJhc2U2NHVybD4mc25pPTxkb21haW4+IzxuYW1lPgogICAgICogVGhyb3dzIElsbGVnYWxBcmd1bWVudEV4Y2VwdGlvbiBmb3IgYSBub24tbWlzdCBsaW5rLgogICAgICovCiAgICBmdW4gc3RhcnQoY29udGV4dDogQ29udGV4dCwgbm9kZVVybDogU3RyaW5nKSB7CiAgICAgICAgcmVxdWlyZShub2RlVXJsLnN0YXJ0c1dpdGgoIm1pc3Q6Ly8iKSkgeyAibm90IGEgbWlzdDovLyBsaW5rIiB9CiAgICAgICAgY29udGV4dC5nZXRTaGFyZWRQcmVmZXJlbmNlcyhNaXN0VnBuU2VydmljZS5QUkVGUywgQ29udGV4dC5NT0RFX1BSSVZBVEUpCiAgICAgICAgICAgIC5lZGl0KCkKICAgICAgICAgICAgLnB1dFN0cmluZyhNaXN0VnBuU2VydmljZS5LRVlfTk9ERV9VUkwsIG5vZGVVcmwpCiAgICAgICAgICAgIC5hcHBseSgpCiAgICAgICAgdmFsIGludGVudCA9IEludGVudChjb250ZXh0LCBNaXN0VnBuU2VydmljZTo6Y2xhc3MuamF2YSkuYXBwbHkgewogICAgICAgICAgICBhY3Rpb24gPSBNaXN0VnBuU2VydmljZS5BQ1RJT05fU1RBUlQKICAgICAgICAgICAgcHV0RXh0cmEoTWlzdFZwblNlcnZpY2UuRVhUUkFfTk9ERV9VUkwsIG5vZGVVcmwpCiAgICAgICAgfQogICAgICAgIGlmIChCdWlsZC5WRVJTSU9OLlNES19JTlQgPj0gQnVpbGQuVkVSU0lPTl9DT0RFUy5PKSB7CiAgICAgICAgICAgIGNvbnRleHQuc3RhcnRGb3JlZ3JvdW5kU2VydmljZShpbnRlbnQpCiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgY29udGV4dC5zdGFydFNlcnZpY2UoaW50ZW50KQogICAgICAgIH0KICAgIH0KCiAgICAvKiogRGlzY29ubmVjdCBhbmQgY2xlYXIgdGhlIHN0aWNreS1yZXN0YXJ0IG5vZGUuICovCiAgICBmdW4gc3RvcChjb250ZXh0OiBDb250ZXh0KSB7CiAgICAgICAgY29udGV4dC5nZXRTaGFyZWRQcmVmZXJlbmNlcyhNaXN0VnBuU2VydmljZS5QUkVGUywgQ29udGV4dC5NT0RFX1BSSVZBVEUpCiAgICAgICAgICAgIC5lZGl0KCkKICAgICAgICAgICAgLnJlbW92ZShNaXN0VnBuU2VydmljZS5LRVlfTk9ERV9VUkwpCiAgICAgICAgICAgIC5hcHBseSgpCiAgICAgICAgdmFsIGludGVudCA9IEludGVudChjb250ZXh0LCBNaXN0VnBuU2VydmljZTo6Y2xhc3MuamF2YSkuYXBwbHkgewogICAgICAgICAgICBhY3Rpb24gPSBNaXN0VnBuU2VydmljZS5BQ1RJT05fU1RPUAogICAgICAgIH0KICAgICAgICBjb250ZXh0LnN0YXJ0U2VydmljZShpbnRlbnQpCiAgICB9Cn0K
+package com.chan.mist
+
+import android.content.Context
+import android.content.Intent
+import android.net.VpnService
+import android.os.Build
+
+/**
+ * UI-facing API for the Mist VPN service. Weave (or any app embedding
+ * the framework AAR) only talks to this object, never to the service
+ * or to gomobile classes directly.
+ *
+ * Typical flow from a connect button (must run in the foreground —
+ * Android 12+ forbids background foreground-service starts):
+ *   1. if (!MistVpnController.isPrepared(ctx)) {
+ *        startActivityForResult(MistVpnController.prepareIntent(ctx), REQ)
+ *        // on RESULT_OK -> step 2
+ *      }
+ *   2. MistVpnController.start(ctx, mistNodeUrl)
+ *   3. Observe MistVpnController.onStateChanged / uploadBytes /
+ *      downloadBytes to render status and traffic.
+ *   4. MistVpnController.stop(ctx) to disconnect.
+ *
+ * State and stats are plain @Volatile fields (no AndroidX
+ * dependency): the UI polls them or sets onStateChanged. Stats
+ * callbacks arrive from a Go goroutine via the service; onStateChanged
+ * is invoked on whatever thread set the state, so post to the main
+ * thread before touching views.
+ */
+object MistVpnController {
+
+    enum class State { DISCONNECTED, CONNECTING, CONNECTED, ERROR }
+
+    @Volatile var state: State = State.DISCONNECTED
+        private set
+
+    @Volatile var errorMessage: String? = null
+        private set
+
+    @Volatile var uploadBytes: Long = 0
+        private set
+
+    @Volatile var downloadBytes: Long = 0
+        private set
+
+    /** Invoked on state change; may be called off the main thread. */
+    var onStateChanged: ((State) -> Unit)? = null
+
+    fun setState(s: State) {
+        state = s
+        if (s != State.ERROR) errorMessage = null
+        onStateChanged?.invoke(s)
+    }
+
+    fun setError(msg: String) {
+        errorMessage = msg
+        setState(State.ERROR)
+    }
+
+    fun updateStats(up: Long, down: Long) {
+        uploadBytes = up
+        downloadBytes = down
+    }
+
+    /** True when VPN permission is already granted. */
+    fun isPrepared(context: Context): Boolean = VpnService.prepare(context) == null
+
+    /**
+     * Intent to request VPN permission, or null when already granted.
+     * Launch with startActivityForResult; proceed on RESULT_OK.
+     */
+    fun prepareIntent(context: Context): Intent? = VpnService.prepare(context)
+
+    /**
+     * Connect with a mist:// node link, e.g.
+     * mist://<cidHex>@<host>:<port>?key=<base64url>&sni=<domain>#<name>
+     * Throws IllegalArgumentException for a non-mist link.
+     */
+    fun start(context: Context, nodeUrl: String) {
+        require(nodeUrl.startsWith("mist://")) { "not a mist:// link" }
+        context.getSharedPreferences(MistVpnService.PREFS, Context.MODE_PRIVATE)
+            .edit()
+            .putString(MistVpnService.KEY_NODE_URL, nodeUrl)
+            .apply()
+        val intent = Intent(context, MistVpnService::class.java).apply {
+            action = MistVpnService.ACTION_START
+            putExtra(MistVpnService.EXTRA_NODE_URL, nodeUrl)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent)
+        } else {
+            context.startService(intent)
+        }
+    }
+
+    /** Disconnect and clear the sticky-restart node. */
+    fun stop(context: Context) {
+        context.getSharedPreferences(MistVpnService.PREFS, Context.MODE_PRIVATE)
+            .edit()
+            .remove(MistVpnService.KEY_NODE_URL)
+            .apply()
+        val intent = Intent(context, MistVpnService::class.java).apply {
+            action = MistVpnService.ACTION_STOP
+        }
+        context.startService(intent)
+    }
+}
