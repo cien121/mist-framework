@@ -49,6 +49,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -138,6 +139,16 @@ func (m *MobileEngine) Start(tunFd int, nodeURL string) error {
 
 	go func() {
 		defer close(m.runDone)
+		defer func() {
+			if r := recover(); r != nil {
+				// A panic in the engine loop used to kill the
+				// whole app process through JNI; log it instead
+				// so the session degrades to a diagnosable stall
+				// (readPump/watchdog counts surface it) rather
+				// than a crash. Stop's 5s bound still applies.
+				log.Printf("mist: engine Run panic (recovered): %v", r)
+			}
+		}()
 		_ = engine.Run(ctx)
 	}()
 	return nil
@@ -262,6 +273,25 @@ func (m *MobileEngine) GetDatagramsSendErrors() int64 {
 func (m *MobileEngine) GetDatagramsReceived() int64 {
 	if s, ok := m.engineStats(); ok {
 		return int64(s.DatagramsReceived)
+	}
+	return 0
+}
+
+// GetReadPumpDeaths returns cumulative readPump exits +
+// watchdog-detected stalls. Nonzero with zero traffic means the
+// session is dead even though the UI still shows "connected".
+func (m *MobileEngine) GetReadPumpDeaths() int64 {
+	if s, ok := m.engineStats(); ok {
+		return int64(s.ReadPumpDeaths)
+	}
+	return 0
+}
+
+// GetStreamPendingResets returns cumulative streams reset because
+// their out-of-order reorder buffer exceeded the cap.
+func (m *MobileEngine) GetStreamPendingResets() int64 {
+	if s, ok := m.engineStats(); ok {
+		return int64(s.StreamPendingResets)
 	}
 	return 0
 }
