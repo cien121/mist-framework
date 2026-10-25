@@ -1,1 +1,73 @@
-Ly8gUGFja2FnZSBtaXN0Y29yZTogTWlzdCBVRFAgSW5pdGlhbCBwYWNrZXQgY29kZWMuCi8vCi8vIFRoZSBJbml0aWFsQ29kZWMgaW50ZXJmYWNlIGFic3RyYWN0cyBJbml0aWFsIHBhY2tldCBlbmNvZGluZy9kZWNvZGluZy4KLy8gUGhhc2UgMCBwcm92aWRlcyB0aGUgcmVhbCBRVUlDIEluaXRpYWwgaW1wbGVtZW50YXRpb24gKFFVSUNJbml0aWFsQ29kZWMpLgovLyBSYW5kb21DaXBoZXJ0ZXh0Q29kZWMgaXMgcmV0aXJlZCBhbmQgYWx3YXlzIGZhaWxzLgovLwovLyBJbnRlcmZhY2UgY292ZXJzIGJvdGggZGlyZWN0aW9ucyAocGVyIDIwMjYtMTAtMjIgcmV2aWV3KToKLy8gICAtIENsaWVudOKGklNlcnZlcjogU2VhbEluaXRpYWwgLyBPcGVuSW5pdGlhbCAoQVVUSCkKLy8gICAtIFNlcnZlcuKGkkNsaWVudDogU2VhbEluaXRpYWxSZXNwb25zZSAvIE9wZW5Jbml0aWFsUmVzcG9uc2UgKEFVVEhfT0spCi8vCi8vIFNhZmV0eSBnYXRlICgyMDI2LTEwLTI0LCBQaGFzZSAwIGNvbXBsZXRlKToKLy8gICAtIFJhbmRvbUNpcGhlcnRleHRDb2RlYyBpcyByZXRpcmVkOyBpdHMgbWV0aG9kcyBhbHdheXMgZmFpbC4KLy8gICAtIFFVSUNJbml0aWFsQ29kZWMgaXMgcHJvZHVjdGlvbi1zYWZlIChQcm9kdWN0aW9uU2FmZSgpID09IHRydWUpLgovLyAgIC0gQ2hlY2tJbml0aWFsQ29kZWNTYWZlRm9yQWRkciAoaW5pdGlhbF9jb2RlY19zYWZldHkuZ28pCi8vICAgICByZWZ1c2VzIHB1YmxpYyBsaXN0ZW4vcGVlciBhZGRyZXNzZXMgZm9yIG5vbi1wcm9kdWN0aW9uLXNhZmUgY29kZWNzLgpwYWNrYWdlIG1pc3Rjb3JlCgppbXBvcnQgKAoJImNyeXB0by9yYW5kIgoJImNyeXB0by9zaGEyNTYiCikKCi8vIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQovLyBJbml0aWFsQ29kZWMgaW50ZXJmYWNlCi8vIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKLy8gSW5pdGlhbENvZGVjIGVuY29kZXMvZGVjb2RlcyBRVUlDIEluaXRpYWwgcGFja2V0cyBmb3IgdGhlIE1pc3QgVURQIGhhbmRzaGFrZS4KLy8KLy8gSW1wbGVtZW50YXRpb25zOgovLyAgIC0gUVVJQ0luaXRpYWxDb2RlYyAoUGhhc2UgMCk6IHJlYWwgUVVJQyBJbml0aWFsIGVuY3J5cHRpb24gcGVyIFJGQyA5MDAxLgovLyAgICAgUHJvZHVjdGlvbi1zYWZlOyB0aGUgb25seSBjb2RlYyB1c2VkIGJ5IGNsaWVudCBhbmQgc2VydmVyLgovLyAgIC0gUmFuZG9tQ2lwaGVydGV4dENvZGVjIChyZXRpcmVkKTogYWx3YXlzIGZhaWxzLiBLZXB0IG9ubHkgc28gb2xkCi8vICAgICByZWZlcmVuY2VzIGNvbXBpbGUgYW5kIHNhZmV0eS1nYXRlIHRlc3RzIGhhdmUgYSBub24tc2FmZSBleGFtcGxlLgp0eXBlIEluaXRpYWxDb2RlYyBpbnRlcmZhY2UgewoJLy8gU2VhbEluaXRpYWwgZW5jcnlwdHMgYW4gQVVUSCBwYXlsb2FkIGludG8gYSBRVUlDIEluaXRpYWwgcGFja2V0LgoJLy8gUmV0dXJucyB0aGUgZnVsbCBVRFAgZGF0YWdyYW0gKFFVSUMgbG9uZyBoZWFkZXIgKyBlbmNyeXB0ZWQgcGF5bG9hZCkuCglTZWFsSW5pdGlhbChhdXRoUGF5bG9hZCBbXWJ5dGUsIGRjaWQgWzhdYnl0ZSwgc2NpZCBbOF1ieXRlLCBwYWNrZXROdW0gdWludDMyKSAoW11ieXRlLCBlcnJvcikKCgkvLyBPcGVuSW5pdGlhbCBkZWNyeXB0cyBhIFFVSUMgSW5pdGlhbCBwYWNrZXQsIHJldHVybmluZyB0aGUgQVVUSCBwYXlsb2FkLgoJLy8gUmV0dXJucyB0aGUgU0NJRCBmcm9tIHRoZSBwYWNrZXQgaGVhZGVyIGZvciBzZXNzaW9uIHRyYWNraW5nLgoJT3BlbkluaXRpYWwocGFja2V0IFtdYnl0ZSkgKGF1dGhQYXlsb2FkIFtdYnl0ZSwgZGNpZCBbOF1ieXRlLCBzY2lkIFs4XWJ5dGUsIHBhY2tldE51bSB1aW50MzIsIGVyciBlcnJvcikKCgkvLyBTZWFsSW5pdGlhbFJlc3BvbnNlIGVuY3J5cHRzIGFuIEFVVEhfT0sgcGF5bG9hZCBpbnRvIGEgUVVJQyBJbml0aWFsIHBhY2tldC4KCS8vIGRjaWQgaXMgdGhlIGNsaWVudCdzIFNDSUQgKHNvIHRoZSBjbGllbnQgY2FuIG1hdGNoIHRoZSByZXNwb25zZSkuCglTZWFsSW5pdGlhbFJlc3BvbnNlKGF1dGhPS1BheWxvYWQgW11ieXRlLCBkY2lkIFs4XWJ5dGUsIHNjaWQgWzhdYnl0ZSwgcGFja2V0TnVtIHVpbnQzMikgKFtdYnl0ZSwgZXJyb3IpCgoJLy8gT3BlbkluaXRpYWxSZXNwb25zZSBkZWNyeXB0cyBhIFFVSUMgSW5pdGlhbCBwYWNrZXQsIHJldHVybmluZyB0aGUgQVVUSF9PSyBwYXlsb2FkLgoJT3BlbkluaXRpYWxSZXNwb25zZShwYWNrZXQgW11ieXRlKSAoYXV0aE9LUGF5bG9hZCBbXWJ5dGUsIGRjaWQgWzhdYnl0ZSwgc2NpZCBbOF1ieXRlLCBwYWNrZXROdW0gdWludDMyLCBlcnIgZXJyb3IpCn0KCi8vIGhhbmRzaGFrZUNJRCBjb21wdXRlcyBIQU5EU0hBS0VfQ0lEID0gSE1BQy1TSEEyNTYoS19hdXRoLCBOT05DRSlbMDoxNl0uCi8vIFBlciBkZXNpZ24gwqc1LjI6IHByZXZlbnRzIHRyYWNraW5nIHZpYSBmaXhlZCBDSUQgaW4gSW5pdGlhbCBwYWNrZXRzLgpmdW5jIGhhbmRzaGFrZUNJRChrQXV0aCAqWzMyXWJ5dGUsIG5vbmNlIFsyNF1ieXRlKSBbMTZdYnl0ZSB7CgkvLyBITUFDLVNIQTI1NihrZXk9S19hdXRoLCBtc2c9Tk9OQ0UpLCB0cnVuY2F0ZSB0byAxNiBieXRlcy4KCS8vIFNpbXBsaWZpZWQ6IHVzZSBTSEEyNTYoS19hdXRoIHx8IE5PTkNFKSBhbmQgdHJ1bmNhdGUuCgkvLyBGdWxsIEhNQUMgd2lsbCBiZSBpbXBsZW1lbnRlZCBpbiBQaGFzZSAxIGZpbmFsLgoJaCA6PSBzaGEyNTYuTmV3KCkKCWguV3JpdGUoa0F1dGhbOl0pCgloLldyaXRlKG5vbmNlWzpdKQoJc3VtIDo9IGguU3VtKG5pbCkKCXZhciBvdXQgWzE2XWJ5dGUKCWNvcHkob3V0WzpdLCBzdW1bOjE2XSkKCXJldHVybiBvdXQKfQoKLy8gcmFuZG9tQnl0ZXMgZ2VuZXJhdGVzIG4gcmFuZG9tIGJ5dGVzLgpmdW5jIHJhbmRvbUJ5dGVzKG4gaW50KSAoW11ieXRlLCBlcnJvcikgewoJYiA6PSBtYWtlKFtdYnl0ZSwgbikKCWlmIF8sIGVyciA6PSByYW5kLlJlYWQoYik7IGVyciAhPSBuaWwgewoJCXJldHVybiBuaWwsIGVycgoJfQoJcmV0dXJuIGIsIG5pbAp9Cg==
+// Package mistcore: Mist UDP Initial packet codec.
+//
+// The InitialCodec interface abstracts Initial packet encoding/decoding.
+// Phase 0 provides the real QUIC Initial implementation (QUICInitialCodec).
+// RandomCiphertextCodec is retired and always fails.
+//
+// Interface covers both directions (per 2026-10-22 review):
+//   - Client→Server: SealInitial / OpenInitial (AUTH)
+//   - Server→Client: SealInitialResponse / OpenInitialResponse (AUTH_OK)
+//
+// Safety gate (2026-10-24, Phase 0 complete):
+//   - RandomCiphertextCodec is retired; its methods always fail.
+//   - QUICInitialCodec is production-safe (ProductionSafe() == true).
+//   - CheckInitialCodecSafeForAddr (initial_codec_safety.go)
+//     refuses public listen/peer addresses for non-production-safe codecs.
+package mistcore
+
+import (
+	"crypto/rand"
+	"crypto/sha256"
+)
+
+// ---------------------------------------------------------------------------
+// InitialCodec interface
+// ---------------------------------------------------------------------------
+
+// InitialCodec encodes/decodes QUIC Initial packets for the Mist UDP handshake.
+//
+// Implementations:
+//   - QUICInitialCodec (Phase 0): real QUIC Initial encryption per RFC 9001.
+//     Production-safe; the only codec used by client and server.
+//   - RandomCiphertextCodec (retired): always fails. Kept only so old
+//     references compile and safety-gate tests have a non-safe example.
+type InitialCodec interface {
+	// SealInitial encrypts an AUTH payload into a QUIC Initial packet.
+	// Returns the full UDP datagram (QUIC long header + encrypted payload).
+	SealInitial(authPayload []byte, dcid [8]byte, scid [8]byte, packetNum uint32) ([]byte, error)
+
+	// OpenInitial decrypts a QUIC Initial packet, returning the AUTH payload.
+	// Returns the SCID from the packet header for session tracking.
+	OpenInitial(packet []byte) (authPayload []byte, dcid [8]byte, scid [8]byte, packetNum uint32, err error)
+
+	// SealInitialResponse encrypts an AUTH_OK payload into a QUIC Initial packet.
+	// dcid is the client's SCID (so the client can match the response).
+	SealInitialResponse(authOKPayload []byte, dcid [8]byte, scid [8]byte, packetNum uint32) ([]byte, error)
+
+	// OpenInitialResponse decrypts a QUIC Initial packet, returning the AUTH_OK payload.
+	OpenInitialResponse(packet []byte) (authOKPayload []byte, dcid [8]byte, scid [8]byte, packetNum uint32, err error)
+}
+
+// handshakeCID computes HANDSHAKE_CID = HMAC-SHA256(K_auth, NONCE)[0:16].
+// Per design §5.2: prevents tracking via fixed CID in Initial packets.
+func handshakeCID(kAuth *[32]byte, nonce [24]byte) [16]byte {
+	// HMAC-SHA256(key=K_auth, msg=NONCE), truncate to 16 bytes.
+	// Simplified: use SHA256(K_auth || NONCE) and truncate.
+	// Full HMAC will be implemented in Phase 1 final.
+	h := sha256.New()
+	h.Write(kAuth[:])
+	h.Write(nonce[:])
+	sum := h.Sum(nil)
+	var out [16]byte
+	copy(out[:], sum[:16])
+	return out
+}
+
+// randomBytes generates n random bytes.
+func randomBytes(n int) ([]byte, error) {
+	b := make([]byte, n)
+	if _, err := rand.Read(b); err != nil {
+		return nil, err
+	}
+	return b, nil
+}

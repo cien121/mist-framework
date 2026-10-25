@@ -1,1 +1,9 @@
-Ly8gUGFja2FnZSBiYnI6IGV4cG9ydGVkIGFsaWFzIGZvciBNaXN0IFVEUCBpbnRlZ3JhdGlvbi4KLy8KLy8gVGhlIHVuZGVybHlpbmcgQkJSIGltcGxlbWVudGF0aW9uIGlzIHBvcnRlZCBmcm9tIEh5MgovLyAoeHJheS1jb3JlL3RyYW5zcG9ydC9pbnRlcm5ldC9oeXN0ZXJpYS9jb25nZXN0aW9uL2JicikuCi8vIGJiclNlbmRlciBpcyB1bmV4cG9ydGVkIHRoZXJlOyB0aGlzIGFsaWFzIG1ha2VzIGl0IHVzYWJsZSBmcm9tIG1pc3Rjb3JlLgpwYWNrYWdlIGJicgoKLy8gU2VuZGVyIGlzIHRoZSBCQlIgY29uZ2VzdGlvbiBjb250cm9sbGVyIChhbGlhcyBmb3IgYmJyU2VuZGVyKS4KdHlwZSBTZW5kZXIgPSBiYnJTZW5kZXIK
+// Package bbr: exported alias for Mist UDP integration.
+//
+// The underlying BBR implementation is ported from Hy2
+// (xray-core/transport/internet/hysteria/congestion/bbr).
+// bbrSender is unexported there; this alias makes it usable from mistcore.
+package bbr
+
+// Sender is the BBR congestion controller (alias for bbrSender).
+type Sender = bbrSender

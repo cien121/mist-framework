@@ -1,1 +1,162 @@
-cGFja2FnZSBiYnIKCmltcG9ydCAoCgkiZ29sYW5nLm9yZy94L2V4cC9jb25zdHJhaW50cyIKKQoKLy8gSW1wbGVtZW50cyBLYXRobGVlbiBOaWNob2xzJyBhbGdvcml0aG0gZm9yIHRyYWNraW5nIHRoZSBtaW5pbXVtIChvciBtYXhpbXVtKQovLyBlc3RpbWF0ZSBvZiBhIHN0cmVhbSBvZiBzYW1wbGVzIG92ZXIgc29tZSBmaXhlZCB0aW1lIGludGVydmFsLiAoRS5nLiwKLy8gdGhlIG1pbmltdW0gUlRUIG92ZXIgdGhlIHBhc3QgZml2ZSBtaW51dGVzLikgVGhlIGFsZ29yaXRobSBrZWVwcyB0cmFjayBvZgovLyB0aGUgYmVzdCwgc2Vjb25kIGJlc3QsIGFuZCB0aGlyZCBiZXN0IG1pbiAob3IgbWF4KSBlc3RpbWF0ZXMsIG1haW50YWluaW5nIGFuCi8vIGludmFyaWFudCB0aGF0IHRoZSBtZWFzdXJlbWVudCB0aW1lIG9mIHRoZSBuJ3RoIGJlc3QgPj0gbi0xJ3RoIGJlc3QuCgovLyBUaGUgYWxnb3JpdGhtIHdvcmtzIGFzIGZvbGxvd3MuIE9uIGEgcmVzZXQsIGFsbCB0aHJlZSBlc3RpbWF0ZXMgYXJlIHNldCB0bwovLyB0aGUgc2FtZSBzYW1wbGUuIFRoZSBzZWNvbmQgYmVzdCBlc3RpbWF0ZSBpcyB0aGVuIHJlY29yZGVkIGluIHRoZSBzZWNvbmQKLy8gcXVhcnRlciBvZiB0aGUgd2luZG93LCBhbmQgYSB0aGlyZCBiZXN0IGVzdGltYXRlIGlzIHJlY29yZGVkIGluIHRoZSBzZWNvbmQKLy8gaGFsZiBvZiB0aGUgd2luZG93LCBib3VuZGluZyB0aGUgd29yc3QgY2FzZSBlcnJvciB3aGVuIHRoZSB0cnVlIG1pbiBpcwovLyBtb25vdG9uaWNhbGx5IGluY3JlYXNpbmcgKG9yIHRydWUgbWF4IGlzIG1vbm90b25pY2FsbHkgZGVjcmVhc2luZykgb3ZlciB0aGUKLy8gd2luZG93LgovLwovLyBBIG5ldyBiZXN0IHNhbXBsZSByZXBsYWNlcyBhbGwgdGhyZWUgZXN0aW1hdGVzLCBzaW5jZSB0aGUgbmV3IGJlc3QgaXMgbG93ZXIKLy8gKG9yIGhpZ2hlcikgdGhhbiBldmVyeXRoaW5nIGVsc2UgaW4gdGhlIHdpbmRvdyBhbmQgaXQgaXMgdGhlIG1vc3QgcmVjZW50LgovLyBUaGUgd2luZG93IHRodXMgZWZmZWN0aXZlbHkgZ2V0cyByZXNldCBvbiBldmVyeSBuZXcgbWluLiBUaGUgc2FtZSBwcm9wZXJ0eQovLyBob2xkcyB0cnVlIGZvciBzZWNvbmQgYmVzdCBhbmQgdGhpcmQgYmVzdCBlc3RpbWF0ZXMuIFNwZWNpZmljYWxseSwgd2hlbiBhCi8vIHNhbXBsZSBhcnJpdmVzIHRoYXQgaXMgYmV0dGVyIHRoYW4gdGhlIHNlY29uZCBiZXN0IGJ1dCBub3QgYmV0dGVyIHRoYW4gdGhlCi8vIGJlc3QsIGl0IHJlcGxhY2VzIHRoZSBzZWNvbmQgYW5kIHRoaXJkIGJlc3QgZXN0aW1hdGVzIGJ1dCBub3QgdGhlIGJlc3QKLy8gZXN0aW1hdGUuIFNpbWlsYXJseSwgYSBzYW1wbGUgdGhhdCBpcyBiZXR0ZXIgdGhhbiB0aGUgdGhpcmQgYmVzdCBlc3RpbWF0ZQovLyBidXQgbm90IHRoZSBvdGhlciBlc3RpbWF0ZXMgcmVwbGFjZXMgb25seSB0aGUgdGhpcmQgYmVzdCBlc3RpbWF0ZS4KLy8KLy8gRmluYWxseSwgd2hlbiB0aGUgYmVzdCBleHBpcmVzLCBpdCBpcyByZXBsYWNlZCBieSB0aGUgc2Vjb25kIGJlc3QsIHdoaWNoIGluCi8vIHR1cm4gaXMgcmVwbGFjZWQgYnkgdGhlIHRoaXJkIGJlc3QuIFRoZSBuZXdlc3Qgc2FtcGxlIHJlcGxhY2VzIHRoZSB0aGlyZAovLyBiZXN0LgoKdHlwZSBXaW5kb3dlZEZpbHRlclZhbHVlIGludGVyZmFjZSB7CglhbnkKfQoKdHlwZSBXaW5kb3dlZEZpbHRlclRpbWUgaW50ZXJmYWNlIHsKCWNvbnN0cmFpbnRzLkludGVnZXIgfCBjb25zdHJhaW50cy5GbG9hdAp9Cgp0eXBlIFdpbmRvd2VkRmlsdGVyW1YgV2luZG93ZWRGaWx0ZXJWYWx1ZSwgVCBXaW5kb3dlZEZpbHRlclRpbWVdIHN0cnVjdCB7CgkvLyBUaW1lIGxlbmd0aCBvZiB3aW5kb3cuCgl3aW5kb3dMZW5ndGggVAoJZXN0aW1hdGVzICAgIFtdZW50cnlbViwgVF0KCWNvbXBhcmF0b3IgICBmdW5jKFYsIFYpIGludAp9Cgp0eXBlIGVudHJ5W1YgV2luZG93ZWRGaWx0ZXJWYWx1ZSwgVCBXaW5kb3dlZEZpbHRlclRpbWVdIHN0cnVjdCB7CglzYW1wbGUgVgoJdGltZSAgIFQKfQoKLy8gQ29tcGFyZXMgdHdvIHZhbHVlcyBhbmQgcmV0dXJucyB0cnVlIGlmIHRoZSBmaXJzdCBpcyBncmVhdGVyIHRoYW4gb3IgZXF1YWwKLy8gdG8gdGhlIHNlY29uZC4KZnVuYyBNYXhGaWx0ZXJbTyBjb25zdHJhaW50cy5PcmRlcmVkXShhLCBiIE8pIGludCB7CglpZiBhID4gYiB7CgkJcmV0dXJuIDEKCX0gZWxzZSBpZiBhIDwgYiB7CgkJcmV0dXJuIC0xCgl9CglyZXR1cm4gMAp9CgovLyBDb21wYXJlcyB0d28gdmFsdWVzIGFuZCByZXR1cm5zIHRydWUgaWYgdGhlIGZpcnN0IGlzIGxlc3MgdGhhbiBvciBlcXVhbAovLyB0byB0aGUgc2Vjb25kLgpmdW5jIE1pbkZpbHRlcltPIGNvbnN0cmFpbnRzLk9yZGVyZWRdKGEsIGIgTykgaW50IHsKCWlmIGEgPCBiIHsKCQlyZXR1cm4gMQoJfSBlbHNlIGlmIGEgPiBiIHsKCQlyZXR1cm4gLTEKCX0KCXJldHVybiAwCn0KCmZ1bmMgTmV3V2luZG93ZWRGaWx0ZXJbViBXaW5kb3dlZEZpbHRlclZhbHVlLCBUIFdpbmRvd2VkRmlsdGVyVGltZV0od2luZG93TGVuZ3RoIFQsIGNvbXBhcmF0b3IgZnVuYyhWLCBWKSBpbnQpICpXaW5kb3dlZEZpbHRlcltWLCBUXSB7CglyZXR1cm4gJldpbmRvd2VkRmlsdGVyW1YsIFRdewoJCXdpbmRvd0xlbmd0aDogd2luZG93TGVuZ3RoLAoJCWVzdGltYXRlczogICAgbWFrZShbXWVudHJ5W1YsIFRdLCAzLCAzKSwKCQljb21wYXJhdG9yOiAgIGNvbXBhcmF0b3IsCgl9Cn0KCi8vIENoYW5nZXMgdGhlIHdpbmRvdyBsZW5ndGguICBEb2VzIG5vdCB1cGRhdGUgYW55IGN1cnJlbnQgc2FtcGxlcy4KZnVuYyAoZiAqV2luZG93ZWRGaWx0ZXJbViwgVF0pIFNldFdpbmRvd0xlbmd0aCh3aW5kb3dMZW5ndGggVCkgewoJZi53aW5kb3dMZW5ndGggPSB3aW5kb3dMZW5ndGgKfQoKZnVuYyAoZiAqV2luZG93ZWRGaWx0ZXJbViwgVF0pIEdldEJlc3QoKSBWIHsKCXJldHVybiBmLmVzdGltYXRlc1swXS5zYW1wbGUKfQoKZnVuYyAoZiAqV2luZG93ZWRGaWx0ZXJbViwgVF0pIEdldFNlY29uZEJlc3QoKSBWIHsKCXJldHVybiBmLmVzdGltYXRlc1sxXS5zYW1wbGUKfQoKZnVuYyAoZiAqV2luZG93ZWRGaWx0ZXJbViwgVF0pIEdldFRoaXJkQmVzdCgpIFYgewoJcmV0dXJuIGYuZXN0aW1hdGVzWzJdLnNhbXBsZQp9CgovLyBVcGRhdGVzIGJlc3QgZXN0aW1hdGVzIHdpdGggfHNhbXBsZXwsIGFuZCBleHBpcmVzIGFuZCB1cGRhdGVzIGJlc3QKLy8gZXN0aW1hdGVzIGFzIG5lY2Vzc2FyeS4KZnVuYyAoZiAqV2luZG93ZWRGaWx0ZXJbViwgVF0pIFVwZGF0ZShuZXdTYW1wbGUgViwgbmV3VGltZSBUKSB7CgkvLyBSZXNldCBhbGwgZXN0aW1hdGVzIGlmIHRoZXkgaGF2ZSBub3QgeWV0IGJlZW4gaW5pdGlhbGl6ZWQsIGlmIG5ldyBzYW1wbGUKCS8vIGlzIGEgbmV3IGJlc3QsIG9yIGlmIHRoZSBuZXdlc3QgcmVjb3JkZWQgZXN0aW1hdGUgaXMgdG9vIG9sZC4KCWlmIGYuY29tcGFyYXRvcihmLmVzdGltYXRlc1swXS5zYW1wbGUsICpuZXcoVikpID09IDAgfHwKCQlmLmNvbXBhcmF0b3IobmV3U2FtcGxlLCBmLmVzdGltYXRlc1swXS5zYW1wbGUpID49IDAgfHwKCQluZXdUaW1lLWYuZXN0aW1hdGVzWzJdLnRpbWUgPiBmLndpbmRvd0xlbmd0aCB7CgkJZi5SZXNldChuZXdTYW1wbGUsIG5ld1RpbWUpCgkJcmV0dXJuCgl9CgoJaWYgZi5jb21wYXJhdG9yKG5ld1NhbXBsZSwgZi5lc3RpbWF0ZXNbMV0uc2FtcGxlKSA+PSAwIHsKCQlmLmVzdGltYXRlc1sxXSA9IGVudHJ5W1YsIFRde25ld1NhbXBsZSwgbmV3VGltZX0KCQlmLmVzdGltYXRlc1syXSA9IGYuZXN0aW1hdGVzWzFdCgl9IGVsc2UgaWYgZi5jb21wYXJhdG9yKG5ld1NhbXBsZSwgZi5lc3RpbWF0ZXNbMl0uc2FtcGxlKSA+PSAwIHsKCQlmLmVzdGltYXRlc1syXSA9IGVudHJ5W1YsIFRde25ld1NhbXBsZSwgbmV3VGltZX0KCX0KCgkvLyBFeHBpcmUgYW5kIHVwZGF0ZSBlc3RpbWF0ZXMgYXMgbmVjZXNzYXJ5LgoJaWYgbmV3VGltZS1mLmVzdGltYXRlc1swXS50aW1lID4gZi53aW5kb3dMZW5ndGggewoJCS8vIFRoZSBiZXN0IGVzdGltYXRlIGhhc24ndCBiZWVuIHVwZGF0ZWQgZm9yIGFuIGVudGlyZSB3aW5kb3csIHNvIHByb21vdGUKCQkvLyBzZWNvbmQgYW5kIHRoaXJkIGJlc3QgZXN0aW1hdGVzLgoJCWYuZXN0aW1hdGVzWzBdID0gZi5lc3RpbWF0ZXNbMV0KCQlmLmVzdGltYXRlc1sxXSA9IGYuZXN0aW1hdGVzWzJdCgkJZi5lc3RpbWF0ZXNbMl0gPSBlbnRyeVtWLCBUXXtuZXdTYW1wbGUsIG5ld1RpbWV9CgkJLy8gTmVlZCB0byBpdGVyYXRlIG9uZSBtb3JlIHRpbWUuIENoZWNrIGlmIHRoZSBuZXcgYmVzdCBlc3RpbWF0ZSBpcwoJCS8vIG91dHNpZGUgdGhlIHdpbmRvdyBhcyB3ZWxsLCBzaW5jZSBpdCBtYXkgYWxzbyBoYXZlIGJlZW4gcmVjb3JkZWQgYQoJCS8vIGxvbmcgdGltZSBhZ28uIERvbid0IG5lZWQgdG8gaXRlcmF0ZSBvbmNlIG1vcmUgc2luY2Ugd2UgY292ZXIgdGhhdAoJCS8vIGNhc2UgYXQgdGhlIGJlZ2lubmluZyBvZiB0aGUgbWV0aG9kLgoJCWlmIG5ld1RpbWUtZi5lc3RpbWF0ZXNbMF0udGltZSA+IGYud2luZG93TGVuZ3RoIHsKCQkJZi5lc3RpbWF0ZXNbMF0gPSBmLmVzdGltYXRlc1sxXQoJCQlmLmVzdGltYXRlc1sxXSA9IGYuZXN0aW1hdGVzWzJdCgkJfQoJCXJldHVybgoJfQoJaWYgZi5jb21wYXJhdG9yKGYuZXN0aW1hdGVzWzFdLnNhbXBsZSwgZi5lc3RpbWF0ZXNbMF0uc2FtcGxlKSA9PSAwICYmCgkJbmV3VGltZS1mLmVzdGltYXRlc1sxXS50aW1lID4gZi53aW5kb3dMZW5ndGgvNCB7CgkJLy8gQSBxdWFydGVyIG9mIHRoZSB3aW5kb3cgaGFzIHBhc3NlZCB3aXRob3V0IGEgYmV0dGVyIHNhbXBsZSwgc28gdGhlCgkJLy8gc2Vjb25kLWJlc3QgZXN0aW1hdGUgaXMgdGFrZW4gZnJvbSB0aGUgc2Vjb25kIHF1YXJ0ZXIgb2YgdGhlIHdpbmRvdy4KCQlmLmVzdGltYXRlc1sxXSA9IGVudHJ5W1YsIFRde25ld1NhbXBsZSwgbmV3VGltZX0KCQlmLmVzdGltYXRlc1syXSA9IGYuZXN0aW1hdGVzWzFdCgkJcmV0dXJuCgl9CgoJaWYgZi5jb21wYXJhdG9yKGYuZXN0aW1hdGVzWzJdLnNhbXBsZSwgZi5lc3RpbWF0ZXNbMV0uc2FtcGxlKSA9PSAwICYmCgkJbmV3VGltZS1mLmVzdGltYXRlc1syXS50aW1lID4gZi53aW5kb3dMZW5ndGgvMiB7CgkJLy8gV2UndmUgcGFzc2VkIGEgaGFsZiBvZiB0aGUgd2luZG93IHdpdGhvdXQgYSBiZXR0ZXIgZXN0aW1hdGUsIHNvIHRha2UKCQkvLyBhIHRoaXJkLWJlc3QgZXN0aW1hdGUgZnJvbSB0aGUgc2Vjb25kIGhhbGYgb2YgdGhlIHdpbmRvdy4KCQlmLmVzdGltYXRlc1syXSA9IGVudHJ5W1YsIFRde25ld1NhbXBsZSwgbmV3VGltZX0KCX0KfQoKLy8gUmVzZXRzIGFsbCBlc3RpbWF0ZXMgdG8gbmV3IHNhbXBsZS4KZnVuYyAoZiAqV2luZG93ZWRGaWx0ZXJbViwgVF0pIFJlc2V0KG5ld1NhbXBsZSBWLCBuZXdUaW1lIFQpIHsKCWYuZXN0aW1hdGVzWzJdID0gZW50cnlbViwgVF17bmV3U2FtcGxlLCBuZXdUaW1lfQoJZi5lc3RpbWF0ZXNbMV0gPSBmLmVzdGltYXRlc1syXQoJZi5lc3RpbWF0ZXNbMF0gPSBmLmVzdGltYXRlc1sxXQp9CgpmdW5jIChmICpXaW5kb3dlZEZpbHRlcltWLCBUXSkgQ2xlYXIoKSB7CglmLmVzdGltYXRlcyA9IG1ha2UoW11lbnRyeVtWLCBUXSwgMywgMykKfQo=
+package bbr
+
+import (
+	"golang.org/x/exp/constraints"
+)
+
+// Implements Kathleen Nichols' algorithm for tracking the minimum (or maximum)
+// estimate of a stream of samples over some fixed time interval. (E.g.,
+// the minimum RTT over the past five minutes.) The algorithm keeps track of
+// the best, second best, and third best min (or max) estimates, maintaining an
+// invariant that the measurement time of the n'th best >= n-1'th best.
+
+// The algorithm works as follows. On a reset, all three estimates are set to
+// the same sample. The second best estimate is then recorded in the second
+// quarter of the window, and a third best estimate is recorded in the second
+// half of the window, bounding the worst case error when the true min is
+// monotonically increasing (or true max is monotonically decreasing) over the
+// window.
+//
+// A new best sample replaces all three estimates, since the new best is lower
+// (or higher) than everything else in the window and it is the most recent.
+// The window thus effectively gets reset on every new min. The same property
+// holds true for second best and third best estimates. Specifically, when a
+// sample arrives that is better than the second best but not better than the
+// best, it replaces the second and third best estimates but not the best
+// estimate. Similarly, a sample that is better than the third best estimate
+// but not the other estimates replaces only the third best estimate.
+//
+// Finally, when the best expires, it is replaced by the second best, which in
+// turn is replaced by the third best. The newest sample replaces the third
+// best.
+
+type WindowedFilterValue interface {
+	any
+}
+
+type WindowedFilterTime interface {
+	constraints.Integer | constraints.Float
+}
+
+type WindowedFilter[V WindowedFilterValue, T WindowedFilterTime] struct {
+	// Time length of window.
+	windowLength T
+	estimates    []entry[V, T]
+	comparator   func(V, V) int
+}
+
+type entry[V WindowedFilterValue, T WindowedFilterTime] struct {
+	sample V
+	time   T
+}
+
+// Compares two values and returns true if the first is greater than or equal
+// to the second.
+func MaxFilter[O constraints.Ordered](a, b O) int {
+	if a > b {
+		return 1
+	} else if a < b {
+		return -1
+	}
+	return 0
+}
+
+// Compares two values and returns true if the first is less than or equal
+// to the second.
+func MinFilter[O constraints.Ordered](a, b O) int {
+	if a < b {
+		return 1
+	} else if a > b {
+		return -1
+	}
+	return 0
+}
+
+func NewWindowedFilter[V WindowedFilterValue, T WindowedFilterTime](windowLength T, comparator func(V, V) int) *WindowedFilter[V, T] {
+	return &WindowedFilter[V, T]{
+		windowLength: windowLength,
+		estimates:    make([]entry[V, T], 3, 3),
+		comparator:   comparator,
+	}
+}
+
+// Changes the window length.  Does not update any current samples.
+func (f *WindowedFilter[V, T]) SetWindowLength(windowLength T) {
+	f.windowLength = windowLength
+}
+
+func (f *WindowedFilter[V, T]) GetBest() V {
+	return f.estimates[0].sample
+}
+
+func (f *WindowedFilter[V, T]) GetSecondBest() V {
+	return f.estimates[1].sample
+}
+
+func (f *WindowedFilter[V, T]) GetThirdBest() V {
+	return f.estimates[2].sample
+}
+
+// Updates best estimates with |sample|, and expires and updates best
+// estimates as necessary.
+func (f *WindowedFilter[V, T]) Update(newSample V, newTime T) {
+	// Reset all estimates if they have not yet been initialized, if new sample
+	// is a new best, or if the newest recorded estimate is too old.
+	if f.comparator(f.estimates[0].sample, *new(V)) == 0 ||
+		f.comparator(newSample, f.estimates[0].sample) >= 0 ||
+		newTime-f.estimates[2].time > f.windowLength {
+		f.Reset(newSample, newTime)
+		return
+	}
+
+	if f.comparator(newSample, f.estimates[1].sample) >= 0 {
+		f.estimates[1] = entry[V, T]{newSample, newTime}
+		f.estimates[2] = f.estimates[1]
+	} else if f.comparator(newSample, f.estimates[2].sample) >= 0 {
+		f.estimates[2] = entry[V, T]{newSample, newTime}
+	}
+
+	// Expire and update estimates as necessary.
+	if newTime-f.estimates[0].time > f.windowLength {
+		// The best estimate hasn't been updated for an entire window, so promote
+		// second and third best estimates.
+		f.estimates[0] = f.estimates[1]
+		f.estimates[1] = f.estimates[2]
+		f.estimates[2] = entry[V, T]{newSample, newTime}
+		// Need to iterate one more time. Check if the new best estimate is
+		// outside the window as well, since it may also have been recorded a
+		// long time ago. Don't need to iterate once more since we cover that
+		// case at the beginning of the method.
+		if newTime-f.estimates[0].time > f.windowLength {
+			f.estimates[0] = f.estimates[1]
+			f.estimates[1] = f.estimates[2]
+		}
+		return
+	}
+	if f.comparator(f.estimates[1].sample, f.estimates[0].sample) == 0 &&
+		newTime-f.estimates[1].time > f.windowLength/4 {
+		// A quarter of the window has passed without a better sample, so the
+		// second-best estimate is taken from the second quarter of the window.
+		f.estimates[1] = entry[V, T]{newSample, newTime}
+		f.estimates[2] = f.estimates[1]
+		return
+	}
+
+	if f.comparator(f.estimates[2].sample, f.estimates[1].sample) == 0 &&
+		newTime-f.estimates[2].time > f.windowLength/2 {
+		// We've passed a half of the window without a better estimate, so take
+		// a third-best estimate from the second half of the window.
+		f.estimates[2] = entry[V, T]{newSample, newTime}
+	}
+}
+
+// Resets all estimates to new sample.
+func (f *WindowedFilter[V, T]) Reset(newSample V, newTime T) {
+	f.estimates[2] = entry[V, T]{newSample, newTime}
+	f.estimates[1] = f.estimates[2]
+	f.estimates[0] = f.estimates[1]
+}
+
+func (f *WindowedFilter[V, T]) Clear() {
+	f.estimates = make([]entry[V, T], 3, 3)
+}

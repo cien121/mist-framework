@@ -1,1 +1,199 @@
-cGFja2FnZSBiYnIKCmltcG9ydCAoCgkiZ2l0aHViLmNvbS9hcGVybmV0L3F1aWMtZ28vY29uZ2VzdGlvbiIKKQoKLy8gcGFja2V0TnVtYmVySW5kZXhlZFF1ZXVlIGlzIGEgcXVldWUgb2YgbW9zdGx5IGNvbnRpbnVvdXMgbnVtYmVyZWQgZW50cmllcwovLyB3aGljaCBzdXBwb3J0cyB0aGUgZm9sbG93aW5nIG9wZXJhdGlvbnM6Ci8vIC0gYWRkaW5nIGVsZW1lbnRzIHRvIHRoZSBlbmQgb2YgdGhlIHF1ZXVlLCBvciBhdCBzb21lIHBvaW50IHBhc3QgdGhlIGVuZAovLyAtIHJlbW92aW5nIGVsZW1lbnRzIGluIGFueSBvcmRlcgovLyAtIHJldHJpZXZpbmcgZWxlbWVudHMKLy8gSWYgYWxsIGVsZW1lbnRzIGFyZSBpbnNlcnRlZCBpbiBvcmRlciwgYWxsIG9mIHRoZSBvcGVyYXRpb25zIGFib3ZlIGFyZQovLyBhbW9ydGl6ZWQgTygxKSB0aW1lLgovLwovLyBJbnRlcm5hbGx5LCB0aGUgZGF0YSBzdHJ1Y3R1cmUgaXMgYSBkZXF1ZSB3aGVyZSBlYWNoIGVsZW1lbnQgaXMgbWFya2VkIGFzCi8vIHByZXNlbnQgb3Igbm90LiAgVGhlIGRlcXVlIHN0YXJ0cyBhdCB0aGUgbG93ZXN0IHByZXNlbnQgaW5kZXguICBXaGVuZXZlciBhbgovLyBlbGVtZW50IGlzIHJlbW92ZWQsIGl0J3MgbWFya2VkIGFzIG5vdCBwcmVzZW50LCBhbmQgdGhlIGZyb250IG9mIHRoZSBkZXF1ZSBpcwovLyBjbGVhcmVkIG9mIGVsZW1lbnRzIHRoYXQgYXJlIG5vdCBwcmVzZW50LgovLwovLyBUaGUgdGFpbCBvZiB0aGUgcXVldWUgaXMgbm90IGNsZWFyZWQgZHVlIHRvIHRoZSBhc3N1bXB0aW9uIG9mIGVudHJpZXMgYmVpbmcKLy8gaW5zZXJ0ZWQgaW4gb3JkZXIsIHRob3VnaCByZW1vdmluZyBhbGwgZWxlbWVudHMgb2YgdGhlIHF1ZXVlIHdpbGwgcmV0dXJuIGl0Ci8vIHRvIGl0cyBpbml0aWFsIHN0YXRlLgovLwovLyBOb3RlIHRoYXQgdGhpcyBkYXRhIHN0cnVjdHVyZSBpcyBpbmhlcmVudGx5IGhhemFyZG91cywgc2luY2UgYW4gYWRkaXRpb24gb2YKLy8ganVzdCB0d28gZW50cmllcyB3aWxsIGNhdXNlIGl0IHRvIGNvbnN1bWUgYWxsIG9mIHRoZSBtZW1vcnkgYXZhaWxhYmxlLgovLyBCZWNhdXNlIG9mIHRoYXQsIGl0IGlzIG5vdCBhIGdlbmVyYWwtcHVycG9zZSBjb250YWluZXIgYW5kIHNob3VsZCBub3QgYmUgdXNlZAovLyBhcyBvbmUuCgp0eXBlIGVudHJ5V3JhcHBlcltUIGFueV0gc3RydWN0IHsKCXByZXNlbnQgYm9vbAoJZW50cnkgICBUCn0KCnR5cGUgcGFja2V0TnVtYmVySW5kZXhlZFF1ZXVlW1QgYW55XSBzdHJ1Y3QgewoJZW50cmllcyAgICAgICAgICAgICAgICBSaW5nQnVmZmVyW2VudHJ5V3JhcHBlcltUXV0KCW51bWJlck9mUHJlc2VudEVudHJpZXMgaW50CglmaXJzdFBhY2tldCAgICAgICAgICAgIGNvbmdlc3Rpb24uUGFja2V0TnVtYmVyCn0KCmZ1bmMgbmV3UGFja2V0TnVtYmVySW5kZXhlZFF1ZXVlW1QgYW55XShzaXplIGludCkgKnBhY2tldE51bWJlckluZGV4ZWRRdWV1ZVtUXSB7CglxIDo9ICZwYWNrZXROdW1iZXJJbmRleGVkUXVldWVbVF17CgkJZmlyc3RQYWNrZXQ6IGludmFsaWRQYWNrZXROdW1iZXIsCgl9CgoJcS5lbnRyaWVzLkluaXQoc2l6ZSkKCglyZXR1cm4gcQp9CgovLyBFbXBsYWNlIGluc2VydHMgZGF0YSBhc3NvY2lhdGVkIHxwYWNrZXRfbnVtYmVyfCBpbnRvIChvciBwYXN0KSB0aGUgZW5kIG9mIHRoZQovLyBxdWV1ZSwgZmlsbGluZyB1cCB0aGUgbWlzc2luZyBpbnRlcm1lZGlhdGUgZW50cmllcyBhcyBuZWNlc3NhcnkuICBSZXR1cm5zCi8vIHRydWUgaWYgdGhlIGVsZW1lbnQgaGFzIGJlZW4gaW5zZXJ0ZWQgc3VjY2Vzc2Z1bGx5LCBmYWxzZSBpZiBpdCB3YXMgYWxyZWFkeQovLyBpbiB0aGUgcXVldWUgb3IgaW5zZXJ0ZWQgb3V0IG9mIG9yZGVyLgpmdW5jIChwICpwYWNrZXROdW1iZXJJbmRleGVkUXVldWVbVF0pIEVtcGxhY2UocGFja2V0TnVtYmVyIGNvbmdlc3Rpb24uUGFja2V0TnVtYmVyLCBlbnRyeSAqVCkgYm9vbCB7CglpZiBwYWNrZXROdW1iZXIgPT0gaW52YWxpZFBhY2tldE51bWJlciB8fCBlbnRyeSA9PSBuaWwgewoJCXJldHVybiBmYWxzZQoJfQoKCWlmIHAuSXNFbXB0eSgpIHsKCQlwLmVudHJpZXMuUHVzaEJhY2soZW50cnlXcmFwcGVyW1RdewoJCQlwcmVzZW50OiB0cnVlLAoJCQllbnRyeTogICAqZW50cnksCgkJfSkKCQlwLm51bWJlck9mUHJlc2VudEVudHJpZXMgPSAxCgkJcC5maXJzdFBhY2tldCA9IHBhY2tldE51bWJlcgoJCXJldHVybiB0cnVlCgl9CgoJLy8gRG8gbm90IGFsbG93IGluc2VydGlvbiBvdXQtb2Ytb3JkZXIuCglpZiBwYWNrZXROdW1iZXIgPD0gcC5MYXN0UGFja2V0KCkgewoJCXJldHVybiBmYWxzZQoJfQoKCS8vIEhhbmRsZSBwb3RlbnRpYWxseSBtaXNzaW5nIGVsZW1lbnRzLgoJb2Zmc2V0IDo9IGludChwYWNrZXROdW1iZXIgLSBwLkZpcnN0UGFja2V0KCkpCglpZiBnYXAgOj0gb2Zmc2V0IC0gcC5lbnRyaWVzLkxlbigpOyBnYXAgPiAwIHsKCQlmb3IgaSA6PSAwOyBpIDwgZ2FwOyBpKysgewoJCQlwLmVudHJpZXMuUHVzaEJhY2soZW50cnlXcmFwcGVyW1Rde30pCgkJfQoJfQoKCXAuZW50cmllcy5QdXNoQmFjayhlbnRyeVdyYXBwZXJbVF17CgkJcHJlc2VudDogdHJ1ZSwKCQllbnRyeTogICAqZW50cnksCgl9KQoJcC5udW1iZXJPZlByZXNlbnRFbnRyaWVzKysKCXJldHVybiB0cnVlCn0KCi8vIEdldEVudHJ5IFJldHJpZXZlIHRoZSBlbnRyeSBhc3NvY2lhdGVkIHdpdGggdGhlIHBhY2tldCBudW1iZXIuICBSZXR1cm5zIHRoZSBwb2ludGVyCi8vIHRvIHRoZSBlbnRyeSBpbiBjYXNlIG9mIHN1Y2Nlc3MsIG9yIG51bGxwdHIgaWYgdGhlIGVudHJ5IGRvZXMgbm90IGV4aXN0LgpmdW5jIChwICpwYWNrZXROdW1iZXJJbmRleGVkUXVldWVbVF0pIEdldEVudHJ5KHBhY2tldE51bWJlciBjb25nZXN0aW9uLlBhY2tldE51bWJlcikgKlQgewoJZXcgOj0gcC5nZXRFbnRyeVdyYXBlcihwYWNrZXROdW1iZXIpCglpZiBldyA9PSBuaWwgewoJCXJldHVybiBuaWwKCX0KCglyZXR1cm4gJmV3LmVudHJ5Cn0KCi8vIFJlbW92ZSwgU2FtZSBhcyBhYm92ZSwgYnV0IGlmIGFuIGVudHJ5IGlzIHByZXNlbnQgaW4gdGhlIHF1ZXVlLCBhbHNvIGNhbGwgZihlbnRyeSkKLy8gYmVmb3JlIHJlbW92aW5nIGl0LgpmdW5jIChwICpwYWNrZXROdW1iZXJJbmRleGVkUXVldWVbVF0pIFJlbW92ZShwYWNrZXROdW1iZXIgY29uZ2VzdGlvbi5QYWNrZXROdW1iZXIsIGYgZnVuYyhUKSkgYm9vbCB7CglldyA6PSBwLmdldEVudHJ5V3JhcGVyKHBhY2tldE51bWJlcikKCWlmIGV3ID09IG5pbCB7CgkJcmV0dXJuIGZhbHNlCgl9CglpZiBmICE9IG5pbCB7CgkJZihldy5lbnRyeSkKCX0KCWV3LnByZXNlbnQgPSBmYWxzZQoJcC5udW1iZXJPZlByZXNlbnRFbnRyaWVzLS0KCglpZiBwYWNrZXROdW1iZXIgPT0gcC5GaXJzdFBhY2tldCgpIHsKCQlwLmNsZWFydXAoKQoJfQoKCXJldHVybiB0cnVlCn0KCi8vIFJlbW92ZVVwVG8sIGJ1dCBub3QgaW5jbHVkaW5nIHxwYWNrZXRfbnVtYmVyfC4KLy8gVW51c2VkIHNsb3RzIGluIHRoZSBmcm9udCBhcmUgYWxzbyByZW1vdmVkLCB3aGljaCBtZWFucyB3aGVuIHRoZSBmdW5jdGlvbgovLyByZXR1cm5zLCB8Zmlyc3RfcGFja2V0KCl8IGNhbiBiZSBsYXJnZXIgdGhhbiB8cGFja2V0X251bWJlcnwuCmZ1bmMgKHAgKnBhY2tldE51bWJlckluZGV4ZWRRdWV1ZVtUXSkgUmVtb3ZlVXBUbyhwYWNrZXROdW1iZXIgY29uZ2VzdGlvbi5QYWNrZXROdW1iZXIpIHsKCWZvciAhcC5lbnRyaWVzLkVtcHR5KCkgJiYKCQlwLmZpcnN0UGFja2V0ICE9IGludmFsaWRQYWNrZXROdW1iZXIgJiYKCQlwLmZpcnN0UGFja2V0IDwgcGFja2V0TnVtYmVyIHsKCQlpZiBwLmVudHJpZXMuRnJvbnQoKS5wcmVzZW50IHsKCQkJcC5udW1iZXJPZlByZXNlbnRFbnRyaWVzLS0KCQl9CgkJcC5lbnRyaWVzLlBvcEZyb250KCkKCQlwLmZpcnN0UGFja2V0KysKCX0KCXAuY2xlYXJ1cCgpCgoJcmV0dXJuCn0KCi8vIElzRW1wdHkgcmV0dXJuIGlmIHF1ZXVlIGlzIGVtcHR5LgpmdW5jIChwICpwYWNrZXROdW1iZXJJbmRleGVkUXVldWVbVF0pIElzRW1wdHkoKSBib29sIHsKCXJldHVybiBwLm51bWJlck9mUHJlc2VudEVudHJpZXMgPT0gMAp9CgovLyBOdW1iZXJPZlByZXNlbnRFbnRyaWVzIHJldHVybnMgdGhlIG51bWJlciBvZiBlbnRyaWVzIGluIHRoZSBxdWV1ZS4KZnVuYyAocCAqcGFja2V0TnVtYmVySW5kZXhlZFF1ZXVlW1RdKSBOdW1iZXJPZlByZXNlbnRFbnRyaWVzKCkgaW50IHsKCXJldHVybiBwLm51bWJlck9mUHJlc2VudEVudHJpZXMKfQoKLy8gRW50cnlTbG90c1VzZWQgcmV0dXJucyB0aGUgbnVtYmVyIG9mIGVudHJpZXMgYWxsb2NhdGVkIGluIHRoZSB1bmRlcmx5aW5nIGRlcXVlLiAgVGhpcyBpcwovLyBwcm9wb3J0aW9uYWwgdG8gdGhlIG1lbW9yeSB1c2FnZSBvZiB0aGUgcXVldWUuCmZ1bmMgKHAgKnBhY2tldE51bWJlckluZGV4ZWRRdWV1ZVtUXSkgRW50cnlTbG90c1VzZWQoKSBpbnQgewoJcmV0dXJuIHAuZW50cmllcy5MZW4oKQp9CgovLyBGaXJzdFBhY2tldCByZXR1cm5zIHBhY2tldCBudW1iZXIgb2YgdGhlIGZpcnN0IGVudHJ5IGluIHRoZSBxdWV1ZS4KZnVuYyAocCAqcGFja2V0TnVtYmVySW5kZXhlZFF1ZXVlW1RdKSBGaXJzdFBhY2tldCgpIChwYWNrZXROdW1iZXIgY29uZ2VzdGlvbi5QYWNrZXROdW1iZXIpIHsKCXJldHVybiBwLmZpcnN0UGFja2V0Cn0KCi8vIExhc3RQYWNrZXQgcmV0dXJucyBwYWNrZXQgbnVtYmVyIG9mIHRoZSBsYXN0IGVudHJ5IGV2ZXIgaW5zZXJ0ZWQgaW4gdGhlIHF1ZXVlLiAgTm90ZSB0aGF0IHRoZQovLyBlbnRyeSBpbiBxdWVzdGlvbiBtYXkgaGF2ZSBhbHJlYWR5IGJlZW4gcmVtb3ZlZC4gIFplcm8gaWYgdGhlIHF1ZXVlIGlzCi8vIGVtcHR5LgpmdW5jIChwICpwYWNrZXROdW1iZXJJbmRleGVkUXVldWVbVF0pIExhc3RQYWNrZXQoKSAocGFja2V0TnVtYmVyIGNvbmdlc3Rpb24uUGFja2V0TnVtYmVyKSB7CglpZiBwLklzRW1wdHkoKSB7CgkJcmV0dXJuIGludmFsaWRQYWNrZXROdW1iZXIKCX0KCglyZXR1cm4gcC5maXJzdFBhY2tldCArIGNvbmdlc3Rpb24uUGFja2V0TnVtYmVyKHAuZW50cmllcy5MZW4oKS0xKQp9CgpmdW5jIChwICpwYWNrZXROdW1iZXJJbmRleGVkUXVldWVbVF0pIGNsZWFydXAoKSB7Cglmb3IgIXAuZW50cmllcy5FbXB0eSgpICYmICFwLmVudHJpZXMuRnJvbnQoKS5wcmVzZW50IHsKCQlwLmVudHJpZXMuUG9wRnJvbnQoKQoJCXAuZmlyc3RQYWNrZXQrKwoJfQoJaWYgcC5lbnRyaWVzLkVtcHR5KCkgewoJCXAuZmlyc3RQYWNrZXQgPSBpbnZhbGlkUGFja2V0TnVtYmVyCgl9Cn0KCmZ1bmMgKHAgKnBhY2tldE51bWJlckluZGV4ZWRRdWV1ZVtUXSkgZ2V0RW50cnlXcmFwZXIocGFja2V0TnVtYmVyIGNvbmdlc3Rpb24uUGFja2V0TnVtYmVyKSAqZW50cnlXcmFwcGVyW1RdIHsKCWlmIHBhY2tldE51bWJlciA9PSBpbnZhbGlkUGFja2V0TnVtYmVyIHx8CgkJcC5Jc0VtcHR5KCkgfHwKCQlwYWNrZXROdW1iZXIgPCBwLmZpcnN0UGFja2V0IHsKCQlyZXR1cm4gbmlsCgl9CgoJb2Zmc2V0IDo9IGludChwYWNrZXROdW1iZXIgLSBwLmZpcnN0UGFja2V0KQoJaWYgb2Zmc2V0ID49IHAuZW50cmllcy5MZW4oKSB7CgkJcmV0dXJuIG5pbAoJfQoKCWV3IDo9IHAuZW50cmllcy5PZmZzZXQob2Zmc2V0KQoJaWYgZXcgPT0gbmlsIHx8ICFldy5wcmVzZW50IHsKCQlyZXR1cm4gbmlsCgl9CgoJcmV0dXJuIGV3Cn0K
+package bbr
+
+import (
+	"github.com/apernet/quic-go/congestion"
+)
+
+// packetNumberIndexedQueue is a queue of mostly continuous numbered entries
+// which supports the following operations:
+// - adding elements to the end of the queue, or at some point past the end
+// - removing elements in any order
+// - retrieving elements
+// If all elements are inserted in order, all of the operations above are
+// amortized O(1) time.
+//
+// Internally, the data structure is a deque where each element is marked as
+// present or not.  The deque starts at the lowest present index.  Whenever an
+// element is removed, it's marked as not present, and the front of the deque is
+// cleared of elements that are not present.
+//
+// The tail of the queue is not cleared due to the assumption of entries being
+// inserted in order, though removing all elements of the queue will return it
+// to its initial state.
+//
+// Note that this data structure is inherently hazardous, since an addition of
+// just two entries will cause it to consume all of the memory available.
+// Because of that, it is not a general-purpose container and should not be used
+// as one.
+
+type entryWrapper[T any] struct {
+	present bool
+	entry   T
+}
+
+type packetNumberIndexedQueue[T any] struct {
+	entries                RingBuffer[entryWrapper[T]]
+	numberOfPresentEntries int
+	firstPacket            congestion.PacketNumber
+}
+
+func newPacketNumberIndexedQueue[T any](size int) *packetNumberIndexedQueue[T] {
+	q := &packetNumberIndexedQueue[T]{
+		firstPacket: invalidPacketNumber,
+	}
+
+	q.entries.Init(size)
+
+	return q
+}
+
+// Emplace inserts data associated |packet_number| into (or past) the end of the
+// queue, filling up the missing intermediate entries as necessary.  Returns
+// true if the element has been inserted successfully, false if it was already
+// in the queue or inserted out of order.
+func (p *packetNumberIndexedQueue[T]) Emplace(packetNumber congestion.PacketNumber, entry *T) bool {
+	if packetNumber == invalidPacketNumber || entry == nil {
+		return false
+	}
+
+	if p.IsEmpty() {
+		p.entries.PushBack(entryWrapper[T]{
+			present: true,
+			entry:   *entry,
+		})
+		p.numberOfPresentEntries = 1
+		p.firstPacket = packetNumber
+		return true
+	}
+
+	// Do not allow insertion out-of-order.
+	if packetNumber <= p.LastPacket() {
+		return false
+	}
+
+	// Handle potentially missing elements.
+	offset := int(packetNumber - p.FirstPacket())
+	if gap := offset - p.entries.Len(); gap > 0 {
+		for i := 0; i < gap; i++ {
+			p.entries.PushBack(entryWrapper[T]{})
+		}
+	}
+
+	p.entries.PushBack(entryWrapper[T]{
+		present: true,
+		entry:   *entry,
+	})
+	p.numberOfPresentEntries++
+	return true
+}
+
+// GetEntry Retrieve the entry associated with the packet number.  Returns the pointer
+// to the entry in case of success, or nullptr if the entry does not exist.
+func (p *packetNumberIndexedQueue[T]) GetEntry(packetNumber congestion.PacketNumber) *T {
+	ew := p.getEntryWraper(packetNumber)
+	if ew == nil {
+		return nil
+	}
+
+	return &ew.entry
+}
+
+// Remove, Same as above, but if an entry is present in the queue, also call f(entry)
+// before removing it.
+func (p *packetNumberIndexedQueue[T]) Remove(packetNumber congestion.PacketNumber, f func(T)) bool {
+	ew := p.getEntryWraper(packetNumber)
+	if ew == nil {
+		return false
+	}
+	if f != nil {
+		f(ew.entry)
+	}
+	ew.present = false
+	p.numberOfPresentEntries--
+
+	if packetNumber == p.FirstPacket() {
+		p.clearup()
+	}
+
+	return true
+}
+
+// RemoveUpTo, but not including |packet_number|.
+// Unused slots in the front are also removed, which means when the function
+// returns, |first_packet()| can be larger than |packet_number|.
+func (p *packetNumberIndexedQueue[T]) RemoveUpTo(packetNumber congestion.PacketNumber) {
+	for !p.entries.Empty() &&
+		p.firstPacket != invalidPacketNumber &&
+		p.firstPacket < packetNumber {
+		if p.entries.Front().present {
+			p.numberOfPresentEntries--
+		}
+		p.entries.PopFront()
+		p.firstPacket++
+	}
+	p.clearup()
+
+	return
+}
+
+// IsEmpty return if queue is empty.
+func (p *packetNumberIndexedQueue[T]) IsEmpty() bool {
+	return p.numberOfPresentEntries == 0
+}
+
+// NumberOfPresentEntries returns the number of entries in the queue.
+func (p *packetNumberIndexedQueue[T]) NumberOfPresentEntries() int {
+	return p.numberOfPresentEntries
+}
+
+// EntrySlotsUsed returns the number of entries allocated in the underlying deque.  This is
+// proportional to the memory usage of the queue.
+func (p *packetNumberIndexedQueue[T]) EntrySlotsUsed() int {
+	return p.entries.Len()
+}
+
+// FirstPacket returns packet number of the first entry in the queue.
+func (p *packetNumberIndexedQueue[T]) FirstPacket() (packetNumber congestion.PacketNumber) {
+	return p.firstPacket
+}
+
+// LastPacket returns packet number of the last entry ever inserted in the queue.  Note that the
+// entry in question may have already been removed.  Zero if the queue is
+// empty.
+func (p *packetNumberIndexedQueue[T]) LastPacket() (packetNumber congestion.PacketNumber) {
+	if p.IsEmpty() {
+		return invalidPacketNumber
+	}
+
+	return p.firstPacket + congestion.PacketNumber(p.entries.Len()-1)
+}
+
+func (p *packetNumberIndexedQueue[T]) clearup() {
+	for !p.entries.Empty() && !p.entries.Front().present {
+		p.entries.PopFront()
+		p.firstPacket++
+	}
+	if p.entries.Empty() {
+		p.firstPacket = invalidPacketNumber
+	}
+}
+
+func (p *packetNumberIndexedQueue[T]) getEntryWraper(packetNumber congestion.PacketNumber) *entryWrapper[T] {
+	if packetNumber == invalidPacketNumber ||
+		p.IsEmpty() ||
+		packetNumber < p.firstPacket {
+		return nil
+	}
+
+	offset := int(packetNumber - p.firstPacket)
+	if offset >= p.entries.Len() {
+		return nil
+	}
+
+	ew := p.entries.Offset(offset)
+	if ew == nil || !ew.present {
+		return nil
+	}
+
+	return ew
+}

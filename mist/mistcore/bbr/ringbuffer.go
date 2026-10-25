@@ -1,1 +1,118 @@
-cGFja2FnZSBiYnIKCi8vIEEgUmluZ0J1ZmZlciBpcyBhIHJpbmcgYnVmZmVyLgovLyBJdCBhY3RzIGFzIGEgaGVhcCB0aGF0IGRvZXNuJ3QgY2F1c2UgYW55IGFsbG9jYXRpb25zLgp0eXBlIFJpbmdCdWZmZXJbVCBhbnldIHN0cnVjdCB7CglyaW5nICAgICAgICAgICAgIFtdVAoJaGVhZFBvcywgdGFpbFBvcyBpbnQKCWZ1bGwgICAgICAgICAgICAgYm9vbAp9CgovLyBJbml0IHByZWFsbG9jcyBhIGJ1ZmZlciB3aXRoIGEgY2VydGFpbiBzaXplLgpmdW5jIChyICpSaW5nQnVmZmVyW1RdKSBJbml0KHNpemUgaW50KSB7CglyLnJpbmcgPSBtYWtlKFtdVCwgc2l6ZSkKfQoKLy8gTGVuIHJldHVybnMgdGhlIG51bWJlciBvZiBlbGVtZW50cyBpbiB0aGUgcmluZyBidWZmZXIuCmZ1bmMgKHIgKlJpbmdCdWZmZXJbVF0pIExlbigpIGludCB7CglpZiByLmZ1bGwgewoJCXJldHVybiBsZW4oci5yaW5nKQoJfQoJaWYgci50YWlsUG9zID49IHIuaGVhZFBvcyB7CgkJcmV0dXJuIHIudGFpbFBvcyAtIHIuaGVhZFBvcwoJfQoJcmV0dXJuIHIudGFpbFBvcyAtIHIuaGVhZFBvcyArIGxlbihyLnJpbmcpCn0KCi8vIEVtcHR5IHNheXMgaWYgdGhlIHJpbmcgYnVmZmVyIGlzIGVtcHR5LgpmdW5jIChyICpSaW5nQnVmZmVyW1RdKSBFbXB0eSgpIGJvb2wgewoJcmV0dXJuICFyLmZ1bGwgJiYgci5oZWFkUG9zID09IHIudGFpbFBvcwp9CgovLyBQdXNoQmFjayBhZGRzIGEgbmV3IGVsZW1lbnQuCi8vIElmIHRoZSByaW5nIGJ1ZmZlciBpcyBmdWxsLCBpdHMgY2FwYWNpdHkgaXMgaW5jcmVhc2VkIGZpcnN0LgpmdW5jIChyICpSaW5nQnVmZmVyW1RdKSBQdXNoQmFjayh0IFQpIHsKCWlmIHIuZnVsbCB8fCBsZW4oci5yaW5nKSA9PSAwIHsKCQlyLmdyb3coKQoJfQoJci5yaW5nW3IudGFpbFBvc10gPSB0CglyLnRhaWxQb3MrKwoJaWYgci50YWlsUG9zID09IGxlbihyLnJpbmcpIHsKCQlyLnRhaWxQb3MgPSAwCgl9CglpZiByLnRhaWxQb3MgPT0gci5oZWFkUG9zIHsKCQlyLmZ1bGwgPSB0cnVlCgl9Cn0KCi8vIFBvcEZyb250IHJldHVybnMgdGhlIG5leHQgZWxlbWVudC4KLy8gSXQgbXVzdCBub3QgYmUgY2FsbGVkIHdoZW4gdGhlIGJ1ZmZlciBpcyBlbXB0eSwgdGhhdCBtZWFucyB0aGF0Ci8vIGNhbGxlcnMgbWlnaHQgbmVlZCB0byBjaGVjayBpZiB0aGVyZSBhcmUgZWxlbWVudHMgaW4gdGhlIGJ1ZmZlciBmaXJzdC4KZnVuYyAociAqUmluZ0J1ZmZlcltUXSkgUG9wRnJvbnQoKSBUIHsKCWlmIHIuRW1wdHkoKSB7CgkJcGFuaWMoImdpdGh1Yi5jb20vcXVpYy1nby9xdWljLWdvL2ludGVybmFsL3V0aWxzL3JpbmdidWZmZXI6IHBvcCBmcm9tIGFuIGVtcHR5IHF1ZXVlIikKCX0KCXIuZnVsbCA9IGZhbHNlCgl0IDo9IHIucmluZ1tyLmhlYWRQb3NdCglyLnJpbmdbci5oZWFkUG9zXSA9ICpuZXcoVCkKCXIuaGVhZFBvcysrCglpZiByLmhlYWRQb3MgPT0gbGVuKHIucmluZykgewoJCXIuaGVhZFBvcyA9IDAKCX0KCXJldHVybiB0Cn0KCi8vIE9mZnNldCByZXR1cm5zIHRoZSBvZmZzZXQgZWxlbWVudC4KLy8gSXQgbXVzdCBub3QgYmUgY2FsbGVkIHdoZW4gdGhlIGJ1ZmZlciBpcyBlbXB0eSwgdGhhdCBtZWFucyB0aGF0Ci8vIGNhbGxlcnMgbWlnaHQgbmVlZCB0byBjaGVjayBpZiB0aGVyZSBhcmUgZWxlbWVudHMgaW4gdGhlIGJ1ZmZlciBmaXJzdAovLyBhbmQgY2hlY2sgaWYgdGhlIGluZGV4IGxhcmdlciB0aGFuIGJ1ZmZlciBsZW5ndGguCmZ1bmMgKHIgKlJpbmdCdWZmZXJbVF0pIE9mZnNldChpbmRleCBpbnQpICpUIHsKCWlmIHIuRW1wdHkoKSB8fCBpbmRleCA+PSByLkxlbigpIHsKCQlwYW5pYygiZ2l0aHViLmNvbS9xdWljLWdvL3F1aWMtZ28vaW50ZXJuYWwvdXRpbHMvcmluZ2J1ZmZlcjogb2Zmc2V0IGZyb20gaW52YWxpZCBpbmRleCIpCgl9CglvZmZzZXQgOj0gKHIuaGVhZFBvcyArIGluZGV4KSAlIGxlbihyLnJpbmcpCglyZXR1cm4gJnIucmluZ1tvZmZzZXRdCn0KCi8vIEZyb250IHJldHVybnMgdGhlIGZyb250IGVsZW1lbnQuCi8vIEl0IG11c3Qgbm90IGJlIGNhbGxlZCB3aGVuIHRoZSBidWZmZXIgaXMgZW1wdHksIHRoYXQgbWVhbnMgdGhhdAovLyBjYWxsZXJzIG1pZ2h0IG5lZWQgdG8gY2hlY2sgaWYgdGhlcmUgYXJlIGVsZW1lbnRzIGluIHRoZSBidWZmZXIgZmlyc3QuCmZ1bmMgKHIgKlJpbmdCdWZmZXJbVF0pIEZyb250KCkgKlQgewoJaWYgci5FbXB0eSgpIHsKCQlwYW5pYygiZ2l0aHViLmNvbS9xdWljLWdvL3F1aWMtZ28vaW50ZXJuYWwvdXRpbHMvcmluZ2J1ZmZlcjogZnJvbnQgZnJvbSBhbiBlbXB0eSBxdWV1ZSIpCgl9CglyZXR1cm4gJnIucmluZ1tyLmhlYWRQb3NdCn0KCi8vIEJhY2sgcmV0dXJucyB0aGUgYmFjayBlbGVtZW50LgovLyBJdCBtdXN0IG5vdCBiZSBjYWxsZWQgd2hlbiB0aGUgYnVmZmVyIGlzIGVtcHR5LCB0aGF0IG1lYW5zIHRoYXQKLy8gY2FsbGVycyBtaWdodCBuZWVkIHRvIGNoZWNrIGlmIHRoZXJlIGFyZSBlbGVtZW50cyBpbiB0aGUgYnVmZmVyIGZpcnN0LgpmdW5jIChyICpSaW5nQnVmZmVyW1RdKSBCYWNrKCkgKlQgewoJaWYgci5FbXB0eSgpIHsKCQlwYW5pYygiZ2l0aHViLmNvbS9xdWljLWdvL3F1aWMtZ28vaW50ZXJuYWwvdXRpbHMvcmluZ2J1ZmZlcjogYmFjayBmcm9tIGFuIGVtcHR5IHF1ZXVlIikKCX0KCXJldHVybiByLk9mZnNldChyLkxlbigpIC0gMSkKfQoKLy8gR3JvdyB0aGUgbWF4aW11bSBzaXplIG9mIHRoZSBxdWV1ZS4KLy8gVGhpcyBtZXRob2QgYXNzdW1lIHRoZSBxdWV1ZSBpcyBmdWxsLgpmdW5jIChyICpSaW5nQnVmZmVyW1RdKSBncm93KCkgewoJb2xkUmluZyA6PSByLnJpbmcKCW5ld1NpemUgOj0gbGVuKG9sZFJpbmcpICogMgoJaWYgbmV3U2l6ZSA9PSAwIHsKCQluZXdTaXplID0gMQoJfQoJci5yaW5nID0gbWFrZShbXVQsIG5ld1NpemUpCgloZWFkTGVuIDo9IGNvcHkoci5yaW5nLCBvbGRSaW5nW3IuaGVhZFBvczpdKQoJY29weShyLnJpbmdbaGVhZExlbjpdLCBvbGRSaW5nWzpyLmhlYWRQb3NdKQoJci5oZWFkUG9zLCByLnRhaWxQb3MsIHIuZnVsbCA9IDAsIGxlbihvbGRSaW5nKSwgZmFsc2UKfQoKLy8gQ2xlYXIgcmVtb3ZlcyBhbGwgZWxlbWVudHMuCmZ1bmMgKHIgKlJpbmdCdWZmZXJbVF0pIENsZWFyKCkgewoJdmFyIHplcm9WYWx1ZSBUCglmb3IgaSA6PSByYW5nZSByLnJpbmcgewoJCXIucmluZ1tpXSA9IHplcm9WYWx1ZQoJfQoJci5oZWFkUG9zLCByLnRhaWxQb3MsIHIuZnVsbCA9IDAsIDAsIGZhbHNlCn0K
+package bbr
+
+// A RingBuffer is a ring buffer.
+// It acts as a heap that doesn't cause any allocations.
+type RingBuffer[T any] struct {
+	ring             []T
+	headPos, tailPos int
+	full             bool
+}
+
+// Init preallocs a buffer with a certain size.
+func (r *RingBuffer[T]) Init(size int) {
+	r.ring = make([]T, size)
+}
+
+// Len returns the number of elements in the ring buffer.
+func (r *RingBuffer[T]) Len() int {
+	if r.full {
+		return len(r.ring)
+	}
+	if r.tailPos >= r.headPos {
+		return r.tailPos - r.headPos
+	}
+	return r.tailPos - r.headPos + len(r.ring)
+}
+
+// Empty says if the ring buffer is empty.
+func (r *RingBuffer[T]) Empty() bool {
+	return !r.full && r.headPos == r.tailPos
+}
+
+// PushBack adds a new element.
+// If the ring buffer is full, its capacity is increased first.
+func (r *RingBuffer[T]) PushBack(t T) {
+	if r.full || len(r.ring) == 0 {
+		r.grow()
+	}
+	r.ring[r.tailPos] = t
+	r.tailPos++
+	if r.tailPos == len(r.ring) {
+		r.tailPos = 0
+	}
+	if r.tailPos == r.headPos {
+		r.full = true
+	}
+}
+
+// PopFront returns the next element.
+// It must not be called when the buffer is empty, that means that
+// callers might need to check if there are elements in the buffer first.
+func (r *RingBuffer[T]) PopFront() T {
+	if r.Empty() {
+		panic("github.com/quic-go/quic-go/internal/utils/ringbuffer: pop from an empty queue")
+	}
+	r.full = false
+	t := r.ring[r.headPos]
+	r.ring[r.headPos] = *new(T)
+	r.headPos++
+	if r.headPos == len(r.ring) {
+		r.headPos = 0
+	}
+	return t
+}
+
+// Offset returns the offset element.
+// It must not be called when the buffer is empty, that means that
+// callers might need to check if there are elements in the buffer first
+// and check if the index larger than buffer length.
+func (r *RingBuffer[T]) Offset(index int) *T {
+	if r.Empty() || index >= r.Len() {
+		panic("github.com/quic-go/quic-go/internal/utils/ringbuffer: offset from invalid index")
+	}
+	offset := (r.headPos + index) % len(r.ring)
+	return &r.ring[offset]
+}
+
+// Front returns the front element.
+// It must not be called when the buffer is empty, that means that
+// callers might need to check if there are elements in the buffer first.
+func (r *RingBuffer[T]) Front() *T {
+	if r.Empty() {
+		panic("github.com/quic-go/quic-go/internal/utils/ringbuffer: front from an empty queue")
+	}
+	return &r.ring[r.headPos]
+}
+
+// Back returns the back element.
+// It must not be called when the buffer is empty, that means that
+// callers might need to check if there are elements in the buffer first.
+func (r *RingBuffer[T]) Back() *T {
+	if r.Empty() {
+		panic("github.com/quic-go/quic-go/internal/utils/ringbuffer: back from an empty queue")
+	}
+	return r.Offset(r.Len() - 1)
+}
+
+// Grow the maximum size of the queue.
+// This method assume the queue is full.
+func (r *RingBuffer[T]) grow() {
+	oldRing := r.ring
+	newSize := len(oldRing) * 2
+	if newSize == 0 {
+		newSize = 1
+	}
+	r.ring = make([]T, newSize)
+	headLen := copy(r.ring, oldRing[r.headPos:])
+	copy(r.ring[headLen:], oldRing[:r.headPos])
+	r.headPos, r.tailPos, r.full = 0, len(oldRing), false
+}
+
+// Clear removes all elements.
+func (r *RingBuffer[T]) Clear() {
+	var zeroValue T
+	for i := range r.ring {
+		r.ring[i] = zeroValue
+	}
+	r.headPos, r.tailPos, r.full = 0, 0, false
+}
