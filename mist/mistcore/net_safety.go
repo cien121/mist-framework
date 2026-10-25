@@ -161,6 +161,82 @@ func ResolvePeerAddrSafe(ctx context.Context, addr string, codec InitialCodec) (
 	return &net.UDPAddr{IP: checked, Port: p}, nil
 }
 
+// ResolvePeerAddrsSafe is the multi-candidate form of
+// ResolvePeerAddrSafe: it returns every safety-checked peer address for
+// addr, ordered with IPv6 first, then IPv4 (deduplicated by normalized
+// IP). The caller tries candidates in order and falls back on handshake
+// failure for domain names only; IP literals always resolve to exactly
+// one candidate, so literal nodes never change family (§3.5).
+//
+// For a non-production-safe codec the old single-candidate semantics
+// apply (the whole address is denied if any resolved IP fails policy),
+// so lab safety behavior is unchanged.
+func ResolvePeerAddrsSafe(ctx context.Context, addr string, codec InitialCodec) ([]*net.UDPAddr, error) {
+	host, port := splitHostPort(addr)
+	if host == "" {
+		return nil, fmt.Errorf("mist: 随机密文 Initial 不能用于真实网络 (addr=%q): 目标地址为空，fail closed", addr)
+	}
+	ips, err := resolveAllIPs(ctx, host)
+	if err != nil {
+		return nil, fmt.Errorf("mist: 随机密文 Initial 不能用于真实网络 (addr=%q): %v，fail closed", addr, err)
+	}
+	if !CodecProductionSafe(codec) {
+		one, err := checkCodecForIPs(codec, addr, ips)
+		if err != nil {
+			return nil, err
+		}
+		p, err := parsePort(port, addr)
+		if err != nil {
+			return nil, err
+		}
+		return []*net.UDPAddr{{IP: one, Port: p}}, nil
+	}
+	p, err := parsePort(port, addr)
+	if err != nil {
+		return nil, err
+	}
+	// Order: IPv6 first, then IPv4; deduplicate by normalized IP.
+	// (normalizeIPForCheck reduces v4-mapped v6 to v4, so the class
+	// test below uses the normalized form.)
+	var v6, v4 []*net.UDPAddr
+	seen := make(map[string]bool)
+	for _, ip := range ips {
+		norm := normalizeIPForCheck(ip)
+		if norm == nil || norm.IsUnspecified() || norm.IsMulticast() {
+			continue
+		}
+		key := norm.String()
+		if seen[key] {
+			continue
+		}
+		seen[key] = true
+		a := &net.UDPAddr{IP: norm, Port: p}
+		if norm.To4() == nil {
+			v6 = append(v6, a)
+		} else {
+			v4 = append(v4, a)
+		}
+	}
+	out := append(v6, v4...)
+	if len(out) == 0 {
+		return nil, fmt.Errorf("mist: no usable addresses for %q", addr)
+	}
+	return out, nil
+}
+
+// parsePort validates a port string ("" means 0) for the safety gate.
+func parsePort(port, addr string) (int, error) {
+	p := 0
+	if port != "" {
+		var pi int
+		if _, err := fmt.Sscanf(port, "%d", &pi); err != nil || pi < 0 || pi > 65535 {
+			return 0, fmt.Errorf("mist: invalid port %q in %q", port, addr)
+		}
+		p = pi
+	}
+	return p, nil
+}
+
 // ListenUDPSafe is the server-side choke point. It checks the listen address
 // with the same policy as the client side and binds. Unspecified listen
 // addresses (0.0.0.0, ::, empty host) are denied: they bind all interfaces,

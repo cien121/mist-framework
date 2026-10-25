@@ -456,14 +456,15 @@ func (s *UDPSendScheduler) dequeueLocked() [][]byte {
 }
 
 // estimatedSize returns the sealed UDP datagram size for frames.
-// Formula: QUICShortHeaderLen (13) + AEAD tag (16) + sum of frame lengths.
+// Formula: short header (11 or 13, F3 variable packet-number length)
+// + AEAD tag (16) + sum of frame lengths.
 //
 // This MUST equal len(sealPacket(dir, frames)) exactly. The seal path is:
 //
-//	datagram = header(13) + AEAD(plaintext + 16-byte tag)
+//	datagram = header(11|13) + AEAD(plaintext + 16-byte tag)
 //	plaintext = concatenation of frames
 //
-// so len(datagram) = 13 + 16 + sum(len(f)). Any divergence breaks the
+// so len(datagram) = headerLen + 16 + sum(len(f)). Any divergence breaks the
 // scheduler's cwnd gate, which checks
 //
 //	Rel.BytesInFlight() [actual sealed sizes] + estimatedSize <= cwnd.
@@ -473,10 +474,16 @@ func (s *UDPSendScheduler) dequeueLocked() [][]byte {
 // test) which asserts estimatedSize(frames) == len(sealed) for randomized
 // frame combinations on both the tracked and untracked seal paths.
 //
+// Callers pass the header length for the packet number that will be
+// sealed (ShortHeaderLen(session.PeekPacketNum(dir))). The estimate can
+// go stale only if another goroutine seals exactly across the 65536
+// boundary between peek and seal; trySend self-corrects via the token
+// adjustment below, so this is a benign race.
+//
 // Unit: UDP datagram size (UDP payload), same as BBR/cwnd accounting;
 // excludes IP (20) and UDP (8) headers. See UDPReliability doc.
-func estimatedSize(frames [][]byte) int {
-	n := QUICShortHeaderLen + 16
+func estimatedSize(frames [][]byte, headerLen int) int {
+	n := headerLen + 16
 	for _, f := range frames {
 		n += len(f)
 	}
@@ -491,7 +498,7 @@ func (s *UDPSendScheduler) timeUntilSendLocked() time.Duration {
 	if frames == nil {
 		return time.Hour // nothing queued; wait for wake
 	}
-	size := estimatedSize(frames)
+	size := estimatedSize(frames, ShortHeaderLen(s.session.PeekPacketNum(s.dir)))
 	if !s.cwndAllowsLocked(size) {
 		// cwnd blocked: wake on ACK/loss (they call Wake), but also
 		// poll periodically in case a signal was missed.
@@ -532,7 +539,7 @@ func (s *UDPSendScheduler) trySend() bool {
 		s.mu.Unlock()
 		return false
 	}
-	size := estimatedSize(frames)
+	size := estimatedSize(frames, ShortHeaderLen(s.session.PeekPacketNum(s.dir)))
 	if !s.cwndAllowsLocked(size) {
 		s.mu.Unlock()
 		return false

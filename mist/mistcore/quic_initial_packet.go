@@ -118,12 +118,38 @@ type quicInitialHeader struct {
 //   - secrets: the sender's Initial secrets (client for C2S, server for S2C)
 //   - payload: plaintext CRYPTO frame bytes (already framed)
 //
-// Returns the full UDP datagram.
+// Signature hardening F2: the sealed datagram is padded with QUIC
+// PADDING frames (0x00 bytes appended to the plaintext, i.e. inside
+// the AEAD) to at least minInitialDatagramLen bytes, per RFC 9000
+// §14.1 (a client Initial below 1200 bytes is itself a non-compliant
+// marker). Both directions pad: SealInitial and SealInitialResponse
+// both flow through here. The Length field always reflects the padded
+// payload, so a standards parser sees a well-formed Initial.
 func sealQuicInitial(dcid, scid []byte, token []byte, packetNum uint32, secrets quicInitialSecrets, payload []byte) ([]byte, error) {
 	// Packet number length: use 2 bytes (supports up to 65535).
 	const pnLen = 2
 	// AEAD overhead: 16-byte GCM tag.
 	const tagLen = 16
+	// RFC 9000 §14.1 minimum Initial datagram size.
+	const minInitialDatagramLen = 1200
+
+	// Pad the plaintext with PADDING (zero bytes) until the sealed
+	// datagram reaches the minimum. The Length varint size is stable
+	// across this range (the padded Length value stays in [64, 16384),
+	// i.e. 2 bytes), so at most two passes are needed; the loop
+	// re-checks instead of assuming.
+	padded := append([]byte(nil), payload...)
+	for {
+		lengthVal := pnLen + len(padded) + tagLen
+		headerLen := 1 + 4 + 1 + len(dcid) + 1 + len(scid) +
+			len(encodeQuicVarint(uint64(len(token)))) + len(token) +
+			len(encodeQuicVarint(uint64(lengthVal))) + pnLen
+		if headerLen+len(padded)+tagLen >= minInitialDatagramLen {
+			break
+		}
+		padded = append(padded, make([]byte, minInitialDatagramLen-(headerLen+len(padded)+tagLen))...)
+	}
+	payload = padded
 
 	// Build header (before encryption).
 	// First byte: Header Form=1, Fixed=1, Type=0 (Initial), Reserved=0, PnLen=pnLen-1.

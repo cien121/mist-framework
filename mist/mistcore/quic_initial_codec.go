@@ -1,9 +1,11 @@
 // quic_initial_codec.go: QUICInitialCodec implements InitialCodec with real
 // QUIC Initial packets per RFC 9000/9001 (Phase 0).
 //
-// This is the production-safe codec: Initial packets are indistinguishable
-// from genuine QUIC Initial packets under DPI (valid long header, RFC 9001
-// encryption, header protection).
+// The Initial envelope is standards-shaped (valid long header, RFC 9001
+// encryption, header protection, ≥1200-byte padding), but the CRYPTO
+// payload is Mist AUTH, not a TLS ClientHello: a passive decryptor can
+// still tell it apart. Field-level hardening only; true-QUIC
+// indistinguishability is a separate, later project.
 package mistcore
 
 import (
@@ -39,7 +41,7 @@ func (c *QUICInitialCodec) OpenInitial(packet []byte) (authPayload []byte, dcid 
 	if err != nil {
 		return nil, dcid, scid, 0, err
 	}
-	_, data, _, err := decodeCryptoFrame(plaintext)
+	data, err := decodeInitialPlaintext(plaintext)
 	if err != nil {
 		return nil, dcid, scid, 0, err
 	}
@@ -72,13 +74,30 @@ func (c *QUICInitialCodec) OpenInitialResponse(packet []byte) (authOKPayload []b
 	if err != nil {
 		return nil, dcid, scid, 0, err
 	}
-	_, data, _, err := decodeCryptoFrame(plaintext)
+	data, err := decodeInitialPlaintext(plaintext)
 	if err != nil {
 		return nil, dcid, scid, 0, err
 	}
 	copy(dcid[:], hdr.dcid)
 	copy(scid[:], hdr.scid)
 	return data, dcid, scid, hdr.packetNum, nil
+}
+
+// decodeInitialPlaintext extracts the CRYPTO payload from a decrypted
+// Initial plaintext, skipping trailing QUIC PADDING frames (0x00 bytes,
+// F2). Unpadded (legacy) plaintexts have no trailing bytes and decode
+// unchanged. Any nonzero trailing byte is a malformed Initial.
+func decodeInitialPlaintext(plaintext []byte) ([]byte, error) {
+	_, data, consumed, err := decodeCryptoFrame(plaintext)
+	if err != nil {
+		return nil, err
+	}
+	for _, b := range plaintext[consumed:] {
+		if b != 0x00 {
+			return nil, errors.New("quic: nonzero byte after CRYPTO frame (expected PADDING)")
+		}
+	}
+	return data, nil
 }
 
 // parseQuicInitialDCID extracts the DCID from a QUIC Initial packet header.
@@ -101,7 +120,9 @@ func parseQuicInitialDCID(packet []byte) ([]byte, error) {
 }
 
 // ProductionSafe marks QUICInitialCodec as production-safe.
-// Real QUIC Initial packets are indistinguishable from genuine QUIC under DPI.
+// "Production-safe" means only that the Initial envelope is not the old
+// random-ciphertext fingerprint; it does NOT mean indistinguishable
+// from genuine QUIC (the CRYPTO payload is Mist AUTH, not ClientHello).
 func (c *QUICInitialCodec) ProductionSafe() bool { return true }
 
 // Ensure QUICInitialCodec implements InitialCodec.
