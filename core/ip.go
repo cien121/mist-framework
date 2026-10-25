@@ -80,6 +80,7 @@ type TCPSegment struct {
 	Seq     uint32
 	Ack     uint32
 	Flags   uint8
+	Window  uint16 // advertised window, raw (unscaled): bytes 14-15
 	Payload []byte
 }
 
@@ -239,6 +240,7 @@ func ParseTCP(b []byte) (*TCPSegment, error) {
 		Seq:     binary.BigEndian.Uint32(b[4:8]),
 		Ack:     binary.BigEndian.Uint32(b[8:12]),
 		Flags:   b[13] & 0x3F,
+		Window:  binary.BigEndian.Uint16(b[14:16]),
 		Payload: b[off:],
 	}, nil
 }

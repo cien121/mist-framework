@@ -42,7 +42,7 @@ type Engine struct {
 	dg     DatagramClient // nil if the client has no datagram support
 	stats  StatsCollector
 
-	mu      sync.Mutex // guards tables + tun writes
+	mu      sync.Mutex // guards tables + tcpConn state (not TUN writes)
 	tunMu   sync.Mutex // serializes TUN writes
 	tcp     map[FourTuple]*tcpConn
 	pending map[FourTuple]bool
@@ -60,7 +60,7 @@ type Engine struct {
 	// transaction ID is the only way to tell concurrent queries to
 	// the same server apart.
 	udpByDNS  map[string]FourTuple // dstIP:dstPort|txID -> app tuple
-	id        uint32
+	id        atomic.Uint32        // IP IDs; atomic so TUN writes need not hold e.mu
 	upBytes   atomic.Uint64
 	downBytes atomic.Uint64
 	// tunWriteErrs counts failed/short TUN writes (was silently
@@ -81,6 +81,7 @@ type tcpConn struct {
 	appFin     bool
 	ourFin     bool
 	created    time.Time
+	lastAct    time.Time // last app- or server-side activity; sweeper uses idle time, not age
 	// sendQ is the FIFO queue drained by the single tcpWriter goroutine
 	// for this connection. App segments used to be forwarded by one
 	// goroutine per segment with no ordering: concurrent stream Writes
@@ -91,10 +92,53 @@ type tcpConn struct {
 	// never across a blocking stream Write, and lock order is always
 	// e.mu -> sendMu, so no deadlock with pumpTCP or dropTCP.
 	sendMu     sync.Mutex
-	sendCond   *sync.Cond // guards sendQ/sendClosed, uses sendMu
+	sendCond   *sync.Cond // guards sendQ/sendClosed/queuedBytes, uses sendMu
 	sendQ      []tcpWriteItem
 	sendClosed bool
+	// queuedBytes is the total payload bytes in sendQ. The engine
+	// only ACKs app data once accepted into sendQ, and sendQ is
+	// capped at maxSendQueueBytes (== the 65535 window BuildTCP
+	// advertises), so the app can never be led to believe more is
+	// delivered than the engine can buffer. Over-cap segments are
+	// dropped without ACK advance: the app retransmits instead of
+	// assuming delivery while data sits queued on the phone.
+	queuedBytes int
+	// Download retransmit + window, all guarded by e.mu:
+	peerAck     uint32        // highest contiguous ACK received from app for our data
+	appWindow   uint32        // last window advertised by app (raw, unscaled)
+	sendBuf     []sentSeg     // unacked download segments, in seq order
+	dupAckCount int           // consecutive duplicate ACKs for sendBuf[0]
+	eofSeen     bool          // server closed; FIN to app waits for sendBuf to drain
+	ackCh       chan struct{} // signaled (non-blocking) when an ACK opens the window
 }
+
+// sentSeg is one download segment kept until the app ACKs it, so a
+// lost TUN segment can be retransmitted instead of wedging the
+// connection forever (the pre-retransmit failure: one dropped chunk,
+// app RTO -> RST -> "socket error").
+type sentSeg struct {
+	seq    uint32
+	data   []byte
+	sentAt time.Time
+}
+
+// TCP hardening constants.
+const (
+	// maxSendQueueBytes caps one connection's upload FIFO. It equals
+	// the window BuildTCP advertises, so the advertised window and
+	// the buffering the engine can actually honor never diverge.
+	maxSendQueueBytes = 65535
+	// tcpRTO is the backstop retransmit timeout for the oldest
+	// unacked download segment (fast retransmit on 3 duplicate ACKs
+	// covers most losses; RTO covers the tail).
+	tcpRTO = 800 * time.Millisecond
+	// tcpDupAckThreshold is the duplicate-ACK count that triggers
+	// fast retransmit of the oldest unacked segment.
+	tcpDupAckThreshold = 3
+	// tcpIdleTimeout is how long a TCP connection may sit with no
+	// app- or server-side activity before the sweeper closes it.
+	tcpIdleTimeout = 10 * time.Minute
+)
 
 // tcpWriteItem is one unit of work for tcpWriter: either payload bytes
 // or a half-close (fin) marker, which must be sent after all queued
@@ -265,23 +309,54 @@ func (e *Engine) handleTCP(ctx context.Context, p *IPPacket, seg *TCPSegment) {
 
 	e.mu.Lock()
 	defer e.mu.Unlock()
+	// Deferred EOF finish runs before the unlock (LIFO): if the
+	// server already closed and this segment ACKed the last
+	// download segment, the deferred FIN goes out now.
+	defer func() {
+		if c, ok := e.tcp[tuple]; ok && c.eofSeen && len(c.sendBuf) == 0 {
+			e.finishConnLocked(c, tuple)
+		}
+	}()
+	conn.lastAct = time.Now()
+	if seg.Flags&TCPAck != 0 {
+		e.processAckLocked(conn, seg)
+	}
 	if seg.Flags&TCPAck != 0 && len(seg.Payload) == 0 && seg.Flags&TCPFin == 0 {
 		// Pure ACK (e.g. for our FIN): if our FIN was ACKed, clean up.
 		if conn.ourFin && seg.Ack == conn.ourSeq {
+			conn.stream.Close()
 			stopTCPWriterLocked(conn)
 			delete(e.tcp, tuple)
 		}
 		return
 	}
 	if seg.Flags&TCPFin != 0 {
-		// App half-closes: ACK the FIN, queue the FIN marker behind
-		// all queued data so it can never overtake pending writes.
-		if seg.Seq == conn.appSeq {
-			conn.appSeq++ // FIN consumes one sequence number
-			conn.appFin = true
+		// FIN, possibly carrying payload (close-after-write
+		// coalescing: small uploads commonly send the final chunk
+		// together with FIN). Data first, FIN marker behind it:
+		// dropping the payload here used to make the server wait
+		// forever for the rest of the body.
+		if seg.Seq != conn.appSeq {
+			// Out-of-order or duplicate FIN: ACK current expectation, drop.
 			e.sendTCPUnlocked(conn, TCPAck, nil)
-			e.enqueueTCPWrite(conn, tcpWriteItem{fin: true})
+			return
 		}
+		if len(seg.Payload) > 0 {
+			payload := append([]byte(nil), seg.Payload...)
+			if !e.tryEnqueueTCPWrite(conn, tcpWriteItem{payload: payload}) {
+				// Queue full: backpressure. Neither the data nor
+				// the FIN is consumed; the app retransmits both.
+				e.sendTCPUnlocked(conn, TCPAck, nil)
+				return
+			}
+			conn.appSeq += uint32(len(payload))
+		}
+		conn.appSeq++ // FIN consumes one sequence number
+		conn.appFin = true
+		e.sendTCPUnlocked(conn, TCPAck, nil)
+		// FIN markers always fit the queue (0 bytes) and must
+		// never be dropped, or the half-close is lost.
+		e.tryEnqueueTCPWrite(conn, tcpWriteItem{fin: true})
 		return
 	}
 	if len(seg.Payload) > 0 {
@@ -291,10 +366,97 @@ func (e *Engine) handleTCP(ctx context.Context, p *IPPacket, seg *TCPSegment) {
 			return
 		}
 		payload := append([]byte(nil), seg.Payload...)
+		if !e.tryEnqueueTCPWrite(conn, tcpWriteItem{payload: payload}) {
+			// Queue full: backpressure. Do NOT advance appSeq or
+			// ACK the data (the ACK below is the old expectation):
+			// the app retransmits instead of believing data
+			// delivered while it sits queued on the phone.
+			e.sendTCPUnlocked(conn, TCPAck, nil)
+			return
+		}
 		conn.appSeq += uint32(len(payload))
 		e.sendTCPUnlocked(conn, TCPAck, nil)
-		e.enqueueTCPWrite(conn, tcpWriteItem{payload: payload})
 	}
+}
+
+// processAckLocked folds an incoming ACK into download state.
+// Caller holds e.mu. It records the advertised window, advances
+// peerAck, drops acknowledged download segments, counts duplicate
+// ACKs (fast retransmit at threshold), and wakes pumpTCP's window
+// wait. The window is raw (unscaled): if window scaling was
+// negotiated the real buffer is larger, so treating the raw value
+// as the cap can only under-send, never overflow the app's buffer.
+func (e *Engine) processAckLocked(conn *tcpConn, seg *TCPSegment) {
+	conn.appWindow = uint32(seg.Window)
+	ack := seg.Ack
+	if int32(ack-conn.ourSeq) > 0 {
+		// App ACKing beyond anything sent: clamp, never let peerAck
+		// run past ourSeq (else the window math goes negative).
+		ack = conn.ourSeq
+	}
+	if int32(ack-conn.peerAck) > 0 {
+		conn.peerAck = ack
+		conn.dupAckCount = 0
+		for len(conn.sendBuf) > 0 {
+			s := conn.sendBuf[0]
+			if int32(s.seq+uint32(len(s.data))-ack) <= 0 {
+				conn.sendBuf = conn.sendBuf[1:]
+			} else {
+				break
+			}
+		}
+	} else if ack == conn.peerAck && len(conn.sendBuf) > 0 && int32(conn.ourSeq-ack) > 0 {
+		// Duplicate ACK for the oldest unacked segment.
+		conn.dupAckCount++
+		if conn.dupAckCount >= tcpDupAckThreshold {
+			conn.dupAckCount = 0
+			e.retransmitLocked(conn, 0)
+		}
+	}
+	e.signalAckWait(conn)
+}
+
+// signalAckWait wakes pumpTCP's window wait, if it is waiting. The
+// send never blocks, so it is safe under e.mu.
+func (e *Engine) signalAckWait(conn *tcpConn) {
+	select {
+	case conn.ackCh <- struct{}{}:
+	default:
+	}
+}
+
+// retransmitLocked resends sendBuf[idx] (0 = oldest unacked) with
+// its original sequence number. Caller holds e.mu; a single TUN
+// write is brief.
+func (e *Engine) retransmitLocked(conn *tcpConn, idx int) {
+	if idx < 0 || idx >= len(conn.sendBuf) {
+		return
+	}
+	s := conn.sendBuf[idx]
+	seg := BuildTCP(
+		addrOf(conn.tuple.DstIP), addrOf(conn.tuple.SrcIP),
+		conn.tuple.DstPort, conn.tuple.SrcPort,
+		s.seq, conn.appSeq, TCPPsh|TCPAck, s.data,
+	)
+	e.writeTUNLocked(conn.tuple, seg)
+	conn.sendBuf[idx].sentAt = time.Now()
+}
+
+// finishConnLocked completes a normally-ended connection: FIN to
+// the app (if not already sent), Mist stream Close (freeing the
+// SID — the pre-fix leak: neither pumpTCP EOF nor pure-ACK cleanup
+// closed the stream, so 1-byte SIDs wrapped into leaked streams
+// after 255 short connections), writer stop, table removal.
+// Caller holds e.mu. Not used for abnormal teardown (RST, writer
+// error, sweeper), which must not send FIN.
+func (e *Engine) finishConnLocked(c *tcpConn, tuple FourTuple) {
+	if !c.ourFin {
+		c.ourFin = true
+		e.sendTCPUnlocked(c, TCPFin|TCPAck, nil)
+	}
+	c.stream.Close()
+	stopTCPWriterLocked(c)
+	delete(e.tcp, tuple)
 }
 
 // dialTCP opens the proxy stream, then answers the app's SYN.
@@ -316,13 +478,21 @@ func (e *Engine) dialTCP(ctx context.Context, p *IPPacket, tuple FourTuple, syn 
 	var isnBytes [4]byte
 	_, _ = rand.Read(isnBytes[:])
 	isn := binary.BigEndian.Uint32(isnBytes[:])
+	appWindow := uint32(syn.Window)
+	if appWindow == 0 {
+		appWindow = 65535
+	}
 	conn := &tcpConn{
-		tuple:   tuple,
-		stream:  stream,
-		appSeq:  syn.Seq + 1,
-		ourSeq:  isn,
-		isn:     isn,
-		created: time.Now(),
+		tuple:     tuple,
+		stream:    stream,
+		appSeq:    syn.Seq + 1,
+		ourSeq:    isn,
+		isn:       isn,
+		created:   time.Now(),
+		lastAct:   time.Now(),
+		peerAck:   isn + 1, // post-SYN-ACK state; nothing outstanding yet
+		appWindow: appWindow,
+		ackCh:     make(chan struct{}, 1),
 	}
 	conn.sendCond = sync.NewCond(&conn.sendMu)
 	e.mu.Lock()
@@ -331,20 +501,32 @@ func (e *Engine) dialTCP(ctx context.Context, p *IPPacket, tuple FourTuple, syn 
 	e.sendTCPSYNACK(conn)
 	go e.pumpTCP(conn)
 	go e.tcpWriter(conn)
+	go e.retransmitLoop(conn)
 }
 
-// enqueueTCPWrite appends an item to the connection's FIFO writer queue.
-// It never blocks on the network: only a brief sendMu hold for the
-// append and signal, so callers may hold e.mu (lock order e.mu ->
-// sendMu). Items for a torn-down connection are dropped: the stream
-// is already closed and the app side is being reset.
-func (e *Engine) enqueueTCPWrite(conn *tcpConn, item tcpWriteItem) {
+// tryEnqueueTCPWrite appends an item to the connection's FIFO writer
+// queue if it fits the cap, reporting whether it was accepted. FIN
+// markers always fit (0 bytes) and must never be dropped, or the
+// half-close is lost. Over-cap payload is rejected: the caller must
+// NOT advance appSeq or ACK it, so the app retransmits instead of
+// believing data delivered. It never blocks on the network: only a
+// brief sendMu hold for the append and signal, so callers may hold
+// e.mu (lock order e.mu -> sendMu). Items for a torn-down
+// connection are dropped: the stream is already closed and the app
+// side is being reset.
+func (e *Engine) tryEnqueueTCPWrite(conn *tcpConn, item tcpWriteItem) bool {
 	conn.sendMu.Lock()
-	if !conn.sendClosed {
-		conn.sendQ = append(conn.sendQ, item)
-		conn.sendCond.Signal()
+	defer conn.sendMu.Unlock()
+	if conn.sendClosed {
+		return false
 	}
-	conn.sendMu.Unlock()
+	if !item.fin && conn.queuedBytes+len(item.payload) > maxSendQueueBytes {
+		return false
+	}
+	conn.sendQ = append(conn.sendQ, item)
+	conn.queuedBytes += len(item.payload)
+	conn.sendCond.Signal()
+	return true
 }
 
 // tcpWriter is the single writer goroutine per TCP connection. It drains
@@ -367,6 +549,7 @@ func (e *Engine) tcpWriter(conn *tcpConn) {
 		item := conn.sendQ[0]
 		conn.sendQ[0] = tcpWriteItem{} // release the payload reference
 		conn.sendQ = conn.sendQ[1:]
+		conn.queuedBytes -= len(item.payload)
 		conn.sendMu.Unlock()
 		if item.fin {
 			if closer, ok := conn.stream.(interface{ CloseWrite() error }); ok {
@@ -384,7 +567,7 @@ func (e *Engine) tcpWriter(conn *tcpConn) {
 
 // stopTCPWriterLocked wakes a connection's writer so it can exit once
 // the queue drains. Caller must hold e.mu (lock order e.mu -> sendMu,
-// consistent with enqueueTCPWrite's callers and dropTCP).
+// consistent with tryEnqueueTCPWrite's callers and dropTCP).
 func stopTCPWriterLocked(c *tcpConn) {
 	c.sendMu.Lock()
 	c.sendClosed = true
@@ -402,50 +585,150 @@ const maxTCPSegmentPayload = 1200
 
 // pumpTCP copies stream data back to the app as TCP segments,
 // chunked to maxTCPSegmentPayload with contiguous sequence numbers.
+// It never reads more than the app's advertised window allows, so
+// no download backlog can accumulate behind a stalled app, and it
+// never holds e.mu across the whole chunk loop (the old code
+// starved handleTCP for the entire 8192-byte write-out).
 func (e *Engine) pumpTCP(conn *tcpConn) {
 	buf := make([]byte, 8192)
 	for {
-		n, err := conn.stream.Read(buf)
+		// Wait for window room, then read at most what fits.
+		avail := e.waitWindow(conn, buf)
+		if avail == 0 {
+			return // connection gone
+		}
+		n, err := conn.stream.Read(buf[:avail])
 		if n > 0 {
 			data := append([]byte(nil), buf[:n]...)
-			e.mu.Lock()
-			if _, ok := e.tcp[conn.tuple]; !ok {
-				e.mu.Unlock()
-				return
+			if !e.sendDownload(conn, data) {
+				return // connection gone
 			}
-			seq := conn.ourSeq
-			for off := 0; off < len(data); {
-				chunk := len(data) - off
-				if chunk > maxTCPSegmentPayload {
-					chunk = maxTCPSegmentPayload
-				}
-				seg := BuildTCP(
-					addrOf(conn.tuple.DstIP), addrOf(conn.tuple.SrcIP),
-					conn.tuple.DstPort, conn.tuple.SrcPort,
-					seq, conn.appSeq, TCPPsh|TCPAck, data[off:off+chunk],
-				)
-				e.writeTUNLocked(conn.tuple, seg)
-				seq += uint32(chunk)
-				off += chunk
-			}
-			conn.ourSeq = seq
-			e.mu.Unlock()
 			e.downBytes.Add(uint64(len(data)))
 		}
 		if err != nil {
-			// Stream EOF/error: FIN the app side, then clean up.
-			e.mu.Lock()
-			if c, ok := e.tcp[conn.tuple]; ok {
-				if !c.ourFin {
-					c.ourFin = true
-					e.sendTCPUnlocked(c, TCPFin|TCPAck, nil)
-				}
-				stopTCPWriterLocked(c)
+			e.onStreamEOF(conn)
+			return
+		}
+	}
+}
+
+// waitWindow blocks until at least one byte of the app's window is
+// available, returning how many bytes may be read (capped at the
+// buffer), or 0 if the connection is gone. It never holds e.mu
+// while waiting: handleTCP needs e.mu to process the ACKs that open
+// the window. Missed wakeups are impossible: the wake signal is a
+// buffered channel send plus a 50ms recheck backstop.
+func (e *Engine) waitWindow(conn *tcpConn, buf []byte) int {
+	for {
+		e.mu.Lock()
+		_, ok := e.tcp[conn.tuple]
+		if !ok {
+			e.mu.Unlock()
+			return 0
+		}
+		inflight := int64(int32(conn.ourSeq - conn.peerAck))
+		if inflight < 0 {
+			inflight = 0
+		}
+		avail := int64(conn.appWindow) - inflight
+		e.mu.Unlock()
+		if avail > 0 {
+			if avail > int64(len(buf)) {
+				avail = int64(len(buf))
 			}
-			delete(e.tcp, conn.tuple)
+			return int(avail)
+		}
+		select {
+		case <-conn.ackCh:
+		case <-time.After(50 * time.Millisecond):
+		}
+	}
+}
+
+// sendDownload chunks data into <=maxTCPSegmentPayload segments,
+// reserves their sequence numbers and records them for retransmit
+// under e.mu, then writes them to the TUN WITHOUT holding e.mu
+// (sequence numbers and the ACK field are snapshotted first, so a
+// concurrent handleTCP advance can only make the ACK field slightly
+// stale, never wrong-ordered). Returns false if the connection is
+// gone.
+func (e *Engine) sendDownload(conn *tcpConn, data []byte) bool {
+	type chunk struct {
+		seq  uint32
+		data []byte
+	}
+	var chunks []chunk
+	e.mu.Lock()
+	if _, ok := e.tcp[conn.tuple]; !ok {
+		e.mu.Unlock()
+		return false
+	}
+	seq := conn.ourSeq
+	ack := conn.appSeq
+	now := time.Now()
+	for off := 0; off < len(data); {
+		n := len(data) - off
+		if n > maxTCPSegmentPayload {
+			n = maxTCPSegmentPayload
+		}
+		c := data[off : off+n]
+		chunks = append(chunks, chunk{seq: seq, data: c})
+		conn.sendBuf = append(conn.sendBuf, sentSeg{seq: seq, data: c, sentAt: now})
+		seq += uint32(n)
+		off += n
+	}
+	conn.ourSeq = seq
+	conn.lastAct = now
+	e.mu.Unlock()
+	for _, c := range chunks {
+		seg := BuildTCP(
+			addrOf(conn.tuple.DstIP), addrOf(conn.tuple.SrcIP),
+			conn.tuple.DstPort, conn.tuple.SrcPort,
+			c.seq, ack, TCPPsh|TCPAck, c.data,
+		)
+		e.writeTUNLocked(conn.tuple, seg)
+	}
+	return true
+}
+
+// onStreamEOF handles server-side close. If every download segment
+// is already ACKed, the connection completes immediately (FIN to
+// the app, stream Close freeing the SID). Otherwise the FIN waits:
+// eofSeen marks the close pending, and the ACK-driven finish path
+// in handleTCP sends the FIN once sendBuf drains. Sending FIN
+// first would make the app close before receiving all data.
+func (e *Engine) onStreamEOF(conn *tcpConn) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	c, ok := e.tcp[conn.tuple]
+	if !ok {
+		return
+	}
+	c.eofSeen = true
+	if len(c.sendBuf) == 0 {
+		e.finishConnLocked(c, conn.tuple)
+	}
+}
+
+// retransmitLoop is the RTO backstop: if the oldest unacked segment
+// ages past tcpRTO without an ACK, resend it. Fast retransmit (from
+// duplicate ACKs in handleTCP) covers most losses; this covers the
+// tail, where no later segment exists to generate duplicate ACKs.
+// Exits when the connection leaves the table.
+func (e *Engine) retransmitLoop(conn *tcpConn) {
+	t := time.NewTicker(100 * time.Millisecond)
+	defer t.Stop()
+	for range t.C {
+		e.mu.Lock()
+		_, ok := e.tcp[conn.tuple]
+		if !ok {
 			e.mu.Unlock()
 			return
 		}
+		if len(conn.sendBuf) > 0 && time.Since(conn.sendBuf[0].sentAt) > tcpRTO {
+			e.retransmitLocked(conn, 0)
+		}
+		e.mu.Unlock()
 	}
 }
 
@@ -636,10 +919,12 @@ func addrOf(s string) net.IP {
 }
 
 // writeTUNLocked wraps a segment in an IP packet and writes it to the
-// TUN. Callers hold e.mu (tun writes are additionally serialized).
-// Write failures and short writes are counted (and logged, throttled)
-// instead of silently swallowed: a nonzero TunWriteErrors is the
-// first signal when return traffic stalls.
+// TUN. Despite the name it does NOT require e.mu: IP IDs are atomic
+// and TUN writes are serialized by tunMu, so pumpTCP can write
+// chunks without starving handleTCP. Write failures and short writes
+// are counted (and logged, throttled) instead of silently swallowed:
+// a nonzero TunWriteErrors is the first signal when return traffic
+// stalls.
 func (e *Engine) writeTUNLocked(tuple FourTuple, segment []byte) {
 	var proto uint8
 	if tuple.Proto == ProtoTCP {
@@ -649,8 +934,8 @@ func (e *Engine) writeTUNLocked(tuple FourTuple, segment []byte) {
 	}
 	src := addrOf(tuple.DstIP) // proxy side: source is the remote
 	dst := addrOf(tuple.SrcIP) // destination is the app
-	e.id++
-	pkt := BuildIP(src, dst, proto, uint16(e.id), segment)
+	id := uint16(e.id.Add(1))
+	pkt := BuildIP(src, dst, proto, id, segment)
 	e.tunMu.Lock()
 	n, err := e.tun.Write(pkt)
 	e.tunMu.Unlock()
@@ -675,7 +960,11 @@ func (e *Engine) sweeper(ctx context.Context) {
 		case now := <-t.C:
 			e.mu.Lock()
 			for tuple, c := range e.tcp {
-				if now.Sub(c.created) > 10*time.Minute {
+				// Idle-based, not age-based: a long-lived but
+				// active connection (persistent app session) must
+				// not be killed at 10 minutes old, while a truly
+				// idle one is reaped on the same timescale.
+				if now.Sub(c.lastAct) > tcpIdleTimeout {
 					c.stream.Close()
 					stopTCPWriterLocked(c)
 					delete(e.tcp, tuple)

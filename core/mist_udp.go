@@ -527,10 +527,10 @@ func (c *MistUDPClient) Dial(ctx context.Context, addr string) (net.Conn, error)
 	connReq := mistcore.EncodeConnectReq(atyp, ab, uint16(port))
 
 	c.mu.Lock()
-	sid := c.nextSID
-	c.nextSID++
-	if c.nextSID == 0 {
-		c.nextSID = 1
+	sid, ok := c.allocSIDLocked()
+	if !ok {
+		c.mu.Unlock()
+		return nil, errors.New("mist: no free stream id")
 	}
 	st := newMistStreamConn(c, sid, addr)
 	c.streams[sid] = st
@@ -556,6 +556,27 @@ func (c *MistUDPClient) Dial(ctx context.Context, addr string) (net.Conn, error)
 	st.writeOff = uint64(len(connReq))
 	st.mu.Unlock()
 	return st, nil
+}
+
+// allocSIDLocked returns a SID not currently in use, advancing
+// nextSID past any still-occupied SIDs. The SID space is 1 byte
+// (1..255); blindly wrapping used to collide with leaked streams
+// (a stream whose Close was never called), routing old frames to
+// the new stream and corrupting it. Skipping occupied SIDs makes
+// the wrap safe; with every SID genuinely busy, Dial fails instead
+// of hijacking a live stream. Caller must hold c.mu.
+func (c *MistUDPClient) allocSIDLocked() (byte, bool) {
+	for i := 0; i < 255; i++ {
+		sid := c.nextSID
+		c.nextSID++
+		if c.nextSID == 0 {
+			c.nextSID = 1
+		}
+		if _, taken := c.streams[sid]; !taken {
+			return sid, true
+		}
+	}
+	return 0, false
 }
 
 // dropStream removes a stream (on dial failure).
