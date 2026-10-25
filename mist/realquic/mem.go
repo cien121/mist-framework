@@ -1,0 +1,97 @@
+package realquic
+
+import (
+	"net"
+	"os"
+	"sync"
+	"time"
+)
+
+// This file is a lab-only transport: an in-memory net.PacketConn pair that
+// lets the full quic-go stack (handshake, crypto, streams, H3) run where
+// the sandbox blocks UDP sendmsg even on loopback (EPERM). It is not a
+// production transport and must not be used outside tests and lab runs.
+
+type memAddr struct{ s string }
+
+func (a memAddr) Network() string { return "udp" }
+func (a memAddr) String() string  { return a.s }
+
+type memPacket struct{ b []byte }
+
+type memPacketConn struct {
+	mu       sync.Mutex
+	peer     *memPacketConn
+	recv     chan memPacket
+	local    memAddr
+	remote   memAddr
+	closed   bool
+	readDead time.Time
+}
+
+// NewMemPair returns a connected pair: first is the client side, second is
+// the server side. Dial the server side's LocalAddr from the client side.
+func NewMemPair() (net.PacketConn, net.PacketConn) {
+	a := &memPacketConn{recv: make(chan memPacket, 1024), local: memAddr{"mem-client"}, remote: memAddr{"mem-server"}}
+	b := &memPacketConn{recv: make(chan memPacket, 1024), local: memAddr{"mem-server"}, remote: memAddr{"mem-client"}}
+	a.peer, b.peer = b, a
+	return a, b
+}
+
+func (c *memPacketConn) ReadFrom(p []byte) (int, net.Addr, error) {
+	c.mu.Lock()
+	dead := c.readDead
+	c.mu.Unlock()
+	if dead.IsZero() {
+		pkt, ok := <-c.recv
+		if !ok {
+			return 0, nil, net.ErrClosed
+		}
+		return copy(p, pkt.b), c.remote, nil
+	}
+	timer := time.NewTimer(time.Until(dead))
+	defer timer.Stop()
+	select {
+	case pkt, ok := <-c.recv:
+		if !ok {
+			return 0, nil, net.ErrClosed
+		}
+		return copy(p, pkt.b), c.remote, nil
+	case <-timer.C:
+		return 0, nil, os.ErrDeadlineExceeded
+	}
+}
+
+func (c *memPacketConn) WriteTo(p []byte, _ net.Addr) (int, error) {
+	peer := c.peer
+	peer.mu.Lock()
+	closed := peer.closed
+	peer.mu.Unlock()
+	if closed {
+		return 0, net.ErrClosed
+	}
+	cp := append([]byte{}, p...)
+	peer.recv <- memPacket{b: cp}
+	return len(p), nil
+}
+
+func (c *memPacketConn) Close() error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	if !c.closed {
+		c.closed = true
+		close(c.recv)
+	}
+	return nil
+}
+
+func (c *memPacketConn) LocalAddr() net.Addr           { return c.local }
+func (c *memPacketConn) RemoteAddr() net.Addr          { return c.remote }
+func (c *memPacketConn) SetDeadline(t time.Time) error { return c.SetReadDeadline(t) }
+func (c *memPacketConn) SetReadDeadline(t time.Time) error {
+	c.mu.Lock()
+	c.readDead = t
+	c.mu.Unlock()
+	return nil
+}
+func (c *memPacketConn) SetWriteDeadline(_ time.Time) error { return nil }
