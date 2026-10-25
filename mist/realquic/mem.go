@@ -105,7 +105,13 @@ func (c *memPacketConn) Close() error {
 	defer c.mu.Unlock()
 	if !c.closed {
 		c.closed = true
-		close(c.recv)
+		// NOTE (step 6): recv is deliberately NOT closed here. Closing
+		// it raced with a concurrent WriteTo send on the peer (a
+		// -race failure reproduced in step 6: mem.go Close vs WriteTo
+		// on the recv channel). A blocked ReadFrom still exits: Close
+		// closes wake, the select wakes, and the loop-top closed check
+		// returns ErrClosed. Buffered packets after Close are orphaned
+		// and harmless. This file is lab-only test transport.
 		close(c.wake)
 	}
 	return nil
