@@ -1119,7 +1119,12 @@ func encodeTokenRaw(raw []byte) string {
 // over 6 H3 pairs + 6 raw pairs). H3 cells assert visitor == failed
 // byte-for-byte on every port/family; raw cells assert the response
 // CLASS (silent vs standard VN) is identical on every port/family.
-// After all raw probes, every H3 pair must still serve (liveness).
+// Liveness is checked per cell right after its own raw batch: the raw
+// phase is ~27.7s of mostly fixed waits and quic-go's default idle
+// timeout is 30s with no keepalive configured, so a final sweep would
+// idle the first-dialed connection past the timeout even though the
+// server is healthy. The last cell's check still runs after all raw
+// probes, so the after-all-probes property is preserved.
 func TestM2ProbeMatrixConnectedUDP(t *testing.T) {
 	key := make([]byte, 32)
 	if _, err := rand.Read(key); err != nil {
@@ -1270,9 +1275,17 @@ func TestM2ProbeMatrixConnectedUDP(t *testing.T) {
 			}
 		}
 		t.Logf("raw cell %d (%s port %d): all %d probes in expected class", i, c.family, c.port, len(probes))
-	}
-	// Liveness: every H3 pair still serves after all raw probes.
-	for i, c := range cells {
+		// Liveness for this cell, checked immediately after its own raw
+		// batch (not in a separate sweep at the end): the raw phase is
+		// ~27.7s of mostly fixed waits (50ms drain + 500ms silent window
+		// per silent probe), and quic-go's default idle timeout is 30s
+		// with no keepalive configured. A final sweep would leave the
+		// first-dialed connection idle for the other cells' H3 phase plus
+		// the whole raw phase — ~30.2s, just past the timeout — so the
+		// sweep fails on idle timeout even though the server is healthy
+		// and every raw probe behaved. Checking per cell bounds each
+		// connection's idle time to its own ~4.6s raw batch; the last
+		// cell's check still runs after ALL raw probes.
 		st, body, _, err := c.h3Cli.Get(reqCtx(), "/")
 		if err != nil || st != http.StatusOK || string(body) != "realquic lab site\n" {
 			t.Fatalf("liveness cell %d (%s port %d): status=%d body=%q err=%v", i, c.family, c.port, st, body, err)
