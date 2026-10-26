@@ -1350,6 +1350,108 @@ func m2TimingClient(t *testing.T, family *string) *Client {
 	return cli
 }
 
+// m2TimingClientWithSeeder builds a timing client plus a lazy seeder
+// dialer to the SAME server, for M2 variant arms that must pre-seed state
+// without touching the measured connection. The server nonce cache is
+// global to the Server (shared by all its listeners and connections, and
+// with the TCP leg), so a token first-used on the seeder connection is
+// correctly rejected as a replay on the timing connection. The timing
+// connection itself never authenticates: it sees no large AUTH_OK
+// response, carries no ACK debt from one, and takes no downlink window
+// reset — the contamination vectors the same-connection replayed sequence
+// suffered (P1 step-B probe report). The seeder is dialed LAZILY, on the
+// replayed arm's first use, not at setup time: variant arms run in random
+// map order, and an eagerly dialed seeder would idle out (QUIC idle
+// timeout, ~30s) while earlier arms run. Once dialed it is reused every
+// round, so it never idles again, and its handshake traffic never
+// overlaps a timed request. m2TimingClient is left untouched: the
+// headline arm needs no seeder.
+func m2TimingClientWithSeeder(t *testing.T, family *string) (*Client, func() *Client) {
+	t.Helper()
+	if family == nil {
+		env := setupEnv(t)
+		var seeder *Client
+		return env.cli, func() *Client {
+			if seeder != nil {
+				return seeder
+			}
+			cliPC2, srvPC2 := NewMemPair()
+			go func() { _ = env.srv.ServePacketConn(srvPC2) }()
+			time.Sleep(150 * time.Millisecond)
+			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			s, err := DialPacketConn(ctx, cliPC2, srvPC2.LocalAddr(), env.cli.key)
+			if err != nil {
+				t.Fatalf("seeder dial mem: %v", err)
+			}
+			s.key = env.cli.key
+			t.Cleanup(func() {
+				_ = s.Close()
+				_ = srvPC2.Close()
+				_ = cliPC2.Close()
+			})
+			seeder = s
+			return seeder
+		}
+	}
+	key := make([]byte, 32)
+	if _, err := rand.Read(key); err != nil {
+		t.Fatal(err)
+	}
+	srv, err := NewServer(ServerConfig{Key: key})
+	if err != nil {
+		t.Fatal(err)
+	}
+	srvRaw, cliRaw := m2ConnectedPair(t, *family)
+	srvPC := &m2ConnAdapter{c: srvRaw, peer: cliRaw.LocalAddr()}
+	cliPC := &m2ConnAdapter{c: cliRaw, peer: srvRaw.LocalAddr()}
+	go func() { _ = srv.ServePacketConn(srvPC) }()
+	time.Sleep(150 * time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	cli, err := DialPacketConn(ctx, cliPC, srvPC.LocalAddr(), key)
+	if err != nil {
+		t.Fatalf("timing dial connected-%s: %v", *family, err)
+	}
+	cli.key = key
+	// Second connected pair to the same server, dialed lazily by the
+	// returned closure (see the mem branch comment for why lazy).
+	var seeder *Client
+	dialSeeder := func() *Client {
+		if seeder != nil {
+			return seeder
+		}
+		srvRaw2, cliRaw2 := m2ConnectedPair(t, *family)
+		srvPC2 := &m2ConnAdapter{c: srvRaw2, peer: cliRaw2.LocalAddr()}
+		cliPC2 := &m2ConnAdapter{c: cliRaw2, peer: srvRaw2.LocalAddr()}
+		go func() { _ = srv.ServePacketConn(srvPC2) }()
+		time.Sleep(150 * time.Millisecond)
+		// Fresh context here: the helper's dial ctx is cancelled on
+		// return, before this lazy closure ever runs.
+		dialCtx, dialCancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer dialCancel()
+		s, err := DialPacketConn(dialCtx, cliPC2, srvPC2.LocalAddr(), key)
+		if err != nil {
+			t.Fatalf("seeder dial connected-%s: %v", *family, err)
+		}
+		s.key = key
+		t.Cleanup(func() {
+			_ = s.Close()
+			_ = cliRaw2.Close()
+			_ = srvRaw2.Close()
+		})
+		seeder = s
+		return seeder
+	}
+	t.Cleanup(func() {
+		_ = cli.Close()
+		_ = srv.Close()
+		_ = cliRaw.Close()
+		_ = srvRaw.Close()
+	})
+	return cli, dialSeeder
+}
+
 func m2TimingHeadline(t *testing.T, label string, family *string) {
 	t.Helper()
 	cli := m2TimingClient(t, family)
@@ -1386,7 +1488,7 @@ func m2TimingHeadline(t *testing.T, label string, family *string) {
 
 func m2TimingVariants(t *testing.T, label string, family *string) {
 	t.Helper()
-	cli := m2TimingClient(t, family)
+	cli, dialSeeder := m2TimingClientWithSeeder(t, family)
 	reqCtx := func() context.Context {
 		c, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		t.Cleanup(cancel)
@@ -1397,6 +1499,7 @@ func m2TimingVariants(t *testing.T, label string, family *string) {
 		t.Fatalf("[timing %s] visitor reference: status=%d err=%v", label, vst, err)
 	}
 	const rounds = 50
+	var replayTokens []string
 	builders := map[string]func() string{
 		"expired": func() string {
 			var nonce [16]byte
@@ -1407,15 +1510,40 @@ func m2TimingVariants(t *testing.T, label string, family *string) {
 		},
 		"malformed": func() string { return "not-a-token!!!" },
 		"replayed": func() string {
-			var nonce [16]byte
-			if _, err := rand.Read(nonce[:]); err != nil {
-				t.Fatal(err)
+			// Batch pre-seed: ALL rounds' tokens are first-used on
+			// the seeder connection BEFORE any timed request in
+			// this arm (first builder call does the whole batch).
+			// Per-round interleaved pre-seeding would advance the
+			// shared server down-shaper window every round: the
+			// server shaper is keyed by peer address, a re-AUTH
+			// on an authenticated connection calls BeginWindow,
+			// and both mem pairs share one address string — so
+			// each seeder re-AUTH would pace the timed failed
+			// response under a fresh window while the visitor
+			// response of the same round went under the previous
+			// one, a systematic per-round differential. Batching
+			// moves all seeder AUTH traffic into setup, so the
+			// shaper state is constant across the timed
+			// visitor/failed pairs (round 1's visitor straddles
+			// the batch — one outlier pair out of 50, medians
+			// are robust to it). The timing connection itself
+			// still never authenticates.
+			if replayTokens == nil {
+				for i := 0; i < rounds; i++ {
+					var nonce [16]byte
+					if _, err := rand.Read(nonce[:]); err != nil {
+						t.Fatal(err)
+					}
+					tok := MakeToken(cli.key, mustEphPub(t), time.Now(), nonce)
+					st, _, _, err := dialSeeder().Request(reqCtx(), http.MethodPost, DefaultAuthPath, tok)
+					if err != nil || st != http.StatusOK {
+						t.Fatalf("[timing %s] replay pre-seed %d: status=%d err=%v", label, i, st, err)
+					}
+					replayTokens = append(replayTokens, tok)
+				}
 			}
-			tok := MakeToken(cli.key, mustEphPub(t), time.Now(), nonce)
-			st, _, _, err := cli.Request(reqCtx(), http.MethodPost, DefaultAuthPath, tok)
-			if err != nil || st != http.StatusOK {
-				t.Fatalf("[timing %s] replay first use: status=%d err=%v", label, st, err)
-			}
+			tok := replayTokens[0]
+			replayTokens = replayTokens[1:]
 			return tok
 		},
 	}
