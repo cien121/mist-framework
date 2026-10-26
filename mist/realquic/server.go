@@ -86,6 +86,20 @@ type Server struct {
 	rotatorOnce sync.Once
 	rotatorStop chan struct{}
 	stopOnce    sync.Once
+	// P2 step 2 (Q4): the split-connection registry. Split sessions are
+	// keyed by UP session ID and pendings by split request ID; both are
+	// guarded by splitMu. The registry lives on the Server (not in a
+	// package-level map) so two servers never share split state, and so
+	// Server.Close() dropping the Server drops its split state with it.
+	// A splitSession's lifetime clock starts at first bind (or at first
+	// split CONNECT if that arrives first, defensively); its counters
+	// are what the server-issued reuse caps (profile MaxStreamsPerConn /
+	// MaxReusePerConn / MaxConnLifetimeSec) are enforced against, in
+	// handleSplitConnect. Client-side pre-refusal is deliberately NOT
+	// done: these counters are server-side state (see split.go header).
+	splitMu       sync.Mutex
+	splitSessions map[[16]byte]*splitSession
+	splitPendings map[[16]byte]*splitPending
 	// P1 step B (Q3): the shaping wrappers of this server's listeners
 	// (one per listener PacketConn). Guarded by shapingMu; the
 	// wrappers themselves own their per-peer shapers.
@@ -165,17 +179,19 @@ func NewServer(cfg ServerConfig) (*Server, error) {
 	// here — step 4 generated it and discarded it, which is why step 5
 	// must store it to derive session keys.
 	s := &Server{
-		verify:      newVerifier(cfg.Key, cfg.Window),
-		authHeader:  cfg.AuthHeader,
-		authPath:    cfg.AuthPath,
-		ephPub:      pub,
-		ephPriv:     priv,
-		sessions:    newSessionTable(),
-		conns:       map[*quic.Conn]struct{}{},
-		connStates:  map[*quic.Conn]*connState{},
-		rotationMin: cfg.RotationMin,
-		rotationMax: cfg.RotationMax,
-		rotatorStop: make(chan struct{}),
+		verify:        newVerifier(cfg.Key, cfg.Window),
+		authHeader:    cfg.AuthHeader,
+		authPath:      cfg.AuthPath,
+		ephPub:        pub,
+		ephPriv:       priv,
+		sessions:      newSessionTable(),
+		conns:         map[*quic.Conn]struct{}{},
+		connStates:    map[*quic.Conn]*connState{},
+		splitSessions: map[[16]byte]*splitSession{},
+		splitPendings: map[[16]byte]*splitPending{},
+		rotationMin:   cfg.RotationMin,
+		rotationMax:   cfg.RotationMax,
+		rotatorStop:   make(chan struct{}),
 	}
 	// Q6 issuance state: the base profile (operator-supplied or
 	// bootstrap) becomes the first issued profile, version 1. An
@@ -811,6 +827,12 @@ func (s *Server) handleCustomStream(st *connState, str *quic.Stream) {
 		return
 	}
 	switch fr.Type {
+	case frameBindDown:
+		s.handleSplitBind(st, str, fr, codec)
+	case frameConnectSplit:
+		s.handleSplitConnect(st, str, fr, codec)
+	case frameDownReady:
+		s.handleSplitDownReady(st, str, fr, codec)
 	case frameConnect:
 		s.handleConnect(str, fr, codec)
 	case frameRegisterUDP:
