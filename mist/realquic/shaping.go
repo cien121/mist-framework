@@ -84,6 +84,80 @@ import (
 //     steady slot continues to constrain. The steady slot's numbers
 //     are provisional placeholders, never presented as measured.
 //
+// P2 step 4: Q5 adaptive steady shaping (burst pacing).
+//
+//   Why the P1 steady pacing failed the baseline (P2 step 3, frozen
+//   thresholds): uniform 5–100 ms pacing made traffic MORE regular,
+//   not more browsing-like — inter-arrival KS 0.81/0.96 (threshold
+//   0.20), burstiness Fano ratio 0.0052 (threshold [0.25, 4]), and the
+//   pacing interval exceeded quic-go's ACK-coalescing scale, so ACKs
+//   could not coalesce: Mist up/down datagrams ran near 1:1 versus
+//   the browsing-mode control's ~1:5, and the small-up-packet proxy
+//   ratio ran 5.48× (threshold [0.5, 2]). Changing the uniform mean
+//   cannot fix any of these: they are shape failures, not level
+//   failures.
+//
+//   Mechanism (profile-driven, all values provisional until D2):
+//   once in tail, if the active profile's steady burst structure is
+//   enabled, pacing follows a two-state machine per direction per
+//   connection — a burst of BurstPackets datagrams at line speed
+//   (intra-burst gaps from GapDist, normally fixed 0: pacing acts
+//   BETWEEN bursts, not inside them), then one inter-burst gap from
+//   IdleDist, then the next burst. The line-speed interior is load
+//   bearing, and the step 4 first verification run proved why: with
+//   sampled 0–2 ms intra-burst gaps the up/down ratio moved only
+//   from 1:1.01 to 1:1.44, because quic-go's receiver run loop drains
+//   its receive queue in batches at a sub-millisecond scale —
+//   packets arriving ~1 ms apart wake the loop one by one, and the
+//   ACK rule (one ACK per 2 ack-eliciting packets, internal const
+//   packetsBeforeAck = 2 in quic-go v0.64.1, plus the 25 ms MaxAckDelay
+//   timer for leftovers) then fires near once per data packet. Only
+//   a burst arriving faster than the drain batching window lets one
+//   ACK cover the whole burst. That is the ACK lever this layer
+//   actually has. ACK-only datagrams cannot be exempted from pacing
+//   here: at the PacketConn layer datagrams are opaque ciphertext,
+//   and telling ACKs apart would mean parsing QUIC packets (fork or
+//   internal packages — rejected, same rule as P1). Idle gaps are
+//   therefore bounded (the step 4 issued example caps at 300 ms): an
+//   unbounded idle would delay ACKs into PTO-probe storms, trading
+//   one feature for retransmission noise.
+//   The handshake window is untouched: burst pacing applies to the
+//   steady slot only. Burst is opt-in via a server-issued profile
+//   (the bootstrap profile carries no burst, so pre-AUTH window-0
+//   tail keeps the P1 uniform pacing pinned by existing tests); every
+//   authenticated session adopts the issued profile at AUTH, so all
+//   steady traffic runs under it.
+//   Small-datagram class (AckLenMax, see BeforeSendFor): datagrams at
+//   or below the bound skip idle gaps. Without it, the first ACK of
+//   each up-burst waited out a full idle gap (50–300 ms in the step 4
+//   issued example) while the peer's PTO scale on loopback is ~25 ms,
+//   and the step 4 second verification run still showed a symmetric
+//   excess of ~80 datagrams per session per direction — the PTO
+//   retransmission loop signature. The class bound is a profile
+//   parameter, not a hard-coded constant, and 0 disables it.
+//
+//   Deliberately NOT wired in this step (decisions, not oversights):
+//   - Steady LenDist at datagram level: no quic-go public API injects
+//     a PADDING frame, and tail-padding a datagram corrupts QUIC
+//     parsing (see the P1 header). Forcing the provisional uniform
+//     200–1400 shape would also move away from the measured browsing
+//     shape (downlink ~81% in the 1200–1400 bin). The packet-length
+//     JS already passes via same-stack packetisation; SampleLen in
+//     tail still returns the steady LenDist as the hook for a future
+//     stream-chunking layer, whose pacing-coalescing interaction
+//     needs its own experiment.
+//   - DirectionRatio as an enforcement setpoint: the provisional 0.5
+//     contradicts the measured browsing mix (up-share ~0.013), so
+//     enforcing it means injecting cover bytes. The ratio moves
+//     toward browsing here through ACK coalescing alone, with zero
+//     cover bytes. See profile.go's P2 step 4 note.
+//
+//   Burst accounting lives in BeforeSend (the gap decision point): a
+//   failed WriteTo therefore miscounts the burst position by one.
+//   Writes fail only on a dead connection, after which the shaper is
+//   dead too, so the miscount has no observable effect; counting
+//   successful sends for the budget (AfterSend) is unchanged.
+//
 // Server-side counting note: one listener PacketConn serves many
 // connections, so the server wrapper keys sub-shapers by peer address
 // (the WriteTo destination). On real UDP each peer has its own
@@ -124,6 +198,11 @@ type Shaper struct {
 	tail      bool
 	lastSend  time.Time
 	log       []SendEvent
+	// burstLeft counts the datagrams remaining in the current steady
+	// burst AFTER the next datagram is sent (see BeforeSend). It is
+	// meaningful only in tail with burst pacing enabled; 0 means the
+	// next gap is an inter-burst idle gap that opens a new burst.
+	burstLeft int
 }
 
 // NewShaper returns a shaper for direction ("up" or "down") starting in
@@ -246,6 +325,7 @@ func (s *Shaper) BeginWindow(p *Profile) {
 	s.sent = 0
 	s.lastSend = time.Time{}
 	s.tail = s.budgetLocked() == 0
+	s.burstLeft = 0
 }
 
 // SampleLen samples the current phase's target length in bytes: the
@@ -275,6 +355,11 @@ func (s *Shaper) SampleLen() int {
 // SampleGap samples the current phase's inter-datagram gap: the
 // shaping TimingDist while the budget lasts, the steady TimingDist
 // once in tail. Sampling consumes no budget and changes no state.
+// It is a distribution probe, not the pacing path: the pacing path is
+// BeforeSend, which in tail with burst pacing enabled returns gaps
+// from the burst GapDist/IdleDist instead of this TimingDist sample.
+// Callers must not use SampleGap to predict steady pacing when burst
+// pacing is on.
 func (s *Shaper) SampleGap() time.Duration {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -297,16 +382,96 @@ func (s *Shaper) sampleGapLocked() time.Duration {
 	return time.Duration(v * float64(time.Millisecond))
 }
 
-// BeforeSend computes the pacing delay for the next datagram. The
-// first datagram of a window has no predecessor, so its gap is zero;
-// every later datagram waits a sampled gap before it is written. The
-// caller sleeps outside the lock, then calls AfterSend on success
-// (a failed write is not a send event and consumes no budget).
+// burstEnabledLocked reports whether the current window's steady slot
+// paces in bursts. Burst pacing applies to the tail (steady slot)
+// only; the handshake window always uses the shaping TimingDist.
+func (s *Shaper) burstEnabledLocked() bool {
+	return s.tail && s.active.Steady.BurstEnabled()
+}
+
+// sampleBurstSizeLocked samples one burst size uniformly from the
+// profile's inclusive [MinPackets, MaxPackets] range with CSPRNG.
+func (s *Shaper) sampleBurstSizeLocked() int {
+	b := s.active.Steady.Burst
+	if b.MaxPackets <= b.MinPackets {
+		return b.MinPackets
+	}
+	span := b.MaxPackets - b.MinPackets + 1
+	return b.MinPackets + int(cryptoFloat()*float64(span))
+}
+
+// sampleBurstGapLocked samples one gap from the burst's gap or idle
+// distribution. Timing distributions get the anti-fixed-interval
+// jitter, exactly like sampleGapLocked.
+func (s *Shaper) sampleBurstGapLocked(idle bool) time.Duration {
+	d := s.active.Steady.Burst.GapDist
+	if idle {
+		d = s.active.Steady.Burst.IdleDist
+	}
+	v := sampleDistribution(d, true)
+	if v < 0 {
+		v = 0
+	}
+	return time.Duration(v * float64(time.Millisecond))
+}
+
+// BeforeSend computes the pacing delay for the next datagram of
+// unknown length (the data-class burst machine; see BeforeSendFor).
+// Existing callers use it; the PacketConn path uses BeforeSendFor
+// with the real datagram length so the small-datagram class applies.
 func (s *Shaper) BeforeSend() time.Duration {
+	return s.BeforeSendFor(-1)
+}
+
+// BeforeSendFor computes the pacing delay for the next datagram of
+// length n. n < 0 means "length unknown" and takes the data-class
+// path. The first datagram of a window has no predecessor, so its gap
+// is zero; every later datagram waits a sampled gap before it is
+// written. The caller sleeps outside the lock, then calls AfterSend
+// on success (a failed write is not a send event and consumes no
+// budget).
+// In tail with burst pacing enabled, the gap follows the burst
+// machine: burstLeft > 0 means this datagram continues the current
+// burst (intra-burst gap, burstLeft decremented); burstLeft == 0
+// means this datagram opens a new burst (inter-burst idle gap, and
+// burstLeft is set to the new burst's remaining size minus this
+// datagram). The very first tail datagram after budget exhaustion
+// therefore takes one idle gap — the transition cost of entering the
+// burst regime, paid once per window.
+// Small-datagram class: when the burst's AckLenMax > 0 and 0 <= n <=
+// AckLenMax, the datagram never takes an idle gap — it takes an
+// intra-burst gap and leaves burstLeft untouched, so it neither
+// opens nor consumes a data burst. Rationale: ACK-only datagrams are
+// small by construction but unidentifiable under encryption, and the
+// step 4 verification showed idle gaps (50–300 ms) delaying ACKs past
+// the peer's PTO scale (loopback PTO ≈ the 25 ms ACK-delay scale plus
+// near-zero RTT) into a retransmission loop that inflates BOTH
+// directions' counts. Letting small datagrams through at line speed
+// keeps ACKs inside the PTO scale while data bursts keep their
+// separation. Small data datagrams (requests, control frames, stream
+// tails) share the fast path; in browsing-like traffic those are few
+// and also unpaced, so the fast path does not invent a new shape.
+func (s *Shaper) BeforeSendFor(n int) time.Duration {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if s.sent == 0 {
 		return 0
+	}
+	if s.burstEnabledLocked() {
+		b := s.active.Steady.Burst
+		if b.AckLenMax > 0 && n >= 0 && n <= b.AckLenMax {
+			return s.sampleBurstGapLocked(false)
+		}
+		if s.burstLeft > 0 {
+			s.burstLeft--
+			return s.sampleBurstGapLocked(false)
+		}
+		size := s.sampleBurstSizeLocked()
+		if size < 1 {
+			size = 1
+		}
+		s.burstLeft = size - 1
+		return s.sampleBurstGapLocked(true)
 	}
 	return s.sampleGapLocked()
 }
@@ -478,7 +643,7 @@ func (c *shapingPacketConn) allEvents() []SendEvent {
 
 func (c *shapingPacketConn) WriteTo(p []byte, addr net.Addr) (int, error) {
 	sh := c.shaperFor(addr)
-	if delay := sh.BeforeSend(); delay > 0 {
+	if delay := sh.BeforeSendFor(len(p)); delay > 0 {
 		time.Sleep(delay)
 	}
 	n, err := c.inner.WriteTo(p, addr)

@@ -57,6 +57,41 @@ import (
 // Applying any of these fields before their owning step exists would be
 // pretending at a mechanism. They are validated on receipt so a bad
 // value is caught at the boundary, not silently carried.
+//
+// P2 step 4 (Q5 steady shaping) note — what changed, what did not:
+//   - NEW and executed: Steady.Burst (burst pacing in the steady slot,
+//     driven by the profile like every other shaping parameter; see
+//     shaping.go). Burst is opt-in via a server-issued profile; a
+//     profile without a burst field (including the bootstrap profile)
+//     decodes to burst-off and paces exactly as before, so old
+//     server-issued profiles and the P1 bootstrap contract keep their
+//     behaviour. The step 4 verification harness opts in explicitly
+//     on the issued profile, the same way it already sets the stagger
+//     range.
+//   - STILL stored-only, deliberately not enforced: Steady.DirectionRatio.
+//     The provisional 0.5 contradicts the measured browsing mix
+//     (laboratory browsing-mode control: down-share ≈ 0.987, up-share
+//     ≈ 0.013); enforcing 0.5 would require injecting roughly half the
+//     session's bytes as upstream cover traffic — anti-browsing and
+//     cost-explosive. A byte ratio is an outcome of the traffic mix
+//     plus ACK behaviour, not a per-packet setpoint; step 4 moves it
+//     toward browsing with zero cover bytes, via ACK coalescing from
+//     burst pacing. A ratio-enforcing controller (cover traffic) is a
+//     new mechanism needing a design decision, not something to smuggle
+//     into this step. D2 should treat DirectionRatio as a diagnostic
+//     target, not an enforcement setpoint, or redefine it.
+//   - STILL not wired at datagram level: Steady.LenDist. The quic-go
+//     public API offers no PADDING-frame injection (the P1 API gap,
+//     unchanged for the steady phase), and padding a datagram's tail
+//     corrupts QUIC parsing. Forcing the provisional uniform 200–1400
+//     distribution would also move AWAY from the measured browsing
+//     shape (downlink ≈ 81% in the 1200–1400 bin), worsening the
+//     packet-length JS that currently passes via same-stack
+//     packetisation. SampleLen in tail already returns the steady
+//     LenDist, so a future stream-chunking layer has a hook; chunking
+//     was not wired here because chunked application writes are
+//     re-coalesced by the stack under PacketConn pacing, and that
+//     interaction needs its own experiment, not an assertion.
 
 // Distribution is one shaping distribution. Units are fixed by the field
 // that carries it: lengths in bytes, timings in milliseconds.
@@ -135,10 +170,42 @@ func (s ShapingParams) Validate() error {
 
 // SteadyBaseline is the Q5 steady-state shaping baseline carried in the
 // profile. DirectionRatio is the up/(up+down) byte share, in [0, 1].
+// It is stored and validated only: P2 step 4 deliberately does NOT wire
+// it as an enforcement setpoint (see the P2 step 4 note in shaping.go).
+// Burst is the P2 step 4 steady burst-pacing structure: when enabled
+// (MaxPackets > 0) the steady slot paces in bursts — GapDist gaps
+// inside a burst, IdleDist gaps between bursts — instead of the
+// uniform TimingDist pacing. When disabled (MaxPackets == 0, the
+// pre-step-4 default that old profiles decode to) the steady slot
+// paces exactly as before, from TimingDist alone.
 type SteadyBaseline struct {
 	LenDist        Distribution `json:"len_dist"`
 	TimingDist     Distribution `json:"timing_dist"`
 	DirectionRatio float64      `json:"direction_ratio"`
+	Burst          SteadyBurst  `json:"burst"`
+}
+
+// SteadyBurst is one steady burst-pacing structure. All values are
+// provisional until D2; the mechanism (burst size range + two gap
+// distributions + the small-datagram class) is what this step fixes,
+// not the numbers.
+//
+// AckLenMax is the small-datagram class bound in bytes. A tail
+// datagram of length <= AckLenMax never takes an inter-burst idle gap
+// (see shaping.go): at the PacketConn layer datagrams are opaque
+// ciphertext, so ACK-only datagrams cannot be identified — but they
+// are small by construction, and delaying them past the peer's PTO
+// scale feeds a retransmission loop (delayed ACK -> PTO probe ->
+// retransmit -> more ACKs). AckLenMax == 0 disables the class (all
+// datagrams take the data-class burst machine, the pre-ACK-class
+// behaviour). The 200-byte boundary matches the small-packet proxy
+// the step 3 measurement itself uses for ACK accounting.
+type SteadyBurst struct {
+	MinPackets int          `json:"min_packets"`
+	MaxPackets int          `json:"max_packets"`
+	GapDist    Distribution `json:"gap_dist"`
+	IdleDist   Distribution `json:"idle_dist"`
+	AckLenMax  int          `json:"ack_len_max"`
 }
 
 func (b SteadyBaseline) Validate() error {
@@ -151,7 +218,44 @@ func (b SteadyBaseline) Validate() error {
 	if b.DirectionRatio < 0 || b.DirectionRatio > 1 {
 		return fmt.Errorf("realquic: steady direction_ratio %v outside [0, 1]", b.DirectionRatio)
 	}
+	if err := b.Burst.Validate(); err != nil {
+		return err
+	}
 	return nil
+}
+
+// Validate checks one burst structure. MaxPackets == 0 means burst
+// pacing is off: MinPackets must then also be 0, and the gap
+// distributions are not validated (a zero-value Distribution has an
+// empty Kind, which is not a valid distribution on its own — but an
+// off burst must decode cleanly from pre-step-4 profiles that carry
+// no burst field at all). When enabled, the packet range must be
+// ordered with MinPackets >= 1 and both gap distributions valid.
+func (b SteadyBurst) Validate() error {
+	if b.MaxPackets == 0 {
+		if b.MinPackets != 0 {
+			return fmt.Errorf("realquic: steady burst min_packets %d with max_packets 0", b.MinPackets)
+		}
+		return nil
+	}
+	if b.MinPackets < 1 || b.MaxPackets < b.MinPackets {
+		return fmt.Errorf("realquic: steady burst packet range [%d, %d] invalid", b.MinPackets, b.MaxPackets)
+	}
+	if err := b.GapDist.Validate(); err != nil {
+		return fmt.Errorf("realquic: steady burst gap_dist: %w", err)
+	}
+	if err := b.IdleDist.Validate(); err != nil {
+		return fmt.Errorf("realquic: steady burst idle_dist: %w", err)
+	}
+	if b.AckLenMax < 0 {
+		return fmt.Errorf("realquic: steady burst ack_len_max %d invalid", b.AckLenMax)
+	}
+	return nil
+}
+
+// BurstEnabled reports whether burst pacing applies for this baseline.
+func (b SteadyBaseline) BurstEnabled() bool {
+	return b.Burst.MaxPackets > 0
 }
 
 // Profile is one Q6 server-issued behaviour profile. Version 0 is
@@ -234,7 +338,24 @@ func BootstrapProfile() Profile {
 		Steady: SteadyBaseline{
 			LenDist:        Distribution{Kind: "uniform", Min: 200, Max: 1400, Mean: 800}, // provisional
 			TimingDist:     Distribution{Kind: "uniform", Min: 5, Max: 100, Mean: 52.5},   // provisional, ms
-			DirectionRatio: 0.5,                                                           // provisional
+			DirectionRatio: 0.5,                                                           // provisional, stored only (P2 step 4 decision, see shaping.go)
+			// Burst is OFF in the bootstrap profile (zero value), by
+			// design, not by omission: the bootstrap tail's uniform
+			// pacing is the P1 contract pinned by existing tests
+			// (window-0 tail gaps floor at the steady TimingDist
+			// minimum), and burst interiors necessarily go below that
+			// floor. Burst pacing is opt-in via a server-issued
+			// profile: every authenticated session adopts the issued
+			// profile at AUTH (window 1), so all steady traffic runs
+			// under it; only pre-AUTH window-0 tail (handshake
+			// overshoot, a few datagrams) keeps uniform pacing.
+			// Flipping the bootstrap default on is a D2/operator
+			// decision, not something this step smuggles in — it
+			// would require adjudicating the pinned window-0 test.
+			// Example issued burst values (provisional, used by the
+			// step 4 verification harness, NOT defaults): bursts of
+			// 8–24 datagrams, line-speed interiors (GapDist fixed 0),
+			// idle gaps uniform 50–300 ms (mean 175 ms).
 		},
 	}
 }
