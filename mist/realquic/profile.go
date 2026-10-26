@@ -92,6 +92,40 @@ import (
 //     was not wired here because chunked application writes are
 //     re-coalesced by the stack under PacketConn pacing, and that
 //     interaction needs its own experiment, not an assertion.
+//
+// P2 step 5 (D2 adjudication, 2026-10-26; evidence: step 3 baseline
+// REPORT + step 4 REPORT run2/run4, frozen thresholds, same seed
+// 20261026; M3 4/6, still not passed):
+//   - PROVISIONAL (values unchanged; no loopback millisecond written
+//     as a design value): steady TimingDist uniform 5–100 ms /
+//     52.5 ms and all burst numerics (cluster 8–24, GapDist fixed 0
+//     interior, IdleDist uniform 50–300 ms, AckLenMax 200);
+//     handshake values (8/8, LenDist 200–1200/700, TimingDist
+//     5–50/27.5 ms); stagger [50, 150] ms; reuse caps (bootstrap 0 =
+//     unset). Loopback Fano-vs-ACK tension (Fano needs cluster
+//     >= ~40, ACK needs cluster <= ~24) blocks any loopback-derived
+//     final value; timing numerics need a real-network (RTT-scale)
+//     baseline.
+//   - REDEFINED: steady LenDist is no longer a steady datagram
+//     length target — its only live role is the SampleLen hook for a
+//     future stream-chunking layer; steady packet length today is
+//     same-stack packetisation (JS passes). Steady DirectionRatio is
+//     no longer an enforcement setpoint — it is a diagnostic
+//     (measured ratio vs the browsing control); the stored 0.5 is
+//     schema compat only, never a target, and no cover traffic is
+//     generated from it.
+//   - FINALIZED (P2 scope): hopping 0/0 (off) — design §7 default
+//     closed, M4 untouched, no evidence to open; reopening needs M4
+//     evidence plus a coordinator decision. Bootstrap burst default
+//     off — verified: custom streams/datagrams unlock only on AUTH
+//     success and the client window advances at AUTH, so all Mist
+//     steady traffic runs under a window 1+ issued profile; no
+//     pre-AUTH Mist steady traffic exists. Flipping the default
+//     would require adjudicating the pinned window-0 tail-gap test
+//     and is NOT done here.
+//   - DROPPED from the D2 table: the 64 KiB maxShapingPad bound —
+//     a lab safety bound, not a design number; the code bound itself
+//     is unchanged.
 
 // Distribution is one shaping distribution. Units are fixed by the field
 // that carries it: lengths in bytes, timings in milliseconds.
@@ -171,7 +205,12 @@ func (s ShapingParams) Validate() error {
 // SteadyBaseline is the Q5 steady-state shaping baseline carried in the
 // profile. DirectionRatio is the up/(up+down) byte share, in [0, 1].
 // It is stored and validated only: P2 step 4 deliberately does NOT wire
-// it as an enforcement setpoint (see the P2 step 4 note in shaping.go).
+// it as an enforcement setpoint (see the P2 step 4 note in shaping.go),
+// and P2 step 5 (D2) REDEFINED it as a diagnostic: the measured ratio
+// vs the browsing control, never a target; the stored value is schema
+// compat only. LenDist is likewise REDEFINED by D2 step 5: not a steady
+// datagram length target, only the SampleLen hook for a future
+// stream-chunking layer.
 // Burst is the P2 step 4 steady burst-pacing structure: when enabled
 // (MaxPackets > 0) the steady slot paces in bursts — GapDist gaps
 // inside a burst, IdleDist gaps between bursts — instead of the
@@ -185,10 +224,13 @@ type SteadyBaseline struct {
 	Burst          SteadyBurst  `json:"burst"`
 }
 
-// SteadyBurst is one steady burst-pacing structure. All values are
-// provisional until D2; the mechanism (burst size range + two gap
-// distributions + the small-datagram class) is what this step fixes,
-// not the numbers.
+// SteadyBurst is one steady burst-pacing structure. D2 step 5
+// (2026-10-26): all values remain PROVISIONAL — the loopback
+// Fano-vs-ACK tension (Fano needs cluster >= ~40, ACK needs cluster
+// <= ~24) blocks any loopback-derived final value, and timing
+// numerics need a real-network (RTT-scale) baseline. The mechanism
+// (burst size range + two gap distributions + the small-datagram
+// class) is what step 4 fixed, not the numbers.
 //
 // AckLenMax is the small-datagram class bound in bytes. A tail
 // datagram of length <= AckLenMax never takes an inter-burst idle gap
@@ -321,24 +363,24 @@ func BootstrapProfile() Profile {
 		Version:  0, // bootstrap only; server-issued versions start at 1
 		IssuedAt: 0,
 		Shaping: ShapingParams{
-			NPacketsUp:   8,                                                             // provisional
-			NPacketsDown: 8,                                                             // provisional
-			LenDist:      Distribution{Kind: "uniform", Min: 200, Max: 1200, Mean: 700}, // provisional
-			TimingDist:   Distribution{Kind: "uniform", Min: 5, Max: 50, Mean: 27.5},    // provisional, ms
+			NPacketsUp:   8,                                                             // D2 step 5: PROVISIONAL (handshake not in step 3/4 main verdicts)
+			NPacketsDown: 8,                                                             // D2 step 5: PROVISIONAL
+			LenDist:      Distribution{Kind: "uniform", Min: 200, Max: 1200, Mean: 700}, // D2 step 5: PROVISIONAL
+			TimingDist:   Distribution{Kind: "uniform", Min: 5, Max: 50, Mean: 27.5},    // D2 step 5: PROVISIONAL, ms
 			MergePolicy:  "same_flight",
 			TailPolicy:   "transition_to_steady",
 		},
-		HopWindowMinSec:    0, // hopping off in P1
+		HopWindowMinSec:    0, // hopping off (D2 step 5: FINALIZED, P2 scope; reopening needs M4 evidence + coordinator decision)
 		HopWindowMaxSec:    0,
-		MaxStreamsPerConn:  0, // unset in P1 (split is P2)
-		MaxReusePerConn:    0, // unset in P1
-		MaxConnLifetimeSec: 0, // unset in P1
-		StaggerDelayMinMs:  0, // carried, not executed in P1 (split is P2)
+		MaxStreamsPerConn:  0, // unset (D2 step 5: PROVISIONAL — interval-random values, no fixed constant to finalize)
+		MaxReusePerConn:    0, // unset (D2 step 5: PROVISIONAL)
+		MaxConnLifetimeSec: 0, // unset (D2 step 5: PROVISIONAL)
+		StaggerDelayMinMs:  0, // bootstrap unset; issued [50, 150] ms is D2 step 5: PROVISIONAL (D3 bound, needs real-network baseline)
 		StaggerDelayMaxMs:  0,
 		Steady: SteadyBaseline{
-			LenDist:        Distribution{Kind: "uniform", Min: 200, Max: 1400, Mean: 800}, // provisional
-			TimingDist:     Distribution{Kind: "uniform", Min: 5, Max: 100, Mean: 52.5},   // provisional, ms
-			DirectionRatio: 0.5,                                                           // provisional, stored only (P2 step 4 decision, see shaping.go)
+			LenDist:        Distribution{Kind: "uniform", Min: 200, Max: 1400, Mean: 800}, // D2 step 5: REDEFINED role (future chunk-layer hook only), value unfinalized
+			TimingDist:     Distribution{Kind: "uniform", Min: 5, Max: 100, Mean: 52.5},   // D2 step 5: PROVISIONAL, ms
+			DirectionRatio: 0.5,                                                           // D2 step 5: REDEFINED as diagnostic only; stored value is schema compat, never a target
 			// Burst is OFF in the bootstrap profile (zero value), by
 			// design, not by omission: the bootstrap tail's uniform
 			// pacing is the P1 contract pinned by existing tests
@@ -352,6 +394,14 @@ func BootstrapProfile() Profile {
 			// Flipping the bootstrap default on is a D2/operator
 			// decision, not something this step smuggles in — it
 			// would require adjudicating the pinned window-0 test.
+			// D2 step 5 (2026-10-26) FINALIZED (P2 scope): the
+			// default stays off — verified against this tree, no
+			// pre-AUTH Mist steady traffic exists (custom streams /
+			// datagrams unlock only on AUTH success; the client
+			// window advances at AUTH, so all Mist steady traffic
+			// runs under a window 1+ issued profile where burst
+			// opt-in applies). The window-0 tail-gap test assertion
+			// is untouched.
 			// Example issued burst values (provisional, used by the
 			// step 4 verification harness, NOT defaults): bursts of
 			// 8–24 datagrams, line-speed interiors (GapDist fixed 0),

@@ -70,8 +70,10 @@ import (
 // Tail rule (the step's key semantic, enforced, not aspirational):
 //   - When a window's per-direction budget is exhausted, sending does
 //     NOT go bare. The shaper transitions to the profile's steady
-//     baseline slot (Steady, values provisional until the P2 baseline
-//     measurement, D2): subsequent datagrams in the same window keep
+//     baseline slot (Steady; D2 adjudication in P2 step 5 — timing /
+//     burst numerics stay provisional, LenDist / DirectionRatio
+//     redefined, see the D2 block in profile.go): subsequent
+//     datagrams in the same window keep
 //     being paced, now from the steady timing distribution, and the
 //     steady length distribution becomes the padding target. There is
 //     no code path that hands the QUIC stack an unwrapped PacketConn:
@@ -97,7 +99,8 @@ import (
 //   cannot fix any of these: they are shape failures, not level
 //   failures.
 //
-//   Mechanism (profile-driven, all values provisional until D2):
+//   Mechanism (profile-driven; D2 step 5: numerics remain PROVISIONAL,
+//   see the D2 block in profile.go):
 //   once in tail, if the active profile's steady burst structure is
 //   enabled, pacing follows a two-state machine per direction per
 //   connection — a burst of BurstPackets datagrams at line speed
@@ -145,12 +148,14 @@ import (
 //     JS already passes via same-stack packetisation; SampleLen in
 //     tail still returns the steady LenDist as the hook for a future
 //     stream-chunking layer, whose pacing-coalescing interaction
-//     needs its own experiment.
+//     needs its own experiment. D2 step 5 REDEFINED this role:
+//     hook-only, not a steady length target.
 //   - DirectionRatio as an enforcement setpoint: the provisional 0.5
 //     contradicts the measured browsing mix (up-share ~0.013), so
 //     enforcing it means injecting cover bytes. The ratio moves
 //     toward browsing here through ACK coalescing alone, with zero
-//     cover bytes. See profile.go's P2 step 4 note.
+//     cover bytes. See profile.go's P2 step 4 note. D2 step 5
+//     REDEFINED it as a diagnostic, not a setpoint.
 //
 //   Burst accounting lives in BeforeSend (the gap decision point): a
 //   failed WriteTo therefore miscounts the burst position by one.
@@ -182,7 +187,9 @@ type SendEvent struct {
 // not trusted input: without a cap a rogue profile could force
 // megabyte AUTH bodies. 64 KiB is far above any handshake-flight need
 // and bounds the worst case; it is a lab safety bound, not a design
-// number.
+// number. D2 step 5 (2026-10-26): DROPPED from the D2 value table on
+// exactly that ground — the bound itself is unchanged and must not be
+// tuned as a shaping parameter.
 const maxShapingPad = 64 * 1024
 
 // Shaper is one direction's shaping state machine for one connection
