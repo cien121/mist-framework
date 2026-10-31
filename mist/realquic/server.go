@@ -296,6 +296,13 @@ func (s *Server) PushCurrentProfile(qconn *quic.Conn) (Profile, error) {
 	if err != nil {
 		return Profile{}, err
 	}
+	// Record the issue BEFORE writing: the client receipts as soon as
+	// it reads the push, and a receipt for a version not yet in
+	// issuedSet would spuriously downgrade the connection (sticky).
+	// If the write below fails, the version is recorded but
+	// undelivered; no client can receipt a version it never received,
+	// so that is harmless.
+	st.noteIssued(issued.Version)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	str, err := qconn.OpenStreamSync(ctx)
@@ -306,8 +313,6 @@ func (s *Server) PushCurrentProfile(qconn *quic.Conn) (Profile, error) {
 	if err := WriteFrameCodec(str, frameProfileUpdate, encoded, codec); err != nil {
 		return Profile{}, err
 	}
-	// Only a delivered push moves the connection's issued version.
-	st.noteIssued(issued.Version)
 	// P1 step B: the push also queues on the connection's down
 	// shaper as pending — the in-flight window keeps the old
 	// profile; the new one takes effect at the next window
@@ -357,7 +362,7 @@ func (s *Server) DownEvents() []SendEvent {
 
 // ConnProfileState reports one connection's Q6 state for tests and
 // operators: the issued version (AUTH or last successful push), the
-// last receipted version and whether any receipt arrived, and whether
+// highest receipted version and whether any receipt arrived, and whether
 // the connection has been downgraded. ok is false for unknown
 // connections.
 func (s *Server) ConnProfileState(qconn *quic.Conn) (issued, receipt uint64, receiptSeen, downgraded, ok bool) {
@@ -606,10 +611,13 @@ type connState struct {
 	// for the previous version that was already in flight when a push
 	// landed must not false-positive as non-compliance. A receipt
 	// version outside the set (e.g. bootstrap 0, or another server's
-	// version) is what downgrades. receiptVersion/receiptSeen record
-	// the last well-formed receipt; downgraded is set when a receipt's
-	// version falls outside issuedSet, and is sticky until a fresh
-	// AUTH (setSession clears it).
+	// version) is what downgrades. receiptVersion records the highest
+	// well-formed receipt version acknowledged (monotonic: receipts
+	// are processed out of order, so a stale older ack must not flap
+	// the reported version backwards); receiptSeen records whether
+	// any well-formed receipt arrived; downgraded is set when a
+	// receipt's version falls outside issuedSet, and is sticky until
+	// a fresh AUTH (setSession clears it).
 	issuedVersion  uint64
 	issuedSet      map[uint64]struct{}
 	receiptVersion uint64
@@ -666,10 +674,18 @@ func (st *connState) noteReceipt(v uint64) bool {
 	st.mu.Lock()
 	defer st.mu.Unlock()
 	st.receiptSeen = true
-	st.receiptVersion = v
 	if _, ok := st.issuedSet[v]; !ok {
+		st.receiptVersion = v
 		st.downgraded = true
 		return false
+	}
+	// Receipts are processed by concurrent per-stream goroutines, so
+	// an older receipt (e.g. the AUTH receipt) can be processed AFTER
+	// a newer one. receiptVersion is therefore monotonic: the client
+	// has acknowledged the newer version, and a stale older ack must
+	// not flap the reported version backwards.
+	if v > st.receiptVersion {
+		st.receiptVersion = v
 	}
 	return true
 }
