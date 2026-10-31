@@ -1081,12 +1081,12 @@ func TestM2MultiPortVisitorEquivalence(t *testing.T) {
 			t.Fatalf("instance %d replay-token first use: status=%d err=%v, want 200", i, st, err)
 		}
 		cases := map[string]string{
-			"bad HMAC":        corruptToken(t, tok),
-			"expired":         MakeToken(key, mustEphPub(t), time.Now().Add(-time.Hour), nonce),
-			"replayed nonce":  replayTok,
-			"malformed":       "not-a-token!!!",
-			"truncated":       tok[:len(tok)/2],
-			"wrong version":   MakeToken(key, mustEphPub(t), time.Now(), nonce), // version byte flipped below
+			"bad HMAC":       corruptToken(t, tok),
+			"expired":        MakeToken(key, mustEphPub(t), time.Now().Add(-time.Hour), nonce),
+			"replayed nonce": replayTok,
+			"malformed":      "not-a-token!!!",
+			"truncated":      tok[:len(tok)/2],
+			"wrong version":  MakeToken(key, mustEphPub(t), time.Now(), nonce), // version byte flipped below
 		}
 		// Wrong-version token: same shape, version byte 0x02.
 		if raw, err := decodeTokenRaw(cases["wrong version"]); err == nil && len(raw) == authTokenLen {
@@ -1253,7 +1253,9 @@ func TestM2ProbeMatrixConnectedUDP(t *testing.T) {
 		{"bad-initial-v1-small", func(d []byte) []byte { return m2BuildInitial(0x00000001, d, nil, nil, smallPayload) }, "silent"},
 		{"bad-initial-v1-big", func(d []byte) []byte { return m2BuildInitial(0x00000001, d, nil, nil, bigPayload) }, "silent"},
 		{"bad-initial-truncated", func(d []byte) []byte { return m2BuildInitial(0x00000001, d, nil, nil, smallPayload)[:20] }, "silent"},
-		{"token-carrying-bad-initial", func(d []byte) []byte { return m2BuildInitial(0x00000001, d, nil, []byte("0123456789abcdef"), smallPayload) }, "silent"},
+		{"token-carrying-bad-initial", func(d []byte) []byte {
+			return m2BuildInitial(0x00000001, d, nil, []byte("0123456789abcdef"), smallPayload)
+		}, "silent"},
 		{"unsupported-version-small", func(d []byte) []byte { return m2BuildInitial(0x00000002, d, nil, nil, smallPayload) }, "silent"},
 		{"unsupported-version-big", func(d []byte) []byte { return m2BuildInitial(0x00000002, d, nil, nil, bigPayload) }, "vn"},
 		{"old-version-draft29-big", func(d []byte) []byte { return m2BuildInitial(0xff00001d, d, nil, nil, bigPayload) }, "vn"},

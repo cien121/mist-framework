@@ -300,6 +300,95 @@ func (b SteadyBaseline) BurstEnabled() bool {
 	return b.Burst.MaxPackets > 0
 }
 
+// Stage B (B2, REALQUIC-DESIGN-v3 §4.3 rule 2): issued-profile burst
+// is default-on. DefaultIssuedBurst is the burst structure a server
+// issuance fills in when its base profile carries no burst. Its
+// numbers are NOT new tuned values: they are the P2 step 4
+// verification-harness example, unchanged (see the "Example issued
+// burst values" note on BootstrapProfile), and they stay PROVISIONAL
+// under D2 step 5 — the mechanism (default-on at issuance) is what
+// Stage B fixes, not the numbers. The bootstrap profile is never
+// filled by this function: BootstrapProfile keeps burst off
+// (FINALIZED, P2 scope), and only the issuance path (newIssuedFrom)
+// applies the default.
+func DefaultIssuedBurst() SteadyBurst {
+	return SteadyBurst{
+		MinPackets: 8,
+		MaxPackets: 24,
+		GapDist:    Distribution{Kind: "fixed", Min: 0, Max: 0, Mean: 0},
+		IdleDist:   Distribution{Kind: "uniform", Min: 50, Max: 300, Mean: 175},
+		AckLenMax:  200,
+	}
+}
+
+// SizePolicy is the Stage B (B3, REALQUIC-DESIGN-v3 §3) size-rule
+// mechanism record carried in a profile. It records mechanism names
+// only — never tuned numbers, never a stack guarantee:
+//
+//   - PMTUAlignMode: how steady datagram sizes align to the path.
+//     The only supported mechanism is the stack-native one
+//     ("stack-native-dplpmtud"); "" means unset (pre-Stage-B
+//     profiles decode cleanly).
+//   - CeilingMode: the operator ceiling's role. The only supported
+//     value is "operator-expectation": an expectation the stack
+//     does NOT enforce (there is no public ceiling knob; see
+//     pmtu.go). "" means no ceiling configured (unbounded).
+//   - FallbackMode: what sizes fall back to with no validated PMTU.
+//     The only supported value is "initial-size" (the stack's
+//     InitialPacketSize, default 1280 UDP payload bytes). Path
+//     shrinkage recovery is by migration reset, not by fallback.
+//   - ProbePolicy: the probe mechanism. The only supported value
+//     is "stack-native": Mist never sends its own probe packets.
+//   - TailPadEnabled / TailPadOverheadLimit: the §3.3 tail-padding
+//     exception gate. Padding is default-off (Enabled false, limit
+//     0). When enabled, the limit is the per-session padded-bytes /
+//     data-bytes fraction, and it may not exceed the §3.3 hard cap
+//     of 1% (0.01); the padder enforces the same cap at runtime.
+type SizePolicy struct {
+	PMTUAlignMode        string  `json:"pmtu_align_mode"`
+	CeilingMode          string  `json:"ceiling_mode"`
+	FallbackMode         string  `json:"fallback_mode"`
+	ProbePolicy          string  `json:"probe_policy"`
+	TailPadEnabled       bool    `json:"tail_pad_enabled"`
+	TailPadOverheadLimit float64 `json:"tail_pad_overhead_limit"`
+}
+
+// TailPadOverheadHardCap is the §3.3 per-session padding hard cap
+// (padded bytes / downlink data bytes), not a tunable: an operator
+// limit above it is rejected at validation.
+const TailPadOverheadHardCap = 0.01
+
+func (s SizePolicy) Validate() error {
+	switch s.PMTUAlignMode {
+	case "", "stack-native-dplpmtud":
+	default:
+		return fmt.Errorf("realquic: size pmtu_align_mode %q not in {\"\", stack-native-dplpmtud}", s.PMTUAlignMode)
+	}
+	switch s.CeilingMode {
+	case "", "operator-expectation":
+	default:
+		return fmt.Errorf("realquic: size ceiling_mode %q not in {\"\", operator-expectation}", s.CeilingMode)
+	}
+	switch s.FallbackMode {
+	case "", "initial-size":
+	default:
+		return fmt.Errorf("realquic: size fallback_mode %q not in {\"\", initial-size}", s.FallbackMode)
+	}
+	switch s.ProbePolicy {
+	case "", "stack-native":
+	default:
+		return fmt.Errorf("realquic: size probe_policy %q not in {\"\", stack-native}", s.ProbePolicy)
+	}
+	if s.TailPadEnabled {
+		if s.TailPadOverheadLimit <= 0 || s.TailPadOverheadLimit > TailPadOverheadHardCap {
+			return fmt.Errorf("realquic: size tail_pad_overhead_limit %v invalid (enabled requires (0, %v])", s.TailPadOverheadLimit, TailPadOverheadHardCap)
+		}
+	} else if s.TailPadOverheadLimit != 0 {
+		return fmt.Errorf("realquic: size tail_pad_overhead_limit %v set while tail padding is disabled", s.TailPadOverheadLimit)
+	}
+	return nil
+}
+
 // Profile is one Q6 server-issued behaviour profile. Version 0 is
 // reserved for the bootstrap profile only; every server-issued profile
 // has Version >= 1 (the server assigns versions, see newIssuedFrom).
@@ -319,6 +408,9 @@ type Profile struct {
 	StaggerDelayMinMs  float64        `json:"stagger_delay_min_ms"`
 	StaggerDelayMaxMs  float64        `json:"stagger_delay_max_ms"`
 	Steady             SteadyBaseline `json:"steady"`
+	// Stage B (B3): size-rule mechanism record (names only, see
+	// SizePolicy). Zero value decodes from pre-Stage-B profiles.
+	Size SizePolicy `json:"size"`
 }
 
 // Validate checks the whole profile structurally. It does not check
@@ -346,6 +438,9 @@ func (p Profile) Validate() error {
 	}
 	if p.StaggerDelayMinMs < 0 || p.StaggerDelayMaxMs < p.StaggerDelayMinMs {
 		return fmt.Errorf("realquic: stagger delay [%v, %v] invalid", p.StaggerDelayMinMs, p.StaggerDelayMaxMs)
+	}
+	if err := p.Size.Validate(); err != nil {
+		return err
 	}
 	return nil
 }
@@ -414,10 +509,23 @@ func BootstrapProfile() Profile {
 // as a server-issued profile: the server is the version authority, so
 // the input version is ignored and the issued version starts at 1.
 // RotateProfile advances from there.
+//
+// Stage B (B2): issuance is burst default-on. A base profile without
+// burst parameters (including the bootstrap base) is issued WITH the
+// default burst filled in, so a server can no longer issue a
+// burst-less window 1+ profile by omission — the labserver-style
+// "Key + rotation only, no opt-in" deployment shape that caused the
+// old-stack thin flow is a configuration error at the client
+// self-check, not a runnable steady state. A base profile that
+// already carries burst parameters is issued unchanged: issuance
+// fills a missing burst, it never overwrites an operator's burst.
 func newIssuedFrom(base Profile) Profile {
 	p := base
 	p.Version = 1
 	p.IssuedAt = time.Now().Unix()
+	if !p.Steady.BurstEnabled() {
+		p.Steady.Burst = DefaultIssuedBurst()
+	}
 	return p
 }
 

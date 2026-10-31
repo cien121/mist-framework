@@ -8,6 +8,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
@@ -16,6 +17,7 @@ import (
 
 	"github.com/quic-go/quic-go"
 	"github.com/quic-go/quic-go/http3"
+	"github.com/quic-go/quic-go/qlogwriter"
 )
 
 // Client is a lab client over one shared QUIC connection. It speaks
@@ -42,9 +44,16 @@ type Client struct {
 	// is shared across this client's sessions when the caller supplies
 	// one, so a later session starts from the server profile instead
 	// of bootstrap. No key material is ever stored here.
-	profileStore    *ProfileStore
-	serverID        string
-	activeProfile   Profile
+	profileStore  *ProfileStore
+	serverID      string
+	activeProfile Profile
+	// Stage B (B2): the last issued-profile self-check alert for
+	// this connection (nil when the last adoption succeeded or no
+	// adoption has been attempted). Guarded by mu. A burst-less
+	// window 1+ issued profile is never silently adopted: adoption
+	// fails loudly (see adoptProfile) instead of falling back to
+	// uniform pacing.
+	profileAlert    error
 	profileLoopOnce sync.Once
 	// P1 step B (Q3): the shaper governing this connection's sends.
 	// Its window profile lags pushes (see shaping.go): AUTH advances
@@ -119,20 +128,49 @@ func (c *Client) ProfileStore() *ProfileStore {
 // connection, even if the shared store already holds a newer version
 // from another connection. The store itself keeps the newest version
 // (ProfileStore.Put's gate), so later sessions still start from the
-// newest server profile. It reports whether a profile was adopted.
-func (c *Client) adoptProfile(p Profile) bool {
+// newest server profile.
+//
+// Stage B (B2) self-check: a window 1+ issued profile (Version >= 1)
+// without burst parameters is REFUSED, not adopted. Adopting it would
+// run steady traffic under uniform pacing with no visible failure —
+// exactly the old-stack thin-flow shape. Refusal is loud: adoptProfile
+// returns an error, records it as the connection's profile alert
+// (see ProfileAlert), and Auth surfaces the error instead of
+// advancing the window onto the burst-less profile. The bootstrap
+// profile (Version 0) is exempt: burst-off is its FINALIZED contract
+// and it is never adopted through this path as an issued profile.
+// A successful adoption clears any previous alert.
+func (c *Client) adoptProfile(p Profile) error {
 	if err := p.Validate(); err != nil {
-		return false
+		return err
+	}
+	if p.Version >= 1 && !p.Steady.BurstEnabled() {
+		err := fmt.Errorf("realquic: issued profile version %d lacks steady burst parameters; refusing silent uniform pacing", p.Version)
+		c.mu.Lock()
+		c.profileAlert = err
+		c.mu.Unlock()
+		return err
 	}
 	c.mu.Lock()
 	c.activeProfile = p
+	c.profileAlert = nil
 	store := c.profileStore
 	serverID := c.serverID
 	c.mu.Unlock()
 	if store != nil {
 		store.Put(serverID, p)
 	}
-	return true
+	return nil
+}
+
+// ProfileAlert returns the last issued-profile self-check alert for
+// this connection, or nil when the last adoption succeeded (or none
+// was attempted). It is the queryable form of the B2 alert: a caller
+// that cannot observe Auth's error return can poll this instead.
+func (c *Client) ProfileAlert() error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.profileAlert
 }
 
 // applyProfile installs a pushed profile only if it is valid and
@@ -140,6 +178,13 @@ func (c *Client) adoptProfile(p Profile) bool {
 // push is ignored silently: the session continues on the old profile
 // until it ends, and no error surfaces to the caller. It reports
 // whether the active profile changed.
+//
+// Stage B (B2) self-check, same rule as adoptProfile but without
+// failing the session: a newer pushed window 1+ profile without burst
+// parameters is rejected AND recorded as a profile alert, so the push
+// can neither silently downgrade the session to uniform pacing nor
+// disappear without a trace. The session keeps its previous
+// (burst-carrying) profile.
 func (c *Client) applyProfile(p Profile) bool {
 	if err := p.Validate(); err != nil {
 		return false
@@ -152,7 +197,13 @@ func (c *Client) applyProfile(p Profile) bool {
 		c.mu.Unlock()
 		return false
 	}
+	if p.Version >= 1 && !p.Steady.BurstEnabled() {
+		c.profileAlert = fmt.Errorf("realquic: pushed profile version %d lacks steady burst parameters; refusing silent uniform pacing", p.Version)
+		c.mu.Unlock()
+		return false
+	}
 	c.activeProfile = p
+	c.profileAlert = nil
 	c.mu.Unlock()
 	if store != nil {
 		store.Put(serverID, p)
@@ -264,6 +315,23 @@ func DialPacketConn(ctx context.Context, pc net.PacketConn, remoteAddr net.Addr,
 // from that profile instead of bootstrap, before its own AUTH. A nil
 // store gets a fresh one; an empty serverID defaults to testServerName.
 func DialPacketConnWithProfileStore(ctx context.Context, pc net.PacketConn, remoteAddr net.Addr, key []byte, store *ProfileStore, serverID string) (*Client, error) {
+	return dialPacketConnWithTracer(ctx, pc, remoteAddr, key, store, serverID, nil)
+}
+
+// DialPacketConnWithPMTUTrace is the Stage B (B4) lab dial: identical
+// to DialPacketConn except the connection's Config.Tracer returns
+// trace, so the stack's qlog PMTU events (recovery:mtu_updated,
+// parameters_set) feed a PMTU tracker — see NewPMTUQlogTrace and
+// SplitClient.UpTrace / DownTrace. A nil trace dials exactly like
+// DialPacketConn. This is a LAB instrument only: production MUST NOT
+// depend on parsing qlog for runtime decisions (pmtu.go header), and
+// the trace is never consulted by any send path — it only rebuilds
+// the reporting state the SplitClient report port reads.
+func DialPacketConnWithPMTUTrace(ctx context.Context, pc net.PacketConn, remoteAddr net.Addr, key []byte, trace qlogwriter.Trace) (*Client, error) {
+	return dialPacketConnWithTracer(ctx, pc, remoteAddr, key, NewProfileStore(), testServerName, trace)
+}
+
+func dialPacketConnWithTracer(ctx context.Context, pc net.PacketConn, remoteAddr net.Addr, key []byte, store *ProfileStore, serverID string, trace qlogwriter.Trace) (*Client, error) {
 	tlsConf := &tls.Config{
 		InsecureSkipVerify: true, // lab only: in-memory test certificate
 		NextProtos:         []string{"h3"},
@@ -282,7 +350,11 @@ func DialPacketConnWithProfileStore(ctx context.Context, pc net.PacketConn, remo
 	shaped := newSingleShapingConn(pc, "up", store.ActiveFor(serverID))
 	// EnableDatagrams negotiates RFC 9221 datagrams for the UDP relay;
 	// it does not change the H3 behaviour of the connection.
-	qconn, err := quic.Dial(ctx, shaped, remoteAddr, tlsConf, &quic.Config{EnableDatagrams: true})
+	cfg := &quic.Config{EnableDatagrams: true}
+	if trace != nil {
+		cfg.Tracer = func(context.Context, bool, quic.ConnectionID) qlogwriter.Trace { return trace }
+	}
+	qconn, err := quic.Dial(ctx, shaped, remoteAddr, tlsConf, cfg)
 	if err != nil {
 		return nil, err
 	}
@@ -405,13 +477,20 @@ func (c *Client) Auth(ctx context.Context) (int, []byte, time.Duration, error) {
 	c.setSession(params)
 	// Q6: adopt the server-issued profile for this connection, start
 	// accepting in-session pushes, and receipt the issued version.
-	// A missing or invalid profile envelope does not fail AUTH — the
-	// session keys are already valid — but the connection then keeps
-	// its previous (bootstrap or stored) profile, and its receipt (if
+	// A missing profile envelope does not fail AUTH — the session
+	// keys are already valid — but the connection then keeps its
+	// previous (bootstrap or stored) profile, and its receipt (if
 	// any) will name a version never issued to this connection.
+	// Stage B (B2): a PRESENT profile whose adoption fails (invalid,
+	// or a burst-less window 1+ profile) DOES fail AUTH loudly:
+	// advancing the window onto a burst-less profile would silently
+	// run steady traffic under uniform pacing, which is worse than
+	// reporting the failure. No window advance happens on this path.
 	if ok.Profile != nil {
 		adopted := *ok.Profile
-		c.adoptProfile(adopted)
+		if err := c.adoptProfile(adopted); err != nil {
+			return status, body, latency, err
+		}
 		// P1 step B: AUTH success is a window boundary. The AUTH
 		// request was window 0 (bootstrap); from here on the
 		// server profile governs the shaper's window 1.

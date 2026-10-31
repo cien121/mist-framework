@@ -264,11 +264,11 @@ func (s *Server) handleSplitConnect(st *connState, str *quic.Stream, fr Frame, u
 		fail(err.Error())
 		return
 	}
-	if err := WriteFrameCodec(str, frameConnectOK, nil, upCodec); err != nil {
-		release()
-		_ = tcp.Close()
-		return
-	}
+	// Register the pending request BEFORE answering CONNECT_OK: the
+	// client sends DOWN_READY as soon as it reads CONNECT_OK, and the
+	// down handler runs on a different goroutine, so registering after
+	// the write loses the race under load ("no pending request").
+	// The deferred delete below cleans up if the OK write fails.
 	pend := &splitPending{ready: make(chan *splitDownStream, 1), created: time.Now()}
 	s.splitMu.Lock()
 	s.splitPendings[reqID] = pend
@@ -278,6 +278,11 @@ func (s *Server) handleSplitConnect(st *connState, str *quic.Stream, fr Frame, u
 		delete(s.splitPendings, reqID)
 		s.splitMu.Unlock()
 	}()
+	if err := WriteFrameCodec(str, frameConnectOK, nil, upCodec); err != nil {
+		release()
+		_ = tcp.Close()
+		return
+	}
 	// Up -> TCP pump (this goroutine's loop below is the same pump;
 	// the TCP -> down pump runs concurrently once the down stream lands).
 	done := make(chan struct{})
@@ -367,6 +372,12 @@ func (s *Server) handleSplitDownReady(st *connState, str *quic.Stream, fr Frame,
 type SplitClient struct {
 	up       *Client
 	dialDown func(ctx context.Context) (*Client, error)
+	// Stage B (B4): one PMTUSet for this split session. Leg "up" and
+	// leg "down" each get their own tracker per address family (see
+	// split_pmtu.go); observing or resetting one leg never moves the
+	// other. The set is created at construction, so the report port
+	// exists before any leg is dialled.
+	pmtu *PMTUSet
 
 	mu           sync.Mutex
 	down         *Client
@@ -392,7 +403,7 @@ func NewSplitClient(up *Client, dialDown func(ctx context.Context) (*Client, err
 		}
 		delay = time.Duration(p.StaggerDelayMinMs+sampleUniform(span)) * time.Millisecond
 	}
-	return &SplitClient{up: up, dialDown: dialDown, staggerDelay: delay, staggerArmed: time.Now()}
+	return &SplitClient{up: up, dialDown: dialDown, staggerDelay: delay, staggerArmed: time.Now(), pmtu: NewPMTUSet(0, 0)}
 }
 
 func sampleUniform(span float64) float64 {
@@ -487,6 +498,14 @@ func (sc *SplitClient) ensureDown(ctx context.Context) error {
 		_ = down.Close()
 		return fmt.Errorf("realquic: bind refused: %s", string(fr.Payload))
 	}
+	// Stage B (B4): a (re)bound down leg is a new PMTU generation
+	// (§3.2 reset event: new leg). Both families reset — the leg's
+	// family is not observable from the mem transport, and resetting
+	// the unused family is inert — so a stale validated value from
+	// a dead leg can never carry onto the rebuilt leg. The up leg
+	// is untouched: its generation survives a down-leg rebuild.
+	sc.pmtu.ResetLeg("down", false)
+	sc.pmtu.ResetLeg("down", true)
 	sc.mu.Lock()
 	sc.down = down
 	sc.downDead = false

@@ -301,6 +301,67 @@ func assertPacedGaps(t *testing.T, name string, evs []SendEvent, minGap time.Dur
 	t.Logf("%s: %d datagrams, gaps paced (>= %v)", name, len(evs), minGap)
 }
 
+// assertServerWindow0BurstTail asserts the server window 0 gap
+// distribution under Stage B B2 issued-burst behavior. Events
+// recorded before the budget flip (Tail=false) form the shaping
+// segment and keep paced gaps >= 8ms; gaps from the transition
+// onward (the first tail datagram's gap plus gaps between tail
+// datagrams) must be either intra-burst (< 1ms, line speed) or
+// inter-burst idle (>= 40ms, nominal uniform 50-300ms with timer
+// tolerance). No gap may fall in [1ms, 40ms): that band is where
+// uniform pacing (10-20ms) would land, so it is the regression
+// signal for the old behavior. At least one intra-burst gap must
+// be observed, proving the burst regime is actually exercised.
+func assertServerWindow0BurstTail(t *testing.T, evs []SendEvent) {
+	t.Helper()
+	if len(evs) < 2 {
+		t.Fatalf("server window 0: only %d datagrams, need >= 2 to observe pacing", len(evs))
+	}
+	var seg, tail []SendEvent
+	for _, e := range evs {
+		if e.Tail {
+			tail = append(tail, e)
+		} else {
+			seg = append(seg, e)
+		}
+	}
+	if len(seg) < 2 {
+		t.Fatalf("server window 0: only %d shaping-segment datagrams, need >= 2", len(seg))
+	}
+	if len(tail) == 0 {
+		t.Fatalf("server window 0: no tail datagrams, burst regime not exercised (budget not exhausted?)")
+	}
+	assertPacedGaps(t, "server window 0 shaping", seg, 8*time.Millisecond)
+	// Gaps from the transition onward: the transition gap first,
+	// then gaps between consecutive tail datagrams.
+	gaps := []time.Duration{tail[0].At.Sub(seg[len(seg)-1].At)}
+	for i := 1; i < len(tail); i++ {
+		gaps = append(gaps, tail[i].At.Sub(tail[i-1].At))
+	}
+	intra, idle := 0, 0
+	var maxIntra, minIdle time.Duration
+	for i, g := range gaps {
+		switch {
+		case g < time.Millisecond:
+			intra++
+			if g > maxIntra {
+				maxIntra = g
+			}
+		case g >= 40*time.Millisecond:
+			idle++
+			if minIdle == 0 || g < minIdle {
+				minIdle = g
+			}
+		default:
+			t.Fatalf("server window 0 tail: gap %d = %v, want < 1ms (intra-burst) or >= 40ms (idle); middle band indicates uniform pacing", i, g)
+		}
+	}
+	if intra == 0 {
+		t.Fatalf("server window 0 tail: no intra-burst gap observed in %d tail gaps, burst regime not exercised", len(gaps))
+	}
+	t.Logf("server window 0: %d shaping datagrams paced (>= 8ms), %d tail datagrams: %d intra-burst (max %v), %d idle (min %v)", len(seg), len(tail), intra, maxIntra, idle, minIdle)
+}
+
 func TestShapingFirstFlightBidirectional(t *testing.T) {
 	serverProfile := shapingProfile(20, 20, "fixed", 700, 700, 700, 10, 20, 15, 900, 30, 40, 35)
 	env := setupShapedEnv(t, serverProfile)
@@ -343,8 +404,21 @@ func TestShapingFirstFlightBidirectional(t *testing.T) {
 	up0 := windowEvents(env.cli.ShapingEvents(), 0)
 	assertPacedGaps(t, "client window 0", up0, 3*time.Millisecond)
 	// Server quantity + timing, window 0 (server timing 10-20ms).
+	// INTENDED BEHAVIOR CHANGE (Stage B B2, chan-confirmed
+	// design-round authority): the server down shaper runs the
+	// ISSUED profile from the start (server.go newPerAddrShapingConn
+	// "down", s.IssuedProfile), and issuance now fills a missing
+	// burst with the default, so the window 0 tail (after the
+	// 20-datagram shaping budget) paces in bursts instead of
+	// uniformly. The shaping segment keeps the >= 8ms paced-gap
+	// assertion; the tail is asserted as a burst distribution
+	// (line-speed intra-burst gaps, idle gaps only at burst
+	// boundaries). This is not a weakening: a uniform-paced tail
+	// (the old expectation) would land in the forbidden middle
+	// band and fail. Bootstrap-closed (FINALIZED) refers to the
+	// client Version 0 window only and is untouched.
 	down0 := windowEvents(env.srv.DownEvents(), 0)
-	assertPacedGaps(t, "server window 0", down0, 8*time.Millisecond)
+	assertServerWindow0BurstTail(t, down0)
 	// Post-AUTH traffic is still shaped (window 1, server profile
 	// timing 10-20ms shaping or 30-40ms steady: either way >= 8ms).
 	cs, err := env.cli.Connect(env.ctx(t), startTCPEchoServer(t))
