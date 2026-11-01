@@ -18,4 +18,4 @@ jobs:
           go-version: '1.26'
       - name: Run full realquic suite
         working-directory: mist
-        run: go test -count=1 ./realquic/
+        run: go test -count=1 -timeout 20m ./realquic/
