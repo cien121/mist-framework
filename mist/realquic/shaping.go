@@ -6,6 +6,7 @@ import (
 	"math"
 	"net"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -210,6 +211,14 @@ type Shaper struct {
 	// meaningful only in tail with burst pacing enabled; 0 means the
 	// next gap is an inter-burst idle gap that opens a new burst.
 	burstLeft int
+	// lastSampleTail records the tail phase at the most recent
+	// SampleLen call: the phase that governed that sample. It is
+	// lab observability for the first-flight test, where the AUTH_OK
+	// padding phase cannot be inferred from the sampled value alone
+	// (the handshake may or may not have exhausted the budget
+	// before the sample). It changes no shaping behavior: no
+	// counting, budget, or tail-transition logic reads it.
+	lastSampleTail atomic.Bool
 }
 
 // NewShaper returns a shaper for direction ("up" or "down") starting in
@@ -343,6 +352,7 @@ func (s *Shaper) BeginWindow(p *Profile) {
 func (s *Shaper) SampleLen() int {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	s.lastSampleTail.Store(s.tail)
 	var d Distribution
 	if s.tail {
 		d = s.active.Steady.LenDist

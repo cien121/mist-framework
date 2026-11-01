@@ -362,6 +362,43 @@ func assertServerWindow0BurstTail(t *testing.T, evs []SendEvent) {
 	t.Logf("server window 0: %d shaping datagrams paced (>= 8ms), %d tail datagrams: %d intra-burst (max %v), %d idle (min %v)", len(seg), len(tail), intra, maxIntra, idle, minIdle)
 }
 
+// serverDownShaper returns the server's down-direction shaper for the
+// test's single peer. The shaped env has exactly one client, so
+// exactly one per-addr shaper exists; anything else is a setup bug,
+// not a shaping result, and fails loudly.
+func serverDownShaper(t *testing.T, srv *Server) *Shaper {
+	t.Helper()
+	srv.shapingMu.Lock()
+	conns := append([]*shapingPacketConn{}, srv.shapingConns...)
+	srv.shapingMu.Unlock()
+	var found *Shaper
+	for _, c := range conns {
+		if c.direction != "down" {
+			continue
+		}
+		c.mu.Lock()
+		if c.single != nil {
+			if found != nil {
+				c.mu.Unlock()
+				t.Fatalf("server down shapers: multiple, want exactly 1")
+			}
+			found = c.single
+		}
+		for _, sh := range c.perAddr {
+			if found != nil {
+				c.mu.Unlock()
+				t.Fatalf("server down shapers: multiple, want exactly 1")
+			}
+			found = sh
+		}
+		c.mu.Unlock()
+	}
+	if found == nil {
+		t.Fatalf("no server down shaper found")
+	}
+	return found
+}
+
 func TestShapingFirstFlightBidirectional(t *testing.T) {
 	serverProfile := shapingProfile(20, 20, "fixed", 700, 700, 700, 10, 20, 15, 900, 30, 40, 35)
 	env := setupShapedEnv(t, serverProfile)
@@ -390,16 +427,30 @@ func TestShapingFirstFlightBidirectional(t *testing.T) {
 		t.Fatalf("AUTH request Content-Length=%d, want [%d, %d] (preAuthTail=%v)", reqLen, lo, hi, preAuthTail)
 	}
 	t.Logf("AUTH request padded to %d bytes (preAuthTail=%v)", reqLen, preAuthTail)
-	// Server length: the AUTH_OK body padding is the server profile's
-	// fixed LenDist (700), since the down budget (20) cannot be
-	// exhausted by a handshake.
+	// Server length: the AUTH_OK body padding is sampled from the
+	// server down shaper at AUTH time: fixed 700 while the shaping
+	// budget lasts, steady uniform 900-1000 once in tail. The
+	// handshake may or may not have exhausted the 20-datagram
+	// budget before the sample (observed 14-21 datagrams), so the
+	// phase is read from the sample itself via lastSampleTail,
+	// not assumed. The server samples AUTH_OK padding exactly once
+	// per AUTH (server.go), so the hook still holds this sample
+	// when read here, before any later client action.
 	var ok authSuccess
 	if err := json.Unmarshal(body, &ok); err != nil {
 		t.Fatalf("auth body not JSON: %v", err)
 	}
-	if len(ok.Padding) != 700 {
-		t.Fatalf("AUTH_OK padding=%d bytes, want exactly 700 (server fixed LenDist)", len(ok.Padding))
+	sampleTail := serverDownShaper(t, env.srv).lastSampleTail.Load()
+	if sampleTail {
+		if len(ok.Padding) < 900 || len(ok.Padding) > 1000 {
+			t.Fatalf("AUTH_OK padding=%d bytes in tail, want steady [900, 1000]", len(ok.Padding))
+		}
+	} else {
+		if len(ok.Padding) != 700 {
+			t.Fatalf("AUTH_OK padding=%d bytes pre-tail, want exactly 700 (server fixed LenDist)", len(ok.Padding))
+		}
 	}
+	t.Logf("AUTH_OK padding=%d bytes (sampleTail=%v)", len(ok.Padding), sampleTail)
 	// Client quantity + timing, window 0 (bootstrap timing 5-50ms).
 	up0 := windowEvents(env.cli.ShapingEvents(), 0)
 	assertPacedGaps(t, "client window 0", up0, 3*time.Millisecond)
