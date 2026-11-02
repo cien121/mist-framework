@@ -3,6 +3,7 @@ package realquic
 import (
 	"crypto/rand"
 	"encoding/binary"
+	"fmt"
 	"math"
 	"net"
 	"sync"
@@ -681,6 +682,37 @@ func (c *shapingPacketConn) LocalAddr() net.Addr { return c.inner.LocalAddr() }
 // Note: net.PacketConn has no RemoteAddr (that is a Conn method); the
 // wrapper therefore does not expose one either. quic-go only needs the
 // PacketConn interface here.
+
+// SetReadBuffer and SetWriteBuffer pass quic-go's buffer-size requests
+// through to the underlying socket. This is the Stage C B3 fix:
+// quic-go's wrapConn first probes the connection for a
+// SetReadBuffer/SetWriteBuffer method and, finding none on the
+// wrapper, logged "Not a *net.UDPConn?" and never enlarged the
+// receive buffer — even though the real UDP socket underneath could
+// have taken it. With the methods present, quic-go delegates the
+// request to the socket. Both directions are needed: quic-go v0.64.1
+// probes SetReadBuffer (sys_conn_buffers.go) and SetWriteBuffer
+// (generated sys_conn_buffers_write.go) separately.
+//
+// When the inner connection does not implement the method (e.g. the
+// in-memory lab pair), an error is returned. A buffer-size error is
+// only logged as a warning by quic-go's wrapConn, so the error
+// fallback reproduces today's warning instead of silently claiming
+// success; a nil inner interface simply fails the assertion and
+// takes the error path, so this can never panic on a missing inner.
+func (c *shapingPacketConn) SetReadBuffer(n int) error {
+	if sb, ok := c.inner.(interface{ SetReadBuffer(int) error }); ok {
+		return sb.SetReadBuffer(n)
+	}
+	return fmt.Errorf("shapingPacketConn: inner connection does not support SetReadBuffer")
+}
+
+func (c *shapingPacketConn) SetWriteBuffer(n int) error {
+	if sb, ok := c.inner.(interface{ SetWriteBuffer(int) error }); ok {
+		return sb.SetWriteBuffer(n)
+	}
+	return fmt.Errorf("shapingPacketConn: inner connection does not support SetWriteBuffer")
+}
 
 func (c *shapingPacketConn) SetDeadline(t time.Time) error { return c.inner.SetDeadline(t) }
 
