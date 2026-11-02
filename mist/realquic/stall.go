@@ -25,9 +25,10 @@ import (
 //     never refetched, but an in-flight object restarts from byte 0.
 //     In-flight responses are NOT recovered (Q4 known gap); callers must
 //     not claim byte-range resume.
-//   - The stall timeout T is NOT calibrated yet (V7 needs lab traffic):
-//     callers supply it explicitly. The lab client's provisional default
-//     (8s) is a placeholder in the 5-10s estimate band, not a measurement.
+//   - The stall timeout T was calibrated by V7 lab traffic (2026-11-02):
+//     20/20 zero false triggers across loss/delay arms, 5/5 detections with
+//     exact bytes and no completed-object refetch; the lab client's default
+//     is 5s (callers may still supply their own T explicitly).
 
 // StallDetector tracks application-level byte delivery and reports
 // whether delivery has stalled for at least timeout. It is safe for
