@@ -89,6 +89,23 @@ func (c *Client) sessionSnapshot() *sessionParams {
 	return c.session
 }
 
+// requireSession is the client-side half of the design's conservative
+// AUTH rule (true-QUIC round, design §4 Q11/D11: the first Mist
+// request goes out only after the AUTH response). The server already
+// refuses pre-AUTH custom streams and drops pre-AUTH datagrams; this
+// gate stops the client from opening them at all, so an unauthenticated
+// connection never carries a Mist-semantics frame — not even one the
+// server would refuse. H3 itself (Request/Get/Auth) is deliberately
+// NOT gated: visitor traffic and the AUTH request itself are ordinary
+// HTTP/3, and gating them would break the visitor path the design
+// requires to exist.
+func (c *Client) requireSession() error {
+	if c.sessionSnapshot() == nil {
+		return errors.New("realquic: Mist semantics require a successful AUTH on this connection (D11 conservative rule)")
+	}
+	return nil
+}
+
 // ActiveProfile returns the profile this connection currently applies
 // (bootstrap before AUTH, server-issued after AUTH, newest pushed
 // profile after an in-session update).
@@ -343,6 +360,13 @@ func dialPacketConnWithTracer(ctx context.Context, pc net.PacketConn, remoteAddr
 	if serverID == "" {
 		serverID = testServerName
 	}
+	// True-QUIC round (design §5, Q16): a dial with no stored server
+	// profile starts on bootstrap. Count it as first-connection
+	// exposure (observation only; the downgrade rule is undecided,
+	// U18, so nothing here acts on the count).
+	if _, ok := store.Get(serverID); !ok {
+		store.NoteBootstrapUse(serverID)
+	}
 	// P1 step B (Q3): every datagram this connection sends passes
 	// the shaping wrapper — window 0 runs on the store's active
 	// profile (bootstrap on first contact, the server profile on
@@ -520,9 +544,13 @@ func NewSessionID() ([16]byte, error) {
 // Connect opens a custom stream, sends a CONNECT frame for target
 // ("host:port"), and waits for CONNECT_OK. The returned stream relays
 // framed DATA in both directions; its lifecycle is the dial's lifecycle.
-// Only meaningful after a successful AUTH on this connection (the server
-// cancels custom streams on unauthenticated connections).
+// Only after a successful AUTH on this connection: the client refuses
+// pre-AUTH CONNECT outright (requireSession), and the server cancels
+// custom streams on unauthenticated connections as a second layer.
 func (c *Client) Connect(ctx context.Context, target string) (*ConnectStream, error) {
+	if err := c.requireSession(); err != nil {
+		return nil, err
+	}
 	str, err := c.qconn.OpenStreamSync(ctx)
 	if err != nil {
 		return nil, err
@@ -564,6 +592,9 @@ func (c *Client) Connect(ctx context.Context, target string) (*ConnectStream, er
 // acknowledgement; the session persists on the server until the
 // connection closes.
 func (c *Client) RegisterUDP(ctx context.Context, sid [16]byte, target string) error {
+	if err := c.requireSession(); err != nil {
+		return err
+	}
 	str, err := c.qconn.OpenStreamSync(ctx)
 	if err != nil {
 		return err
@@ -594,11 +625,14 @@ func (c *Client) RegisterUDP(ctx context.Context, sid [16]byte, target string) e
 
 // SendDatagram sends one UDP-relay datagram tagged with sid. Delivery is
 // not guaranteed (RFC 9221 datagrams are not retransmitted). The payload
-// portion is sealed under the session codec once AUTH installed it; the
-// session ID routing header stays in the clear.
+// portion is sealed under the session codec installed by AUTH; the
+// session ID routing header stays in the clear. Pre-AUTH sends are
+// refused client-side (requireSession): the old identity-codec path,
+// which sealed nothing, no longer exists for this method.
 func (c *Client) SendDatagram(sid [16]byte, payload []byte) error {
-	// codecOrIdentity is the identity codec pre-AUTH (a no-op seal)
-	// and the session codec after AUTH, so one code path covers both.
+	if err := c.requireSession(); err != nil {
+		return err
+	}
 	sealed, err := c.codecOrIdentity().Seal(payload)
 	if err != nil {
 		return err
@@ -611,6 +645,9 @@ func (c *Client) SendDatagram(sid [16]byte, payload []byte) error {
 // the server drops them instead of routing them anywhere. A payload that
 // fails AEAD open is returned as an error, never delivered.
 func (c *Client) ReceiveDatagram(ctx context.Context) ([16]byte, []byte, error) {
+	if err := c.requireSession(); err != nil {
+		return [16]byte{}, nil, err
+	}
 	data, err := c.qconn.ReceiveDatagram(ctx)
 	if err != nil {
 		return [16]byte{}, nil, err

@@ -15,6 +15,7 @@ import (
 
 	"github.com/quic-go/quic-go"
 	"github.com/quic-go/quic-go/http3"
+	"github.com/quic-go/quic-go/qlogwriter"
 	"golang.org/x/crypto/curve25519"
 )
 
@@ -42,6 +43,35 @@ type ServerConfig struct {
 	// explicitly via RotateProfile.
 	RotationMin time.Duration
 	RotationMax time.Duration
+	// DecoyLimitMinBytes/DecoyLimitMaxBytes bound the per-connection
+	// decoy byte budget (true-QUIC round, design §4 Q12): each
+	// connection's cap is sampled uniformly inside this interval, so
+	// the limit itself is not a fixed fingerprint. Deployment
+	// configuration, never a protocol constant, and no default is
+	// invented here: both zero means the limiter is off (lab
+	// default). An operator who enables decoy service must set a
+	// positive interval; a maximum below the minimum is treated as
+	// unset (off), never silently corrected.
+	DecoyLimitMinBytes int64
+	DecoyLimitMaxBytes int64
+	// Tracer, if non-nil, is the plain per-connection qlog trace
+	// factory, wired straight into quic.Config.Tracer. It receives
+	// only (ctx, isClient, connID): quic-go's Tracer callback has no
+	// peer-address argument, so a factory that needs the peer (for a
+	// per-connection file name or a family-dependent PMTU tracker)
+	// must use TraceFactory instead.
+	Tracer func(context.Context, bool, quic.ConnectionID) qlogwriter.Trace
+	// TraceFactory, if non-nil, is the peer-aware per-connection
+	// qlog trace factory. It takes precedence over Tracer when both
+	// are set. listenPacketConn wires it through
+	// quic.Config.GetConfigForClient — the only quic-go callback that
+	// sees the peer address (ClientInfo.RemoteAddr) before the
+	// connection's Tracer is invoked — and the returned per-connection
+	// config sets quic.Config.Tracer to a closure capturing that peer.
+	// A nil return means "no trace for this connection", exactly like
+	// a nil quic.Config.Tracer. Lab-only observability, like Tracer:
+	// it never influences handshake, routing, or shaping decisions.
+	TraceFactory func(context.Context, quic.ConnectionID, net.Addr) qlogwriter.Trace
 }
 
 // Server is a Mode A lab server: a real QUIC + HTTP/3 site whose AUTH
@@ -81,6 +111,10 @@ type Server struct {
 	issued      Profile
 	rotationMin time.Duration
 	rotationMax time.Duration
+	// decoyLimitMin/decoyLimitMax are the ServerConfig decoy budget
+	// interval, copied at construction (see decoy.go).
+	decoyLimitMin int64
+	decoyLimitMax int64
 	// rotatorStop is closed by Close; the rotator goroutine (if any)
 	// exits on it. Guarded by rotatorOnce for start and stopOnce for close.
 	rotatorOnce sync.Once
@@ -110,6 +144,10 @@ type Server struct {
 	// observability for Q3 client-flight length shaping, nothing
 	// more. A value of -1 means the request carried no length.
 	lastAuthContentLength atomic.Int64
+	// tracer / traceFactory are the ServerConfig trace factories
+	// (see ServerConfig): plain and peer-aware respectively.
+	tracer       func(context.Context, bool, quic.ConnectionID) qlogwriter.Trace
+	traceFactory func(context.Context, quic.ConnectionID, net.Addr) qlogwriter.Trace
 }
 
 // LastAuthContentLength reports the Content-Length of the most recent
@@ -191,7 +229,11 @@ func NewServer(cfg ServerConfig) (*Server, error) {
 		splitPendings: map[[16]byte]*splitPending{},
 		rotationMin:   cfg.RotationMin,
 		rotationMax:   cfg.RotationMax,
+		decoyLimitMin: cfg.DecoyLimitMinBytes,
+		decoyLimitMax: cfg.DecoyLimitMaxBytes,
 		rotatorStop:   make(chan struct{}),
+		tracer:        cfg.Tracer,
+		traceFactory:  cfg.TraceFactory,
 	}
 	// Q6 issuance state: the base profile (operator-supplied or
 	// bootstrap) becomes the first issued profile, version 1. An
@@ -236,6 +278,35 @@ func (s *Server) RotateProfile() Profile {
 	s.issued.Version++
 	s.issued.IssuedAt = time.Now().Unix()
 	return s.issued
+}
+
+// IssueProfile is the server-instruction parameter rotation for the
+// true-QUIC round (design §5, Q16): the operator supplies new
+// parameter values, and the server issues them as the next version.
+// This is distinct from RotateProfile, which bumps version and
+// timestamp only and leaves parameters untouched: a rotation that
+// changes nothing but the version number does not rotate parameters.
+// IssueProfile validates the supplied profile, fills the default
+// burst when the profile carries none (same rule as the first
+// issuance), assigns the next version and a fresh timestamp, and
+// replaces the issued profile. Existing connections keep their
+// per-connection issued version until a push or re-AUTH, exactly as
+// with RotateProfile. Rotation cadence (how often the operator
+// issues) is deployment policy; the design leaves the cycle, the
+// learning time, and the first-connection downgrade rule undecided
+// (U18), so this method issues on instruction only and decides none
+// of them.
+func (s *Server) IssueProfile(p Profile) (Profile, error) {
+	if err := p.Validate(); err != nil {
+		return Profile{}, err
+	}
+	issued := newIssuedFrom(p)
+	s.profileMu.Lock()
+	defer s.profileMu.Unlock()
+	issued.Version = s.issued.Version + 1
+	issued.IssuedAt = time.Now().Unix()
+	s.issued = issued
+	return issued, nil
 }
 
 // NextRotationDelay reports the delay until the next rotation, picked
@@ -360,6 +431,24 @@ func (s *Server) DownEvents() []SendEvent {
 	return out
 }
 
+// DownEventsByAddr is DownEvents split by peer address string (the
+// shaping wrapper's per-address key): each key's slice is that peer's
+// down-direction send log, in send order. Listeners that saw the same
+// peer address (ServePacketConns over several ports) merge into one
+// key, in listener order. The map is a fresh snapshot on every call.
+func (s *Server) DownEventsByAddr() map[string][]SendEvent {
+	s.shapingMu.Lock()
+	conns := append([]*shapingPacketConn{}, s.shapingConns...)
+	s.shapingMu.Unlock()
+	out := map[string][]SendEvent{}
+	for _, sc := range conns {
+		for addr, evs := range sc.eventsByAddr() {
+			out[addr] = append(out[addr], evs...)
+		}
+	}
+	return out
+}
+
 // ConnProfileState reports one connection's Q6 state for tests and
 // operators: the issued version (AUTH or last successful push), the
 // highest receipted version and whether any receipt arrived, and whether
@@ -453,7 +542,17 @@ func (s *Server) handlerFor(st *connState) http.Handler {
 				}
 			}
 		}
-		s.site.ServeHTTP(w, r)
+		// True-QUIC round (design §4, Q12): every site response on
+		// this connection — visitor or fallback alike — goes through
+		// the per-connection decoy limiter when configured, so the
+		// limit cannot distinguish authenticated from unauthenticated
+		// connections. When unconfigured, serveSite serves the site
+		// directly (lab default, unchanged behaviour).
+		if st != nil {
+			s.serveSite(w, r, &st.decoyLim)
+		} else {
+			s.site.ServeHTTP(w, r)
+		}
 	})
 }
 
@@ -482,7 +581,28 @@ func (s *Server) listenPacketConn(pc net.PacketConn) (*quic.Listener, error) {
 	s.shapingMu.Lock()
 	s.shapingConns = append(s.shapingConns, shaped)
 	s.shapingMu.Unlock()
-	return quic.Listen(shaped, tlsConf, &quic.Config{EnableDatagrams: true})
+	qc := &quic.Config{EnableDatagrams: true}
+	if s.traceFactory != nil {
+		// Peer-aware path (see ServerConfig.TraceFactory): the
+		// per-connection Tracer closure captures the peer address
+		// quic-go reports for this connection attempt. The returned
+		// config must repeat EnableDatagrams: populateConfig copies
+		// only what the returned config sets, and datagrams are a
+		// Mist requirement, not a default.
+		factory := s.traceFactory
+		qc.GetConfigForClient = func(info *quic.ClientInfo) (*quic.Config, error) {
+			peer := info.RemoteAddr
+			return &quic.Config{
+				EnableDatagrams: true,
+				Tracer: func(ctx context.Context, isClient bool, connID quic.ConnectionID) qlogwriter.Trace {
+					return factory(ctx, connID, peer)
+				},
+			}, nil
+		}
+	} else if s.tracer != nil {
+		qc.Tracer = s.tracer
+	}
+	return quic.Listen(shaped, tlsConf, qc)
 }
 
 func (s *Server) serveListener(ln *quic.Listener) error {
@@ -623,6 +743,11 @@ type connState struct {
 	receiptVersion uint64
 	receiptSeen    bool
 	downgraded     bool
+	// decoyLim holds this connection's decoy byte-budget limiter,
+	// created lazily from the server's configured interval (see
+	// decoy.go). Zero holder means not yet created, not "unlimited":
+	// unlimited is when the server has no interval configured.
+	decoyLim decoyLimiterHolder
 }
 
 func newConnState(qconn *quic.Conn) *connState {

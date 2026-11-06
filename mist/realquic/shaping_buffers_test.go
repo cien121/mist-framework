@@ -17,18 +17,10 @@ var (
 	_ interface{ SetWriteBuffer(int) error } = (*shapingPacketConn)(nil)
 )
 
-// sockBuf reads a socket option from the underlying UDP socket directly.
-// (The lab tree reads it via the wrapper's SyscallConn passthrough;
-// main does not have that method yet, so the regression test reads the
-// raw socket instead. The assertion is identical: a Set*Buffer call made
-// through the wrapper must land on the real socket.)
-func sockBuf(t *testing.T, pc net.PacketConn, opt int) int {
+// sockBuf reads a socket option via the wrapper's SyscallConn passthrough.
+func sockBuf(t *testing.T, wrapped *shapingPacketConn, opt int) int {
 	t.Helper()
-	uc, ok := pc.(*net.UDPConn)
-	if !ok {
-		t.Fatalf("not a *net.UDPConn: %T", pc)
-	}
-	raw, err := uc.SyscallConn()
+	raw, err := wrapped.SyscallConn()
 	if err != nil {
 		t.Fatalf("SyscallConn: %v", err)
 	}
@@ -63,7 +55,7 @@ func TestShapingConnSetReadBufferPassthrough(t *testing.T) {
 	if err := wrapped.SetReadBuffer(want); err != nil {
 		t.Fatalf("SetReadBuffer: %v", err)
 	}
-	if got := sockBuf(t, pc, syscall.SO_RCVBUF); got < want {
+	if got := sockBuf(t, wrapped, syscall.SO_RCVBUF); got < want {
 		t.Fatalf("SO_RCVBUF = %d, want >= %d", got, want)
 	}
 }
@@ -79,7 +71,7 @@ func TestShapingConnSetWriteBufferPassthrough(t *testing.T) {
 	if err := wrapped.SetWriteBuffer(want); err != nil {
 		t.Fatalf("SetWriteBuffer: %v", err)
 	}
-	if got := sockBuf(t, pc, syscall.SO_SNDBUF); got < want {
+	if got := sockBuf(t, wrapped, syscall.SO_SNDBUF); got < want {
 		t.Fatalf("SO_SNDBUF = %d, want >= %d", got, want)
 	}
 }

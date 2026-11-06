@@ -567,8 +567,17 @@ func (c *TCPClient) Resume(p *sessionParams) error {
 }
 
 // Connect sends a CONNECT frame for target and returns the relay stream.
-// Only meaningful after Auth or Resume on this connection.
+// Only after Auth or Resume on this connection: the client refuses
+// pre-AUTH CONNECT outright (same D11 conservative rule as the QUIC
+// leg's requireSession), and the server refuses unauthenticated
+// custom frames as a second layer.
 func (c *TCPClient) Connect(ctx context.Context, target string) (*ConnectStream, error) {
+	c.mu.Lock()
+	hasSession := c.session != nil
+	c.mu.Unlock()
+	if !hasSession {
+		return nil, errors.New("realquic: Mist semantics require a successful AUTH or RESUME on this connection (D11 conservative rule)")
+	}
 	codec := c.codecOrIdentity()
 	payload, err := encodeTarget(target)
 	if err != nil {

@@ -562,11 +562,40 @@ func DecodeProfile(b []byte) (Profile, error) {
 type ProfileStore struct {
 	mu       sync.Mutex
 	byServer map[string]Profile
+	// bootstrapUses counts, per server, how many sessions started on
+	// the bootstrap profile (true-QUIC round, design §5 Q16): a dial
+	// with no stored server profile starts on bootstrap, and the
+	// first-connection exposure this creates is measured, not
+	// decided, here. The design leaves the first-connection downgrade
+	// rule undecided (U18), so this counter only observes: no
+	// behaviour changes when it grows, and no threshold is attached
+	// to it in this code.
+	bootstrapUses map[string]int
 }
 
 // NewProfileStore returns an empty store.
 func NewProfileStore() *ProfileStore {
-	return &ProfileStore{byServer: map[string]Profile{}}
+	return &ProfileStore{byServer: map[string]Profile{}, bootstrapUses: map[string]int{}}
+}
+
+// NoteBootstrapUse records one session that started on the bootstrap
+// profile for serverID (see the bootstrapUses field: observation
+// only, no threshold, no downgrade decision).
+func (s *ProfileStore) NoteBootstrapUse(serverID string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.bootstrapUses == nil {
+		s.bootstrapUses = map[string]int{}
+	}
+	s.bootstrapUses[serverID]++
+}
+
+// BootstrapUseCount reports how many sessions started on the bootstrap
+// profile for serverID.
+func (s *ProfileStore) BootstrapUseCount(serverID string) int {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.bootstrapUses[serverID]
 }
 
 // Get returns the stored profile for serverID, if any.

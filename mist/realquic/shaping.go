@@ -8,6 +8,7 @@ import (
 	"net"
 	"sync"
 	"sync/atomic"
+	"syscall"
 	"time"
 )
 
@@ -659,6 +660,25 @@ func (c *shapingPacketConn) allEvents() []SendEvent {
 	return out
 }
 
+// eventsByAddr splits the send log by the per-address shaper key.
+// In single mode there is one shaper, reported under the empty key.
+func (c *shapingPacketConn) eventsByAddr() map[string][]SendEvent {
+	if c.single != nil {
+		return map[string][]SendEvent{"": c.single.Events()}
+	}
+	c.mu.Lock()
+	shapers := make(map[string]*Shaper, len(c.perAddr))
+	for k, sh := range c.perAddr {
+		shapers[k] = sh
+	}
+	c.mu.Unlock()
+	out := make(map[string][]SendEvent, len(shapers))
+	for k, sh := range shapers {
+		out[k] = sh.Events()
+	}
+	return out
+}
+
 func (c *shapingPacketConn) WriteTo(p []byte, addr net.Addr) (int, error) {
 	sh := c.shaperFor(addr)
 	if delay := sh.BeforeSendFor(len(p)); delay > 0 {
@@ -679,9 +699,46 @@ func (c *shapingPacketConn) Close() error { return c.inner.Close() }
 
 func (c *shapingPacketConn) LocalAddr() net.Addr { return c.inner.LocalAddr() }
 
-// Note: net.PacketConn has no RemoteAddr (that is a Conn method); the
-// wrapper therefore does not expose one either. quic-go only needs the
-// PacketConn interface here.
+// SyscallConn exposes the underlying socket's RawConn so quic-go can
+// set DF (IP_MTU_DISCOVER) and run PMTU discovery. This is the W-1
+// deviation 4 fix: without it, quic-go's wrapConn sees DF=false and
+// never starts the MTU discoverer, so validated stays at the initial
+// 1280-byte payload size forever. The wrapper deliberately does NOT
+// implement the full OOBCapablePacketConn interface (no
+// ReadMsgUDP/WriteMsgUDP batching): DF support is all that is needed
+// here; reads and writes still go through the paced WriteTo/ReadFrom
+// path, and pacing/counting semantics are unchanged.
+//
+// When the inner connection cannot expose a RawConn (e.g. the
+// in-memory lab pair), this returns (nil, nil) rather than an error,
+// on purpose: quic-go's wrapConn treats a SyscallConn error as fatal
+// to dial, while a nil RawConn is only dereferenced when LocalAddr is
+// a *net.UDPAddr — and a non-UDP inner never reports one, so quic-go
+// simply skips setDF and falls back to DF=false, exactly as before
+// this fix. When LocalAddr IS a UDP address, a RawConn must exist
+// down the chain; an error surfaces the broken chain instead of a
+// nil dereference panic inside quic-go.
+func (c *shapingPacketConn) SyscallConn() (syscall.RawConn, error) {
+	if sc, ok := c.inner.(interface {
+		SyscallConn() (syscall.RawConn, error)
+	}); ok {
+		return sc.SyscallConn()
+	}
+	// No RawConn down the chain. quic-go's wrapConn treats a
+	// SyscallConn error as fatal to dial, yet dereferences a nil
+	// RawConn when LocalAddr is a *net.UDPAddr — so the fallback must
+	// mirror wrapConn's own branch: only return (nil, nil) when the
+	// local address is NOT a UDP address (e.g. the in-memory lab
+	// pair), in which case quic-go skips setDF and falls back to
+	// DF=false, exactly as before this fix. When LocalAddr IS a UDP
+	// address, a RawConn must exist somewhere down the chain; return
+	// an error to surface the broken chain instead of letting quic-go
+	// panic on a nil RawConn.
+	if _, ok := c.LocalAddr().(*net.UDPAddr); ok {
+		return nil, fmt.Errorf("shapingPacketConn: UDP-addressed inner connection does not support SyscallConn")
+	}
+	return nil, nil
+}
 
 // SetReadBuffer and SetWriteBuffer pass quic-go's buffer-size requests
 // through to the underlying socket. This is the Stage C B3 fix:
@@ -690,16 +747,19 @@ func (c *shapingPacketConn) LocalAddr() net.Addr { return c.inner.LocalAddr() }
 // wrapper, logged "Not a *net.UDPConn?" and never enlarged the
 // receive buffer — even though the real UDP socket underneath could
 // have taken it. With the methods present, quic-go delegates the
-// request to the socket. Both directions are needed: quic-go v0.64.1
-// probes SetReadBuffer (sys_conn_buffers.go) and SetWriteBuffer
-// (generated sys_conn_buffers_write.go) separately.
+// request to the socket and verifies the new size via SyscallConn
+// (already passed through by the deviation 4 fix). Both directions
+// are needed: quic-go v0.64.1 probes SetReadBuffer
+// (sys_conn_buffers.go) and SetWriteBuffer (generated
+// sys_conn_buffers_write.go) separately.
 //
 // When the inner connection does not implement the method (e.g. the
-// in-memory lab pair), an error is returned. A buffer-size error is
-// only logged as a warning by quic-go's wrapConn, so the error
-// fallback reproduces today's warning instead of silently claiming
-// success; a nil inner interface simply fails the assertion and
-// takes the error path, so this can never panic on a missing inner.
+// in-memory lab pair), an error is returned. Unlike SyscallConn,
+// whose error is fatal to dial, a buffer-size error is only logged as
+// a warning by quic-go's wrapConn, so the error fallback reproduces
+// today's warning instead of silently claiming success; a nil inner
+// interface simply fails the assertion and takes the error path, so
+// this can never panic on a missing inner.
 func (c *shapingPacketConn) SetReadBuffer(n int) error {
 	if sb, ok := c.inner.(interface{ SetReadBuffer(int) error }); ok {
 		return sb.SetReadBuffer(n)
@@ -713,6 +773,10 @@ func (c *shapingPacketConn) SetWriteBuffer(n int) error {
 	}
 	return fmt.Errorf("shapingPacketConn: inner connection does not support SetWriteBuffer")
 }
+
+// Note: net.PacketConn has no RemoteAddr (that is a Conn method); the
+// wrapper therefore does not expose one either. quic-go only needs the
+// PacketConn interface here.
 
 func (c *shapingPacketConn) SetDeadline(t time.Time) error { return c.inner.SetDeadline(t) }
 

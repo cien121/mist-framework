@@ -152,6 +152,22 @@ func (r *recordPC) SetDeadline(t time.Time) error      { return r.inner.SetDeadl
 func (r *recordPC) SetReadDeadline(t time.Time) error  { return r.inner.SetReadDeadline(t) }
 func (r *recordPC) SetWriteDeadline(t time.Time) error { return r.inner.SetWriteDeadline(t) }
 
+// SyscallConn forwards the inner connection's RawConn, same contract
+// as shapingPacketConn.SyscallConn (see there): delegate when
+// possible, (nil, nil) when LocalAddr is not a UDP address, error
+// when it is a UDP address but no RawConn exists down the chain.
+func (r *recordPC) SyscallConn() (syscall.RawConn, error) {
+	if sc, ok := r.inner.(interface {
+		SyscallConn() (syscall.RawConn, error)
+	}); ok {
+		return sc.SyscallConn()
+	}
+	if _, ok := r.LocalAddr().(*net.UDPAddr); ok {
+		return nil, fmt.Errorf("recordPC: UDP-addressed inner connection does not support SyscallConn")
+	}
+	return nil, nil
+}
+
 // m1Varint reads a QUIC variable-length integer (RFC 9000 §16).
 func m1Varint(b []byte, off int) (uint64, int, error) {
 	if off >= len(b) {
@@ -856,6 +872,13 @@ func (a *m2ConnAdapter) LocalAddr() net.Addr                       { return a.c.
 func (a *m2ConnAdapter) SetDeadline(t time.Time) error             { return a.c.SetDeadline(t) }
 func (a *m2ConnAdapter) SetReadDeadline(t time.Time) error         { return a.c.SetReadDeadline(t) }
 func (a *m2ConnAdapter) SetWriteDeadline(t time.Time) error        { return a.c.SetWriteDeadline(t) }
+
+// SyscallConn forwards the underlying socket's RawConn. Required
+// companion to the shaping wrapper's SyscallConn passthrough (W-1
+// deviation 4 fix): this adapter reports a real *net.UDPAddr as its
+// LocalAddr, so a missing SyscallConn here would make quic-go's
+// wrapConn dereference a nil RawConn in setDF.
+func (a *m2ConnAdapter) SyscallConn() (syscall.RawConn, error) { return a.c.SyscallConn() }
 
 // m2BuildInitial crafts a long-header Initial-shaped datagram (no header
 // protection, no valid AEAD unless the caller supplies one). Used only
