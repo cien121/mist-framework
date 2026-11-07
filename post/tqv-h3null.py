@@ -2,6 +2,29 @@
 # tqv-h3null.py -- True QUIC post-G1 analysis, part 1: fine-grained JS vs
 # matched H3 + same-kind (null) distributions + threshold derivation.
 #
+# CHANGELOG
+#   v2 (2026-11-06): fixes the empty-result failure of the VPS run
+#     (tqv-post-h3null.json: mist_completed=0/50, direct_completed=0/50,
+#     all pooled JS and Mist/direct LOO NO_DATA, threshold 6.60).
+#     (a) Removed the exact-equality completion filter
+#     (down == CLASS_DOWN): captured ip_len sums include IP/UDP/TCP +
+#     QUIC headers and retransmitted bytes, so they can never equal the
+#     application byte count; units are now ALL Mist flows / ALL direct
+#     clusters (as in analyzer session_lengths and Stage C js-fine.py).
+#     Per-unit down bytes are still recorded, and units below the class
+#     value are counted (partial/failed) but included.
+#     (b) H3 visits: the gap whose unit count is closest to 50 wins
+#     (tie-break: --h3-gap, then 5s, then 20s); exactly 50 is no longer
+#     required. The flow-level LOO is a diagnostic footnote only and
+#     never feeds the threshold.
+#     (c) Threshold guard: NOT-DERIVABLE unless all 12 LOO p95 slots
+#     (Mist/direct/H3-visit x A/B x 100B/50B) are present; any proposed
+#     threshold above 1.0 (the JS maximum) is rejected as impossible.
+#     (d) Input pcap paths are recorded as realpaths (symlinks resolved)
+#     with size + sha256, and the as-passed value is kept alongside.
+#   v1 (2026-11-06): first version; produced empty results on the VPS
+#     for the reasons fixed in v2 (see above).
+#
 # Method provenance (do not change the method without a new freeze):
 #   - Packet length = IP total length (IPv4 total_length; IPv6 40 +
 #     payload_length). JS = Jensen-Shannon, log base 2, range [0, 1].
@@ -19,15 +42,21 @@
 #     exactly the B8 derivation (Stage C freeze: GSO-split null p95
 #     0.0079-0.0088 -> threshold 0.10 at ~11-13x margin).
 #   - Units: Mist = UDP flow 5-tuple == session (cluster-5s / Tier 1
-#     convention), completed sessions only (down_bytes == class value).
-#     Direct = cluster-5s 5s-gap rule on the serial direct stream.
+#     convention), ALL flows (no completion filter; see changelog v2).
+#     Direct = cluster-5s 5s-gap rule on the serial direct stream, ALL
+#     clusters. Units below the class byte value are counted as
+#     below_class (partial/failed sessions) but still included, so the
+#     pooled/LOO computation matches the matrix analyzer's published
+#     SIZE numbers, which used all sessions.
 #     H3 = visit units recovered from the G1 pcap by gap clustering the
 #     QUIC-only (UDP 443) packet stream; visits are sequential 35s
 #     (A) / 120s (B) windows, so a 10s gap separates load bursts.
-#     The chosen gap is validated by unit count == 50; gaps 5s/20s are
-#     reported as sensitivity checks. If no gap yields 50 units, the
-#     visit-level H3 null is INVALID and the flow-level H3 null
-#     (UDP 5-tuple to port 443) is used instead, recorded as such.
+#     The chosen gap is the one whose unit count is closest to 50
+#     (tie-break: --h3-gap, then 5s, then 20s); gaps 5s/20s are
+#     reported as sensitivity checks. The flow-level H3 null
+#     (UDP 5-tuple to port 443) is a diagnostic only: flows within a
+#     visit are correlated and heterogeneous, so it must NOT feed the
+#     threshold.
 #   - Direction: the threshold-bearing JS is DOWNLINK ONLY (frozen W-5
 #     direction spec; mixing uplink dilutes the statistic). The
 #     analyzer tqv-analyze.py (js_vs_h3 / js_rows) mixes directions, so
@@ -36,9 +65,11 @@
 #     only the downlink-only values are judged against the threshold.
 #   - Threshold formula (B8-isomorphic): threshold = ceil to the next
 #     0.05 step of (max per-kind LOO p95 across Mist-A/B, direct-A/B,
-#     H3-A/B) x 10. The actual multiplier (threshold / max p95) is
+#     H3-visit-A/B) x 10. The actual multiplier (threshold / max p95) is
 #     reported. B8 chose 0.10 from p95 0.0079-0.0088 (11-13x); the same
-#     rounding rule reproduces 0.10 from that range.
+#     rounding rule reproduces 0.10 from that range. The threshold is
+#     NOT-DERIVABLE unless all 12 LOO p95 slots are present, and any
+#     proposed value above 1.0 is rejected (JS is bounded by 1.0).
 #
 # Inputs: SIZE pcaps + completions (Mist/direct) and G1 pcaps.
 # Outputs: JSON to --out (full numbers) + a short human summary on stdout.
@@ -53,9 +84,11 @@
 #     [--h3-gap 10.0]
 
 import argparse
+import hashlib
 import ipaddress
 import json
 import math
+import os
 import struct
 import sys
 from collections import Counter
@@ -316,6 +349,43 @@ def js_pooled(a_lengths, b_lengths, width):
     return js_div(probs(ha), probs(hb))
 
 
+def derive_threshold(p95s):
+    """B8-isomorphic threshold derivation with guards.
+
+    p95s: dict of the 12 slots {class}-{kind}-{band} -> p95 or None,
+    kinds = mist/direct/h3_visit, bands = 100/50.
+    Returns a dict with status DERIVED or NOT-DERIVABLE. A numeric
+    threshold is only proposed when every slot is present; any value
+    above 1.0 is impossible (JS is bounded by 1.0) and is rejected.
+    The v1 run proposed 6.60 from a partial, flow-level input -- that
+    failure mode is what these guards exist to prevent."""
+    missing = sorted(k for k, v in p95s.items() if v is None)
+    present = [v for v in p95s.values() if v is not None]
+    max_p95 = max(present) if present else None
+    if missing:
+        return {"status": "NOT-DERIVABLE", "proposed_threshold": None,
+                "actual_multiplier": None, "max_p95": max_p95,
+                "missing_slots": missing,
+                "reason": "missing LOO p95 slots: %s" % ", ".join(missing)}
+    if max_p95 is None or max_p95 <= 0:
+        return {"status": "NOT-DERIVABLE", "proposed_threshold": None,
+                "actual_multiplier": None, "max_p95": max_p95,
+                "missing_slots": [],
+                "reason": ("max_p95 is %s: no scatter measured (all nulls "
+                           "zero); threshold cannot be derived" % (max_p95,))}
+    proposed = round(math.ceil(max_p95 * 10.0 / 0.05) * 0.05, 2)
+    if proposed > 1.0:
+        return {"status": "NOT-DERIVABLE", "proposed_threshold": None,
+                "actual_multiplier": None, "max_p95": max_p95,
+                "missing_slots": [],
+                "reason": ("proposed threshold %.2f exceeds the JS maximum "
+                           "of 1.0 (max_p95=%.4f); impossible, no threshold "
+                           "derived" % (proposed, max_p95))}
+    return {"status": "DERIVED", "proposed_threshold": proposed,
+            "actual_multiplier": proposed / max_p95, "max_p95": max_p95,
+            "missing_slots": [], "reason": None}
+
+
 def fmt4(x):
     return ("%.4f" % x) if x is not None else "NO_DATA"
 
@@ -344,10 +414,41 @@ def main():
             return s
 
     server, client = norm_ip(args.server), norm_ip(args.client)
-    report = {"tool": "tqv-h3null.py (TQV post-G1 part 1)",
+    report = {"tool": "tqv-h3null.py v2 (TQV post-G1 part 1)",
               "method": "B8-isomorphic: downlink-only, GSO-split, LOO null, "
                         "linear-interpolation p95; see file header",
               "classes": {}}
+
+    def input_provenance(path):
+        """Real path (symlinks resolved) + size + sha256 of an input pcap,
+        with the as-passed value kept alongside for audit."""
+        real = os.path.realpath(path)
+        try:
+            size = os.path.getsize(real)
+        except OSError:
+            size = None
+        sha = None
+        try:
+            h = hashlib.sha256()
+            with open(real, "rb") as f:
+                for chunk in iter(lambda: f.read(1 << 20), b""):
+                    h.update(chunk)
+            sha = h.hexdigest()
+        except OSError:
+            pass
+        return {"arg": path, "realpath": real, "size_bytes": size,
+                "sha256": sha}
+
+    report["inputs"] = {
+        "mist_a": input_provenance(args.mist_a),
+        "mist_b": input_provenance(args.mist_b),
+        "direct_a": input_provenance(args.direct_a),
+        "direct_b": input_provenance(args.direct_b),
+        "g1_a": input_provenance(args.g1_a),
+        "g1_b": input_provenance(args.g1_b),
+    }
+    cls_inputs = {"A": ("mist_a", "direct_a", "g1_a"),
+                  "B": ("mist_b", "direct_b", "g1_b")}
 
     # ---- load arms ----
     def load_lab(path, want, port):
@@ -376,17 +477,20 @@ def main():
         return pkts, frags
 
     def mist_units(pkts, cls):
+        """ALL UDP flows are units. No completion filter: captured ip_len
+        sums include headers and retransmissions and can never equal the
+        application byte count (v1's `down == CLASS_DOWN` kept zero
+        units). Returns (units, n_below_class, per-unit down sums);
+        below-class units are partial/failed sessions, counted but
+        still included in the pooled/LOO computation."""
         flows = {}
         for p in pkts:
             key = (p["sport"], p["dport"]) if p["src"] == client else (p["dport"], p["sport"])
             flows.setdefault(key, []).append(p)
         units = sorted(flows.values(), key=lambda ps: min(x["ts"] for x in ps))
-        kept = []
-        for u in units:
-            down = sum(p["ip_len"] for p in u if p["dir"] == "down")
-            if down == CLASS_DOWN[cls]:
-                kept.append(u)
-        return units, kept
+        downs = [sum(p["ip_len"] for p in u if p["dir"] == "down") for u in units]
+        below = sum(1 for d in downs if d < CLASS_DOWN[cls])
+        return units, below, downs
 
     def direct_units(pkts):
         pkts = sorted(pkts, key=lambda p: p["ts"])
@@ -402,8 +506,9 @@ def main():
 
     def h3_visit_units(path):
         """Gap-cluster the QUIC-only stream into visit units. Try gaps
-        10s (default), 5s, 20s; the first yielding exactly 50 units wins.
-        Returns (units, chosen_gap, counts_by_gap)."""
+        10s (default), 5s, 20s; the gap whose unit count is CLOSEST to
+        50 wins (tie-break: --h3-gap, then 5s, then 20s). Exactly 50 is
+        not required. Returns (units, chosen_gap, counts_by_gap)."""
         q = []
         gen = parse_pcap(path)
         try:
@@ -429,10 +534,12 @@ def main():
             counts[str(gap)] = len(units)
             clustered[str(gap)] = units
         chosen = None
+        best_dist = None
         for gap in (args.h3_gap, 5.0, 20.0):
-            if counts[str(gap)] == 50:
+            dist = abs(counts[str(gap)] - 50)
+            if best_dist is None or dist < best_dist:
+                best_dist = dist
                 chosen = str(gap)
-                break
         return q, clustered, counts, chosen
 
     def h3_flow_units(q):
@@ -446,13 +553,10 @@ def main():
                             ("B", args.mist_b, args.direct_b, args.g1_b)):
         m_pk, m_frag = load_lab(mp, "mist", args.mist_port)
         d_pk, d_frag = load_lab(dp, "direct", args.object_port)
-        m_all, m_kept = mist_units(m_pk, cls)
-        d_all = direct_units(d_pk)
-        d_kept = []
-        for u in d_all:
-            down = sum(p["ip_len"] for p in u if p["dir"] == "down")
-            if down == CLASS_DOWN[cls]:
-                d_kept.append(u)
+        m_units, m_below, m_downs = mist_units(m_pk, cls)
+        d_units = direct_units(d_pk)
+        d_downs = [sum(p["ip_len"] for p in u if p["dir"] == "down") for u in d_units]
+        d_below = sum(1 for d in d_downs if d < CLASS_DOWN[cls])
         d_doff, d_mss = gso_params(d_pk)
         # GSO params are arm-global per arm; Mist/H3 are UDP, for which
         # split_lengths is the identity and the MSS table is never
@@ -460,41 +564,41 @@ def main():
         # convention); UDP_MSS below is a never-consulted placeholder.
         UDP_MSS = {20: 1448, 40: 1428}
         q, h3_clustered, h3_counts, h3_chosen = h3_visit_units(gp)
-        h3_units = h3_clustered[h3_chosen] if h3_chosen else None
+        h3_units = h3_clustered[h3_chosen]
         h3_flows = h3_flow_units(q)
         # H3 downlink pooled lengths (split == identity for UDP).
         h3_down = [p["ip_len"] for p in q if p["dir"] == "down"]
         h3_all = [p["ip_len"] for p in q]
-        m_down = [p["ip_len"] for u in m_kept for p in u if p["dir"] == "down"]
-        m_all_len = [p["ip_len"] for u in m_kept for p in u]
-        d_down = [p["ip_len"] for u in d_kept for p in u if p["dir"] == "down"]
+        m_down = [p["ip_len"] for u in m_units for p in u if p["dir"] == "down"]
+        m_all_len = [p["ip_len"] for u in m_units for p in u]
+        d_down = [p["ip_len"] for u in d_units for p in u if p["dir"] == "down"]
         # LOO nulls (downlink-only, split).
-        null_mist = loo_null(m_kept, UDP_MSS)
-        null_direct = loo_null(d_kept, d_mss)
+        null_mist = loo_null(m_units, UDP_MSS)
+        null_direct = loo_null(d_units, d_mss)
         null_h3_visit = loo_null(h3_units, UDP_MSS) if h3_units else None
         null_h3_flow = loo_null(h3_flows, UDP_MSS)
         # Pooled cross-arm JS, downlink-only, split.
         vs_h3_down, vs_h3_mixed, vs_direct_down, vs_direct_orig = {}, {}, {}, {}
         for name, width in (("9", None), ("100", 100), ("50", 50)):
             vs_h3_down[name] = js_pooled(
-                split_lengths([p for u in m_kept for p in u if p["dir"] == "down"], UDP_MSS),
+                split_lengths([p for u in m_units for p in u if p["dir"] == "down"], UDP_MSS),
                 split_lengths([p for p in q if p["dir"] == "down"], UDP_MSS), width)
             vs_h3_mixed[name] = js_pooled(
-                [p["ip_len"] for u in m_kept for p in u],
+                [p["ip_len"] for u in m_units for p in u],
                 [p["ip_len"] for p in q], width)
             vs_direct_down[name] = js_pooled(
-                split_lengths([p for u in m_kept for p in u if p["dir"] == "down"], UDP_MSS),
-                split_lengths([p for u in d_kept for p in u if p["dir"] == "down"], d_mss), width)
+                split_lengths([p for u in m_units for p in u if p["dir"] == "down"], UDP_MSS),
+                split_lengths([p for u in d_units for p in u if p["dir"] == "down"], d_mss), width)
             vs_direct_orig[name] = js_pooled(
-                [p["ip_len"] for u in m_kept for p in u if p["dir"] == "down"],
-                [p["ip_len"] for u in d_kept for p in u if p["dir"] == "down"], width)
+                [p["ip_len"] for u in m_units for p in u if p["dir"] == "down"],
+                [p["ip_len"] for u in d_units for p in u if p["dir"] == "down"], width)
         # Per-unit Mist vs H3 pooled (downlink-only, split).
         per_unit = {}
         h3_down_hist = {}
         for name, width in (("100", 100), ("50", 50)):
             hh = hist_fine_of(h3_down, width)
             vals = []
-            for u in m_kept:
+            for u in m_units:
                 sl = split_lengths([p for p in u if p["dir"] == "down"], UDP_MSS)
                 if not sl:
                     continue
@@ -508,11 +612,22 @@ def main():
             qs = sorted(p["ts"] for p in q)
             gaps = [round(b - a, 1) for a, b in zip(qs, qs[1:]) if b - a > 1.0]
         report["classes"][cls] = {
-            "mist_pcap": mp, "direct_pcap": dp, "g1_pcap": gp,
-            "units": {"mist_flows": len(m_all), "mist_completed": len(m_kept),
-                      "direct_clusters": len(d_all), "direct_completed": len(d_kept),
+            "mist_pcap": report["inputs"][cls_inputs[cls][0]]["realpath"],
+            "mist_pcap_arg": mp,
+            "direct_pcap": report["inputs"][cls_inputs[cls][1]]["realpath"],
+            "direct_pcap_arg": dp,
+            "g1_pcap": report["inputs"][cls_inputs[cls][2]]["realpath"],
+            "g1_pcap_arg": gp,
+            "units": {"mist_flows": len(m_units), "mist_units": len(m_units),
+                      "mist_below_class": m_below,
+                      "mist_down_bytes": summarise(m_downs),
+                      "direct_clusters": len(d_units),
+                      "direct_units": len(d_units),
+                      "direct_below_class": d_below,
+                      "direct_down_bytes": summarise(d_downs),
                       "h3_visit_units_by_gap": h3_counts,
                       "h3_visit_gap_chosen": h3_chosen,
+                      "h3_visit_units": len(h3_units),
                       "h3_flows": len(h3_flows)},
             "packets": {"mist_down": len(m_down), "mist_all": len(m_all_len),
                         "direct_down": len(d_down),
@@ -532,44 +647,42 @@ def main():
             "per_unit_mist_vs_h3_downlink_split": per_unit,
             "loo_null_split_downlink": {
                 "mist": null_mist, "direct": null_direct,
-                "h3_visit": null_h3_visit, "h3_flow": null_h3_flow},
+                "h3_visit": null_h3_visit, "h3_flow": null_h3_flow,
+                "h3_flow_note": "diagnostic only: flows within a visit are "
+                                "correlated and heterogeneous; the flow-level "
+                                "LOO never feeds the threshold"},
         }
 
-    # ---- threshold derivation (B8-isomorphic) ----
+    # ---- threshold derivation (B8-isomorphic, guarded) ----
     p95s = {}
     for cls in ("A", "B"):
         c = report["classes"][cls]["loo_null_split_downlink"]
         for kind in ("mist", "direct"):
             for band in ("100", "50"):
                 p95s["%s-%s-%s" % (cls, kind, band)] = c[kind][band]["p95"]
-        h3 = c["h3_visit"] if c["h3_visit"] is not None else c["h3_flow"]
-        h3_kind = "h3_visit" if c["h3_visit"] is not None else "h3_flow"
+        # H3-visit only: the flow-level LOO is a diagnostic and never
+        # feeds the threshold (v1 fell back to it and proposed 6.60).
+        hv = c["h3_visit"]
         for band in ("100", "50"):
-            p95s["%s-%s-%s" % (cls, h3_kind, band)] = h3[band]["p95"]
-    vals = [v for v in p95s.values() if v is not None]
-    missing_kinds = sorted(k for k, v in p95s.items() if v is None)
-    max_p95 = max(vals) if vals else None
-    if max_p95 is not None and max_p95 > 0:
-        raw = max_p95 * 10.0
-        proposed = math.ceil(raw / 0.05) * 0.05
-        proposed = round(proposed, 2)
-        multiplier = proposed / max_p95
-        degenerate = None
-    else:
-        proposed = None
-        multiplier = None
-        degenerate = ("max_p95 is %s: no scatter measured (all nulls zero "
-                      "or missing); threshold cannot be derived" % (max_p95,))
+            p95s["%s-h3_visit-%s" % (cls, band)] = (
+                hv[band]["p95"] if hv is not None else None)
+    td = derive_threshold(p95s)
+    max_p95 = td["max_p95"]
+    proposed = td["proposed_threshold"]
+    multiplier = td["actual_multiplier"]
     report["threshold_derivation"] = {
+        "status": td["status"],
         "per_kind_loo_p95": p95s,
-        "missing_kinds": missing_kinds,
+        "missing_kinds": td["missing_slots"],
         "max_p95": max_p95,
         "formula": "threshold = ceil(max_p95 * 10 / 0.05) * 0.05",
         "proposed_threshold": proposed,
         "actual_multiplier": multiplier,
-        "degenerate": degenerate,
-        "h3_unit_used": ("visit" if report["classes"]["A"]["loo_null_split_downlink"]["h3_visit"] is not None
-                          else "flow (visit clustering did not yield 50 units)"),
+        "degenerate": td["reason"] if td["status"] == "NOT-DERIVABLE" else None,
+        "reason": td["reason"],
+        "h3_unit_used": "visit",
+        "h3_flow_note": "flow-level LOO is a diagnostic only; it never "
+                        "feeds the threshold",
         "excluded": "original-length (raw) variant: known segment-length-"
                     "variance artifact, footnote only, never the derivation basis",
     }
@@ -579,12 +692,15 @@ def main():
     print("=== TQV-H3NULL SUMMARY ===")
     for cls in ("A", "B"):
         c = report["classes"][cls]
-        print("class %s: mist_completed=%d/%d direct_completed=%d/%d "
-              "h3_visit_units=%s (gap %s) h3_flows=%d" % (
-                  cls, c["units"]["mist_completed"], c["units"]["mist_flows"],
-                  c["units"]["direct_completed"], c["units"]["direct_clusters"],
+        print("class %s: mist_units=%d (below_class=%d) direct_units=%d "
+              "(below_class=%d) h3_visit_units=%d (gap %s, counts %s) "
+              "h3_flows=%d" % (
+                  cls, c["units"]["mist_units"], c["units"]["mist_below_class"],
+                  c["units"]["direct_units"], c["units"]["direct_below_class"],
+                  c["units"]["h3_visit_units"],
+                  c["units"]["h3_visit_gap_chosen"],
                   c["units"]["h3_visit_units_by_gap"],
-                  c["units"]["h3_visit_gap_chosen"], c["units"]["h3_flows"]))
+                  c["units"]["h3_flows"]))
         print("  pooled JS vs H3 downlink/split: 9=%s 100B=%s 50B=%s" % (
             fmt4(c["pooled_js_vs_h3_downlink_split"]["9"]),
             fmt4(c["pooled_js_vs_h3_downlink_split"]["100"]),
@@ -607,11 +723,13 @@ def main():
             if n is None:
                 print("  LOO null %s: NOT-COMPUTED" % kind)
             else:
-                print("  LOO null %s: 100B p95=%s 50B p95=%s (n=%d)" % (
-                    kind, fmt4(n["100"]["p95"]), fmt4(n["50"]["p95"]),
+                print("  LOO null %s%s: 100B p95=%s 50B p95=%s (n=%d)" % (
+                    kind, " (diagnostic only)" if kind == "h3_flow" else "",
+                    fmt4(n["100"]["p95"]), fmt4(n["50"]["p95"]),
                     n["100"]["n"]))
     td = report["threshold_derivation"]
-    print("threshold: max_p95=%s proposed=%s multiplier=%s missing=%s" % (
+    print("threshold: status=%s max_p95=%s proposed=%s multiplier=%s missing=%s" % (
+        td["status"],
         fmt4(max_p95),
         ("%.2f" % proposed) if proposed is not None else "NONE",
         ("%.1fx" % multiplier) if multiplier is not None else "NONE",

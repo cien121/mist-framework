@@ -2,6 +2,25 @@
 # tqv-classifier.py -- True QUIC post-G1 analysis, part 2: L3 classifier
 # evaluation (Q15) on the Mist-vs-H3 pool.
 #
+# CHANGELOG
+#   v2 (2026-11-06): same empty-result root cause as tqv-h3null.py v2.
+#     (a) Removed the exact-equality completion filter
+#     (down == CLASS_DOWN) in load_mist: captured ip_len sums include
+#     headers and retransmissions and can never equal the application
+#     byte count; Mist units are now ALL UDP flows (below-class units
+#     counted but included, as in h3null v2).
+#     (b) H3 visits: the gap whose unit count is closest to 50 wins
+#     (tie-break: --h3-gap, then 5s, then 20s), mirroring h3null v2;
+#     v1 errored the whole class when no gap yielded exactly 50, which
+#     is what the real G1 data does. The site holdout still needs an
+#     exact 50 (visit->URL mapping), so when the visit count is not 50
+#     the site holdout is NOT-COMPUTED (as the header always said) and
+#     only the main random holdout runs.
+#     (c) Input pcap paths are recorded as realpaths (symlinks resolved)
+#     with size + sha256.
+#   v1 (2026-11-06): first version; Mist filter kept zero units and the
+#     H3 exactly-50 rule errored both classes on the real G1 data.
+#
 # What this script does and does NOT do:
 #   - It EXTRACTS the Q15 named feature set from the retained pcaps and
 #     EVALUATES the named classifier families on a session-disjoint
@@ -32,13 +51,16 @@
 # the site-holdout split, never as features), no absolute timestamps,
 # no session IDs, no port numbers, no handshake private extensions.
 #
-# Units: Mist = UDP flow 5-tuple == session, completed only
-# (down_bytes == class value). H3 = visit units recovered by the same
-# gap clustering as tqv-h3null.py (10s default, validated count == 50);
-# visit j (time order, 1-based) maps to the frozen site list
+# Units: Mist = UDP flow 5-tuple == session, ALL flows (no completion
+# filter; v1's down_bytes == class value kept zero units -- captured
+# ip_len sums include headers and retransmissions). H3 = visit units
+# recovered by the same gap clustering as tqv-h3null.py (closest-to-50
+# gap wins); visit j (time order, 1-based) maps to the frozen site list
 # (g1-site-list.txt sha 09ab18fe...) position (j-1) % 9, hence its site
-# family (cloudflare/github/google). If the visit count is not 50, the
-# site holdout is NOT-COMPUTED (no reliable visit->URL mapping).
+# family (cloudflare/github/google) -- but only when the visit count is
+# exactly 50. If the visit count is not 50, the site holdout is
+# NOT-COMPUTED (no reliable visit->URL mapping) and only the main
+# random holdout runs.
 #
 # Splits (per class, never mixed): main random holdout train:test 2:1,
 # session-disjoint, seed 20261106; site holdout 3 folds (one H3 family
@@ -63,9 +85,11 @@
 #     [--gap 5.0] [--h3-gap 10.0] [--perms 1000]
 
 import argparse
+import hashlib
 import ipaddress
 import json
 import math
+import os
 import random
 import struct
 import sys
@@ -426,12 +450,13 @@ def main():
             key = (p["sport"], p["dport"]) if p["src"] == client else (p["dport"], p["sport"])
             flows.setdefault(key, []).append(p)
         units = sorted(flows.values(), key=lambda ps: min(x["ts"] for x in ps))
-        kept = []
-        for u in units:
-            down = sum(p["ip_len"] for p in u if p["dir"] == "down")
-            if down == CLASS_DOWN[cls]:
-                kept.append(u)
-        return units, kept
+        # No completion filter (v2): captured ip_len sums include headers
+        # and retransmissions and can never equal the application byte
+        # count. All flows are units; below-class units are counted but
+        # still included.
+        downs = [sum(p["ip_len"] for p in u if p["dir"] == "down") for u in units]
+        below = sum(1 for d in downs if d < CLASS_DOWN[cls])
+        return units, below, downs
 
     def load_h3(path):
         q = []
@@ -459,17 +484,40 @@ def main():
             counts[str(gap)] = len(units)
             clustered[str(gap)] = units
         chosen = None
+        best_dist = None
         for gap in (args.h3_gap, 5.0, 20.0):
-            if counts[str(gap)] == 50:
+            dist = abs(counts[str(gap)] - 50)
+            if best_dist is None or dist < best_dist:
+                best_dist = dist
                 chosen = str(gap)
-                break
-        units = clustered[chosen] if chosen else None
+        units = clustered[chosen]
+        # Visit->URL mapping is only reliable at exactly 50 visits.
         fams = None
-        if units is not None:
+        if len(units) == 50:
             fams = [SITE_FAMILIES[i % 9] for i in range(len(units))]
         return q, units, counts, chosen, fams
 
-    report = {"tool": "tqv-classifier.py (TQV post-G1 part 2)",
+    def input_provenance(path):
+        """Real path (symlinks resolved) + size + sha256 of an input pcap,
+        with the as-passed value kept alongside for audit."""
+        real = os.path.realpath(path)
+        try:
+            size = os.path.getsize(real)
+        except OSError:
+            size = None
+        sha = None
+        try:
+            h = hashlib.sha256()
+            with open(real, "rb") as f:
+                for chunk in iter(lambda: f.read(1 << 20), b""):
+                    h.update(chunk)
+            sha = h.hexdigest()
+        except OSError:
+            pass
+        return {"arg": path, "realpath": real, "size_bytes": size,
+                "sha256": sha}
+
+    report = {"tool": "tqv-classifier.py v2 (TQV post-G1 part 2)",
               "method": "Q15: 3 model families (LR stdlib + RF/GBM if sklearn), "
                         "named 27-feature set, train:test 2:1 session-disjoint, "
                         "site holdout secondary, DeLong 95% CI + permutation p",
@@ -478,21 +526,28 @@ def main():
                          "time-disjoint holdout. Numbers + CI + p only; any "
                          "PASS/FAIL written from them is wrong.",
               "sklearn_available": SKLEARN,
+              "inputs": {
+                  "mist_a": input_provenance(args.mist_a),
+                  "mist_b": input_provenance(args.mist_b),
+                  "g1_a": input_provenance(args.g1_a),
+                  "g1_b": input_provenance(args.g1_b),
+              },
               "classes": {}}
 
     for cls, mp, gp in (("A", args.mist_a, args.g1_a),
                         ("B", args.mist_b, args.g1_b)):
-        m_all, m_kept = load_mist(mp, cls)
+        m_units, m_below, m_downs = load_mist(mp, cls)
         q, h3_units, h3_counts, h3_chosen, h3_fams = load_h3(gp)
-        if h3_units is None:
+        if not m_units or not h3_units:
             report["classes"][cls] = {
-                "error": "H3 visit clustering did not yield 50 units "
-                         "(counts by gap: %s); classifier not run for "
-                         "this class" % (h3_counts,),
-                "mist_flows": len(m_all), "mist_completed": len(m_kept)}
+                "error": "no units to classify (mist=%d, h3_visits=%d)" % (
+                    len(m_units), len(h3_units)),
+                "mist_flows": len(m_units),
+                "h3_visit_units_by_gap": h3_counts,
+                "h3_visit_gap_chosen": h3_chosen}
             continue
         X, V, y, fams, meta = [], [], [], [], []
-        for u in m_kept:
+        for u in m_units:
             f, v, m = features_for_unit(u, True)
             X.append(f)
             V.append(v)
@@ -504,9 +559,9 @@ def main():
             X.append(f)
             V.append(v)
             y.append(0)
-            fams.append(h3_fams[i])
+            fams.append(h3_fams[i] if h3_fams is not None else None)
             meta.append(m)
-        n_mist, n_h3 = len(m_kept), len(h3_units)
+        n_mist, n_h3 = len(m_units), len(h3_units)
 
         def run_models(Xtr, ytr, Xte, yte, Vtr, Vte):
             out = {}
@@ -552,30 +607,38 @@ def main():
                         vol["delong_ci95"][0] is not None and
                         vol["delong_ci95"][0] > 0.5)
         main["volume_guard_void"] = vol_void
-        # ---- site holdout (3 folds; H3 family held out, Mist random 1/3) ----
+        # ---- site holdout (3 folds; H3 family held out, Mist random 1/3).
+        # Needs an exact-50 visit->URL mapping; otherwise NOT-COMPUTED
+        # and only the main holdout runs (header rule, v2). ----
         site = {"folds": [], "available": True}
-        for fold, fam in enumerate(("cloudflare", "github", "google")):
-            te_h = [i for i in range(n_mist, n_mist + n_h3) if fams[i] == fam]
-            tr_h = [i for i in range(n_mist, n_mist + n_h3) if fams[i] != fam]
-            r2 = random.Random(1000 + fold)
-            idx = list(range(n_mist))
-            r2.shuffle(idx)
-            nte_m = n_mist - (2 * n_mist) // 3
-            te_m = idx[:nte_m]
-            tr_m = idx[nte_m:]
-            tr_i = tr_m + tr_h
-            te_i = te_m + te_h
-            fold_res = run_models([X[i] for i in tr_i], [y[i] for i in tr_i],
-                                  [X[i] for i in te_i], [y[i] for i in te_i],
-                                  [V[i] for i in tr_i], [V[i] for i in te_i])
-            fa = [v["auc"] for v in fold_res.values() if v and v["auc"] is not None]
-            fold_res["strongest_auc"] = max(fa) if fa else None
-            fold_res["held_out_family"] = fam
-            fold_res["n_test_h3"] = len(te_h)
-            fold_res["n_test_mist"] = len(te_m)
-            site["folds"].append(fold_res)
+        if h3_fams is None:
+            site = {"folds": [], "available": False,
+                    "reason": ("visit count %d != 50; visit->URL mapping "
+                               "unreliable, site holdout NOT-COMPUTED" % n_h3)}
+        else:
+            for fold, fam in enumerate(("cloudflare", "github", "google")):
+                te_h = [i for i in range(n_mist, n_mist + n_h3) if fams[i] == fam]
+                tr_h = [i for i in range(n_mist, n_mist + n_h3) if fams[i] != fam]
+                r2 = random.Random(1000 + fold)
+                idx = list(range(n_mist))
+                r2.shuffle(idx)
+                nte_m = n_mist - (2 * n_mist) // 3
+                te_m = idx[:nte_m]
+                tr_m = idx[nte_m:]
+                tr_i = tr_m + tr_h
+                te_i = te_m + te_h
+                fold_res = run_models([X[i] for i in tr_i], [y[i] for i in tr_i],
+                                      [X[i] for i in te_i], [y[i] for i in te_i],
+                                      [V[i] for i in tr_i], [V[i] for i in te_i])
+                fa = [v["auc"] for v in fold_res.values() if v and v["auc"] is not None]
+                fold_res["strongest_auc"] = max(fa) if fa else None
+                fold_res["held_out_family"] = fam
+                fold_res["n_test_h3"] = len(te_h)
+                fold_res["n_test_mist"] = len(te_m)
+                site["folds"].append(fold_res)
         report["classes"][cls] = {
-            "n_mist_completed": n_mist, "n_h3_visits": n_h3,
+            "n_mist": n_mist, "n_mist_below_class": m_below,
+            "n_h3_visits": n_h3,
             "h3_visit_units_by_gap": h3_counts,
             "h3_visit_gap_chosen": h3_chosen,
             "n_features": len(X[0]) if X else 0,
@@ -595,8 +658,9 @@ def main():
         if "error" in c:
             print("class %s: ERROR %s" % (cls, c["error"]))
             continue
-        print("class %s: n_mist=%d n_h3=%d features=%d" % (
-            cls, c["n_mist_completed"], c["n_h3_visits"], c["n_features"]))
+        print("class %s: n_mist=%d (below_class=%d) n_h3=%d features=%d" % (
+            cls, c["n_mist"], c["n_mist_below_class"], c["n_h3_visits"],
+            c["n_features"]))
         m = c["main_holdout_2to1"]
         for name in ("logreg", "volume_only_logreg", "random_forest", "grad_boosting"):
             v = m.get(name)
@@ -608,6 +672,9 @@ def main():
                     v["perm_p"], v["n_test"]))
         print("  strongest_auc=%.3f volume_guard_void=%s" % (
             m["strongest_auc"], m["volume_guard_void"]))
+        if not c["site_holdout"]["available"]:
+            print("  site-holdout: NOT-COMPUTED (%s)" % (
+                c["site_holdout"]["reason"],))
         for fo in c["site_holdout"]["folds"]:
             print("  site-holdout %s: strongest_auc=%.3f (logreg AUC=%.3f)" % (
                 fo["held_out_family"], fo["strongest_auc"],
